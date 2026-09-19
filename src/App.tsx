@@ -71,7 +71,7 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { dbUser, user, updateDbProfile } = useAuth();
+  const { dbUser, user, updateDbProfile, lastAuthError } = useAuth();
   const [userProfile, setUserProfile] = useState<UserProfile>(DEFAULT_PROFILE);
 
   // Active tab is derived directly from the URL route
@@ -83,6 +83,13 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
   const [toast, setToast] = useState<{ message: string; visible: boolean } | null>(null);
+
+  // If redirect auth returned with an error, automatically open auth modal with resolution guidance
+  useEffect(() => {
+    if (lastAuthError && !user) {
+      setIsAuthModalOpen(true);
+    }
+  }, [lastAuthError, user]);
 
   // Sync page title with current route & brand
   useEffect(() => {

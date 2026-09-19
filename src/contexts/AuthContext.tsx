@@ -16,6 +16,11 @@ import { UserProfile } from '../types';
 
 export type AuthStatus = 'INITIALIZING' | 'AUTHENTICATING' | 'AUTHENTICATED' | 'UNAUTHENTICATED' | 'ERROR';
 
+export interface AuthErrorInfo {
+  code: string;
+  message: string;
+}
+
 interface AuthContextType {
   user: User | null;
   dbUser: UserProfile | null;
@@ -23,6 +28,8 @@ interface AuthContextType {
   loading: boolean;
   authStatus: AuthStatus;
   googleAuthMessage: string | null;
+  lastAuthError: AuthErrorInfo | null;
+  clearAuthError: () => void;
   login: (email: string, pass: string) => Promise<void>;
   register: (email: string, pass: string, displayName?: string) => Promise<void>;
   loginWithGoogle: (returnUrl?: string) => Promise<void>;
@@ -63,7 +70,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true);
   const [authStatus, setAuthStatus] = useState<AuthStatus>('INITIALIZING');
   const [googleAuthMessage, setGoogleAuthMessage] = useState<string | null>(null);
+  const [lastAuthError, setLastAuthError] = useState<AuthErrorInfo | null>(null);
   const redirectHandledRef = useRef<boolean>(false);
+
+  const clearAuthError = () => setLastAuthError(null);
 
   // Helper to parse the DB user response safely
   const parseDbUser = (dbData: any): UserProfile => {
@@ -258,7 +268,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      await signInWithPopup(auth, googleAuthProvider);
+      const result = await signInWithPopup(auth, googleAuthProvider);
+      if (result && result.user) {
+        setUser(result.user);
+        setLastAuthError(null);
+        const isOwner = (result.user.email && result.user.email.toLowerCase() === 'vanvan20001220@gmail.com') || false;
+        setDbUser((prev) => prev || {
+          uid: result.user.uid,
+          email: result.user.email || '',
+          name: result.user.displayName || (result.user.email ? result.user.email.split('@')[0] : 'Học viên JLPT'),
+          avatar: '🦊',
+          targetLevel: 'N4',
+          xp: 0,
+          streak: 1,
+          coins: 0,
+          lastActiveDate: new Date().toISOString().split('T')[0] || '',
+          studyDays: [new Date().toISOString().split('T')[0] || ''],
+          completedLessons: [],
+          vocabStatus: {},
+          grammarStatus: {},
+          kanjiStatus: {},
+          dailyTestResults: [],
+          role: isOwner ? 'admin' : 'user'
+        });
+      }
       if (import.meta.env.DEV) {
         console.log('[AUTH] Firebase user authenticated');
         console.log('[AUTH] Loading profile');
@@ -304,11 +337,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       // Case 3: Other errors (e.g. auth/unauthorized-domain, auth/network-request-failed)
-      if (import.meta.env.DEV) {
-        console.error('[AUTH][ERROR] code:', errorCode, 'message:', error?.message);
-      }
+      console.error('[AUTH][ERROR] code:', errorCode, 'message:', error?.message);
       setAuthStatus('ERROR');
       setGoogleAuthMessage(null);
+      setLastAuthError({
+        code: errorCode,
+        message: error?.message || 'Đăng nhập bằng Google không thành công.'
+      });
       try {
         sessionStorage.removeItem('auth_return_url');
       } catch {}
@@ -327,6 +362,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setToken(null);
       setAuthStatus('UNAUTHENTICATED');
       setGoogleAuthMessage(null);
+      setLastAuthError(null);
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     } finally {
       setLoading(false);
@@ -342,6 +378,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const result = await getRedirectResult(auth);
         if (result && result.user) {
+          setUser(result.user);
+          setLastAuthError(null);
+          const isOwner = (result.user.email && result.user.email.toLowerCase() === 'vanvan20001220@gmail.com') || false;
+          setDbUser((prev) => prev || {
+            uid: result.user.uid,
+            email: result.user.email || '',
+            name: result.user.displayName || (result.user.email ? result.user.email.split('@')[0] : 'Học viên JLPT'),
+            avatar: '🦊',
+            targetLevel: 'N4',
+            xp: 0,
+            streak: 1,
+            coins: 0,
+            lastActiveDate: new Date().toISOString().split('T')[0] || '',
+            studyDays: [new Date().toISOString().split('T')[0] || ''],
+            completedLessons: [],
+            vocabStatus: {},
+            grammarStatus: {},
+            kanjiStatus: {},
+            dailyTestResults: [],
+            role: isOwner ? 'admin' : 'user'
+          });
           if (import.meta.env.DEV) {
             console.log('[AUTH] Redirect result received');
             console.log('[AUTH] Firebase user authenticated');
@@ -370,11 +427,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (error: any) {
         const errorCode = error?.code || '';
         if (errorCode) {
-          if (import.meta.env.DEV) {
-            console.error('[AUTH][ERROR] Redirect result failed with code:', errorCode, 'message:', error?.message);
-          }
+          console.error('[AUTH][ERROR] Redirect result failed with code:', errorCode, 'message:', error?.message);
           setAuthStatus('ERROR');
           setGoogleAuthMessage(null);
+          setLastAuthError({
+            code: errorCode,
+            message: error?.message || 'Đăng nhập bằng Google không thành công.'
+          });
         }
       }
     };
@@ -515,6 +574,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       authStatus,
       googleAuthMessage,
+      lastAuthError,
+      clearAuthError,
       login,
       register,
       loginWithGoogle,

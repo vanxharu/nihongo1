@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { LogIn, UserPlus, Mail, Lock, AlertCircle, Sparkles, X, Chrome } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock, AlertCircle, Sparkles, X, Chrome, Copy, Check, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface AuthModalProps {
@@ -9,19 +9,50 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const { login, register, loginWithGoogle, googleAuthMessage } = useAuth();
+  const { login, register, loginWithGoogle, googleAuthMessage, lastAuthError, clearAuthError } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
+  const [errorCode, setErrorCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const [copiedDomain, setCopiedDomain] = useState(false);
+
+  const currentHostname = typeof window !== 'undefined' ? window.location.hostname : '';
+  const isInIframe = typeof window !== 'undefined' && window.self !== window.top;
+
+  useEffect(() => {
+    if (lastAuthError) {
+      setErrorCode(lastAuthError.code);
+      if (lastAuthError.code === 'auth/unauthorized-domain') {
+        setError(`Tên miền "${currentHostname}" chưa được cấp phép trong Firebase Authentication của dự án nihongo-fd01e.`);
+      } else {
+        setError(lastAuthError.message);
+      }
+    }
+  }, [lastAuthError, currentHostname]);
 
   if (!isOpen) return null;
+
+  const handleCopyHostname = () => {
+    if (navigator.clipboard && currentHostname) {
+      navigator.clipboard.writeText(currentHostname);
+      setCopiedDomain(true);
+      setTimeout(() => setCopiedDomain(false), 2500);
+    }
+  };
+
+  const handleClose = () => {
+    clearAuthError();
+    onClose();
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setErrorCode('');
+    clearAuthError();
     setLoading(true);
 
     if (!email || !password) {
@@ -42,7 +73,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       } else {
         await register(email, password, displayName || undefined);
       }
-      onClose();
+      handleClose();
     } catch (err: any) {
       console.error(err);
       let vietnameseMsg = 'Đã xảy ra lỗi. Vui lòng thử lại.';
@@ -57,6 +88,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       } else if (err.message) {
         vietnameseMsg = err.message;
       }
+      setErrorCode(err.code || '');
       setError(vietnameseMsg);
     } finally {
       setLoading(false);
@@ -65,16 +97,20 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   const handleGoogleSignIn = async () => {
     setError('');
+    setErrorCode('');
+    clearAuthError();
     setLoading(true);
     try {
       await loginWithGoogle();
-      onClose();
+      handleClose();
     } catch (err: any) {
-      if (err?.code === 'auth/popup-closed-by-user') {
+      const code = err?.code || '';
+      setErrorCode(code);
+      if (code === 'auth/popup-closed-by-user') {
         setError('Bạn đã đóng cửa sổ đăng nhập.');
-      } else if (err?.code === 'auth/unauthorized-domain') {
-        setError('Tên miền này chưa được cấp phép trong Firebase Authentication Authorized Domains.');
-      } else if (err?.code === 'auth/account-exists-with-different-credential') {
+      } else if (code === 'auth/unauthorized-domain') {
+        setError(`Tên miền "${currentHostname}" chưa được cấp phép trong Firebase Authentication của dự án nihongo-fd01e.`);
+      } else if (code === 'auth/account-exists-with-different-credential') {
         setError('Email này đã liên kết với phương thức đăng nhập khác. Vui lòng đăng nhập bằng Email & Mật khẩu.');
       } else if (err?.message) {
         setError(err.message);
@@ -99,7 +135,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         {/* Close Button */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-50 transition-colors"
         >
           <X className="w-5 h-5" />
@@ -107,8 +143,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         {/* Header Logo */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-slate-50 text-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-md">
-            <Sparkles className="w-6 h-6 fill-slate-100" />
+          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-md">
+            <Sparkles className="w-6 h-6 fill-amber-100" />
           </div>
           <h2 className="text-2xl font-display font-bold text-slate-950">
             {isLogin ? 'Chào mừng quay trở lại!' : 'Bắt đầu học ngay!'}
@@ -121,20 +157,20 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         </div>
 
         {/* Tab Selection */}
-        <div className="flex bg-slate-50 p-1.5 rounded-xl mb-6">
+        <div className="flex bg-slate-50 p-1.5 rounded-xl mb-4">
           <button
-            onClick={() => { setIsLogin(true); setError(''); }}
+            onClick={() => { setIsLogin(true); setError(''); setErrorCode(''); }}
             className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-1.5 transition-colors ${
-              isLogin ? 'bg-white text-slate-700 shadow-xs' : 'text-slate-500 hover:text-slate-950'
+              isLogin ? 'bg-white text-slate-800 shadow-xs' : 'text-slate-500 hover:text-slate-950'
             }`}
           >
             <LogIn className="w-4 h-4" />
             Đăng nhập
           </button>
           <button
-            onClick={() => { setIsLogin(false); setError(''); }}
+            onClick={() => { setIsLogin(false); setError(''); setErrorCode(''); }}
             className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-1.5 transition-colors ${
-              !isLogin ? 'bg-white text-slate-700 shadow-xs' : 'text-slate-500 hover:text-slate-950'
+              !isLogin ? 'bg-white text-slate-800 shadow-xs' : 'text-slate-500 hover:text-slate-950'
             }`}
           >
             <UserPlus className="w-4 h-4" />
@@ -142,13 +178,69 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           </button>
         </div>
 
-        {/* Error Alert */}
-        {error && (
+        {/* Specialized Help Card for Unauthorized Domain */}
+        {errorCode === 'auth/unauthorized-domain' ? (
+          <div className="mb-4 bg-amber-50/90 border border-amber-300 rounded-2xl p-4 text-left shadow-sm">
+            <div className="flex items-start gap-2.5 mb-2">
+              <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-xs font-bold text-amber-950 uppercase tracking-wider">Cần thêm tên miền vào Firebase</h4>
+                <p className="text-xs text-amber-800 mt-0.5 leading-relaxed">
+                  Firebase dự án <strong className="font-mono">nihongo-fd01e</strong> chưa cấp phép tên miền hiện tại:
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white border border-amber-200 rounded-xl p-2.5 my-2.5 flex items-center justify-between gap-2">
+              <span className="font-mono text-xs font-bold text-slate-800 break-all select-all">{currentHostname}</span>
+              <button
+                type="button"
+                onClick={handleCopyHostname}
+                className="shrink-0 px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white text-[11px] font-bold rounded-lg flex items-center gap-1 transition-colors cursor-pointer"
+              >
+                {copiedDomain ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                {copiedDomain ? 'Đã sao chép' : 'Sao chép'}
+              </button>
+            </div>
+
+            <div className="text-[11px] text-amber-900 space-y-1 mb-3 bg-amber-100/60 p-2.5 rounded-xl">
+              <p className="font-bold">Cách thêm tên miền trong 30 giây:</p>
+              <p>1. Vào <strong>Firebase Console</strong> dự án <strong className="font-mono">nihongo-fd01e</strong></p>
+              <p>2. Chọn <strong>Authentication</strong> → tab <strong>Settings</strong> → mục <strong>Authorized domains</strong></p>
+              <p>3. Bấm <strong>Add domain</strong>, dán tên miền trên và bấm <strong>Add</strong>.</p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <a
+                href="https://console.firebase.google.com/project/nihongo-fd01e/authentication/settings"
+                target="_blank"
+                rel="noreferrer"
+                className="flex-1 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <span>Mở Firebase Settings</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+              {isInIframe && (
+                <button
+                  type="button"
+                  onClick={() => window.open(window.location.href, '_blank')}
+                  className="px-3 py-2 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Mở tab mới
+                </button>
+              )}
+            </div>
+          </div>
+        ) : error ? (
+          /* General Error Alert */
           <div className="mb-4 bg-rose-50 border border-rose-200 rounded-xl p-3.5 flex items-start gap-3">
             <AlertCircle className="w-4 h-4 text-rose-600 mt-0.5 shrink-0" />
-            <span className="text-xs font-medium text-rose-700">{error}</span>
+            <div className="text-left">
+              <span className="text-xs font-medium text-rose-700 block">{error}</span>
+              {errorCode && <span className="text-[10px] font-mono text-rose-500 mt-1 block">Mã lỗi: {errorCode}</span>}
+            </div>
           </div>
-        )}
+        ) : null}
 
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
