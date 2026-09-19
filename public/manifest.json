@@ -1,0 +1,62 @@
+{
+  "id": "/",
+  "short_name": "NihonGo!",
+  "name": "NihonGo!",
+  "description": "Nền tảng học tiếng Nhật JLPT, Hán tự Kanji, ôn tập thông minh và thi thử trên Windows PC & Di động",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "background_color": "#0F172A",
+  "theme_color": "#E11D48",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "any",
+  "categories": ["education", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Ôn tập Từ vựng",
+      "short_name": "Từ vựng",
+      "description": "Học và ôn từ vựng JLPT N5-N3",
+      "url": "/?tab=vocabulary",
+      "icons": [{ "src": "/icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Thư viện Hán tự",
+      "short_name": "Kanji",
+      "description": "Tra cứu và luyện nhớ Hán tự",
+      "url": "/?tab=kanji",
+      "icons": [{ "src": "/icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Đề thi thử JLPT",
+      "short_name": "Đề thi",
+      "description": "Làm bài thi thử hàng ngày",
+      "url": "/?tab=exam",
+      "icons": [{ "src": "/icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Chat AI Tiếng Nhật",
+      "short_name": "AI Chat",
+      "description": "Trò chuyện Kaiwa 100% tiếng Nhật",
+      "url": "/?tab=japanese-chat",
+      "icons": [{ "src": "/icon.svg", "sizes": "any" }]
+    }
+  ]
+}

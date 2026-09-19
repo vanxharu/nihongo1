@@ -1,0 +1,162 @@
+[
+  {
+    "questionId": "N4-EXAM-01-Q01",
+    "examId": "N4-EXAM-01",
+    "youtubeVideoId": "2Qk4Hq1WqUA",
+    "startTime": 65.0,
+    "endTime": 145.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N4-EXAM-01-Q02",
+    "examId": "N4-EXAM-01",
+    "youtubeVideoId": "2Qk4Hq1WqUA",
+    "startTime": 150.0,
+    "endTime": 235.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N4-EXAM-01-Q03",
+    "examId": "N4-EXAM-01",
+    "youtubeVideoId": "2Qk4Hq1WqUA",
+    "startTime": 240.0,
+    "endTime": 330.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N4-EXAM-01-Q04",
+    "examId": "N4-EXAM-01",
+    "youtubeVideoId": "2Qk4Hq1WqUA",
+    "startTime": 335.0,
+    "endTime": 425.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N4-EXAM-01-Q05",
+    "examId": "N4-EXAM-01",
+    "youtubeVideoId": "2Qk4Hq1WqUA",
+    "startTime": 430.0,
+    "endTime": 505.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N4-EXAM-01-Q06",
+    "examId": "N4-EXAM-01",
+    "youtubeVideoId": "2Qk4Hq1WqUA",
+    "startTime": 510.0,
+    "endTime": 575.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N4-EXAM-01-Q07",
+    "examId": "N4-EXAM-01",
+    "youtubeVideoId": "2Qk4Hq1WqUA",
+    "startTime": 580.0,
+    "endTime": 640.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N4-EXAM-01-Q08",
+    "examId": "N4-EXAM-01",
+    "youtubeVideoId": "2Qk4Hq1WqUA",
+    "startTime": 645.0,
+    "endTime": 705.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N4-EXAM-01-Q09",
+    "examId": "N4-EXAM-01",
+    "youtubeVideoId": "2Qk4Hq1WqUA",
+    "startTime": 710.0,
+    "endTime": 770.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N4-EXAM-01-Q10",
+    "examId": "N4-EXAM-01",
+    "youtubeVideoId": "2Qk4Hq1WqUA",
+    "startTime": 775.0,
+    "endTime": 840.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N5-EXAM-01-Q01",
+    "examId": "N5-EXAM-01",
+    "youtubeVideoId": "I3kvL128MIQ",
+    "startTime": 30.0,
+    "endTime": 85.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N5-EXAM-01-Q02",
+    "examId": "N5-EXAM-01",
+    "youtubeVideoId": "I3kvL128MIQ",
+    "startTime": 90.0,
+    "endTime": 155.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N5-EXAM-01-Q03",
+    "examId": "N5-EXAM-01",
+    "youtubeVideoId": "I3kvL128MIQ",
+    "startTime": 160.0,
+    "endTime": 230.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N5-EXAM-01-Q04",
+    "examId": "N5-EXAM-01",
+    "youtubeVideoId": "I3kvL128MIQ",
+    "startTime": 235.0,
+    "endTime": 310.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N5-EXAM-01-Q05",
+    "examId": "N5-EXAM-01",
+    "youtubeVideoId": "I3kvL128MIQ",
+    "startTime": 315.0,
+    "endTime": 375.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N5-EXAM-01-Q06",
+    "examId": "N5-EXAM-01",
+    "youtubeVideoId": "I3kvL128MIQ",
+    "startTime": 380.0,
+    "endTime": 440.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N5-EXAM-01-Q07",
+    "examId": "N5-EXAM-01",
+    "youtubeVideoId": "I3kvL128MIQ",
+    "startTime": 445.0,
+    "endTime": 505.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N5-EXAM-01-Q08",
+    "examId": "N5-EXAM-01",
+    "youtubeVideoId": "I3kvL128MIQ",
+    "startTime": 510.0,
+    "endTime": 570.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N3-EXAM-01-Q01",
+    "examId": "N3-EXAM-01",
+    "youtubeVideoId": "HG0WgzruVHU",
+    "startTime": 45.0,
+    "endTime": 120.0,
+    "timestampVerified": true
+  },
+  {
+    "questionId": "N3-EXAM-01-Q02",
+    "examId": "N3-EXAM-01",
+    "youtubeVideoId": "HG0WgzruVHU",
+    "startTime": 125.0,
+    "endTime": 200.0,
+    "timestampVerified": true
+  }
+]

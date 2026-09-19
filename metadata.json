@@ -1,0 +1,6 @@
+{
+  "name": "NihonGo!",
+  "description": "Nền tảng học tiếng Nhật & Luyện thi JLPT thông minh theo chuẩn bản xứ, hỗ trợ làm bài tập viết tay bằng bút cảm ứng và chấm điểm nét chữ bằng AI, ôn tập từ vựng, ngữ pháp, Hán tự Kanji, thi thử và Chat AI.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

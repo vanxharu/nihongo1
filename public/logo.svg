@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient for Icon -->
+    <linearGradient id="iconBgDragon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="50%" stop-color="#091E2A" />
+      <stop offset="100%" stop-color="#05131C" />
+    </linearGradient>
+
+    <linearGradient id="iconBorderDragon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="50%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#F43F5E" />
+    </linearGradient>
+
+    <!-- Dragon Body Gradient -->
+    <linearGradient id="dragonSkinLogo" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+
+    <linearGradient id="dragonCreamLogo" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A" />
+      <stop offset="100%" stop-color="#FDE047" />
+    </linearGradient>
+
+    <filter id="shadowLogoDragon" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Left Cute Chubby Dragon Mascot Icon Badge -->
+  <g transform="translate(10, 10)" filter="url(#shadowLogoDragon)">
+    <rect width="140" height="140" rx="36" fill="url(#iconBgDragon)" />
+    <rect x="3" y="3" width="134" height="134" rx="33" fill="none" stroke="url(#iconBorderDragon)" stroke-width="2.5" opacity="0.85" />
+
+    <!-- Chubby Dragon Mascot miniaturized in badge -->
+    <g transform="translate(-5, -5) scale(0.29)">
+
+      <!-- Horns -->
+      <path d="M 190 135 Q 160 65 195 70 Q 210 110 205 130 Z" fill="#FDE047" stroke="#CA8A04" stroke-width="2" />
+      <path d="M 322 135 Q 352 65 317 70 Q 302 110 307 130 Z" fill="#FDE047" stroke="#CA8A04" stroke-width="2" />
+
+      <!-- Dragon Head -->
+      <ellipse cx="256" cy="210" rx="130" ry="110" fill="url(#dragonSkinLogo)" />
+      <!-- Snout Cream -->
+      <ellipse cx="256" cy="235" rx="90" ry="65" fill="url(#dragonCreamLogo)" />
+
+      <!-- Rosy Cheeks -->
+      <ellipse cx="170" cy="230" rx="20" ry="14" fill="#F43F5E" opacity="0.8" />
+      <ellipse cx="342" cy="230" rx="20" ry="14" fill="#F43F5E" opacity="0.8" />
+
+      <!-- Red Hachimaki -->
+      <path d="M 136 150 Q 256 130 376 150 L 380 176 Q 256 156 132 176 Z" fill="#FF2A54" />
+      <circle cx="256" cy="153" r="14" fill="#FEF08A" stroke="#CA8A04" stroke-width="1.5" />
+      <text x="256" y="158" font-family="sans-serif" font-weight="900" font-size="12" fill="#E60033" text-anchor="middle">勝</text>
+
+      <!-- Eyes -->
+      <g>
+        <ellipse cx="200" cy="195" rx="16" ry="22" fill="#0F172A" />
+        <circle cx="194" cy="186" r="8" fill="#FFFFFF" />
+      </g>
+      <g>
+        <ellipse cx="312" cy="195" rx="16" ry="22" fill="#0F172A" />
+        <circle cx="306" cy="186" r="8" fill="#FFFFFF" />
+      </g>
+
+      <!-- Mouth -->
+      <path d="M 236 235 Q 246 248 256 237 Q 266 248 276 235" fill="none" stroke="#064E3B" stroke-width="4" stroke-linecap="round" />
+
+      <!-- Book -->
+      <g transform="translate(256, 365)">
+        <path d="M -85 -30 Q -40 -40 0 -25 L 0 25 Q -40 10 -85 20 Z" fill="#0284C7" />
+        <path d="M 85 -30 Q 40 -40 0 -25 L 0 25 Q 40 10 85 20 Z" fill="#0284C7" />
+        <path d="M -80 -33 Q -40 -42 0 -28 L 0 22 Q -40 9 -80 17 Z" fill="#FFFFFF" />
+        <path d="M 80 -33 Q 40 -42 0 -28 L 0 22 Q 40 9 80 17 Z" fill="#FFFFFF" />
+        <text x="-40" y="-2" font-family="sans-serif" font-weight="900" font-size="28" fill="#F43F5E" text-anchor="middle">あ</text>
+        <text x="40" y="-2" font-family="sans-serif" font-weight="900" font-size="28" fill="#10B981" text-anchor="middle">竜</text>
+      </g>
+      
+      <!-- Paws -->
+      <ellipse cx="175" cy="355" rx="20" ry="16" fill="url(#dragonCreamLogo)" stroke="#059669" stroke-width="2" />
+      <ellipse cx="337" cy="355" rx="20" ry="16" fill="url(#dragonCreamLogo)" stroke="#059669" stroke-width="2" />
+
+    </g>
+  </g>
+
+  <!-- Right Brand Typography -->
+  <g transform="translate(170, 0)">
+    <!-- JP in Emerald / Pink Accent -->
+    <text x="0" y="90" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="68" fill="#34D399" letter-spacing="-1">JP<tspan fill="#F43F5E">Study</tspan></text>
+
+    <!-- Dragon Sparkle Icon -->
+    <g transform="translate(325, 42) scale(1.1)">
+      <path d="M 0 -15 L 4 -4 L 15 0 L 4 4 L 0 15 L -4 4 L -15 0 L -4 -4 Z" fill="#FDE047" />
+    </g>
+    
+    <!-- Subtitle Cute Dragon Badge -->
+    <rect x="2" y="108" width="245" height="32" rx="10" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1.5" />
+    <text x="14" y="129" font-family="'Noto Sans JP', sans-serif" font-weight="800" font-size="13" fill="#047857" letter-spacing="0.5">🐲 Rồng Mập Học Tiếng Nhật Kawaii</text>
+  </g>
+</svg>

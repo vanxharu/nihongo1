@@ -1,0 +1,850 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { VocabularyItem, GrammarItem, KanjiItem, DailyExam, LeaderboardUser } from './types';
+import { MINNA_N5_VOCABULARY } from './data/minnaN5Vocab';
+import { MINNA_N4_VOCABULARY } from './data/minnaN4Vocab';
+import { TANGO_N4_VOCABULARY } from './data/tangoN4Vocab';
+import { ADVANCED_VOCABULARY } from './data/advancedVocab';
+
+export { MINNA_N5_VOCABULARY, MINNA_N4_VOCABULARY, TANGO_N4_VOCABULARY, ADVANCED_VOCABULARY };
+
+export const VOCABULARY_DATA: VocabularyItem[] = [
+  ...MINNA_N5_VOCABULARY,
+  ...MINNA_N4_VOCABULARY,
+  ...TANGO_N4_VOCABULARY,
+  ...ADVANCED_VOCABULARY
+];
+
+export const GRAMMAR_DATA: GrammarItem[] = [
+  // N5 - Minna no Nihongo
+  {
+    id: 'g_n5_mn1_1',
+    structure: '〜は〜です',
+    meaning: 'Thì / Là',
+    explanation: 'Dùng để biểu thị chủ đề của câu, khẳng định chủ ngữ là cái gì/như thế nào.',
+    exampleSentence: '私は学生です。',
+    exampleTranslation: 'Tôi là học sinh.',
+    level: 'N5',
+    wordsToReorder: ['学生', 'です', '私は'],
+    correctSentence: '私は学生です'
+  },
+  {
+    id: 'g_n5_mn1_2',
+    structure: '〜は〜じゃありません',
+    meaning: 'Không phải là / Không thì',
+    explanation: 'Dùng để phủ định một định nghĩa trong tiếng Nhật (dạng phủ định của 〜です).',
+    exampleSentence: '私は医者じゃありません。',
+    exampleTranslation: 'Tôi không phải là bác sĩ.',
+    level: 'N5',
+    wordsToReorder: ['医者じゃ', 'ありません', '私は'],
+    correctSentence: '私は医者じゃありません'
+  },
+  {
+    id: 'g_n5_mn2_1',
+    structure: 'これ/それ/あれ は 〜です',
+    meaning: 'Đây / Kia / Đó là...',
+    explanation: 'Dùng làm chỉ từ đại từ để chỉ đồ vật xung quanh người nói và người nghe.',
+    exampleSentence: 'これは日本語の本です。',
+    exampleTranslation: 'Đây là cuốn sách tiếng Nhật.',
+    level: 'N5',
+    wordsToReorder: ['日本語の', '本です', 'これは'],
+    correctSentence: 'これは日本語の本です'
+  },
+  {
+    id: 'g_n5_mn3_1',
+    structure: 'ここ/そこ/あそこ は 〜です',
+    meaning: 'Chỗ này / Chỗ đó / Chỗ kia là...',
+    explanation: 'Dùng để chỉ địa điểm, vị trí.',
+    exampleSentence: 'ここは教室です。',
+    exampleTranslation: 'Chỗ này là phòng học.',
+    level: 'N5',
+    wordsToReorder: ['ここは', '教室', 'です'],
+    correctSentence: 'ここは教室です'
+  },
+
+  // N4 - Minna no Nihongo
+  {
+    id: "g_n4_topic_1",
+    lessonNumber: 26,
+    lessonName: "Bài 26",
+    structure: "[Thể thông thường] + んです (A-na / N: な + んです) / 〜んですが、〜",
+    meaning: "Nhấn mạnh, giải thích nguyên nhân / lý do, bày tỏ sự quan tâm & Rào trước mở đầu khi nhờ vả",
+    explanation: "Dùng để nhấn mạnh lý do, giải thích sự việc thực tế, hỏi han thông tin hoặc mở đầu câu chuyện trước khi nhờ vả (～んですが).",
+    exampleSentence: "どうして会社を休んだんですか。頭が痛かったんです。",
+    exampleTranslation: "Tại sao anh lại nghỉ làm thế? Vì tôi bị đau đầu.",
+    level: 'N4',
+    wordsToReorder: ["どうして会社を休んだん","ですか頭が痛かったんです"],
+    correctSentence: "どうして会社を休んだんですか頭が痛かったんです"
+  },
+  {
+    id: "g_n4_topic_2",
+    lessonNumber: 32,
+    lessonName: "Bài 32",
+    structure: "～ほうがいいです",
+    meaning: "Nên / Không nên làm gì (Đưa ra lời khuyên)",
+    explanation: "Dùng khi đưa ra lời khuyên cụ thể, trực tiếp cho đối phương rằng nên làm (V-ta) hoặc không nên làm (V-nai) điều gì.",
+    exampleSentence: "熱があるなら、早く病院に行ったほうがいいですよ。",
+    exampleTranslation: "Nếu bị sốt thì bạn nên đi bệnh viện sớm đi nhé.",
+    level: 'N4',
+    wordsToReorder: ["熱があるなら、早く病院","に行ったほうがいいですよ"],
+    correctSentence: "熱があるなら、早く病院に行ったほうがいいですよ"
+  },
+  {
+    id: "g_n4_topic_3",
+    lessonNumber: 45,
+    lessonName: "Bài 45",
+    structure: "～のに",
+    meaning: "Mặc dù... thế mà... / Dù... nhưng...",
+    explanation: "Diễn tả sự tương phản đối lập mạnh mẽ giữa kết quả thực tế xảy ra so với kỳ vọng hoặc dự đoán thông thường, mang sắc thái tiếc nuối, ngạc nhiên hoặc bất mãn.",
+    exampleSentence: "一生懸命勉強したのに、不合格でした。",
+    exampleTranslation: "Mặc dù đã học tập chăm chỉ hết sức thế mà lại thi trượt.",
+    level: 'N4',
+    wordsToReorder: ["一生懸命勉強した","のに、不合格でした"],
+    correctSentence: "一生懸命勉強したのに、不合格でした"
+  },
+  {
+    id: "g_n4_topic_4",
+    lessonNumber: 28,
+    lessonName: "Bài 28",
+    structure: "～ながら",
+    meaning: "Vừa làm V1 vừa làm V2",
+    explanation: "Diễn tả hai hành động diễn ra đồng thời cùng lúc do cùng một người thực hiện. Trong đó V2 là hành động chính.",
+    exampleSentence: "音楽を聞きながら、宿題をしています。",
+    exampleTranslation: "Tôi vừa nghe nhạc vừa làm bài tập về nhà.",
+    level: 'N4',
+    wordsToReorder: ["音楽を聞きながら","、宿題をしています"],
+    correctSentence: "音楽を聞きながら、宿題をしています"
+  },
+  {
+    id: "g_n4_topic_5",
+    lessonNumber: 38,
+    lessonName: "Bài 38",
+    structure: "～のが、～のは、～のに",
+    meaning: "Việc làm V thì... / Để làm V thì cần thiết...",
+    explanation: "Dùng trợ từ 'の' để danh từ hóa một động từ hoặc một mệnh đề hành động, biến nó thành chủ ngữ hoặc tân ngữ trong câu.",
+    exampleSentence: "日本で車を運転するのは難しいです。",
+    exampleTranslation: "Việc lái xe ô tô ở Nhật Bản thì rất khó.",
+    level: 'N4',
+    wordsToReorder: ["日本で車を運転す","るのは難しいです"],
+    correctSentence: "日本で車を運転するのは難しいです"
+  },
+  {
+    id: "g_n4_topic_6",
+    lessonNumber: 27,
+    lessonName: "Bài 27",
+    structure: "Động từ thể khả năng (可能形)",
+    meaning: "Có thể làm gì... (Năng lực cá nhân hoặc điều kiện cho phép)",
+    explanation: "Biến đổi động từ để thể hiện năng lực bản thân hoặc điều kiện hoàn cảnh khách quan cho phép thực hiện hành động. Tân ngữ thường đi với trợ từ が thay cho を.",
+    exampleSentence: "私は漢字が500字読めます。",
+    exampleTranslation: "Tôi có thể đọc được 500 chữ Hán.",
+    level: 'N4',
+    wordsToReorder: ["私は漢字が5","00字読めます"],
+    correctSentence: "私は漢字が500字読めます"
+  },
+  {
+    id: "g_n4_topic_7",
+    lessonNumber: 27,
+    lessonName: "Bài 27",
+    structure: "～ことができる",
+    meaning: "Có thể / Không thể làm được hành động gì",
+    explanation: "Diễn tả năng lực cá nhân hoặc hoàn cảnh cho phép thực hiện hành động, sử dụng cấu trúc danh từ hóa động từ bằng こと.",
+    exampleSentence: "このホテルでは無料Wi-Fiを使うことができます。",
+    exampleTranslation: "Ở khách sạn này bạn có thể sử dụng Wi-Fi miễn phí.",
+    level: 'N4',
+    wordsToReorder: ["このホテルでは無料Wi-","Fiを使うことができます"],
+    correctSentence: "このホテルでは無料Wi-Fiを使うことができます"
+  },
+  {
+    id: "g_n4_topic_8",
+    lessonNumber: 28,
+    lessonName: "Bài 28",
+    structure: "～かた (～方)",
+    meaning: "Cách làm gì (cách đọc, cách viết, cách sử dụng, cách đi...)",
+    explanation: "Biến một động từ thành một danh từ mang ý nghĩa phương thức, cách thức thực hiện hành động đó.",
+    exampleSentence: "この漢字の読み方を教えてください。",
+    exampleTranslation: "Xin hãy chỉ cho tôi cách đọc của chữ Hán này.",
+    level: 'N4',
+    wordsToReorder: ["この漢字の読み方","を教えてください"],
+    correctSentence: "この漢字の読み方を教えてください"
+  },
+  {
+    id: "g_n4_topic_9",
+    lessonNumber: 34,
+    lessonName: "Bài 34",
+    structure: "～とおりに",
+    meaning: "Theo như... / Đúng theo...",
+    explanation: "Thực hiện một hành động y hệt, tuân thủ đúng theo chỉ dẫn, mô hình, kinh nghiệm hoặc bản vẽ đã cho.",
+    exampleSentence: "私が言うとおりに、書いてください。",
+    exampleTranslation: "Xin hãy viết theo đúng như những gì tôi nói.",
+    level: 'N4',
+    wordsToReorder: ["私が言うとおりに","、書いてください"],
+    correctSentence: "私が言うとおりに、書いてください"
+  },
+  {
+    id: "g_n4_topic_10",
+    lessonNumber: 31,
+    lessonName: "Bài 31",
+    structure: "Động từ thể ý chí (意向形)",
+    meaning: "Rủ rê, mời mọc (suồng sã) hoặc tự nhủ ý chí muốn làm gì",
+    explanation: "Thể ý chí (意向形) là dạng thân mật của '〜ましょう'. Dùng trong đàm thoại suồng sã giữa bạn bè để rủ rê cùng làm, hoặc độc thoại tự hạ quyết tâm.",
+    exampleSentence: "ちょっと休もう。",
+    exampleTranslation: "Nghỉ một chút nào! (Rủ rê bạn bè)",
+    level: 'N4',
+    wordsToReorder: ["ちょっ","と休もう"],
+    correctSentence: "ちょっと休もう"
+  },
+  {
+    id: "g_n4_topic_11",
+    lessonNumber: 31,
+    lessonName: "Bài 31",
+    structure: "～ようと思います / ようと思っています",
+    meaning: "Định / Đang có ý định làm gì",
+    explanation: "Diễn tả dự định làm một việc gì đó của người nói. Dùng 'と思います' cho ý định vừa nảy sinh tại thời điểm nói; dùng 'と思っています' cho ý định đã hình thành từ trước và vẫn đang tiếp diễn.",
+    exampleSentence: "日本へ留学しようと思っています。",
+    exampleTranslation: "Tôi đang có dự định sẽ đi du học Nhật Bản.",
+    level: 'N4',
+    wordsToReorder: ["日本へ留学しよ","うと思っています"],
+    correctSentence: "日本へ留学しようと思っています"
+  },
+  {
+    id: "g_n4_topic_12",
+    lessonNumber: 36,
+    lessonName: "Bài 36",
+    structure: "～ようになる / ～なくなる",
+    meaning: "Trở nên có thể... / Không còn có thể... (Biến đổi về khả năng, thói quen)",
+    explanation: "Diễn tả sự thay đổi trạng thái từ chưa biết làm sang đã làm được (ようになる), hoặc từ từng làm được sang không còn làm được nữa (なくなる).",
+    exampleSentence: "毎日練習して、日本語が上手に話せるようになりました。",
+    exampleTranslation: "Luyện tập mỗi ngày nên tôi đã trở nên có thể nói tiếng Nhật thành thạo.",
+    level: 'N4',
+    wordsToReorder: ["毎日練習して、日本語が上","手に話せるようになりました"],
+    correctSentence: "毎日練習して、日本語が上手に話せるようになりました"
+  },
+  {
+    id: "g_n4_topic_13",
+    lessonNumber: 36,
+    lessonName: "Bài 36",
+    structure: "～ようにする",
+    meaning: "Cố gắng làm / Cố gắng không làm... (Tạo thói quen hoặc nhắc nhở nhẹ nhàng)",
+    explanation: "Biểu thị nỗ lực có ý thức của bản thân nhằm hình thành một thói quen tốt; hoặc dùng '〜ようにしてください' để nhắc nhở, khuyên bảo đối phương một cách khéo léo, gián tiếp.",
+    exampleSentence: "健康のために、毎日野菜を食べるようにしています。",
+    exampleTranslation: "Vì sức khỏe, mỗi ngày tôi đều cố gắng ăn nhiều rau.",
+    level: 'N4',
+    wordsToReorder: ["健康のために、毎日野菜","を食べるようにしています"],
+    correctSentence: "健康のために、毎日野菜を食べるようにしています"
+  },
+  {
+    id: "g_n4_topic_14",
+    lessonNumber: 31,
+    lessonName: "Bài 31",
+    structure: "～つもりです",
+    meaning: "Dự định / Quyết tâm sẽ làm (không làm) điều gì",
+    explanation: "Thể hiện ý chí, quyết tâm chắc chắn của người nói về việc sẽ thực hiện hoặc dứt khoát không thực hiện một hành động nào đó trong tương lai.",
+    exampleSentence: "大学を卒業したら、日本で働くつもりです。",
+    exampleTranslation: "Sau khi tốt nghiệp đại học, tôi dự định sẽ làm việc tại Nhật Bản.",
+    level: 'N4',
+    wordsToReorder: ["大学を卒業したら、","日本で働くつもりです"],
+    correctSentence: "大学を卒業したら、日本で働くつもりです"
+  },
+  {
+    id: "g_n4_topic_15",
+    lessonNumber: 31,
+    lessonName: "Bài 31",
+    structure: "～予定です",
+    meaning: "Có kế hoạch / Lịch trình dự kiến làm gì",
+    explanation: "Diễn tả một kế hoạch, sự kiện hoặc lịch trình đã được sắp xếp, ấn định khách quan từ trước.",
+    exampleSentence: "来週から出張の予定です。",
+    exampleTranslation: "Theo lịch trình thì tuần sau tôi sẽ đi công tác.",
+    level: 'N4',
+    wordsToReorder: ["来週から出","張の予定です"],
+    correctSentence: "来週から出張の予定です"
+  },
+  {
+    id: "g_n4_topic_17",
+    lessonNumber: 29,
+    lessonName: "Bài 29",
+    structure: "Tự động từ và tha động từ (自動詞 & 他動詞)",
+    meaning: "Trạng thái tự phát (Tự động từ) vs Hành động có chủ đích của con người (Tha động từ)",
+    explanation: "Tự động từ mô tả hiện tượng tự nhiên, trạng thái tự diễn ra đi với trợ từ が; Tha động từ mô tả hành động có chủ ý của con người tác động lên vật đi với trợ từ を.",
+    exampleSentence: "ドアが開きました (Cửa mở) vs ドアを開けました (Tôi mở cửa).",
+    exampleTranslation: "Cửa tự mở (tự động từ) vs Ai đó mở cửa (tha động từ).",
+    level: 'N4',
+    wordsToReorder: ["ドアが開きました(Cửamở)vsド","アを開けました(Tôimởcửa)."],
+    correctSentence: "ドアが開きました(Cửamở)vsドアを開けました(Tôimởcửa)."
+  },
+  {
+    id: "g_n4_topic_18",
+    lessonNumber: 35,
+    lessonName: "Bài 35",
+    structure: "Câu điều kiện ～ば (条件形)",
+    meaning: "Nếu... thì... (Điều kiện giả định logic, mang tính tất yếu)",
+    explanation: "Diễn tả điều kiện cần thiết để một kết quả hoặc hành động xảy ra. Nhấn mạnh vào quy luật tự nhiên, chân lý hoặc phương pháp để đạt được mục đích.",
+    exampleSentence: "ボタンを押せば、窓が開きます。",
+    exampleTranslation: "Nếu nhấn nút thì cửa sổ sẽ mở ra.",
+    level: 'N4',
+    wordsToReorder: ["ボタンを押せば","、窓が開きます"],
+    correctSentence: "ボタンを押せば、窓が開きます"
+  },
+  {
+    id: "g_n4_topic_19",
+    lessonNumber: 35,
+    lessonName: "Bài 35",
+    structure: "Câu điều kiện ～たら",
+    meaning: "Nếu... thì... / Sau khi... thì...",
+    explanation: "Mẫu câu điều kiện phổ biến và linh hoạt nhất trong tiếng Nhật. Có 2 nghĩa chính: 1. Giả định điều kiện (nếu); 2. Tuần tự thời gian (sau khi hoàn thành vế 1 thì làm vế 2).",
+    exampleSentence: "雨が降ったら、試合は中止になります。",
+    exampleTranslation: "Nếu trời mưa thì trận đấu sẽ bị hủy bỏ.",
+    level: 'N4',
+    wordsToReorder: ["雨が降ったら、試","合は中止になります"],
+    correctSentence: "雨が降ったら、試合は中止になります"
+  },
+  {
+    id: "g_n4_topic_20",
+    lessonNumber: 35,
+    lessonName: "Bài 35",
+    structure: "Câu điều kiện ～と",
+    meaning: "Hễ mà... thì... / Cứ hễ... là...",
+    explanation: "Diễn tả một mối liên hệ tất yếu, máy móc hoặc tự nhiên: cứ hễ hành động vế 1 xảy ra thì hành động vế 2 sẽ tự động xảy ra theo một hệ quả đương nhiên.",
+    exampleSentence: "このボタンを押すと、おつりが出ます。",
+    exampleTranslation: "Hễ bấm cái nút này thì tiền thừa sẽ chạy ra.",
+    level: 'N4',
+    wordsToReorder: ["このボタンを押す","と、おつりが出ます"],
+    correctSentence: "このボタンを押すと、おつりが出ます"
+  },
+  {
+    id: "g_n4_topic_21",
+    lessonNumber: 35,
+    lessonName: "Bài 35",
+    structure: "Câu điều kiện ～なら",
+    meaning: "Nếu là... / Trong trường hợp là... (Tiếp nhận chủ đề để đưa ra lời khuyên, gợi ý)",
+    explanation: "Dùng khi người nói tiếp nhận một chủ đề, thông tin từ đối phương đưa ra, rồi dựa trên thông tin đó để đưa ra ý kiến, phán đoán, gợi ý hoặc lời khuyên.",
+    exampleSentence: "日本料理を食べるなら、あのお店が一番いいですよ。",
+    exampleTranslation: "Nếu là ăn món Nhật thì quán kia là số một đấy nhé.",
+    level: 'N4',
+    wordsToReorder: ["日本料理を食べるなら、","あのお店が一番いいですよ"],
+    correctSentence: "日本料理を食べるなら、あのお店が一番いいですよ"
+  },
+  {
+    id: "g_n4_topic_22",
+    lessonNumber: 45,
+    lessonName: "Bài 45",
+    structure: "～場合は",
+    meaning: "Trong trường hợp... / Nếu tình huống... xảy ra",
+    explanation: "Giả định về một tình huống, sự cố hoặc trường hợp cụ thể có thể xảy ra trong thực tế, thường dùng trong các hướng dẫn, nội quy, biển báo, điều khoản hợp đồng.",
+    exampleSentence: "火事や地震の場合は、エレベーターを使わないでください。",
+    exampleTranslation: "Trong trường hợp có hỏa hoạn hoặc động đất, xin đừng sử dụng thang máy.",
+    level: 'N4',
+    wordsToReorder: ["火事や地震の場合は、エレベ","ーターを使わないでください"],
+    correctSentence: "火事や地震の場合は、エレベーターを使わないでください"
+  },
+  {
+    id: "g_n4_topic_23",
+    lessonNumber: 34,
+    lessonName: "Bài 34",
+    structure: "～とき (Quy tắc kết hợp thời gian)",
+    meaning: "Khi / Lúc làm việc gì...",
+    explanation: "Quy tắc thời gian giữa việc dùng V thể từ điển hay V thể た trước danh từ 'とき'. Dùng V-dict khi hành động vế 1 chưa hoàn tất; dùng V-た khi hành động vế 1 đã xảy ra xong.",
+    exampleSentence: "日本へ行くとき、カメラを買いました vs 日本へ行ったとき、カメラを買いました。",
+    exampleTranslation: "Trước khi đi Nhật tôi đã mua máy ảnh (ở VN) vs Khi đã sang tới Nhật rồi tôi mới mua máy ảnh (tại Nhật).",
+    level: 'N4',
+    wordsToReorder: ["日本へ行くとき、カメラを買いましたv","s日本へ行ったとき、カメラを買いました"],
+    correctSentence: "日本へ行くとき、カメラを買いましたvs日本へ行ったとき、カメラを買いました"
+  },
+  {
+    id: "g_n4_topic_24",
+    lessonNumber: 43,
+    lessonName: "Bài 43",
+    structure: "～よう、～みたい",
+    meaning: "Giống như... / Cứ như là... / Có vẻ như... (So sánh ví von & Phỏng đoán)",
+    explanation: "Dùng để so sánh ví von hai sự vật có tính chất tương tự (cứ như là...), hoặc đưa ra phán đoán dựa trên cảm giác, trực giác hoặc thông tin quan sát được.",
+    exampleSentence: "彼女は太陽のように明るい人です。",
+    exampleTranslation: "Cô ấy là một người rạng rỡ tươi sáng giống như ánh mặt trời.",
+    level: 'N4',
+    wordsToReorder: ["彼女は太陽のよ","うに明るい人です"],
+    correctSentence: "彼女は太陽のように明るい人です"
+  },
+  {
+    id: "g_n4_topic_25",
+    lessonNumber: 47,
+    lessonName: "Bài 47",
+    structure: "～そうです (Truyền đạt 伝聞 & Trạng thái 様態)",
+    meaning: "1. Nghe nói là... (Truyền đạt) / 2. Trông có vẻ... / Sắp... (Trạng thái bề ngoài)",
+    explanation: "Chữ そうです có 2 chức năng ngữ pháp hoàn toàn khác nhau tùy thuộc vào cách chia: Chia thể thông thường là 'Nghe nói lại'; Bỏ đuôi ます / い / な là 'Nhìn vẻ bề ngoài phán đoán sắp xảy ra'.",
+    exampleSentence: "雨が降るそうです (Nghe nói trời sẽ mưa) vs 雨が降りそうです (Trông trời có vẻ sắp mưa).",
+    exampleTranslation: "Nghe dự báo nói trời sẽ mưa (truyền đạt) vs Nhìn trời mây đen ngòm sắp đổ mưa (trạng thái).",
+    level: 'N4',
+    wordsToReorder: ["雨が降るそうです(Nghenóitrờisẽmưa)vs雨","が降りそうです(Trôngtrờicóvẻsắpmưa)."],
+    correctSentence: "雨が降るそうです(Nghenóitrờisẽmưa)vs雨が降りそうです(Trôngtrờicóvẻsắpmưa)."
+  },
+  {
+    id: "g_n4_topic_26",
+    lessonNumber: 47,
+    lessonName: "Bài 47",
+    structure: "～らしいです",
+    meaning: "Nghe nói là... / Dường như là... / Đúng chất là...",
+    explanation: "Đưa ra suy đoán có căn cứ dựa trên những thông tin gián tiếp nghe ngóng được hoặc quan sát được từ môi trường xung quanh, tính khách quan cao.",
+    exampleSentence: "うわさによると、あの二人は結婚するらしいです。",
+    exampleTranslation: "Theo lời đồn thì dường như hai người đó sắp kết hôn.",
+    level: 'N4',
+    wordsToReorder: ["うわさによると、あの二","人は結婚するらしいです"],
+    correctSentence: "うわさによると、あの二人は結婚するらしいです"
+  },
+  {
+    id: "g_n4_topic_27",
+    lessonNumber: 47,
+    lessonName: "Bài 47",
+    structure: "Phân biệt ～よう、～みたい、～そう và ～らしい",
+    meaning: "Tổng hợp ma trận phân biệt 4 cấu trúc phán đoán hình thái N4",
+    explanation: "Tổng hợp bảng so sánh giác quan và hoàn cảnh sử dụng của 4 mẫu câu suy đoán kinh điển, kèm 8 bài tập trắc nghiệm thực tế chuẩn JLPT N4.",
+    exampleSentence: "おいしそう (nhìn thấy thèm) vs おいしいらしい (nghe đồn là ngon) vs おいしいようだ (cảm nhận chắc là ngon) vs おいしいみたい (khẩu ngữ thân mật).",
+    exampleTranslation: "Nhìn vẻ bề ngoài (そう) vs Nghe nhiều nguồn đồn thổi (らしい) vs Cảm nhận cá nhân (よう) vs Hội thoại hàng ngày (みたい).",
+    level: 'N4',
+    wordsToReorder: ["おいしそう(nhìnthấythèm)vsおいしいらしい(ngheđồnlàngon)vsおいし","いようだ(cảmnhậnchắclàngon)vsおいしいみたい(khẩungữthânmật)."],
+    correctSentence: "おいしそう(nhìnthấythèm)vsおいしいらしい(ngheđồnlàngon)vsおいしいようだ(cảmnhậnchắclàngon)vsおいしいみたい(khẩungữthânmật)."
+  },
+  {
+    id: "g_n4_topic_28",
+    lessonNumber: 42,
+    lessonName: "Bài 42",
+    structure: "～には",
+    meaning: "Đối với... / Để mà... thì cần thiết...",
+    explanation: "Dùng để biểu thị lập trường, góc nhìn đánh giá ('đối với ai đó thì...'); hoặc biểu thị mục đích cần thiết ('để làm được việc này thì cần...').",
+    exampleSentence: "この靴は山登りには便利です。",
+    exampleTranslation: "Đôi giày này thì rất tiện lợi cho việc leo núi.",
+    level: 'N4',
+    wordsToReorder: ["この靴は山登","りには便利です"],
+    correctSentence: "この靴は山登りには便利です"
+  },
+  {
+    id: "g_n4_topic_29",
+    lessonNumber: 44,
+    lessonName: "Bài 44",
+    structure: "～にする",
+    meaning: "1. Quyết định chọn... (món ăn, đồ vật) / 2. Quyết định làm việc gì...",
+    explanation: "Dùng khi người nói đưa ra lựa chọn, quyết định từ nhiều phương án khác nhau (chọn món trong nhà hàng) hoặc tự quyết định thực hiện một hành động (ことにする).",
+    exampleSentence: "私はコーヒーにします。",
+    exampleTranslation: "Tôi xin chọn cà phê (gọi món).",
+    level: 'N4',
+    wordsToReorder: ["私はコーヒ","ーにします"],
+    correctSentence: "私はコーヒーにします"
+  },
+  {
+    id: "g_n4_topic_30",
+    lessonNumber: 44,
+    lessonName: "Bài 44",
+    structure: "Tính từ + する (Làm cho...)",
+    meaning: "Làm cho... trở nên... / Làm biến đổi tính chất...",
+    explanation: "Biểu thị tác động có chủ ý của con người làm biến đổi trạng thái, kích thước, số lượng hoặc tính chất của một sự vật.",
+    exampleSentence: "部屋をきれいにしてください。",
+    exampleTranslation: "Xin hãy dọn dẹp phòng cho sạch sẽ.",
+    level: 'N4',
+    wordsToReorder: ["部屋をきれい","にしてください"],
+    correctSentence: "部屋をきれいにしてください"
+  },
+  {
+    id: "g_n4_topic_31",
+    lessonNumber: 46,
+    lessonName: "Bài 46",
+    structure: "「もう」 và 「まだ」",
+    meaning: "Đã làm rồi vs Vẫn chưa làm; Vẫn đang tiếp diễn vs Không còn nữa",
+    explanation: "Bộ đôi phó từ chỉ trạng thái tiến độ thời gian cốt lõi trong tiếng Nhật. Nắm chắc 4 cấu trúc kết hợp khẳng định - phủ định của もう và まだ.",
+    exampleSentence: "もう昼ご飯を食べましたか。いいえ、まだ食べていません。",
+    exampleTranslation: "Bạn đã ăn cơm trưa chưa? Chưa, tôi vẫn chưa ăn.",
+    level: 'N4',
+    wordsToReorder: ["もう昼ご飯を食べましたか","いいえ、まだ食べていません"],
+    correctSentence: "もう昼ご飯を食べましたかいいえ、まだ食べていません"
+  },
+  {
+    id: "g_n4_topic_32",
+    lessonNumber: 42,
+    lessonName: "Bài 42",
+    structure: "～ために、～ように (Chỉ mục đích)",
+    meaning: "Để... / Nhằm mục đích... / Để có thể...",
+    explanation: "Cả hai cấu trúc đều mang nghĩa 'để làm gì', nhưng ために dùng cho mục đích chủ động có ý chí của cùng một chủ thể; còn ように dùng cho mục đích là trạng thái, khả năng hoặc khác chủ thể.",
+    exampleSentence: "家を買うために、貯金しています (Mua nhà) vs よく見えるように、前の方に座ります (Để nhìn rõ).",
+    exampleTranslation: "Để mua nhà (hành động ý chí có thể kiểm soát) vs Để có thể nhìn rõ (trạng thái ngoài tầm kiểm soát).",
+    level: 'N4',
+    wordsToReorder: ["家を買うために、貯金しています(Muanhà)vsよ","く見えるように、前の方に座ります(Đểnhìnrõ)."],
+    correctSentence: "家を買うために、貯金しています(Muanhà)vsよく見えるように、前の方に座ります(Đểnhìnrõ)."
+  },
+  {
+    id: "g_n4_topic_33",
+    lessonNumber: 44,
+    lessonName: "Bài 44",
+    structure: "複合動詞: Động từ ghép",
+    meaning: "Quên làm, làm quá, bắt đầu làm, đột nhiên làm, tiếp tục làm, làm xong, làm lại, đổi cái khác...",
+    explanation: "Ghép động từ hành động bỏ ます với một động từ bổ trợ phía sau để tạo nên ý nghĩa phong phú về trạng thái và diễn trình của hành động.",
+    exampleSentence: "雨が急に降り出しました。",
+    exampleTranslation: "Trời đột nhiên đổ mưa bất chợt.",
+    level: 'N4',
+    wordsToReorder: ["雨が急に降","り出しました"],
+    correctSentence: "雨が急に降り出しました"
+  },
+  {
+    id: "g_n4_topic_34",
+    lessonNumber: 44,
+    lessonName: "Bài 44",
+    structure: "～すぎる",
+    meaning: "Quá... (Vượt quá mức độ thông thường, gây hại hoặc phiền phức)",
+    explanation: "Biểu thị một hành động hoặc trạng thái diễn ra vượt quá giới hạn cho phép hoặc mức độ bình thường, thường mang ý nghĩa tiêu cực, không tốt.",
+    exampleSentence: "昨日お酒を飲みすぎました。",
+    exampleTranslation: "Hôm qua tôi đã uống quá nhiều rượu.",
+    level: 'N4',
+    wordsToReorder: ["昨日お酒を飲","みすぎました"],
+    correctSentence: "昨日お酒を飲みすぎました"
+  },
+  {
+    id: "g_n4_topic_35",
+    lessonNumber: 44,
+    lessonName: "Bài 44",
+    structure: "～やすい、～にくい",
+    meaning: "Dễ làm gì... / Khó làm gì... (Biến thành tính từ đuôi -i)",
+    explanation: "Ghép vào sau động từ bỏ ます để miêu tả đặc tính của một đồ vật hoặc hoàn cảnh khiến hành động diễn ra dễ dàng hoặc khó khăn. Từ phái sinh đóng vai trò như một tính từ đuôi い.",
+    exampleSentence: "このペンはとても書きやすいです。",
+    exampleTranslation: "Chiếc bút này viết rất êm (rất dễ viết).",
+    level: 'N4',
+    wordsToReorder: ["このペンはとて","も書きやすいです"],
+    correctSentence: "このペンはとても書きやすいです"
+  },
+  {
+    id: "g_n4_topic_36",
+    lessonNumber: 37,
+    lessonName: "Bài 37",
+    structure: "受身形: Thể bị động",
+    meaning: "Bị / Được ai đó làm gì (Bị động trực tiếp, gián tiếp, phiền toái, sở hữu)",
+    explanation: "Đổi vai trò của tân ngữ lên làm chủ ngữ để miêu tả sự việc từ góc nhìn của người chịu tác động. Có thể mang nghĩa tích cực (được khen) hoặc tiêu cực (bị mắng, bị giẫm chân).",
+    exampleSentence: "私は先生に褒められました。",
+    exampleTranslation: "Tôi đã được thầy giáo khen ngợi.",
+    level: 'N4',
+    wordsToReorder: ["私は先生に褒","められました"],
+    correctSentence: "私は先生に褒められました"
+  },
+  {
+    id: "g_n4_topic_37",
+    lessonNumber: 48,
+    lessonName: "Bài 48",
+    structure: "使役形: Thể sai khiến",
+    meaning: "Bắt làm / Cho phép làm... / Làm cho (ai đó phát sinh cảm xúc)",
+    explanation: "Biểu thị việc người có quyền hạn ra lệnh, bắt buộc hoặc cho phép cấp dưới, con cái làm một hành động nào đó; hoặc làm phát sinh cảm xúc (lo lắng, cười, khóc) ở người khác.",
+    exampleSentence: "母は弟に部屋を掃除させました。",
+    exampleTranslation: "Mẹ bắt em trai dọn dẹp phòng.",
+    level: 'N4',
+    wordsToReorder: ["母は弟に部屋を","掃除させました"],
+    correctSentence: "母は弟に部屋を掃除させました"
+  },
+  {
+    id: "g_n4_topic_38",
+    lessonNumber: 33,
+    lessonName: "Bài 33",
+    structure: "Thể mệnh lệnh & Cấm chỉ (命令形 & 禁止形)",
+    meaning: "Làm đi! (Mệnh lệnh) / Cấm làm! (Cấm chỉ)",
+    explanation: "Thể hiện quyền lực ra lệnh dứt khoát hoặc cấm đoán tuyệt đối, thường dùng trong biển báo giao thông, cổ vũ thể thao, tình huống cứu hộ khẩn cấp hoặc sếp mắng mỏ.",
+    exampleSentence: "止まれ！ (Dừng lại!) / 入るな！ (Cấm vào!)",
+    exampleTranslation: "Dừng lại! (biển báo dừng) / Cấm vào! (biển báo cấm)",
+    level: 'N4',
+    wordsToReorder: ["止まれ(Dừnglại!)","/入るな(Cấmvào!)"],
+    correctSentence: "止まれ(Dừnglại!)/入るな(Cấmvào!)"
+  },
+  {
+    id: "g_n4_topic_40",
+    lessonNumber: 29,
+    lessonName: "Bài 29",
+    structure: "～てしまう",
+    meaning: "1. Đã hoàn thành xong trọn vẹn / 2. Lỡ... (Tiếc nuối, ân hận về việc ngoài ý muốn)",
+    explanation: "Có 2 nghĩa chính: 1. Hoàn thành dứt điểm toàn bộ hành động (thường đi với もう); 2. Diễn tả tâm trạng lỡ, tiếc nuối, ân hận khi lỡ làm mất đồ, làm hỏng hoặc sự việc không may xảy ra.",
+    exampleSentence: "財布を電車の中に忘れてしまいました。",
+    exampleTranslation: "Tôi đã lỡ để quên ví trên tàu điện mất rồi.",
+    level: 'N4',
+    wordsToReorder: ["財布を電車の中に","忘れてしまいました"],
+    correctSentence: "財布を電車の中に忘れてしまいました"
+  },
+  {
+    id: "g_n4_topic_41",
+    lessonNumber: 30,
+    lessonName: "Bài 30",
+    structure: "～てある",
+    meaning: "Được làm sẵn (Trạng thái có chủ đích chuẩn bị của con người)",
+    explanation: "Diễn tả một trạng thái hiện hữu là kết quả của một hành động do ai đó đã thực hiện có mục đích, có chủ ý từ trước.",
+    exampleSentence: "カレンダーに今月の予定が書いてあります。",
+    exampleTranslation: "Trên tờ lịch có ghi sẵn kế hoạch của tháng này.",
+    level: 'N4',
+    wordsToReorder: ["カレンダーに今月の","予定が書いてあります"],
+    correctSentence: "カレンダーに今月の予定が書いてあります"
+  },
+  {
+    id: "g_n4_topic_42",
+    lessonNumber: 30,
+    lessonName: "Bài 30",
+    structure: "～ておく",
+    meaning: "1. Làm sẵn trước để chuẩn bị / 2. Làm để giữ nguyên trạng thái",
+    explanation: "Diễn tả hành động làm trước một việc gì đó để chuẩn bị cho một thời điểm hoặc mục đích tiếp theo; hoặc giữ nguyên một hiện trạng không thay đổi.",
+    exampleSentence: "旅行の前に、ホテルの予約をしておきます。",
+    exampleTranslation: "Trước chuyến đi du lịch, tôi sẽ đặt phòng khách sạn sẵn.",
+    level: 'N4',
+    wordsToReorder: ["旅行の前に、ホテル","の予約をしておきます"],
+    correctSentence: "旅行の前に、ホテルの予約をしておきます"
+  },
+  {
+    id: "g_n4_topic_43",
+    lessonNumber: 32,
+    lessonName: "Bài 32",
+    structure: "～かもしれません、～はずです",
+    meaning: "1. Có thể / Có lẽ... vs 2. Chắc chắn / Chắc hẳn là... (Logic có căn cứ)",
+    explanation: "Hai cấp độ phán đoán logic then chốt của N4: 'かもしれません' biểu thị khả năng phỏng đoán mơ hồ khoảng 50-50; 'はずです' biểu thị sự chắc chắn dựa trên lý lẽ, bằng chứng hoặc lịch trình định sẵn.",
+    exampleSentence: "午後は雨が降るかもしれません vs 田中さんは今日来るはずです。",
+    exampleTranslation: "Chiều nay có lẽ trời sẽ mưa (~50%) vs Anh Tanaka chắc chắn sẽ đến vì hôm qua anh ấy đã hứa (logic).",
+    level: 'N4',
+    wordsToReorder: ["午後は雨が降るかもしれません","vs田中さんは今日来るはずです"],
+    correctSentence: "午後は雨が降るかもしれませんvs田中さんは今日来るはずです"
+  },
+  {
+    id: "g_n4_topic_44",
+    lessonNumber: 40,
+    lessonName: "Bài 40",
+    structure: "～てみる",
+    meaning: "Thử làm việc gì xem sao",
+    explanation: "Thực hiện một hành động nào đó với tâm thế thử nghiệm, trải nghiệm để xem kết quả, hương vị hoặc cảm giác ra sao.",
+    exampleSentence: "日本の着物を着てみたいです。",
+    exampleTranslation: "Tôi muốn mặc thử trang phục Kimono của Nhật Bản xem sao.",
+    level: 'N4',
+    wordsToReorder: ["日本の着物を","着てみたいです"],
+    correctSentence: "日本の着物を着てみたいです"
+  },
+  {
+    id: "g_n4_topic_45",
+    lessonNumber: 26,
+    lessonName: "Bài 26",
+    structure: "～たらいいですか / たらどうですか",
+    meaning: "1. Nên làm thế nào thì tốt? vs 2. Sao bạn không thử làm... xem sao?",
+    explanation: "Hai mẫu câu đưa ra và tiếp nhận lời khuyên đắt giá trong giao tiếp: 'たらいいですか' dùng khi người nói bế tắc cần sự chỉ dẫn; 'たらどうですか' dùng khi gợi ý cho người khác một giải pháp khả thi.",
+    exampleSentence: "どこでカメラを買ったらいいですか vs 先生に相談したらどうですか。",
+    exampleTranslation: "Tôi nên mua máy ảnh ở đâu thì tốt? vs Sao bạn không thử thảo luận với thầy giáo xem sao?",
+    level: 'N4',
+    wordsToReorder: ["どこでカメラを買ったらいいです","かvs先生に相談したらどうですか"],
+    correctSentence: "どこでカメラを買ったらいいですかvs先生に相談したらどうですか"
+  },
+  {
+    id: "g_n4_topic_46",
+    lessonNumber: 26,
+    lessonName: "Bài 26",
+    structure: "～ていただけませんか",
+    meaning: "Làm ơn giúp tôi... có được không ạ? (Nhờ vả lịch sự tối đa)",
+    explanation: "Mẫu câu nhờ vả, yêu cầu người khác làm việc gì giúp mình với thái độ cung kính, lịch thiệp và tôn trọng bậc nhất ở cấp độ N4.",
+    exampleSentence: "もう一度説明していただけませんか。",
+    exampleTranslation: "Thầy/anh có thể làm ơn giải thích lại một lần nữa giúp tôi được không ạ?",
+    level: 'N4',
+    wordsToReorder: ["もう一度説明して","いただけませんか"],
+    correctSentence: "もう一度説明していただけませんか"
+  },
+  {
+    id: "g_n4_topic_47",
+    lessonNumber: 40,
+    lessonName: "Bài 40",
+    structure: "～か / ～かどうか",
+    meaning: "1. ...hay không (Câu hỏi lồng có từ để hỏi) / 2. Có... hay là không (Câu hỏi lồng Yes/No)",
+    explanation: "Lồng một câu nghi vấn vào bên trong một câu lớn đóng vai trò làm thành phần phụ (như tân ngữ hoặc bổ ngữ cho động từ chính 調べる, 聞く, 忘れる).",
+    exampleSentence: "彼が何時に来るか知っていますか vs 明日雨が降るかどうか分かりません。",
+    exampleTranslation: "Bạn có biết mấy giờ anh ấy đến không? (từ để hỏi) vs Tôi không biết ngày mai trời có mưa hay không (Yes/No).",
+    level: 'N4',
+    wordsToReorder: ["彼が何時に来るか知っていますかv","s明日雨が降るかどうか分かりません"],
+    correctSentence: "彼が何時に来るか知っていますかvs明日雨が降るかどうか分かりません"
+  },
+  {
+    id: "g_n4_topic_48",
+    lessonNumber: 28,
+    lessonName: "Bài 28",
+    structure: "～し～ (Liệt kê lý do/tính chất)",
+    meaning: "Vừa... lại vừa... / Đã... lại còn... (Liệt kê nhiều lý do dẫn đến kết luận)",
+    explanation: "Dùng để liệt kê từ hai lý do, nguyên nhân hoặc tính chất trở lên để dẫn đến một phán đoán, kết luận hoặc lựa chọn ở vế cuối cùng.",
+    exampleSentence: "この店は値段も安いし、料理もおいしいし、いつも混んでいます。",
+    exampleTranslation: "Quán này giá cả vừa rẻ, món ăn lại vừa ngon, nên lúc nào cũng đông khách.",
+    level: 'N4',
+    wordsToReorder: ["この店は値段も安いし、料理も","おいしいし、いつも混んでいます"],
+    correctSentence: "この店は値段も安いし、料理もおいしいし、いつも混んでいます"
+  },
+  {
+    id: "g_n4_topic_49",
+    lessonNumber: 49,
+    lessonName: "Bài 49",
+    structure: "敬語: Kính ngữ (Tôn kính ngữ, Khiêm nhường ngữ & Lịch sự ngữ)",
+    meaning: "Hệ thống Kính ngữ tiếng Nhật: Tôn kính người đối thoại và hạ mình thể hiện sự khiêm cung",
+    explanation: "Đỉnh cao giao tiếp chuẩn mực trong Minna bài 49 & 50. Nắm vững bảng động từ đặc biệt, công thức chung お/ご, và quy tắc Trong/Ngoài (ウチとソト) trong văn hóa công sở Nhật.",
+    exampleSentence: "社長はいらっしゃいますか (Tôn kính ngữ) vs 私が参ります (Khiêm nhường ngữ).",
+    exampleTranslation: "Giám đốc có ở đó không ạ? (Nâng sếp lên) vs Tôi xin phép đến ngay ạ (Hạ mình khiêm tốn).",
+    level: 'N4',
+    wordsToReorder: ["社長はいらっしゃいますか(Tônkínhngữ)","vs私が参ります(Khiêmnhườngngữ)."],
+    correctSentence: "社長はいらっしゃいますか(Tônkínhngữ)vs私が参ります(Khiêmnhườngngữ)."
+  }
+];
+
+export const KANJI_DATA: KanjiItem[] = [
+  {
+    id: 'k_n5_1',
+    mnemonic: 'Hình dáng giống như mặt trời tỏa sáng, ở giữa có một gạch ngang chia đôi ngày và đêm.',
+    character: '日',
+    meaning: 'Ngày / Mặt trời',
+    onyomi: 'ニチ, ジツ',
+    kunyomi: 'ひ, -び, -か',
+    strokesCount: 4,
+    level: 'N5',
+    exampleWords: [
+      { word: '日本', hiragana: 'にほん', meaning: 'Nhật Bản' },
+      { word: '毎日', hiragana: 'まいにち', meaning: 'Mỗi ngày' },
+      { word: '日曜日', hiragana: 'にちようび', meaning: 'Chủ nhật' }
+    ],
+    exampleSentence: '日本へ旅行に行きたいです。',
+    exampleTranslation: 'Tôi muốn đi du lịch Nhật Bản.'
+  },
+  {
+    id: 'k_n5_2',
+    mnemonic: 'Hình vầng trăng khuyết nghiêng nghiêng, bên trong có hai gạch giống hai đám mây che bóng nguyệt.',
+    character: '月',
+    meaning: 'Tháng / Mặt trăng',
+    onyomi: 'ゲツ, ガツ',
+    kunyomi: 'つき',
+    strokesCount: 4,
+    level: 'N5',
+    exampleWords: [
+      { word: '今月', hiragana: 'こんげつ', meaning: 'Tháng này' },
+      { word: '一月', hiragana: 'いちがつ', meaning: 'Tháng một' },
+      { word: '月曜日', hiragana: 'げつようび', meaning: 'Thứ hai' }
+    ],
+    exampleSentence: '今月は日本語のテストがあります。',
+    exampleTranslation: 'Tháng này có bài kiểm tra tiếng Nhật.'
+  },
+  {
+    id: 'k_n5_3',
+    mnemonic: 'Chữ Mộc (木) vẽ lại hình một cái cây thẳng đứng với cành xòe ra hai bên và rễ cắm sâu dưới đất.',
+    character: '木',
+    meaning: 'Cây',
+    onyomi: 'ボク, モク',
+    kunyomi: 'き',
+    strokesCount: 4,
+    level: 'N5',
+    exampleWords: [
+      { word: '木曜日', hiragana: 'もくようび', meaning: 'Thứ năm' },
+      { word: '大木', hiragana: 'たいぼく', meaning: 'Cây cổ thụ' },
+      { word: '木立', hiragana: 'こだち', meaning: 'Rặng cây' }
+    ],
+    exampleSentence: '庭に大きな木があります。',
+    exampleTranslation: 'Có một cái cây lớn ở trong sân vườn.'
+  },
+  {
+    id: 'k_n4_1',
+    mnemonic: 'Bộ Nhật (mặt trời) nằm trên bộ Thủ (tai) và bộ Hựu (lại): Mỗi ngày, đôi tai lại được lắng nghe điều tuyệt vời nhất.',
+    character: '最',
+    meaning: 'Nhất',
+    onyomi: 'サイ',
+    kunyomi: 'もっと.も',
+    strokesCount: 12,
+    level: 'N4',
+    exampleWords: [
+      { word: '最近', hiragana: 'さいきん', meaning: 'Gần đây' },
+      { word: '最初', hiragana: 'さいしょ', meaning: 'Đầu tiên' },
+      { word: '最高', hiragana: 'さいこう', meaning: 'Tuyệt vời nhất' }
+    ],
+    exampleSentence: '最近はとても暑いですね。',
+    exampleTranslation: 'Gần đây trời nóng quá nhỉ.'
+  },
+  {
+    id: 'k_n4_2',
+    mnemonic: 'Bước chân đi bộ (quai sước 辶) mang theo cây rìu (bộ Cân 斤) đốn củi ngay gần nhà.',
+    character: '近',
+    meaning: 'Gần',
+    onyomi: 'キン',
+    kunyomi: 'ちか.い',
+    strokesCount: 7,
+    level: 'N4',
+    exampleWords: [
+      { word: '近所', hiragana: 'きんじょ', meaning: 'Hàng xóm, vùng lân cận' },
+      { word: '近い', hiragana: 'ちかい', meaning: 'Gần' },
+      { word: '近道', hiragana: 'ちかみち', meaning: 'Đường tắt' }
+    ],
+    exampleSentence: '私の家は駅からとても近いです。',
+    exampleTranslation: 'Nhà của tôi ở rất gần nhà ga.'
+  },
+  {
+    id: 'k_n4_3',
+    mnemonic: 'Một người (亻) có ý (意) chí lớn tạo dựng khối tài sản hàng trăm triệu (億).',
+    character: '億',
+    meaning: 'Ức (100 triệu)',
+    onyomi: 'オク',
+    kunyomi: '—',
+    strokesCount: 15,
+    level: 'N4',
+    exampleWords: [
+      { word: '一億', hiragana: 'いちおく', meaning: '100 triệu (một ức)' },
+      { word: '億万長者', hiragana: 'おくまんちょうじゃ', meaning: 'Tỷ phú, triệu phú' },
+      { word: '何億円', hiragana: 'なんおくえん', meaning: 'Hàng trăm triệu Yên' }
+    ],
+    exampleSentence: '日本の人口は約一億二千万人です。',
+    exampleTranslation: 'Dân số Nhật Bản khoảng 120 triệu người.'
+  },
+  {
+    id: 'k_n3_1',
+    mnemonic: 'Nước (bộ Thủy 氵) hòa trộn cùng bầy côn trùng (bộ Côn 昆) dưới mặt trời tạo nên cảnh hỗn loạn.',
+    character: '混',
+    meaning: 'Hỗn loạn / Trộn',
+    onyomi: 'コン',
+    kunyomi: 'ま.ぜる, ま.ざる',
+    strokesCount: 11,
+    level: 'N3',
+    exampleWords: [
+      { word: '混雑', hiragana: 'こんざつ', meaning: 'Đông đúc, tắc nghẽn' },
+      { word: '混乱', hiragana: 'こんらん', meaning: 'Hỗn loạn' },
+      { word: '混ぜる', hiragana: 'まぜる', meaning: 'Trộn lẫn' }
+    ],
+    exampleSentence: 'この時間は道路がとても混雑します。',
+    exampleTranslation: 'Thời gian này đường xá cực kỳ đông đúc (tắc nghẽn).'
+  }
+];
+
+export const DAILY_EXAMS: DailyExam[] = [
+  {
+    id: 'exam_n5_01',
+    title: 'Đề thi thử N5 - Luyện tập cơ bản',
+    level: 'N5',
+    durationMinutes: 10,
+    questions: [
+      {
+        id: 'eq_n5_1',
+        question: '私の【教室】は３階にあります。',
+        hint: 'Phòng học của tôi nằm ở tầng 3.',
+        options: ['きょうしつ', 'しょくどう', 'じむしょ', 'へや'],
+        correctIndex: 0,
+        section: 'moji-goi',
+        explanation: '教室 phát âm là きょうしつ (kyoushitsu) nghĩa là phòng học.'
+      },
+      {
+        id: 'eq_n5_2',
+        question: 'あそこに大きな犬____いますね。',
+        hint: 'Có một con chó lớn ở đằng kia nhỉ.',
+        options: ['を', 'が', 'に', 'で'],
+        correctIndex: 1,
+        section: 'bunpou',
+        explanation: 'Trợ từ が đi với động từ chỉ sự tồn tại います (có động vật).'
+      },
+      {
+        id: 'eq_n5_3',
+        question: '木村さんは英語____上手です。',
+        hint: 'Anh Kimura rất giỏi tiếng Anh.',
+        options: ['を', 'が', 'は', 'で'],
+        correctIndex: 1,
+        section: 'bunpou',
+        explanation: 'Tính từ chỉ khả năng 上手 (giỏi) đi kèm với trợ từ が.'
+      }
+    ]
+  }
+];
+
+export const MOCK_LEADERBOARD: LeaderboardUser[] = [
+  { id: 'u_1', name: 'Minh Tuấn N2', avatar: '🦊', level: 'N2', xp: 5820, streak: 45 },
+  { id: 'u_2', name: 'Sakura Chan', avatar: '🌸', level: 'N3', xp: 4210, streak: 21 },
+  { id: 'u_3', name: 'Anh Thư JLPT', avatar: '🐱', level: 'N4', xp: 3950, streak: 12 },
+  { id: 'u_4', name: 'Ryu Tanaka', avatar: '🐼', level: 'N1', xp: 3880, streak: 55 },
+  { id: 'u_5', name: 'Thanh Bình N5', avatar: '🐸', level: 'N5', xp: 2150, streak: 8 },
+  { id: 'u_6', name: 'Kaito Kun', avatar: '🐨', level: 'N3', xp: 1980, streak: 3 },
+  { id: 'u_7', name: 'Hồng Ngọc', avatar: '🦄', level: 'N4', xp: 1450, streak: 5 }
+];

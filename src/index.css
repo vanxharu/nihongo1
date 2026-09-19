@@ -1,0 +1,513 @@
+@import url('https://fonts.googleapis.com/css2?family=BIZ+UDMincho:wght@400;700&family=Noto+Serif+JP:wght@400;500;600;700;900&family=Shippori+Mincho:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700;800&family=Outfit:wght@400;500;600;700;900&family=Caveat:wght@600;700&family=Mali:wght@500;600;700&family=Patrick+Hand&family=Yomogi&display=swap');
+@import "tailwindcss";
+
+@layer base {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
+  }
+
+  p, h1, h2, h3, h4, h5, h6, span, div {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  ruby {
+    display: inline;
+    ruby-position: over;
+    white-space: nowrap;
+  }
+
+  rt {
+    font-size: 0.58em;
+    line-height: 1.1;
+    text-align: center;
+    user-select: none;
+    font-weight: 500;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", "Plus Jakarta Sans", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* ==================== NIHON SHIBA DESIGN TOKENS (SOURCE OF TRUTH) ==================== */
+:root {
+  /* 1. Core Brand Colors (From Mascot Analysis) */
+  /* Primary: Shiba Golden Amber Fur */
+  --shiba-primary: #F4A643;
+  --shiba-primary-rgb: 244, 166, 67;
+  --shiba-primary-hsl: 34, 88%, 61%;
+  --shiba-primary-light: #FCD39B;
+  --shiba-primary-dark: #C8741B;
+
+  /* Secondary: Happi Kimono Deep Navy */
+  --shiba-secondary: #1F2639;
+  --shiba-secondary-rgb: 31, 38, 57;
+  --shiba-secondary-hsl: 224, 30%, 17%;
+  --shiba-secondary-light: #2E3A56;
+  --shiba-secondary-dark: #121724;
+
+  /* Accent: Torii Gate Crimson Red & Obi Belt */
+  --shiba-accent: #D82B3A;
+  --shiba-accent-rgb: 216, 43, 58;
+  --shiba-accent-hsl: 355, 68%, 51%;
+  --shiba-accent-soft: #EF5B68;
+  --shiba-accent-pink: #FFA7B8;
+
+  /* Neutral Shiba Cream / Fur Muzzle & Canvas */
+  --shiba-cream: #FDF1E2;
+  --shiba-cream-rgb: 253, 241, 226;
+  --shiba-cream-hsl: 33, 82%, 94%;
+  --shiba-white: #FFFFFF;
+
+  /* 2. Neutral Scale (Warmed with 3-5% Shiba Amber/Navy Undertone) */
+  --gray-50: #FAF8F5;
+  --gray-100: #F4EFEA;
+  --gray-200: #E6DFD5;
+  --gray-300: #D0C5B4;
+  --gray-400: #A49782;
+  --gray-500: #7A6E5A;
+  --gray-600: #564D3F;
+  --gray-700: #39332A;
+  --gray-800: #231F1A;
+  --gray-900: #15120F;
+
+  /* 3. System Status */
+  --status-success: #48A269;
+  --status-success-rgb: 72, 162, 105;
+  --status-success-hsl: 142, 38%, 46%;
+  --status-warning: #F4A643;
+  --status-warning-rgb: 244, 166, 67;
+  --status-warning-hsl: 34, 88%, 61%;
+  --status-error: #D82B3A;
+  --status-error-rgb: 216, 43, 58;
+  --status-error-hsl: 355, 68%, 51%;
+  --status-info: #7AA5D6;
+  --status-info-rgb: 122, 165, 214;
+  --status-info-hsl: 212, 54%, 66%;
+
+  /* 4. Learning Category Colors */
+  --learn-vocab: #5B8AC5;
+  --learn-grammar: #6C5CE7;
+  --learn-kanji: #D82B3A;
+  --learn-listening: #EF5B68;
+  --learn-reading: #48A269;
+  --learn-speaking: #F4A643;
+  --learn-writing: #3A4765;
+
+  /* 5. JLPT Colors (Communicates progression from beginner sprout to gold mastery) */
+  --jlpt-n5: #5E9E6D; /* N5: Beginner Fresh Sprout Matcha */
+  --jlpt-n4: #7AA5D6; /* N4: Elementary Fuji Sky Blue */
+  --jlpt-n3: #4A69BD; /* N3: Intermediate Royal Navy */
+  --jlpt-n2: #D82B3A; /* N2: Advanced Torii Crimson */
+  --jlpt-n1: #E5A93C; /* N1: Mastery Imperial Shogun Gold */
+
+  /* 6. Gamification Colors */
+  --game-xp: #FF6B4A;
+  --game-coin: #F4A643;
+  --game-gem: #EF5B68;
+  --game-achievement: #F5B041;
+  --game-levelup: #F4A643;
+  --game-streak: #FF4757;
+  --game-mission: #5E9E6D;
+  --game-reward: #FFA7B8;
+  --game-leaderboard: #6C5CE7;
+
+  /* Legacy mapping aliases */
+  --shiba-success: var(--status-success);
+  --shiba-warning: var(--status-warning);
+  --shiba-error: var(--status-error);
+  --shiba-info: var(--status-info);
+  --skill-vocab: var(--learn-vocab);
+  --skill-grammar: var(--learn-grammar);
+  --skill-kanji: var(--learn-kanji);
+  --skill-listening: var(--learn-listening);
+  --skill-reading: var(--learn-reading);
+  --skill-speaking: var(--learn-speaking);
+  --skill-writing: var(--learn-writing);
+}
+
+/* Authentic Japanese JLPT Exam Booklet & Vietnamese Handwriting Styles */
+.font-jlpt-exam {
+  font-family: "BIZ UDMincho", "Shippori Mincho", "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", "MS Mincho", serif !important;
+  font-feature-settings: "palt" 1, "pkna" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.015em;
+}
+
+.font-red-pen {
+  font-family: "Patrick Hand", "Mali", "Itim", "Pangolin", "Klee One", "Yomogi", cursive, sans-serif !important;
+  font-feature-settings: "liga" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-japanese-handwriting {
+  font-family: "Klee One", "Yomogi", "Mali", "Patrick Hand", cursive, serif !important;
+}
+
+/* Authentic Real Paper Exam Canvas (High-contrast Print Paper & Theme-Aware) */
+.jlpt-real-paper {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.jlpt-real-paper.theme-light {
+  background-color: #ffffff !important;
+  color: #090d16 !important;
+}
+
+.jlpt-real-paper.theme-dark {
+  background-color: #1a222e !important;
+  color: #f8fafc !important;
+}
+
+.jlpt-real-paper.theme-light input, 
+.jlpt-real-paper.theme-light select, 
+.jlpt-real-paper.theme-light textarea {
+  color: #090d16 !important;
+}
+
+.jlpt-real-paper.theme-dark input, 
+.jlpt-real-paper.theme-dark select, 
+.jlpt-real-paper.theme-dark textarea {
+  color: #f8fafc !important;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+*, ::before, ::after {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+p, span, h1, h2, h3, h4, h5, h6, rt, ruby {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+body {
+  background-color: #0b1120; /* Deep navy background matching native screenshots */
+  color: #e2e8f0;
+  font-family: var(--font-sans);
+}
+
+/* Custom dark grid background pattern */
+.grid-bg {
+  background-color: #1a1d24 !important;
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+/* Custom scrollbars - Dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #1a1d24;
+}
+::-webkit-scrollbar-thumb {
+  background: #3a4454;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+/* Japanese Ruby Typography */
+ruby {
+  ruby-align: center;
+  ruby-position: over;
+}
+rt {
+  font-size: 0.52em;
+  line-height: 1;
+  text-align: center;
+  user-select: none;
+  font-feature-settings: "palt" 1;
+  letter-spacing: normal;
+}
+
+/* Animations */
+@keyframes ripple {
+  0% { transform: scale(0.95); opacity: 0.6; }
+  100% { transform: scale(1.05); opacity: 0; }
+}
+.ripple-effect {
+  animation: ripple 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-slide-up {
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ==========================================
+   DARK THEME OVERRIDES
+   Mapping light classes to dark colors to match the screenshot
+   ========================================== */
+
+/* Bottom Navigation Bar for Mobile & Tablet */
+#mobile-bottom-navigation {
+  display: block !important;
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 100 !important;
+  background-color: rgba(10, 15, 29, 0.98) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-top: 2px solid rgba(99, 102, 241, 0.35) !important;
+  box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.7) !important;
+}
+
+@media (min-width: 1280px) {
+  #mobile-bottom-navigation {
+    display: none !important;
+  }
+}
+
+#app-main-view {
+  background-color: transparent !important;
+  padding: 0.5rem 0.5rem calc(5.5rem + env(safe-area-inset-bottom, 0px)) 0.5rem !important;
+}
+
+@media (min-width: 640px) {
+  #app-main-view {
+    padding: 1.25rem 1.25rem calc(5.5rem + env(safe-area-inset-bottom, 0px)) 1.25rem !important;
+  }
+}
+
+@media (min-width: 768px) {
+  #app-main-view {
+    padding: 1.5rem 1.5rem calc(6rem + env(safe-area-inset-bottom, 0px)) 1.5rem !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  #app-main-view {
+    padding: 1.5rem !important;
+  }
+}
+
+/* Main Cards */
+#app-main-view .bg-white,
+#app-main-view .bg-brand-card {
+  background-color: #2b3440 !important;
+  border: 1px solid #3f4b5b !important;
+  color: #f3f4f6 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Sub cards / hover backgrounds */
+#app-main-view .bg-slate-50,
+#app-main-view .bg-slate-50\/50,
+#app-main-view .bg-slate-100 {
+  background-color: #1f2937 !important;
+  border: 1px solid #374151 !important;
+  color: #f3f4f6 !important;
+}
+
+#app-main-view .hover\:bg-slate-50:hover,
+#app-main-view .hover\:bg-slate-100:hover,
+#app-main-view .hover\:bg-slate-50\/50:hover {
+  background-color: #374151 !important;
+}
+
+/* Borders */
+#app-main-view .border-slate-100,
+#app-main-view .border-slate-200,
+#app-main-view .border-slate-300 {
+  border-color: #3f4b5b !important;
+}
+
+/* Text colors */
+#app-main-view .text-slate-950,
+#app-main-view .text-slate-900,
+#app-main-view .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+#app-main-view .text-slate-700,
+#app-main-view .text-slate-600,
+#app-main-view .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+/* Inputs / Textareas */
+#app-main-view input[type="text"],
+#app-main-view input[type="search"],
+#app-main-view input[type="number"],
+#app-main-view select,
+#app-main-view textarea {
+  background-color: #1e293b !important;
+  border: 1px solid #475569 !important;
+  color: #f8fafc !important;
+  border-radius: 8px !important;
+}
+#app-main-view input:focus,
+#app-main-view select:focus,
+#app-main-view textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
+  outline: none !important;
+}
+
+/* Buttons */
+#app-main-view .bg-slate-900,
+#app-main-view .bg-slate-600 {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+  border: 1px solid #475569 !important;
+}
+#app-main-view .bg-slate-900:hover,
+#app-main-view .bg-slate-600:hover {
+  background-color: #475569 !important;
+}
+
+/* Modals */
+#app-content-panel .fixed .bg-white {
+  background-color: #2b3440 !important;
+  border: 1px solid #3f4b5b !important;
+  color: #f3f4f6 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Amber / Warning boxes */
+#app-main-view .bg-amber-50,
+#app-main-view .bg-amber-100,
+#app-main-view .bg-yellow-50 {
+  background-color: #452b0d !important;
+  border-color: #78350f !important;
+  color: #fcd34d !important;
+}
+
+#app-main-view .text-amber-700,
+#app-main-view .text-amber-600 {
+  color: #fcd34d !important;
+}
+
+/* Specific styling for study-explanation-card to be sleek and compact */
+#app-main-view .study-explanation-card {
+  background-color: #161d2a !important;
+  border: 1px solid #334155 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
+}
+#app-main-view .study-explanation-card * {
+  box-sizing: border-box;
+}
+
+/* Primary/Blue buttons */
+#app-main-view .bg-blue-600,
+#app-main-view .bg-indigo-600 {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+#app-main-view .bg-blue-600:hover,
+#app-main-view .bg-indigo-600:hover {
+  background-color: #2563eb !important;
+}
+
+/* Green buttons */
+#app-main-view .bg-emerald-600,
+#app-main-view .bg-emerald-500 {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+#app-main-view .bg-emerald-600:hover,
+#app-main-view .bg-emerald-500:hover {
+  background-color: #059669 !important;
+}
+
+/* Red / Error */
+#app-main-view .bg-rose-50,
+#app-main-view .bg-red-50 {
+  background-color: #4c1d95 !important; /* using a dark purplish red */
+  background-color: #4c0519 !important;
+  border-color: #881337 !important;
+  color: #fecdd3 !important;
+}
+#app-main-view .text-rose-600,
+#app-main-view .text-rose-500,
+#app-main-view .text-red-500 {
+  color: #fda4af !important;
+}
+
+/* Furigana Ruby Typography */
+ruby {
+  display: inline-flex;
+  flex-direction: column-reverse;
+  vertical-align: bottom;
+  align-items: center;
+  line-height: 1;
+  margin: 0 1px;
+}
+
+ruby > rt {
+  display: block;
+  font-size: 0.55em;
+  line-height: 1;
+  font-weight: 700;
+  text-align: center;
+  color: #fcd34d; /* amber-300 furigana matching vocabulary practice */
+  user-select: none;
+  margin-bottom: 2px;
+  letter-spacing: 0.02em;
+}
+
+.chat-bubble-ai ruby > rt {
+  color: #fbbf24; /* amber-400 furigana */
+}
+
+.dark .chat-bubble-ai ruby > rt,
+.chat-bubble-user ruby > rt {
+  color: #fcd34d; /* bright amber yellow on dark/gradient bubbles */
+}
+

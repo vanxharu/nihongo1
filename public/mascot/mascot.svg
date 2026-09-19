@@ -1,0 +1,320 @@
+
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="512" height="512">
+      
+    <defs>
+      <!-- Fur gradient (warm golden orange 3D lighting) -->
+      <linearGradient id="furMain" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFD494" />
+        <stop offset="35%" stop-color="#F5A623" />
+        <stop offset="75%" stop-color="#E2841A" />
+        <stop offset="100%" stop-color="#C2680D" />
+      </linearGradient>
+
+      <!-- Head 3D soft radial light -->
+      <radialGradient id="headSphere" cx="35%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#FFE3BA" />
+        <stop offset="45%" stop-color="#F5A623" />
+        <stop offset="85%" stop-color="#DE7912" />
+        <stop offset="100%" stop-color="#B85D08" />
+      </radialGradient>
+
+      <!-- Cream Urajiro (White cheeks, snout, chest) -->
+      <linearGradient id="creamFur" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FFFFFF" />
+        <stop offset="65%" stop-color="#FFFDF8" />
+        <stop offset="100%" stop-color="#FDEFD8" />
+      </linearGradient>
+
+      <!-- Inner ear gradient -->
+      <linearGradient id="innerEar" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF7ED" />
+        <stop offset="60%" stop-color="#FFDECE" />
+        <stop offset="100%" stop-color="#FCA5A5" />
+      </linearGradient>
+
+      <!-- Navy Yukata / Happi 3D gradient -->
+      <linearGradient id="yukataNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#334155" />
+        <stop offset="40%" stop-color="#1E293B" />
+        <stop offset="90%" stop-color="#0F172A" />
+        <stop offset="100%" stop-color="#020617" />
+      </linearGradient>
+
+      <!-- Red Obi Belt & Red Book -->
+      <linearGradient id="obiRed" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#F87171" />
+        <stop offset="45%" stop-color="#EF4444" />
+        <stop offset="90%" stop-color="#B91C1C" />
+        <stop offset="100%" stop-color="#991B1B" />
+      </linearGradient>
+
+      <!-- Rising Sun Red Circle -->
+      <radialGradient id="sunRed" cx="35%" cy="35%" r="65%">
+        <stop offset="0%" stop-color="#FCA5A5" />
+        <stop offset="60%" stop-color="#EF4444" />
+        <stop offset="100%" stop-color="#B91C1C" />
+      </radialGradient>
+
+      <!-- Gold book spine -->
+      <linearGradient id="goldSpine" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#FEF08A" />
+        <stop offset="50%" stop-color="#FACC15" />
+        <stop offset="100%" stop-color="#CA8A04" />
+      </linearGradient>
+
+      <!-- Glossy eye pupil -->
+      <radialGradient id="eyeGloss" cx="30%" cy="25%" r="75%">
+        <stop offset="0%" stop-color="#44403C" />
+        <stop offset="55%" stop-color="#1C1917" />
+        <stop offset="100%" stop-color="#09090B" />
+      </radialGradient>
+
+      <!-- Pink paw pads -->
+      <radialGradient id="pinkPad" cx="35%" cy="35%" r="65%">
+        <stop offset="0%" stop-color="#FBCFE8" />
+        <stop offset="70%" stop-color="#F472B6" />
+        <stop offset="100%" stop-color="#DB2777" />
+      </radialGradient>
+    </defs>
+  
+
+      <!-- Soft pedestal shadow -->
+      <ellipse cx="128" cy="242" rx="68" ry="10" fill="#020617" opacity="0.25" />
+
+      <!-- Body & Outfit -->
+      
+    <g id="yukata-body">
+      <!-- Main Navy Yukata Torso -->
+      <path d="M 90 160
+               L 76 215
+               C 76 223, 88 227, 104 227
+               L 152 227
+               C 168 227, 180 223, 180 215
+               L 166 160 Z"
+        fill="url(#yukataNavy)"
+        stroke="#0F172A"
+        stroke-width="2"
+      />
+
+      <!-- White Collar Lapels (Crossed Kimono Style) -->
+      <path d="M 108 161 L 128 197 L 120 213" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" />
+      <path d="M 148 161 L 128 197 L 136 213" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" />
+
+      <!-- White Sakura Cherry Blossom on Left Chest -->
+      
+    <g transform="translate(148, 185) scale(1.2)">
+      <circle cx="0" cy="-6" r="4.2" fill="#FFFFFF" />
+      <circle cx="5.7" cy="-1.9" r="4.2" fill="#FFFFFF" />
+      <circle cx="3.5" cy="4.9" r="4.2" fill="#FFFFFF" />
+      <circle cx="-3.5" cy="4.9" r="4.2" fill="#FFFFFF" />
+      <circle cx="-5.7" cy="-1.9" r="4.2" fill="#FFFFFF" />
+      <!-- Center pistil -->
+      <circle cx="0" cy="0" r="2.5" fill="#F472B6" />
+    </g>
+  
+
+      <!-- Red Obi Sash Belt -->
+      <rect x="82" y="197" width="92" height="15" rx="4" fill="url(#obiRed)" stroke="#7F1D1D" stroke-width="1.2" />
+      <!-- Knot in Center with Bow Loops -->
+      <g transform="translate(128, 205)">
+        <!-- Center knot -->
+        <ellipse cx="0" cy="0" rx="7" ry="6" fill="#DC2626" stroke="#7F1D1D" stroke-width="1.2" />
+        <!-- Left bow loop -->
+        <path d="M -5 -2 C -18 -8 -20 6 -6 3 Z" fill="url(#obiRed)" stroke="#7F1D1D" stroke-width="1.2" />
+        <!-- Right bow loop -->
+        <path d="M 5 -2 C 18 -8 20 6 6 3 Z" fill="url(#obiRed)" stroke="#7F1D1D" stroke-width="1.2" />
+        <!-- Hanging ribbon tails -->
+        <path d="M -3 3 Q -8 16 -12 24 Q -4 18 0 8 Z" fill="#DC2626" />
+        <path d="M 3 3 Q 8 16 12 24 Q 4 18 0 8 Z" fill="#DC2626" />
+      </g>
+
+      <!-- Feet (Two chubby paws in front) -->
+      <g id="feet">
+        <!-- Left Foot -->
+        <ellipse cx="104" cy="229" rx="14" ry="10" fill="url(#creamFur)" stroke="#D97706" stroke-width="2" />
+        <!-- Right Foot -->
+        <ellipse cx="152" cy="229" rx="14" ry="10" fill="url(#creamFur)" stroke="#D97706" stroke-width="2" />
+      </g>
+    </g>
+  
+
+      <!-- Right Arm holding Red Book -->
+      <g>
+        <path d="M 85 158 Q 65 168 62 188 Q 80 196 95 178 Z" fill="url(#yukataNavy)" stroke="#0F172A" stroke-width="1.5" />
+        
+    <g transform="translate(46, 142) rotate(-10) scale(1)">
+      <!-- Book Cover (Vibrant Red Hardcover) -->
+      <rect x="0" y="0" width="38" height="54" rx="4" fill="url(#obiRed)" stroke="#7F1D1D" stroke-width="1.5" />
+      <!-- Book Pages Edge (White) -->
+      <rect x="34" y="3" width="5" height="48" rx="1" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="0.8" />
+      <!-- Gold Ribbon / Spine accent -->
+      <rect x="0" y="0" width="6" height="54" rx="2" fill="url(#goldSpine)" />
+
+      <!-- Vertical Kanji: 日本語 -->
+      <text x="20" y="16" font-family="sans-serif" font-size="10" font-weight="900" fill="#FFFFFF" text-anchor="middle">日</text>
+      <text x="20" y="28" font-family="sans-serif" font-size="10" font-weight="900" fill="#FFFFFF" text-anchor="middle">本</text>
+      <text x="20" y="40" font-family="sans-serif" font-size="10" font-weight="900" fill="#FFFFFF" text-anchor="middle">語</text>
+    </g>
+  
+        <!-- White paw wrapping around the book -->
+        <ellipse cx="64" cy="178" rx="8" ry="6" fill="url(#creamFur)" stroke="#D97706" stroke-width="1.5" />
+      </g>
+
+      <!-- Head -->
+      
+    <g transform="rotate(0 128 96)">
+      <!-- 1. Ears -->
+      <!-- Left Ear (viewer left) -->
+      <g>
+        <path d="M 66 76 Q 60 11 92 18 Q 112 48 104 84 Z"
+          fill="url(#furMain)"
+          stroke="#C2680D"
+          stroke-width="2"
+        />
+        <!-- Left Inner Ear Cream/Pink -->
+        <path d="M 74 72 Q 68 22 90 26 Q 104 52 100 78 Z"
+          fill="url(#innerEar)"
+        />
+      </g>
+
+      <!-- Right Ear (viewer right) -->
+      <g>
+        <path d="M 190 76 Q 196 11 164 18 Q 144 48 152 84 Z"
+          fill="url(#furMain)"
+          stroke="#C2680D"
+          stroke-width="2"
+        />
+        <!-- Right Inner Ear Cream/Pink -->
+        <path d="M 182 72 Q 188 22 166 26 Q 152 52 156 78 Z"
+          fill="url(#innerEar)"
+        />
+      </g>
+
+      <!-- 2. Main Head Sphere -->
+      <ellipse cx="128" cy="96" rx="66" ry="62.04" fill="url(#headSphere)" stroke="#C2680D" stroke-width="1.5" />
+
+      <!-- 3. Shiba Urajiro (White Cheeks & Muzzle) -->
+      <path d="M 70 114
+               C 60 138, 86 156, 128 158
+               C 170 156, 196 138, 186 114
+               C 174 92, 154 102, 128 104
+               C 102 102, 82 92, 70 114 Z"
+        fill="url(#creamFur)"
+        stroke="#E2E8F0"
+        stroke-width="1"
+      />
+
+      <!-- 4. Rosy Airbrush Cheeks Blush -->
+      <ellipse cx="86" cy="122" rx="14" ry="8" fill="#F472B6" opacity="0.6" />
+      <ellipse cx="170" cy="122" rx="14" ry="8" fill="#F472B6" opacity="0.6" />
+
+      <!-- 5. Eyebrows (Cream round dots above eyes) -->
+      <ellipse cx="104" cy="74" rx="7" ry="5" fill="#FFFFFF" stroke="#FEF08A" stroke-width="0.8" />
+      <ellipse cx="152" cy="74" rx="7" ry="5" fill="#FFFFFF" stroke="#FEF08A" stroke-width="0.8" />
+
+      <!-- 6. Eyes -->
+      
+    <!-- Left Eye -->
+    <ellipse cx="102" cy="99" rx="11" ry="13" fill="url(#eyeGloss)" />
+    <!-- Big Catchlight Top-Right -->
+    <circle cx="106" cy="94" r="5" fill="#FFFFFF" />
+    <!-- Secondary Catchlight Bottom-Left -->
+    <circle cx="99" cy="104" r="2.5" fill="#FFFFFF" />
+
+    <!-- Right Eye -->
+    <ellipse cx="154" cy="99" rx="11" ry="13" fill="url(#eyeGloss)" />
+    <!-- Big Catchlight Top-Right -->
+    <circle cx="158" cy="94" r="5" fill="#FFFFFF" />
+    <!-- Secondary Catchlight Bottom-Left -->
+    <circle cx="151" cy="104" r="2.5" fill="#FFFFFF" />
+  
+
+      <!-- 7. Nose (Cute black rounded triangle with specular highlight) -->
+      <path d="M 119 112 Q 128 110 137 112 Q 134 121 128 123 Q 122 121 119 112 Z"
+        fill="#18181B"
+      />
+      <!-- Nose shine -->
+      <ellipse cx="126" cy="114" rx="3.5" ry="1.8" fill="#A1A1AA" />
+
+      <!-- 8. Mouth -->
+      
+      <!-- Happy open mouth with pink tongue -->
+      <path d="M 112 124 Q 128 121 144 124 Q 140 143 128 145 Q 116 143 112 124 Z"
+        fill="#BE123C"
+        stroke="#18181B"
+        stroke-width="2"
+      />
+      <!-- Cute Pink Tongue -->
+      <path d="M 118 137 Q 128 131 138 137 Q 136 143 128 144 Q 120 143 118 137 Z"
+        fill="#FB7185"
+      />
+      <!-- Muzzle center line -->
+      <path d="M 128 121 L 128 124" stroke="#18181B" stroke-width="2" stroke-linecap="round" />
+    
+
+      <!-- 9. Headband: 日本●語 -->
+      
+    <g transform="rotate(0 128 82)">
+      <!-- White cloth headband band with 3D curve -->
+      <path d="M 57 70 Q 128 64 199 70 Q 201 96 199 96 Q 128 90 57 96 Z"
+        fill="#FFFFFF"
+        stroke="#CBD5E1"
+        stroke-width="2"
+      />
+
+      <!-- Cloth fold lines -->
+      <path d="M 67 82 Q 128 78 189 82" stroke="#E2E8F0" stroke-width="1.2" fill="none" />
+
+      <!-- Text: 日本●語 -->
+      <text x="92" y="88" font-family="sans-serif" font-size="14" font-weight="900" fill="#0F172A" text-anchor="middle">日</text>
+      <!-- Center Red Rising Sun Circle -->
+      <circle cx="112" cy="83" r="6.5" fill="url(#sunRed)" stroke="#B91C1C" stroke-width="0.8" />
+      <!-- Japanese kanji 本 and 語 -->
+      <text x="132" y="88" font-family="sans-serif" font-size="13" font-weight="900" fill="#0F172A" text-anchor="middle">本</text>
+      <text x="154" y="88" font-family="sans-serif" font-size="13" font-weight="900" fill="#0F172A" text-anchor="middle">語</text>
+
+      <!-- Headband Knot & Bow on left side -->
+      <g transform="translate(55, 84)">
+        <!-- Knot center -->
+        <ellipse cx="0" cy="0" rx="6" ry="7" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.2" />
+        <!-- Bow loop top -->
+        <path d="M -4 -3 C -14 -12 -18 -4 -4 1 Z" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.2" />
+        <!-- Bow loop bottom -->
+        <path d="M -4 2 C -18 8 -16 16 -3 4 Z" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.2" />
+        <!-- Tail hanging -->
+        <path d="M -2 5 Q -8 18 -14 24 Q -6 20 0 10 Z" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1" />
+      </g>
+    </g>
+  
+    </g>
+  
+
+      <!-- Left Waving Paw with Pink Pads -->
+      
+    <g transform="translate(174, 102)">
+      <!-- Arm in Navy Sleeve -->
+      <path d="M -12 25 L 4 0 C 14 -12, 34 2, 24 16 L 4 36 Z" fill="url(#yukataNavy)" stroke="#0F172A" stroke-width="1.5" />
+      <!-- White cuff -->
+      <ellipse cx="6" cy="18" rx="10" ry="5" fill="#FFFFFF" transform="rotate(45 6 18)" />
+
+      <!-- Raised Shiba Paw -->
+      <ellipse cx="14" cy="4" rx="14" ry="15" fill="url(#creamFur)" stroke="#D97706" stroke-width="2" />
+
+      <!-- Center Pink Cushion Pad (Heart-ish shape) -->
+      <path d="M 9 6 C 9 2, 14 0, 15 4 C 16 0, 21 2, 21 6 C 21 11, 15 14, 15 14 C 15 14, 9 11, 9 6 Z"
+        fill="url(#pinkPad)"
+      />
+
+      <!-- 4 Round Pink Toe Beans -->
+      <circle cx="6" cy="-4" r="3.2" fill="url(#pinkPad)" />
+      <circle cx="12" cy="-8" r="3.4" fill="url(#pinkPad)" />
+      <circle cx="18" cy="-8" r="3.4" fill="url(#pinkPad)" />
+      <circle cx="23" cy="-3" r="3.2" fill="url(#pinkPad)" />
+    </g>
+  
+
+      <!-- Sparkles -->
+      <path d="M 224 88 L 226 93 L 231 95 L 226 97 L 224 102 L 222 97 L 217 95 L 222 93 Z" fill="#FACC15" />
+      <path d="M 38 78 L 40 82 L 44 84 L 40 86 L 38 90 L 36 86 L 32 84 L 36 82 Z" fill="#FACC15" />
+    </svg>
+  
