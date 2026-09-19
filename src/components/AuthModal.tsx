@@ -9,7 +9,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const { login, register, loginWithGoogle } = useAuth();
+  const { login, register, loginWithGoogle, googleAuthMessage } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -70,8 +70,17 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       await loginWithGoogle();
       onClose();
     } catch (err: any) {
-      console.error(err);
-      setError(err.message || 'Đã xảy ra lỗi khi đăng nhập bằng Google.');
+      if (err?.code === 'auth/popup-closed-by-user') {
+        setError('Bạn đã đóng cửa sổ đăng nhập.');
+      } else if (err?.code === 'auth/unauthorized-domain') {
+        setError('Tên miền này chưa được cấp phép trong Firebase Authentication Authorized Domains.');
+      } else if (err?.code === 'auth/account-exists-with-different-credential') {
+        setError('Email này đã liên kết với phương thức đăng nhập khác. Vui lòng đăng nhập bằng Email & Mật khẩu.');
+      } else if (err?.message) {
+        setError(err.message);
+      } else {
+        setError('Đã xảy ra lỗi khi đăng nhập bằng Google. Vui lòng thử lại.');
+      }
     } finally {
       setLoading(false);
     }
@@ -208,12 +217,22 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         {/* Google OAuth Login */}
         <button
+          type="button"
           onClick={handleGoogleSignIn}
-          disabled={loading}
-          className="w-full py-2.5 border border-slate-100 hover:bg-slate-50/50 active:bg-slate-50 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer"
+          disabled={loading || !!googleAuthMessage}
+          className="w-full py-2.5 border border-slate-200 hover:bg-slate-50 active:bg-slate-100 disabled:opacity-75 font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer text-slate-700 shadow-xs"
         >
-          <Chrome className="w-4 h-4 text-slate-600" />
-          Đăng nhập với Google
+          {googleAuthMessage ? (
+            <>
+              <div className="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin" />
+              <span>{googleAuthMessage}</span>
+            </>
+          ) : (
+            <>
+              <Chrome className="w-4 h-4 text-slate-700" />
+              <span>Đăng nhập với Google</span>
+            </>
+          )}
         </button>
       </motion.div>
     </div>

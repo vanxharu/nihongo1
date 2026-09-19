@@ -1,24 +1,31 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signInWithPopup, 
+  signInWithRedirect,
+  getRedirectResult,
   signOut, 
   onIdTokenChanged, 
   User,
   updateProfile as firebaseUpdateProfile
 } from 'firebase/auth';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { auth, googleAuthProvider } from '../lib/firebase';
 import { UserProfile } from '../types';
+
+export type AuthStatus = 'INITIALIZING' | 'AUTHENTICATING' | 'AUTHENTICATED' | 'UNAUTHENTICATED' | 'ERROR';
 
 interface AuthContextType {
   user: User | null;
   dbUser: UserProfile | null;
   token: string | null;
   loading: boolean;
+  authStatus: AuthStatus;
+  googleAuthMessage: string | null;
   login: (email: string, pass: string) => Promise<void>;
   register: (email: string, pass: string, displayName?: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: (returnUrl?: string) => Promise<void>;
   logout: () => Promise<void>;
   syncProfile: () => Promise<void>;
   updateDbProfile: (updatedFields: Partial<UserProfile>) => Promise<UserProfile | null>;
@@ -37,6 +44,9 @@ export function useAuth() {
 const LOCAL_STORAGE_KEY = 'nhai_kanji_user_profile_v1';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [user, setUser] = useState<User | null>(null);
   const [dbUser, setDbUser] = useState<UserProfile | null>(() => {
     try {
@@ -51,6 +61,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [authStatus, setAuthStatus] = useState<AuthStatus>('INITIALIZING');
+  const [googleAuthMessage, setGoogleAuthMessage] = useState<string | null>(null);
+  const redirectHandledRef = useRef<boolean>(false);
 
   // Helper to parse the DB user response safely
   const parseDbUser = (dbData: any): UserProfile => {
@@ -226,10 +239,80 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = async (returnUrl?: string) => {
+    setAuthStatus('AUTHENTICATING');
+    setGoogleAuthMessage('Đang kết nối với Google...');
     setLoading(true);
+
+    // Save current path to restore after redirect if popup is blocked
+    try {
+      const targetUrl = returnUrl || (location.pathname + location.search + location.hash);
+      sessionStorage.setItem('auth_return_url', targetUrl);
+    } catch (e) {
+      console.warn('[AUTH] Could not save auth_return_url to sessionStorage:', e);
+    }
+
+    if (import.meta.env.DEV) {
+      console.log('[AUTH] Google login started');
+      console.log('[AUTH] Trying popup');
+    }
+
     try {
       await signInWithPopup(auth, googleAuthProvider);
+      if (import.meta.env.DEV) {
+        console.log('[AUTH] Firebase user authenticated');
+        console.log('[AUTH] Loading profile');
+        console.log('[AUTH] Login complete');
+      }
+      setAuthStatus('AUTHENTICATED');
+      setGoogleAuthMessage(null);
+      try {
+        sessionStorage.removeItem('auth_return_url');
+      } catch {}
+    } catch (error: any) {
+      const errorCode = error?.code || '';
+
+      // Case 1: User deliberately closed the popup window
+      if (errorCode === 'auth/popup-closed-by-user') {
+        if (import.meta.env.DEV) {
+          console.log('[AUTH] Popup closed by user');
+        }
+        setAuthStatus('UNAUTHENTICATED');
+        setGoogleAuthMessage(null);
+        try {
+          sessionStorage.removeItem('auth_return_url');
+        } catch {}
+        const closedErr = new Error('Bạn đã đóng cửa sổ đăng nhập.');
+        (closedErr as any).code = 'auth/popup-closed-by-user';
+        throw closedErr;
+      }
+
+      // Case 2: Popup blocked by browser, or not supported in environment
+      if (
+        errorCode === 'auth/popup-blocked' ||
+        errorCode === 'auth/cancelled-popup-request' ||
+        errorCode === 'auth/operation-not-supported-in-this-environment'
+      ) {
+        if (import.meta.env.DEV) {
+          console.warn('[AUTH] Popup blocked (code:', errorCode, '). Falling back to redirect.');
+          console.log('[AUTH] Falling back to redirect');
+        }
+        setGoogleAuthMessage('Đang chuyển sang đăng nhập Google...');
+        // Execute redirect fallback
+        await signInWithRedirect(auth, googleAuthProvider);
+        return;
+      }
+
+      // Case 3: Other errors (e.g. auth/unauthorized-domain, auth/network-request-failed)
+      if (import.meta.env.DEV) {
+        console.error('[AUTH][ERROR] code:', errorCode, 'message:', error?.message);
+      }
+      setAuthStatus('ERROR');
+      setGoogleAuthMessage(null);
+      try {
+        sessionStorage.removeItem('auth_return_url');
+      } catch {}
+      throw error;
     } finally {
       setLoading(false);
     }
@@ -242,14 +325,62 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       setDbUser(null);
       setToken(null);
-      // Clean up local cache if logging out, or keep it as guest profile?
-      // Better to clear local storage so the next guest doesn't see old user's details,
-      // but let's reset it to guest/default values.
+      setAuthStatus('UNAUTHENTICATED');
+      setGoogleAuthMessage(null);
       localStorage.removeItem(LOCAL_STORAGE_KEY);
     } finally {
       setLoading(false);
     }
   };
+
+  // Check and process getRedirectResult once upon application startup
+  useEffect(() => {
+    if (redirectHandledRef.current) return;
+    redirectHandledRef.current = true;
+
+    const checkRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result && result.user) {
+          if (import.meta.env.DEV) {
+            console.log('[AUTH] Redirect result received');
+            console.log('[AUTH] Firebase user authenticated');
+            console.log('[AUTH] Loading profile');
+          }
+          setAuthStatus('AUTHENTICATED');
+          setGoogleAuthMessage(null);
+
+          // Restore saved return URL if available
+          try {
+            const savedUrl = sessionStorage.getItem('auth_return_url');
+            if (savedUrl) {
+              sessionStorage.removeItem('auth_return_url');
+              const currentFullPath = location.pathname + location.search + location.hash;
+              if (savedUrl.startsWith('/') && savedUrl !== currentFullPath) {
+                if (import.meta.env.DEV) {
+                  console.log('[AUTH] Restoring return URL after redirect:', savedUrl);
+                }
+                navigate(savedUrl, { replace: true });
+              }
+            }
+          } catch (storageErr) {
+            console.warn('[AUTH] Could not restore return URL from sessionStorage:', storageErr);
+          }
+        }
+      } catch (error: any) {
+        const errorCode = error?.code || '';
+        if (errorCode) {
+          if (import.meta.env.DEV) {
+            console.error('[AUTH][ERROR] Redirect result failed with code:', errorCode, 'message:', error?.message);
+          }
+          setAuthStatus('ERROR');
+          setGoogleAuthMessage(null);
+        }
+      }
+    };
+
+    checkRedirectResult();
+  }, [navigate, location]);
 
   // Proactively check ID token every 15 minutes if there is an active user
   useEffect(() => {
@@ -360,12 +491,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
             }
           }
+          setAuthStatus('AUTHENTICATED');
         } catch (error) {
           console.warn("Could not sync profile with server on auth change (using cached local profile):", error);
+          setAuthStatus('AUTHENTICATED');
         }
       } else {
         setDbUser(null);
         setToken(null);
+        setAuthStatus((prev) => (prev === 'AUTHENTICATING' ? prev : 'UNAUTHENTICATED'));
       }
       setLoading(false);
     });
@@ -379,6 +513,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       dbUser,
       token,
       loading,
+      authStatus,
+      googleAuthMessage,
       login,
       register,
       loginWithGoogle,
