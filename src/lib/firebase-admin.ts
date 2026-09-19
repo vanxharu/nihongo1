@@ -4,10 +4,12 @@ import firebaseConfig from '../../firebase-applet-config.json' assert { type: "j
 
 let authInstance: any = null;
 
+const targetProjectId = process.env.FIREBASE_PROJECT_ID || process.env.VITE_FIREBASE_PROJECT_ID || firebaseConfig.projectId;
+
 try {
   if (!getApps().length) {
     initializeApp({
-      projectId: firebaseConfig.projectId,
+      projectId: targetProjectId,
     });
   }
   authInstance = getAuth();

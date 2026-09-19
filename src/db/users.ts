@@ -4,12 +4,11 @@ import { eq } from 'drizzle-orm';
 
 export async function getOrCreateUser(uid: string, email: string) {
   return await withDbRetry(async () => {
-    // Check if user already exists
-    const existing = await db.select().from(users).where(eq(users.uid, uid)).execute();
-    if (existing.length > 0) {
-      // Check if we need to promote the user to admin based on their email
-      const u = existing[0];
-      const isOwnerEmail = email.toLowerCase() === 'vanvan20001220@gmail.com';
+    // 1. Check if user already exists by UID
+    const existingByUid = await db.select().from(users).where(eq(users.uid, uid)).execute();
+    if (existingByUid.length > 0) {
+      const u = existingByUid[0];
+      const isOwnerEmail = email && email.toLowerCase() === 'vanvan20001220@gmail.com';
       if (isOwnerEmail && u.role !== 'admin') {
         const updated = await db.update(users)
           .set({ role: 'admin' })
@@ -18,6 +17,23 @@ export async function getOrCreateUser(uid: string, email: string) {
         return updated[0];
       }
       return u;
+    }
+
+    // 2. If UID is not found, check if a user with this email already exists
+    // (This automatically preserves all learning progress, XP, streak, achievements when switching Firebase projects!)
+    if (email) {
+      const existingByEmail = await db.select().from(users).where(eq(users.email, email)).execute();
+      if (existingByEmail.length > 0) {
+        const u = existingByEmail[0];
+        const isOwnerEmail = email.toLowerCase() === 'vanvan20001220@gmail.com';
+        const roleToSet = isOwnerEmail ? 'admin' : (u.role || 'user');
+        // Update to the new project UID seamlessly
+        const updated = await db.update(users)
+          .set({ uid: uid, role: roleToSet })
+          .where(eq(users.id, u.id))
+          .returning();
+        return updated[0];
+      }
     }
 
     const todayStr = new Date().toISOString().split('T')[0] || '';

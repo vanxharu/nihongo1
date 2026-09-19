@@ -1,12 +1,12 @@
 {
-  "projectId": "decent-tangent-w8phd",
-  "appId": "1:194590218655:web:1fea980ac202b6ca79c5aa",
-  "apiKey": "AIzaSyAfRPWd1_L4LJbA-PoUKPXZILBIuaIuqxg",
-  "authDomain": "decent-tangent-w8phd.firebaseapp.com",
+  "projectId": "nihongo-fd01e",
+  "appId": "1:1062141512826:web:fc0d68902fd67f7a31ffc3",
+  "apiKey": "AIzaSyBKyDT5yiz3hdscoK2puniykJwBUy51Lwk",
+  "authDomain": "nihongo-fd01e.firebaseapp.com",
   "firestoreDatabaseId": "ai-studio-jpstudy-f29a2fee-6e51-4f8c-b662-48d131fbf1d0",
-  "storageBucket": "decent-tangent-w8phd.firebasestorage.app",
-  "messagingSenderId": "194590218655",
-  "measurementId": "",
-  "oAuthClientId": "194590218655-k0d7utpmfi8k62ng7ihhlqltaknb8au1.apps.googleusercontent.com",
+  "storageBucket": "nihongo-fd01e.firebasestorage.app",
+  "messagingSenderId": "1062141512826",
+  "measurementId": "G-65BLZ30D0W",
+  "oAuthClientId": "",
   "recaptchaSiteKey": ""
 }
