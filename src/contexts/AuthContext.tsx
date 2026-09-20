@@ -23,7 +23,14 @@ export const getAuthPlatform = (): 'pwa' | 'mobile' | 'desktop' => {
   return 'desktop';
 };
 
-export type AuthStatus = 'INITIALIZING' | 'AUTHENTICATING' | 'AUTHENTICATED' | 'UNAUTHENTICATED' | 'ERROR';
+export type AuthStatus = 
+  | 'AUTH_INITIALIZING' 
+  | 'AUTHENTICATING' 
+  | 'AUTHENTICATED' 
+  | 'UNAUTHENTICATED' 
+  | 'AUTH_ERROR'
+  | 'INITIALIZING'
+  | 'ERROR';
 
 export interface AuthErrorInfo {
   code: string;
@@ -83,7 +90,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [authStatus, setAuthStatus] = useState<AuthStatus>('INITIALIZING');
+  const [authStatus, setAuthStatus] = useState<AuthStatus>('AUTH_INITIALIZING');
   const [googleAuthMessage, setGoogleAuthMessage] = useState<string | null>(null);
   const [lastAuthError, setLastAuthError] = useState<AuthErrorInfo | null>(null);
   const redirectHandledRef = useRef<boolean>(false);
@@ -350,6 +357,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginWithGoogle = async (returnUrl?: string) => {
     const platform = getAuthPlatform();
+    console.log('[AUTH] Login started');
+    console.log(`[AUTH] Platform: ${platform}`);
     setAuthStatus('AUTHENTICATING');
     setGoogleAuthMessage('Đang kết nối với Google...');
     setLoading(true);
@@ -366,11 +375,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.warn('[AUTH] Could not save auth_return_url to sessionStorage:', e);
     }
 
-    console.log(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: popup\nstatus: starting`);
+    console.log('[AUTH] Method: popup');
 
     try {
-      const result = await signInWithPopup(auth, googleAuthProvider, browserPopupRedirectResolver);
+      // Standard popup call without custom resolver to prevent transient activation loss
+      const result = await signInWithPopup(auth, googleAuthProvider);
       if (result && result.user) {
+        console.log('[AUTH] Firebase currentUser: FOUND');
+        console.log('[AUTH] Profile loading');
         setUser(result.user);
         setLastAuthError(null);
 
@@ -438,40 +450,48 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } catch (e) {
           // ignore
         }
-      }
 
-      console.log(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: popup\nstatus: success`);
-      setAuthStatus('AUTHENTICATED');
-      setGoogleAuthMessage(null);
+        console.log('[AUTH] Authentication complete');
+        setAuthStatus('AUTHENTICATED');
+        setGoogleAuthMessage(null);
+        return;
+      }
     } catch (error: any) {
       const errorCode = error?.code || '';
-      console.error(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: popup\nerrorCode: ${errorCode}\nerrorMessage: ${error?.message || ''}`);
 
-      // Case 1: User deliberately closed the popup window
+      // Case 1: User deliberately closed the popup window - DO NOT redirect loop!
       if (errorCode === 'auth/popup-closed-by-user') {
+        console.log('[AUTH] Popup closed by user');
         setAuthStatus('UNAUTHENTICATED');
         setGoogleAuthMessage(null);
+        setLoading(false);
+        setLastAuthError({
+          code: 'auth/popup-closed-by-user',
+          message: 'Bạn đã đóng cửa sổ đăng nhập Google. Vui lòng bấm đăng nhập lại khi sẵn sàng.'
+        });
         const closedErr = new Error('Bạn đã đóng cửa sổ đăng nhập.');
         (closedErr as any).code = 'auth/popup-closed-by-user';
-        throw closedErr;
+        return;
       }
 
-      // Case 2: Popup blocked by browser, or cancelled/unsupported in environment (e.g. desktop popup blocker, Windows PWA)
+      // Case 2: Popup blocked by browser policy, or unsupported in environment -> fallback to redirect
       if (
         errorCode === 'auth/popup-blocked' ||
         errorCode === 'auth/cancelled-popup-request' ||
         errorCode === 'auth/operation-not-supported-in-this-environment'
       ) {
-        console.warn(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: redirect\nfallbackReason: ${errorCode}\nstatus: redirecting`);
+        console.warn('[AUTH] Popup blocked, falling back to redirect flow');
+        console.log('[AUTH] Method: redirect');
         setGoogleAuthMessage('Đang chuyển sang đăng nhập Google (redirect)...');
-        // Execute redirect fallback
         await signInWithRedirect(auth, googleAuthProvider);
         return;
       }
 
-      // Case 3: Other specific error codes (unauthorized-domain, operation-not-allowed, network-request-failed, internal-error)
-      setAuthStatus('ERROR');
+      // Case 3: Other errors
+      console.error(`[AUTH] Error: code=${errorCode} message=${error?.message || ''}`);
+      setAuthStatus('AUTH_ERROR');
       setGoogleAuthMessage(null);
+      setLoading(false);
 
       let userFriendlyMessage = error?.message || 'Đăng nhập bằng Google không thành công.';
       const currentHost = typeof window !== 'undefined' ? window.location.hostname : '';
@@ -585,17 +605,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Check and process getRedirectResult once upon application startup
+  // Integrated Auth Lifecycle
   useEffect(() => {
-    if (redirectHandledRef.current) return;
-    redirectHandledRef.current = true;
+    let isMounted = true;
+    let unsubscribeAuth: (() => void) | null = null;
 
-    const checkRedirectResult = async () => {
+    const initAuth = async () => {
       const platform = getAuthPlatform();
+      console.log(`[AUTH] Platform: ${platform}`);
+      console.log('[AUTH] Processing redirect result');
+
+      let redirectUser: User | null = null;
+
       try {
         const result = await getRedirectResult(auth);
         if (result && result.user) {
-          console.log(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: redirect\nstatus: success`);
+          console.log('[AUTH] Redirect returned');
+          console.log('[AUTH] Redirect result: FOUND');
+          console.log('[AUTH] Firebase currentUser: FOUND');
+          console.log('[AUTH] Profile loading');
+          redirectUser = result.user;
           setUser(result.user);
           setLastAuthError(null);
 
@@ -622,7 +651,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
             return initialProfile;
           });
-          
+
           try {
             const idToken = await result.user.getIdToken();
             setToken(idToken);
@@ -646,8 +675,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           } catch (syncErr) {
             console.warn('[AUTH] Immediate database sync notice after redirect:', syncErr);
           }
+
+          console.log('[AUTH] Authentication complete');
           setAuthStatus('AUTHENTICATED');
           setGoogleAuthMessage(null);
+          setLoading(false);
 
           // Restore saved return URL if available
           try {
@@ -657,43 +689,196 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               sessionStorage.removeItem('jpstudy_redirect_after_login');
               const currentFullPath = location.pathname + location.search + location.hash;
               if (savedUrl.startsWith('/') && !savedUrl.startsWith('//') && savedUrl !== currentFullPath) {
-                console.log(`[AUTH][GOOGLE]\nplatform: ${platform}\nrestoringReturnUrl: ${savedUrl}`);
+                console.log(`[AUTH] Restoring return URL: ${savedUrl}`);
                 navigate(savedUrl, { replace: true });
               }
             }
           } catch (storageErr) {
             console.warn('[AUTH] Could not restore return URL from sessionStorage:', storageErr);
           }
+        } else {
+          console.log('[AUTH] Redirect result: NULL');
         }
       } catch (error: any) {
         const errorCode = error?.code || '';
+        console.error('[AUTH] Redirect result: ERROR');
+        console.error(`[AUTH] Error: code=${errorCode} message=${error?.message || ''}`);
+
+        let userFriendlyMessage = error?.message || 'Đăng nhập bằng Google không thành công.';
+        const currentHost = typeof window !== 'undefined' ? window.location.hostname : '';
+        if (errorCode === 'auth/unauthorized-domain') {
+          userFriendlyMessage = `Tên miền "${currentHost}" chưa được cấp phép trong Firebase Authentication của dự án nihongo-fd01e.`;
+        } else if (errorCode === 'auth/operation-not-allowed') {
+          userFriendlyMessage = 'Phương thức đăng nhập Google chưa được kích hoạt trong Firebase Authentication Console.';
+        } else if (errorCode === 'auth/network-request-failed') {
+          userFriendlyMessage = 'Lỗi kết nối mạng khi liên hệ với Google Authentication. Vui lòng kiểm tra Internet.';
+        } else if (errorCode === 'auth/internal-error') {
+          userFriendlyMessage = 'Lỗi nội bộ Firebase Authentication. Vui lòng tải lại trang và thử lại.';
+        }
+
         if (errorCode) {
-          console.error(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: redirect\nerrorCode: ${errorCode}\nerrorMessage: ${error?.message || ''}`);
-          setAuthStatus('ERROR');
-          setGoogleAuthMessage(null);
-
-          let userFriendlyMessage = error?.message || 'Đăng nhập bằng Google không thành công.';
-          const currentHost = typeof window !== 'undefined' ? window.location.hostname : '';
-          if (errorCode === 'auth/unauthorized-domain') {
-            userFriendlyMessage = `Tên miền "${currentHost}" chưa được cấp phép trong Firebase Authentication của dự án nihongo-fd01e.`;
-          } else if (errorCode === 'auth/operation-not-allowed') {
-            userFriendlyMessage = 'Phương thức đăng nhập Google chưa được kích hoạt trong Firebase Authentication Console.';
-          } else if (errorCode === 'auth/network-request-failed') {
-            userFriendlyMessage = 'Lỗi kết nối mạng khi liên hệ với Google Authentication. Vui lòng kiểm tra Internet.';
-          } else if (errorCode === 'auth/internal-error') {
-            userFriendlyMessage = 'Lỗi nội bộ Firebase Authentication. Vui lòng tải lại trang và thử lại.';
-          }
-
           setLastAuthError({
             code: errorCode,
             message: userFriendlyMessage
           });
         }
       }
+
+      // Wait for Firebase authStateReady to guarantee IndexedDB persistence is loaded
+      try {
+        if (typeof (auth as any).authStateReady === 'function') {
+          await (auth as any).authStateReady();
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      // Set up onIdTokenChanged as the single source of truth
+      unsubscribeAuth = onIdTokenChanged(auth, async (currentUser) => {
+        if (!isMounted) return;
+
+        const effectiveUser = currentUser || redirectUser;
+        if (effectiveUser) {
+          console.log('[AUTH] onAuthStateChanged: FOUND');
+          console.log('[AUTH] Firebase currentUser: FOUND');
+          console.log('[AUTH] Profile loading');
+          setUser(effectiveUser);
+
+          // Hydrate from local storage or create default profile immediately
+          setDbUser((prev) => {
+            if (prev) return prev;
+            try {
+              const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+              if (saved) {
+                const parsed = JSON.parse(saved);
+                return {
+                  ...parsed,
+                  role: 'user'
+                };
+              }
+            } catch (e) {
+              // ignore
+            }
+            return {
+              name: effectiveUser.displayName || (effectiveUser.email ? effectiveUser.email.split('@')[0] : 'Học viên JLPT'),
+              avatar: effectiveUser.photoURL || '🦊',
+              targetLevel: 'N4',
+              xp: 0,
+              streak: 1,
+              coins: 0,
+              lastActiveDate: new Date().toISOString().split('T')[0] || '',
+              studyDays: [new Date().toISOString().split('T')[0] || ''],
+              completedLessons: [],
+              vocabStatus: {},
+              grammarStatus: {},
+              kanjiStatus: {},
+              dailyTestResults: [],
+              role: 'user'
+            };
+          });
+
+          try {
+            const idToken = await effectiveUser.getIdToken();
+            setToken(idToken);
+            // Sync with backend to fetch profile
+            const response = await fetch('/api/user/sync', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}`
+              }
+            });
+
+            if (response.ok) {
+              const contentType = response.headers.get('content-type') || '';
+              if (contentType.includes('application/json')) {
+                const data = await response.json();
+                if (data.success && data.user) {
+                  const parsed = parseDbUser(data.user);
+                  setDbUser(parsed);
+                  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+                  checkAndApplyRedirect(parsed.role);
+                }
+              }
+            }
+          } catch (error) {
+            console.warn('[AUTH] Could not sync profile with server on auth change (using cached local profile):', error);
+          }
+
+          console.log('[AUTH] Authentication complete');
+          setAuthStatus('AUTHENTICATED');
+          setLoading(false);
+        } else {
+          console.log('[AUTH] onAuthStateChanged: NULL');
+          console.log('[AUTH] Firebase currentUser: NULL');
+
+          // Firebase has no currentUser. Check if there is an active local app session
+          try {
+            const rawSession = localStorage.getItem('jpstudy_app_session_v1');
+            if (rawSession) {
+              const { token: sessionToken, firebaseUser: fbUser } = JSON.parse(rawSession);
+              if (sessionToken && fbUser) {
+                const syntheticUser: any = {
+                  uid: fbUser.uid,
+                  email: fbUser.email,
+                  displayName: fbUser.displayName,
+                  photoURL: fbUser.photoURL,
+                  emailVerified: true,
+                  getIdToken: async () => sessionToken
+                };
+                setUser(syntheticUser);
+                setToken(sessionToken);
+                console.log('[AUTH] Authentication restored from session token');
+                console.log('[AUTH] Authentication complete');
+                setAuthStatus('AUTHENTICATED');
+                setLoading(false);
+
+                // Background sync
+                fetch('/api/user/sync', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionToken}`
+                  }
+                }).then(async res => {
+                  const ct = res.headers.get('content-type') || '';
+                  if (res.ok && ct.includes('application/json')) {
+                    return res.json();
+                  }
+                  return null;
+                }).then(data => {
+                  if (data && data.success && data.user) {
+                    const parsed = parseDbUser(data.user);
+                    setDbUser(parsed);
+                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+                    checkAndApplyRedirect(parsed.role);
+                  }
+                }).catch(() => {});
+                return;
+              }
+            }
+          } catch (sessionErr) {
+            console.warn('[AUTH] Could not restore app session:', sessionErr);
+          }
+
+          setDbUser(null);
+          setToken(null);
+          setUser(null);
+          setAuthStatus('UNAUTHENTICATED');
+          setLoading(false);
+        }
+      });
     };
 
-    checkRedirectResult();
-  }, [navigate, location]);
+    initAuth();
+
+    return () => {
+      isMounted = false;
+      if (unsubscribeAuth) {
+        unsubscribeAuth();
+      }
+    };
+  }, []);
 
   // Proactively check ID token every 15 minutes if there is an active user
   useEffect(() => {
@@ -751,130 +936,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [user]);
-
-  useEffect(() => {
-    const unsubscribe = onIdTokenChanged(auth, async (currentUser) => {
-      setUser(currentUser);
-      if (currentUser) {
-        // Hydrate from local storage or create default profile immediately
-        setDbUser((prev) => {
-          if (prev) return prev;
-          try {
-            const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-            if (saved) {
-              const parsed = JSON.parse(saved);
-              return {
-                ...parsed,
-                role: 'user' // Default to 'user' until server confirms role
-              };
-            }
-          } catch (e) {
-            // ignore
-          }
-          return {
-            name: currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'Học viên JLPT'),
-            avatar: currentUser.photoURL || '🦊',
-            targetLevel: 'N4',
-            xp: 0,
-            streak: 1,
-            coins: 0,
-            lastActiveDate: new Date().toISOString().split('T')[0] || '',
-            studyDays: [new Date().toISOString().split('T')[0] || ''],
-            completedLessons: [],
-            vocabStatus: {},
-            grammarStatus: {},
-            kanjiStatus: {},
-            dailyTestResults: [],
-            role: 'user' // Default to 'user'; authoritative role is populated strictly from backend database
-          };
-        });
-
-        try {
-          const idToken = await currentUser.getIdToken();
-          setToken(idToken);
-          // Sync with back-end to fetch profile
-          const response = await fetch('/api/user/sync', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${idToken}`
-            }
-          });
-
-          if (response.ok) {
-            const contentType = response.headers.get('content-type') || '';
-            if (contentType.includes('application/json')) {
-              const data = await response.json();
-              if (data.success && data.user) {
-                const parsed = parseDbUser(data.user);
-                setDbUser(parsed);
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-                checkAndApplyRedirect(parsed.role);
-              }
-            }
-          }
-          setAuthStatus('AUTHENTICATED');
-        } catch (error) {
-          console.warn("Could not sync profile with server on auth change (using cached local profile):", error);
-          setAuthStatus('AUTHENTICATED');
-        }
-      } else {
-        // Firebase has no currentUser. Check if there is an active local app session
-        try {
-          const rawSession = localStorage.getItem('jpstudy_app_session_v1');
-          if (rawSession) {
-            const { token: sessionToken, firebaseUser: fbUser } = JSON.parse(rawSession);
-            if (sessionToken && fbUser) {
-              const syntheticUser: any = {
-                uid: fbUser.uid,
-                email: fbUser.email,
-                displayName: fbUser.displayName,
-                photoURL: fbUser.photoURL,
-                emailVerified: true,
-                getIdToken: async () => sessionToken
-              };
-              setUser(syntheticUser);
-              setToken(sessionToken);
-              setAuthStatus('AUTHENTICATED');
-              setLoading(false);
-
-              // Background sync
-              fetch('/api/user/sync', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${sessionToken}`
-                }
-              }).then(async res => {
-                const ct = res.headers.get('content-type') || '';
-                if (res.ok && ct.includes('application/json')) {
-                  return res.json();
-                }
-                return null;
-              }).then(data => {
-                if (data && data.success && data.user) {
-                  const parsed = parseDbUser(data.user);
-                  setDbUser(parsed);
-                  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-                  checkAndApplyRedirect(parsed.role);
-                }
-              }).catch(() => {});
-              return;
-            }
-          }
-        } catch (sessionErr) {
-          console.warn('Could not restore app session:', sessionErr);
-        }
-
-        setDbUser(null);
-        setToken(null);
-        setAuthStatus((prev) => (prev === 'AUTHENTICATING' ? prev : 'UNAUTHENTICATED'));
-      }
-      setLoading(false);
-    });
-
-    return unsubscribe;
-  }, []);
 
   return (
     <AuthContext.Provider value={{

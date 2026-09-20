@@ -44,7 +44,7 @@ export default function Header({
   onTriggerCelebration,
   setCurrentTab
 }: HeaderProps) {
-  const { user, logout, quickLogin } = useAuth();
+  const { user, logout, quickLogin, authStatus, loading } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isAiConfigModalOpen, setIsAiConfigModalOpen] = useState(false);
@@ -317,7 +317,16 @@ export default function Header({
         </button>
 
         {/* User profile button / Login button */}
-        {!user ? (
+        {(authStatus === 'AUTH_INITIALIZING' || loading) ? (
+          <div 
+            id="header-auth-checking"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/80 border border-slate-800 text-slate-400 text-xs font-semibold animate-pulse select-none shrink-0"
+            title="Đang đồng bộ trạng thái đăng nhập..."
+          >
+            <RefreshCw className="w-3.5 h-3.5 animate-spin text-[#E89A3C]" />
+            <span className="hidden sm:inline">Đang kiểm tra...</span>
+          </div>
+        ) : !user ? (
           <button
             id="header-login-btn"
             type="button"
