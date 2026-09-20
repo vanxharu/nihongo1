@@ -251,7 +251,120 @@ export type AzureVoiceChoice =
   | 'ja-JP-NaokiNeural'
   | 'ja-JP-ShioriNeural'
   | 'nanami' 
-  | 'keita';
+  | 'keita'
+  | string;
+
+export interface JapaneseVoiceOption {
+  id: string;
+  name: string;
+  gender: 'female' | 'male';
+  genderLabel: string;
+  description: string;
+  sampleText: string;
+  badge?: string;
+  isNeural: boolean;
+}
+
+export const PRESET_JAPANESE_VOICES: JapaneseVoiceOption[] = [
+  {
+    id: 'ja-JP-NanamiNeural',
+    name: 'Nanami',
+    gender: 'female',
+    genderLabel: 'Nữ',
+    description: 'Phát thanh viên Tokyo, trong trẻo, chuẩn thi JLPT',
+    sampleText: 'こんにちは！七海です。日本語の勉強を一緒に頑張りましょう！',
+    badge: 'Khuyên dùng ⭐5',
+    isNeural: true,
+  },
+  {
+    id: 'ja-JP-KeitaNeural',
+    name: 'Keita',
+    gender: 'male',
+    genderLabel: 'Nam',
+    description: 'Chuẩn đề thi JLPT N4-N2, trầm ấm, dứt khoát',
+    sampleText: 'はじめまして！慶太です。JLPT合格を目指して頑張ろう！',
+    badge: 'Chuẩn JLPT ⭐5',
+    isNeural: true,
+  },
+  {
+    id: 'ja-JP-AoiNeural',
+    name: 'Aoi',
+    gender: 'female',
+    genderLabel: 'Nữ',
+    description: 'Giọng nữ nhẹ nhàng, trẻ trung, đĩnh đạc tự nhiên',
+    sampleText: '葵です！今日も楽しく日本語を練習しましょうね。',
+    badge: 'Tự nhiên',
+    isNeural: true,
+  },
+  {
+    id: 'ja-JP-DaichiNeural',
+    name: 'Daichi',
+    gender: 'male',
+    genderLabel: 'Nam',
+    description: 'Giọng nam sôi nổi, năng động, phong cách hội thoại',
+    sampleText: '大智です！毎日の積み重ねが合格への近道だよ。',
+    badge: 'Sôi nổi',
+    isNeural: true,
+  },
+  {
+    id: 'ja-JP-MayuNeural',
+    name: 'Mayu',
+    gender: 'female',
+    genderLabel: 'Nữ',
+    description: 'Giọng nữ ấm áp, thân thiện, truyền cảm',
+    sampleText: '真由です。一歩ずつ着実に進んでいきましょう。',
+    badge: 'Ấm áp',
+    isNeural: true,
+  },
+  {
+    id: 'ja-JP-NaokiNeural',
+    name: 'Naoki',
+    gender: 'male',
+    genderLabel: 'Nam',
+    description: 'Giọng nam chững chạc, phát âm rõ từng chữ',
+    sampleText: '直樹です。正しい発音とイントネーションを身につけましょう。',
+    badge: 'Rõ ràng',
+    isNeural: true,
+  },
+  {
+    id: 'ja-JP-ShioriNeural',
+    name: 'Shiori',
+    gender: 'female',
+    genderLabel: 'Nữ',
+    description: 'Giọng nữ êm dịu, chuẩn phong cách đọc sách và tin tức',
+    sampleText: '詩織です。落ち着いて日本語の文章を読み解きましょう。',
+    badge: 'Điềm tĩnh',
+    isNeural: true,
+  },
+];
+
+export function getVoiceDisplayName(voiceId: string): string {
+  if (!voiceId) return 'Nanami (Nữ)';
+  const normalized = voiceId === 'nanami' ? 'ja-JP-NanamiNeural' : voiceId === 'keita' ? 'ja-JP-KeitaNeural' : voiceId;
+  const found = PRESET_JAPANESE_VOICES.find(v => v.id === normalized);
+  if (found) return `${found.name} (${found.genderLabel})`;
+  if (voiceId.startsWith('device:')) {
+    const rawName = voiceId.replace('device:', '');
+    return `${rawName} (Thiết bị)`;
+  }
+  if (voiceId.toLowerCase().includes('keita')) return 'Keita (Nam)';
+  if (voiceId.toLowerCase().includes('nanami')) return 'Nanami (Nữ)';
+  return voiceId;
+}
+
+export function getDeviceJapaneseVoices(): SpeechSynthesisVoice[] {
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return [];
+  try {
+    const voices = window.speechSynthesis.getVoices() || [];
+    return voices.filter(v => 
+      v.lang.toLowerCase().startsWith('ja') || 
+      v.name.toLowerCase().includes('japanese') || 
+      v.name.includes('日本語')
+    );
+  } catch (e) {
+    return [];
+  }
+}
 
 let currentPreferredVoice: AzureVoiceChoice = 'ja-JP-NanamiNeural';
 
@@ -291,6 +404,16 @@ function findBestJapaneseVoice(preferredVoiceName?: string): SpeechSynthesisVoic
 
   const voices = window.speechSynthesis.getVoices();
   if (!voices || voices.length === 0) return null;
+
+  // If a specific device voice is requested
+  if (preferredVoiceName && preferredVoiceName.startsWith('device:')) {
+    const targetName = preferredVoiceName.replace('device:', '');
+    const matched = voices.find(v => v.name === targetName || v.voiceURI === targetName);
+    if (matched) {
+      cachedJaVoice = matched;
+      return matched;
+    }
+  }
 
   const targetVoiceStr = (preferredVoiceName || getPreferredVoice()).toLowerCase();
   const isMalePreferred = targetVoiceStr.includes('keita') || targetVoiceStr.includes('daichi') || targetVoiceStr.includes('naoki') || targetVoiceStr.includes('male');
@@ -541,7 +664,13 @@ export function speakJapanese(
     }
   };
 
-  // Primary stream: Microsoft Azure Neural Voices (Nanami / Keita)
+  // Primary stream: If user selected a device voice specifically, use Web Speech API immediately
+  if (selectedVoice.startsWith('device:')) {
+    runWebSpeechFallback();
+    return;
+  }
+
+  // Primary stream: Microsoft Azure Neural Voices (Nanami / Keita / Aoi / etc.)
   try {
     const audio = new Audio(azureTtsUrl);
     activeAudioElement = audio;

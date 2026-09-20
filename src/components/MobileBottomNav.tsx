@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   BookMarked, 
@@ -36,11 +36,13 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
-import { isSoundEnabled, setSoundEnabled, getPreferredVoice, setPreferredVoice, speakJapanese, AzureVoiceChoice } from '../utils/audio';
+import { isSoundEnabled, setSoundEnabled, getPreferredVoice, setPreferredVoice, speakJapanese, AzureVoiceChoice, getVoiceDisplayName } from '../utils/audio';
 import { JLPT_LEVEL_INFO } from './LevelProgressBar';
 import { getPlayerLevelInfo } from '../utils/xpSystem';
 import { calculateUnlockedAchievements, TOTAL_ACHIEVEMENTS_COUNT } from '../data/achievementsData';
 import { BRAND_NAME } from '../constants/brand';
+import UserAvatar from './UserAvatar';
+import VoiceSelectorModal from './VoiceSelectorModal';
 
 interface MobileBottomNavProps {
   currentTab: string;
@@ -70,6 +72,19 @@ export default function MobileBottomNav({
   const unlockedCount = calculateUnlockedAchievements(userProfile).size;
   const [soundOn, setSoundOn] = useState(isSoundEnabled());
   const [currentVoice, setCurrentVoice] = useState<AzureVoiceChoice>(getPreferredVoice());
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleVoiceChange = (e: any) => {
+      if (e.detail?.voice) {
+        setCurrentVoice(e.detail.voice);
+      } else {
+        setCurrentVoice(getPreferredVoice());
+      }
+    };
+    window.addEventListener('jlpt_voice_changed', handleVoiceChange);
+    return () => window.removeEventListener('jlpt_voice_changed', handleVoiceChange);
+  }, []);
 
   const handleToggleSound = () => {
     const nextVal = !soundOn;
@@ -226,9 +241,12 @@ export default function MobileBottomNav({
                 {user ? (
                   <>
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="w-10 h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/50 flex items-center justify-center text-lg shrink-0">
-                        {userProfile.avatar || '🐸'}
-                      </div>
+                      <UserAvatar
+                        avatar={userProfile.avatar}
+                        name={userProfile.name}
+                        fallbackEmoji="🐸"
+                        className="w-10 h-10 rounded-xl bg-indigo-600/30 border border-indigo-400/50 text-lg shrink-0"
+                      />
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
                           <span className="text-xs font-bold text-white truncate">{userProfile.name || user.displayName || 'Học viên'}</span>
@@ -354,17 +372,19 @@ export default function MobileBottomNav({
                 <button
                   type="button"
                   onClick={handleToggleSound}
-                  className="flex items-center gap-2 text-xs font-bold text-slate-300"
+                  className="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer min-h-[44px]"
                 >
                   {soundOn ? <Volume2 className="w-4 h-4 text-emerald-400" /> : <VolumeX className="w-4 h-4 text-rose-400" />}
                   <span>Âm thanh: {soundOn ? 'BẬT' : 'TẮT'}</span>
                 </button>
                 <button
                   type="button"
-                  onClick={handleToggleVoice}
-                  className="text-xs font-bold text-indigo-400 hover:underline"
+                  onClick={() => setIsVoiceModalOpen(true)}
+                  className="text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer min-h-[44px] px-2 py-1 bg-amber-500/10 border border-amber-500/20 rounded-xl"
+                  title="Chọn giọng đọc"
                 >
-                  Giọng: {currentVoice.includes('keita') ? 'Keita (Nam)' : 'Nanami (Nữ)'}
+                  <Volume2 className="w-3.5 h-3.5" />
+                  <span>{getVoiceDisplayName(currentVoice)}</span>
                 </button>
               </div>
 
@@ -389,6 +409,12 @@ export default function MobileBottomNav({
           </>
         )}
       </AnimatePresence>
+
+      <VoiceSelectorModal
+        isOpen={isVoiceModalOpen}
+        onClose={() => setIsVoiceModalOpen(false)}
+        onVoiceSelected={(v) => setCurrentVoice(v)}
+      />
     </>
   );
 }

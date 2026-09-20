@@ -9,13 +9,15 @@ import { User, LogIn, ChevronRight, ChevronDown, ChevronLeft, RefreshCw, Trophy,
 import { UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'motion/react';
-import { isSoundEnabled, setSoundEnabled, getPreferredVoice, setPreferredVoice, speakJapanese, AzureVoiceChoice } from '../utils/audio';
+import { isSoundEnabled, setSoundEnabled, getPreferredVoice, setPreferredVoice, speakJapanese, AzureVoiceChoice, getVoiceDisplayName } from '../utils/audio';
 import PwaInstallPrompt from './PwaInstallPrompt';
 import JpStudyLogo from './JpStudyLogo';
 import NotificationSettingsModal from './NotificationSettingsModal';
 import AIConfigModal from './AIConfigModal';
 import ConfirmModal from './ConfirmModal';
 import LevelProgressBar from './LevelProgressBar';
+import UserAvatar from './UserAvatar';
+import VoiceSelectorModal from './VoiceSelectorModal';
 import { getPlayerLevelInfo } from '../utils/xpSystem';
 import { BRAND_NAME } from '../constants/brand';
 
@@ -69,6 +71,7 @@ export default function Header({
   const [soundOn, setSoundOn] = useState(isSoundEnabled());
   const [currentVoice, setCurrentVoice] = useState<AzureVoiceChoice>(getPreferredVoice());
   const [isPlayingTestVoice, setIsPlayingTestVoice] = useState(false);
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     title: string;
@@ -337,7 +340,7 @@ export default function Header({
             title="Hồ sơ học tập & Cài đặt hệ thống"
           >
             <div className="relative flex items-center justify-center w-6 h-6 rounded-full bg-white border border-slate-200 text-sm">
-              <span>{userProfile.avatar || '🦊'}</span>
+              <UserAvatar avatar={userProfile.avatar} name={userProfile.name} fallbackEmoji="🦊" className="w-6 h-6 rounded-full text-xs" />
               <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border border-white" />
             </div>
             <span className="hidden md:inline text-xs font-semibold text-slate-800 max-w-[110px] truncate">
@@ -581,6 +584,18 @@ export default function Header({
                     <span>{isPlayingTestVoice ? 'Đang phát âm thanh mẫu...' : `Nghe thử giọng ${currentVoice.includes('keita') ? 'Keita (Nam)' : 'Nanami (Nữ)'}`}</span>
                   </button>
                   
+                  {/* More voices button */}
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsVoiceModalOpen(true)}
+                      className="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Chọn từ 7 giọng AI chuẩn & giọng thiết bị ({getVoiceDisplayName(currentVoice)})</span>
+                    </button>
+                  </div>
+                  
                   <div className="text-[10px] text-slate-500 mt-1.5 flex items-center gap-1">
                     <span>✨</span>
                     <span>Tự động ngắt nghỉ, nhấn từ khóa và chuẩn nhịp JLPT N4–N2.</span>
@@ -708,6 +723,12 @@ export default function Header({
         onConfirm={confirmDialog.onConfirm}
         isDanger={confirmDialog.isDanger}
         onClose={() => setConfirmDialog(p => ({ ...p, isOpen: false }))}
+      />
+
+      <VoiceSelectorModal
+        isOpen={isVoiceModalOpen}
+        onClose={() => setIsVoiceModalOpen(false)}
+        onVoiceSelected={(v) => setCurrentVoice(v)}
       />
     </header>
     </>

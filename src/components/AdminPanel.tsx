@@ -9,6 +9,7 @@ import { Database, Users, Settings, Activity, Server, AlertCircle,
 import AdminDataPanel from "./AdminDataPanel";
 import ConfirmModal from "./ConfirmModal";
 import { AdminListeningManager } from "./listening/AdminListeningManager";
+import UserAvatar from "./UserAvatar";
 
 interface AdminPanelProps {
   userProfile: UserProfile;
@@ -430,7 +431,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                   {filteredUsers.map((u) => (
                     <tr key={u.uid} className="hover:bg-slate-50/50 transition-colors">
                       <td className="px-6 py-4 flex items-center gap-3">
-                        <span className="text-2xl shrink-0">{u.avatar || '🦊'}</span>
+                        <UserAvatar avatar={u.avatar} name={u.name} fallbackEmoji="🦊" className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 text-lg shrink-0" />
                         <div className="min-w-0">
                           <p className="font-bold text-slate-950 truncate flex items-center gap-1.5">
                             {u.name || 'Học viên JLPT'}

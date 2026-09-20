@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Share2, 
@@ -25,10 +25,20 @@ import { UserProfile, JLPTLevel } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
 import { AchievementMascotIcon } from '../achievements/AchievementMascotIcon';
 import { ACHIEVEMENTS_LIST, calculateUnlockedAchievements } from '../../data/achievementsData';
-import { isSoundEnabled, setSoundEnabled, getPreferredVoice, setPreferredVoice, speakJapanese, AzureVoiceChoice } from '../../utils/audio';
+import { 
+  isSoundEnabled, 
+  setSoundEnabled, 
+  getPreferredVoice, 
+  setPreferredVoice, 
+  speakJapanese, 
+  AzureVoiceChoice,
+  getVoiceDisplayName 
+} from '../../utils/audio';
 import PremiumModal from './PremiumModal';
 import ConfirmModal from '../ConfirmModal';
 import ShibaMascot from '../mascot/ShibaMascot';
+import UserAvatar from '../UserAvatar';
+import VoiceSelectorModal from '../VoiceSelectorModal';
 
 interface MobileProfileViewProps {
   userProfile: UserProfile;
@@ -52,7 +62,21 @@ export default function MobileProfileView({
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
   const [soundOn, setSoundOn] = useState(isSoundEnabled());
   const [currentVoice, setCurrentVoice] = useState<AzureVoiceChoice>(getPreferredVoice());
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
+
+  // Sync voice preference when changed from other components or storage
+  useEffect(() => {
+    const handleVoiceChange = (e: any) => {
+      if (e.detail?.voice) {
+        setCurrentVoice(e.detail.voice);
+      } else {
+        setCurrentVoice(getPreferredVoice());
+      }
+    };
+    window.addEventListener('jlpt_voice_changed', handleVoiceChange);
+    return () => window.removeEventListener('jlpt_voice_changed', handleVoiceChange);
+  }, []);
 
   // Profile Details Modal States (for logged-in user)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -203,13 +227,12 @@ export default function MobileProfileView({
         className="w-full p-4 rounded-2xl bg-[#12172A] border border-[#1B223C] hover:border-[#E89A3C]/50 transition-all flex items-center justify-between gap-3 text-left active:scale-[0.99] cursor-pointer"
       >
         <div className="flex items-center gap-3.5 min-w-0">
-          <div className="w-11 h-11 rounded-2xl bg-[#E89A3C]/15 border border-[#E89A3C]/30 text-amber-400 flex items-center justify-center shrink-0 text-2xl">
-            {user && userProfile.avatar ? (
-              <span>{userProfile.avatar}</span>
-            ) : (
-              <User className="w-6 h-6" />
-            )}
-          </div>
+          <UserAvatar
+            avatar={user && userProfile.avatar ? userProfile.avatar : null}
+            name={userProfile.name}
+            fallbackEmoji="🦊"
+            className="w-11 h-11 rounded-2xl bg-[#E89A3C]/15 border border-[#E89A3C]/30 text-amber-400 text-2xl shrink-0"
+          />
           <div className="min-w-0">
             <div className="text-sm font-black text-white truncate">
               {user ? (userProfile.name || user.displayName || user.email?.split('@')[0] || 'Học viên NihonGo') : 'Đăng nhập'}
@@ -365,27 +388,43 @@ export default function MobileProfileView({
           </div>
 
           {/* Âm thanh & Giọng đọc AI */}
-          <div className="p-4 flex items-center justify-between">
-            <div>
-              <div className="text-xs sm:text-sm font-bold text-slate-200">Giọng đọc & Âm thanh</div>
-              <div className="text-[11px] text-slate-400">
-                {currentVoice.includes('keita') ? 'Keita (Nam)' : 'Nanami (Nữ)'} • {soundOn ? 'Bật' : 'Tắt'}
+          <div className="p-4 flex items-center justify-between gap-3">
+            <div 
+              onClick={() => setIsVoiceModalOpen(true)}
+              className="cursor-pointer select-none min-w-0"
+              title="Nhấn để đổi giọng đọc"
+            >
+              <div className="text-xs sm:text-sm font-bold text-slate-200 hover:text-amber-300 transition-colors flex items-center gap-1.5">
+                <span>Giọng đọc & Âm thanh</span>
+              </div>
+              <div className="text-[11px] text-slate-400 mt-0.5 truncate">
+                <span className="text-amber-400 font-semibold">{getVoiceDisplayName(currentVoice)}</span>
+                {' • '}
+                <span>{soundOn ? 'Bật âm thanh' : 'Tắt âm thanh'}</span>
+                {' • '}
+                <span className="text-sky-400 font-medium">Đổi giọng</span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 type="button"
-                onClick={handleToggleVoice}
-                className="px-2.5 py-1 bg-[#1B223C] hover:bg-[#242E52] text-amber-200 border border-[#E89A3C]/30 rounded-lg text-xs font-bold cursor-pointer transition-colors"
+                onClick={() => setIsVoiceModalOpen(true)}
+                className="min-h-[44px] px-3 py-2 bg-[#1B223C] hover:bg-[#242E52] text-amber-200 border border-[#E89A3C]/40 rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-95 flex items-center gap-1.5 shadow-xs"
+                title="Chọn giọng đọc tiếng Nhật"
               >
-                {currentVoice.includes('keita') ? 'Keita ♂' : 'Nanami ♀'}
+                <Volume2 className="w-3.5 h-3.5 text-amber-400" />
+                <span>{getVoiceDisplayName(currentVoice)}</span>
+                <ChevronRight className="w-3.5 h-3.5 text-amber-400/60" />
               </button>
               <button
                 type="button"
                 onClick={handleToggleSound}
-                className={`p-2 rounded-lg cursor-pointer transition-colors ${
-                  soundOn ? 'bg-[#E89A3C]/20 text-[#E89A3C] border border-[#E89A3C]/40' : 'bg-slate-800 text-slate-500'
+                className={`min-w-[44px] min-h-[44px] p-2.5 rounded-xl cursor-pointer transition-all flex items-center justify-center ${
+                  soundOn 
+                    ? 'bg-[#E89A3C]/20 text-[#E89A3C] border border-[#E89A3C]/40 hover:bg-[#E89A3C]/30' 
+                    : 'bg-slate-800 text-slate-500 hover:bg-slate-700'
                 }`}
+                title={soundOn ? 'Tắt âm thanh' : 'Bật âm thanh'}
               >
                 {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
               </button>
@@ -538,10 +577,31 @@ export default function MobileProfileView({
 
               {/* Avatar Selector */}
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-300 flex items-center justify-between">
-                  <span>Ảnh đại diện</span>
-                  <span className="text-slate-500 font-normal text-[11px]">Chạm để chọn</span>
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-300">
+                    Ảnh đại diện
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <UserAvatar avatar={tempAvatar} name={tempName} className="w-7 h-7 rounded-lg border border-amber-400/50 bg-[#12172A] text-sm" />
+                    <span className="text-slate-500 font-normal text-[11px]">Đang chọn</span>
+                  </div>
+                </div>
+
+                {user?.photoURL && (
+                  <button
+                    type="button"
+                    onClick={() => setTempAvatar(user.photoURL!)}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      tempAvatar === user.photoURL
+                        ? 'bg-amber-500/20 border-2 border-amber-500 text-amber-300'
+                        : 'bg-[#12172A] border border-slate-700 text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    <UserAvatar avatar={user.photoURL} className="w-6 h-6 rounded-full" />
+                    <span>Dùng ảnh tài khoản Google</span>
+                  </button>
+                )}
+
                 <div className="grid grid-cols-6 gap-2 bg-[#12172A] p-2.5 rounded-2xl border border-slate-800">
                   {AVATARS.map((av) => (
                     <button
@@ -689,6 +749,13 @@ export default function MobileProfileView({
           setIsResetConfirmOpen(false);
         }}
         onClose={() => setIsResetConfirmOpen(false)}
+      />
+
+      {/* Voice Selector Modal (Mobile Sheet / Dialog) */}
+      <VoiceSelectorModal
+        isOpen={isVoiceModalOpen}
+        onClose={() => setIsVoiceModalOpen(false)}
+        onVoiceSelected={(voice) => setCurrentVoice(voice)}
       />
     </div>
   );
