@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { GoogleAuthService } from '../services/googleAuth';
 import { LogIn, UserPlus, Mail, Lock, AlertCircle, Sparkles, X, Chrome, Copy, Check, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -17,6 +18,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [error, setError] = useState('');
   const [errorCode, setErrorCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [copiedDomain, setCopiedDomain] = useState(false);
 
   const currentHostname = typeof window !== 'undefined' ? window.location.hostname : '';
@@ -125,9 +127,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   };
 
   const handleGoogleSignIn = async () => {
+    if (loading || googleLoading) return;
     setError('');
     setErrorCode('');
     clearAuthError();
+    setGoogleLoading(true);
     try {
       await loginWithGoogle();
       handleClose();
@@ -136,23 +140,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       setErrorCode(code);
       if (code === 'auth/popup-closed-by-user') {
         setError('Bạn đã đóng cửa sổ đăng nhập Google.');
-      } else if (code === 'auth/unauthorized-domain') {
-        setError(`Tên miền "${currentHostname}" chưa được cấp phép trong Firebase Authentication của dự án nihongo-fd01e.`);
-      } else if (code === 'auth/operation-not-allowed') {
-        setError('Phương thức đăng nhập Google chưa được kích hoạt trong Firebase Authentication Console.');
-      } else if (code === 'auth/network-request-failed') {
-        setError('Lỗi kết nối mạng khi liên hệ với Google Authentication. Vui lòng kiểm tra Internet.');
-      } else if (code === 'auth/internal-error') {
-        setError('Lỗi nội bộ Firebase Authentication. Vui lòng thử lại hoặc tải lại trang.');
-      } else if (code === 'auth/account-exists-with-different-credential') {
-        setError('Email này đã liên kết với phương thức đăng nhập khác. Vui lòng đăng nhập bằng Email & Mật khẩu.');
-      } else if (err?.message) {
-        setError(err.message);
       } else {
-        setError('Đã xảy ra lỗi khi đăng nhập bằng Google. Vui lòng thử lại.');
+        setError(GoogleAuthService.formatErrorMessage(err));
       }
     } finally {
-      setLoading(false);
+      setGoogleLoading(false);
     }
   };
 
@@ -357,7 +349,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         <button
           type="button"
           onClick={handleGoogleSignIn}
-          disabled={loading || !!googleAuthMessage}
+          disabled={loading || googleLoading || !!googleAuthMessage}
           className="w-full py-2.5 border border-slate-200 hover:bg-slate-50 active:bg-slate-100 disabled:opacity-75 font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer text-slate-700 shadow-xs"
         >
           {googleAuthMessage ? (

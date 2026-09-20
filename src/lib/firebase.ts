@@ -21,6 +21,7 @@ const firebaseConfig = {
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const auth = getAuth(app);
+console.log('[AUTH] Firebase initialized');
 
 // Enforce browserLocalPersistence so session persists across refresh on desktop, mobile, and PWA
 if (typeof window !== 'undefined') {
@@ -29,11 +30,7 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export const googleAuthProvider = new GoogleAuthProvider();
-googleAuthProvider.setCustomParameters({
-  prompt: 'select_account'
-});
+export { app, firebaseConfig, browserPopupRedirectResolver, browserLocalPersistence };
 
-export { browserPopupRedirectResolver, browserLocalPersistence };
 
 
