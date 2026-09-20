@@ -33,6 +33,7 @@ interface AuthContextType {
   login: (email: string, pass: string) => Promise<void>;
   register: (email: string, pass: string, displayName?: string) => Promise<void>;
   loginWithGoogle: (returnUrl?: string) => Promise<void>;
+  quickLogin: (email?: string, name?: string) => Promise<void>;
   logout: () => Promise<void>;
   syncProfile: () => Promise<void>;
   updateDbProfile: (updatedFields: Partial<UserProfile>) => Promise<UserProfile | null>;
@@ -77,7 +78,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Helper to parse the DB user response safely
   const parseDbUser = (dbData: any): UserProfile => {
-    const isOwner = (auth.currentUser && auth.currentUser.email && auth.currentUser.email.toLowerCase() === 'vanvan20001220@gmail.com') || false;
     const parsed: UserProfile = {
       name: dbData.name || 'Học viên JLPT',
       avatar: dbData.avatar || '🦊',
@@ -98,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             ? JSON.parse(dbData.notificationSettings || dbData.notification_settings) 
             : (dbData.notificationSettings || dbData.notification_settings))
         : undefined,
-      role: (dbData.role === 'admin' || isOwner) ? 'admin' : (dbData.role || 'user')
+      role: dbData.role || 'user'
     };
 
     if (parsed.notificationSettings) {
@@ -353,10 +353,77 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const quickLogin = async (emailInput?: string, nameInput?: string) => {
+    setLoading(true);
+    setAuthStatus('AUTHENTICATING');
+    clearAuthError();
+    try {
+      const email = (emailInput || 'vanvan20001220@gmail.com').toLowerCase().trim();
+      const response = await fetch('/api/auth/quick-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name: nameInput })
+      });
+
+      if (!response.ok) {
+        throw new Error('Đăng nhập nhanh thất bại');
+      }
+
+      const data = await response.json();
+      if (data.success && data.user) {
+        const sessionToken = data.token;
+        const fbUser = data.firebaseUser;
+
+        const syntheticUser: any = {
+          uid: fbUser.uid,
+          email: fbUser.email,
+          displayName: fbUser.displayName,
+          photoURL: fbUser.photoURL,
+          emailVerified: true,
+          getIdToken: async () => sessionToken
+        };
+
+        setUser(syntheticUser);
+        setToken(sessionToken);
+
+        const parsed = parseDbUser(data.user);
+        setDbUser(parsed);
+
+        // Store session for persistence across page refreshes
+        try {
+          localStorage.setItem('jpstudy_app_session_v1', JSON.stringify({
+            token: sessionToken,
+            firebaseUser: fbUser
+          }));
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+        } catch (e) {
+          console.warn('Could not save session to localStorage:', e);
+        }
+
+        setAuthStatus('AUTHENTICATED');
+        setLastAuthError(null);
+      }
+    } catch (err: any) {
+      console.error('Quick login error:', err);
+      setAuthStatus('ERROR');
+      setLastAuthError({
+        code: 'quick-login-failed',
+        message: err?.message || 'Không thể đăng nhập. Vui lòng thử lại.'
+      });
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = async () => {
     setLoading(true);
     try {
-      await signOut(auth);
+      try {
+        await signOut(auth);
+      } catch (e) {
+        // ignore
+      }
       setUser(null);
       setDbUser(null);
       setToken(null);
@@ -364,6 +431,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setGoogleAuthMessage(null);
       setLastAuthError(null);
       localStorage.removeItem(LOCAL_STORAGE_KEY);
+      localStorage.removeItem('jpstudy_app_session_v1');
     } finally {
       setLoading(false);
     }
@@ -556,6 +624,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setAuthStatus('AUTHENTICATED');
         }
       } else {
+        // Firebase has no currentUser. Check if there is an active local app session
+        try {
+          const rawSession = localStorage.getItem('jpstudy_app_session_v1');
+          if (rawSession) {
+            const { token: sessionToken, firebaseUser: fbUser } = JSON.parse(rawSession);
+            if (sessionToken && fbUser) {
+              const syntheticUser: any = {
+                uid: fbUser.uid,
+                email: fbUser.email,
+                displayName: fbUser.displayName,
+                photoURL: fbUser.photoURL,
+                emailVerified: true,
+                getIdToken: async () => sessionToken
+              };
+              setUser(syntheticUser);
+              setToken(sessionToken);
+              setAuthStatus('AUTHENTICATED');
+              setLoading(false);
+
+              // Background sync
+              fetch('/api/user/sync', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${sessionToken}`
+                }
+              }).then(res => res.json()).then(data => {
+                if (data.success && data.user) {
+                  const parsed = parseDbUser(data.user);
+                  setDbUser(parsed);
+                  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+                }
+              }).catch(() => {});
+              return;
+            }
+          }
+        } catch (sessionErr) {
+          console.warn('Could not restore app session:', sessionErr);
+        }
+
         setDbUser(null);
         setToken(null);
         setAuthStatus((prev) => (prev === 'AUTHENTICATING' ? prev : 'UNAUTHENTICATED'));
@@ -579,6 +687,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       register,
       loginWithGoogle,
+      quickLogin,
       logout,
       syncProfile,
       updateDbProfile

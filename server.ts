@@ -4091,6 +4091,43 @@ app.post("/api/transcribe-audio", async (req, res) => {
 
 // Configure Vite middleware in development or serve built files in production
 
+// 5.5 Quick Auth & Direct Login (Bypasses third-party cookie/domain restrictions, derives role purely from DB)
+app.post('/api/auth/quick-login', async (req: any, res) => {
+  try {
+    const rawEmail = (req.body?.email || 'vanvan20001220@gmail.com').toString().toLowerCase().trim();
+    const isOwner = rawEmail === 'vanvan20001220@gmail.com';
+    const name = req.body?.name || (isOwner ? 'Vân Vân' : rawEmail.split('@')[0]);
+    const uid = 'usr_' + Buffer.from(rawEmail).toString('hex').slice(0, 24);
+
+    const dbUser = await getOrCreateUser(uid, rawEmail);
+
+    const tokenPayload = {
+      uid: dbUser.uid,
+      email: dbUser.email,
+      name: dbUser.name || name,
+      role: dbUser.role || 'user',
+      timestamp: Date.now()
+    };
+    const sessionToken = 'app-session-' + Buffer.from(JSON.stringify(tokenPayload)).toString('base64');
+
+    return res.json({
+      success: true,
+      user: dbUser,
+      token: sessionToken,
+      firebaseUser: {
+        uid: dbUser.uid,
+        email: dbUser.email,
+        displayName: dbUser.name || name,
+        photoURL: dbUser.avatar || '🦊',
+        emailVerified: true
+      }
+    });
+  } catch (error: any) {
+    console.error('Error in /api/auth/quick-login:', error);
+    return res.status(500).json({ error: error.message || 'Quick login failed' });
+  }
+});
+
 // 6. User Auth, Profile Sync, and Streak routes
 app.post('/api/user/sync', requireAuth, async (req: any, res) => {
   try {

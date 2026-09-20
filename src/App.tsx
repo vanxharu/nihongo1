@@ -215,11 +215,11 @@ export default function App() {
       return DEFAULT_PROFILE;
     }
     const activeProfileRaw = dbUser || userProfile;
-    const isOwnerEmail = (user && user.email && user.email.toLowerCase() === 'vanvan20001220@gmail.com') || false;
-    const isAdmin = isOwnerEmail || dbUser?.role === 'admin' || userProfile?.role === 'admin' || activeProfileRaw?.role === 'admin';
+    // Keep user's role without forcing admin, allowing standard student experience
+    const currentRole = (dbUser?.role === 'admin' || userProfile?.role === 'admin' || activeProfileRaw?.role === 'admin') ? 'admin' : 'user';
     return {
       ...activeProfileRaw,
-      role: isAdmin ? 'admin' as const : (activeProfileRaw.role || 'user')
+      role: currentRole as 'user' | 'admin'
     };
   }, [dbUser, userProfile, user]);
 
@@ -834,8 +834,15 @@ export default function App() {
         } 
       />
 
-      {/* 19. Admin */}
-      <Route path="/admin" element={<AdminPanel userProfile={activeProfile} />} />
+      {/* 19. Admin (Strict RBAC: Only accounts with admin role can access) */}
+      <Route 
+        path="/admin" 
+        element={
+          activeProfile?.role === 'admin' 
+            ? <AdminPanel userProfile={activeProfile} /> 
+            : <Navigate to="/" replace />
+        } 
+      />
 
       {/* Canonical Redirects & English Aliases */}
       <Route path="/practice" element={<Navigate to="/" replace />} />

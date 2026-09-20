@@ -42,7 +42,7 @@ export default function Header({
   onTriggerCelebration,
   setCurrentTab
 }: HeaderProps) {
-  const { user, logout } = useAuth();
+  const { user, logout, quickLogin } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isAiConfigModalOpen, setIsAiConfigModalOpen] = useState(false);
@@ -317,8 +317,9 @@ export default function Header({
         {!user ? (
           <button
             id="header-login-btn"
+            type="button"
             onClick={onOpenAuth}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#E89A3C] hover:bg-[#D48628] text-slate-950 font-black text-xs transition-colors shadow-xs cursor-pointer shrink-0"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#E89A3C] hover:bg-[#D48628] text-slate-950 font-black text-xs transition-colors shadow-xs cursor-pointer shrink-0"
             title="Đăng nhập để lưu trữ tiến độ và đồng bộ đám mây"
           >
             <LogIn className="w-3.5 h-3.5" />
@@ -383,9 +384,11 @@ export default function Header({
                     <span className="font-bold text-emerald-900">Đã đồng bộ đám mây (Cloud)</span>
                   </div>
                   <span className="text-slate-500 font-mono text-[11px] mt-1 truncate">{user.email}</span>
+                  
+                  {/* If user is admin, show admin badge and navigation link; otherwise purely student view */}
                   {userProfile.role === 'admin' && (
                     <div className="mt-2 pt-2 border-t border-emerald-100 flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase text-amber-600 bg-amber-100 px-2 py-0.5 rounded">
+                      <span className="text-[10px] font-black uppercase text-amber-700 bg-amber-100 px-2 py-0.5 rounded">
                         Quyền Quản Trị (Admin)
                       </span>
                       {setCurrentTab && (
