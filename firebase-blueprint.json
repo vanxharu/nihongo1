@@ -1,0 +1,23 @@
+{
+  "entities": {
+    "users": {
+      "title": "users",
+      "description": "User profiles and learning records",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "description": "User email" },
+        "name": { "type": "string", "description": "Display name" },
+        "avatar": { "type": "string", "description": "Avatar emoji/icon" },
+        "targetLevel": { "type": "string", "description": "Target JLPT level" },
+        "xp": { "type": "number", "description": "Total experience points" },
+        "streak": { "type": "number", "description": "Current daily study streak" },
+        "coins": { "type": "number", "description": "Virtual coins" },
+        "role": { "type": "string", "description": "User role ('user' or 'admin')", "enum": ["user", "admin"] },
+        "createdAt": { "type": "string", "description": "Creation timestamp" },
+        "updatedAt": { "type": "string", "description": "Last update timestamp" }
+      },
+      "required": ["uid", "email", "role"]
+    }
+  }
+}

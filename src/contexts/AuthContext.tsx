@@ -131,14 +131,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (data.success && data.user) {
           const parsed = parseDbUser(data.user);
           
-          // Rich feature: If the user has high XP locally, but the brand new synced DB user has 0 or default low XP,
-          // let's merge their local progress into the database!
+          // Rich feature: If a guest studied without an account, merge their local progress into their new cloud account
           const savedLocal = localStorage.getItem(LOCAL_STORAGE_KEY);
           if (savedLocal && parsed.xp === 0) {
             try {
               const localProfile = JSON.parse(savedLocal) as UserProfile;
-              if (localProfile.xp > 0) {
-                console.log("Merging local profile progress into new cloud database account...");
+              // STRICT HYGIENE: Only merge if localProfile was a guest (no uid) or matched the exact same user
+              const isGuestSession = !localProfile.uid || localProfile.uid === parsed.uid;
+              if (isGuestSession && localProfile.xp > 0) {
+                console.log("Merging guest profile progress into new cloud database account...");
                 const mergedProfile = await updateDbProfileWithToken(idToken, {
                   name: localProfile.name !== 'Học viên JLPT' ? localProfile.name : parsed.name,
                   avatar: localProfile.avatar || parsed.avatar,
@@ -272,25 +273,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (result && result.user) {
         setUser(result.user);
         setLastAuthError(null);
-        const isOwner = (result.user.email && result.user.email.toLowerCase() === 'vanvan20001220@gmail.com') || false;
-        setDbUser((prev) => prev || {
-          uid: result.user.uid,
-          email: result.user.email || '',
-          name: result.user.displayName || (result.user.email ? result.user.email.split('@')[0] : 'Học viên JLPT'),
-          avatar: '🦊',
-          targetLevel: 'N4',
-          xp: 0,
-          streak: 1,
-          coins: 0,
-          lastActiveDate: new Date().toISOString().split('T')[0] || '',
-          studyDays: [new Date().toISOString().split('T')[0] || ''],
-          completedLessons: [],
-          vocabStatus: {},
-          grammarStatus: {},
-          kanjiStatus: {},
-          dailyTestResults: [],
-          role: isOwner ? 'admin' : 'user'
-        });
+        
+        // Immediately fetch authoritative user profile and role from backend database
+        try {
+          const idToken = await result.user.getIdToken();
+          setToken(idToken);
+          const syncResponse = await fetch('/api/user/sync', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${idToken}`
+            }
+          });
+          if (syncResponse.ok) {
+            const syncData = await syncResponse.json();
+            if (syncData.success && syncData.user) {
+              const parsed = parseDbUser(syncData.user);
+              setDbUser(parsed);
+              localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+            }
+          }
+        } catch (syncErr) {
+          console.warn('[AUTH] Immediate database sync after popup login:', syncErr);
+        }
       }
       if (import.meta.env.DEV) {
         console.log('[AUTH] Firebase user authenticated');
@@ -448,25 +453,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (result && result.user) {
           setUser(result.user);
           setLastAuthError(null);
-          const isOwner = (result.user.email && result.user.email.toLowerCase() === 'vanvan20001220@gmail.com') || false;
-          setDbUser((prev) => prev || {
-            uid: result.user.uid,
-            email: result.user.email || '',
-            name: result.user.displayName || (result.user.email ? result.user.email.split('@')[0] : 'Học viên JLPT'),
-            avatar: '🦊',
-            targetLevel: 'N4',
-            xp: 0,
-            streak: 1,
-            coins: 0,
-            lastActiveDate: new Date().toISOString().split('T')[0] || '',
-            studyDays: [new Date().toISOString().split('T')[0] || ''],
-            completedLessons: [],
-            vocabStatus: {},
-            grammarStatus: {},
-            kanjiStatus: {},
-            dailyTestResults: [],
-            role: isOwner ? 'admin' : 'user'
-          });
+          
+          try {
+            const idToken = await result.user.getIdToken();
+            setToken(idToken);
+            const syncResponse = await fetch('/api/user/sync', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}`
+              }
+            });
+            if (syncResponse.ok) {
+              const syncData = await syncResponse.json();
+              if (syncData.success && syncData.user) {
+                const parsed = parseDbUser(syncData.user);
+                setDbUser(parsed);
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+              }
+            }
+          } catch (syncErr) {
+            console.warn('[AUTH] Immediate database sync after redirect login:', syncErr);
+          }
           if (import.meta.env.DEV) {
             console.log('[AUTH] Redirect result received');
             console.log('[AUTH] Firebase user authenticated');
@@ -579,7 +587,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           } catch (e) {
             // ignore
           }
-          const isOwner = (currentUser.email && currentUser.email.toLowerCase() === 'vanvan20001220@gmail.com') || false;
           return {
             name: currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'Học viên JLPT'),
             avatar: currentUser.photoURL || '🦊',
@@ -594,7 +601,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             grammarStatus: {},
             kanjiStatus: {},
             dailyTestResults: [],
-            role: isOwner ? 'admin' : 'user'
+            role: 'user' // Default to 'user'; authoritative role is populated strictly from backend database
           };
         });
 

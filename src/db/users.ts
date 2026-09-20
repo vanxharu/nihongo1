@@ -71,7 +71,7 @@ export async function getOrCreateUser(uid: string, email: string) {
   });
 }
 
-export async function updateUserProfile(uid: string, fields: any) {
+export async function updateUserProfile(uid: string, fields: any, allowRoleChange: boolean = false) {
   return await withDbRetry(async () => {
     const updateData: any = {};
     
@@ -91,7 +91,14 @@ export async function updateUserProfile(uid: string, fields: any) {
     if (fields.dailyTestResults !== undefined) updateData.dailyTestResults = typeof fields.dailyTestResults === 'string' ? fields.dailyTestResults : JSON.stringify(fields.dailyTestResults);
     if (fields.lastPosition !== undefined) updateData.lastPosition = typeof fields.lastPosition === 'string' ? fields.lastPosition : JSON.stringify(fields.lastPosition);
     if (fields.notificationSettings !== undefined) updateData.notificationSettings = typeof fields.notificationSettings === 'string' ? fields.notificationSettings : JSON.stringify(fields.notificationSettings);
-    if (fields.role !== undefined) updateData.role = fields.role;
+    
+    // SECURITY / RBAC: Role CANNOT be changed by regular profile updates.
+    // Only privileged admin operations (allowRoleChange = true) are permitted to alter role.
+    if (fields.role !== undefined && allowRoleChange) {
+      if (fields.role === 'admin' || fields.role === 'user') {
+        updateData.role = fields.role;
+      }
+    }
 
     if (Object.keys(updateData).length === 0) {
       const existing = await db.select().from(users).where(eq(users.uid, uid)).execute();

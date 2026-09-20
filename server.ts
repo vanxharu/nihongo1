@@ -4241,7 +4241,7 @@ app.post('/api/admin/users/update', requireAuth, async (req: any, res) => {
       return res.status(400).json({ error: "uid is required" });
     }
     
-    const updated = await updateUserProfile(uid, { role, xp, coins, streak, name, isVip });
+    const updated = await updateUserProfile(uid, { role, xp, coins, streak, name, isVip }, true);
     res.json({ success: true, user: updated });
   } catch (error: any) {
     console.error("Error in /api/admin/users/update:", error);

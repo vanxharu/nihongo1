@@ -215,8 +215,9 @@ export default function App() {
       return DEFAULT_PROFILE;
     }
     const activeProfileRaw = dbUser || userProfile;
-    // Keep user's role without forcing admin, allowing standard student experience
-    const currentRole = (dbUser?.role === 'admin' || userProfile?.role === 'admin' || activeProfileRaw?.role === 'admin') ? 'admin' : 'user';
+    // STRICT RBAC: Role is authoritatively determined ONLY by the verified database record (dbUser).
+    // Local storage or unauthenticated state can NEVER grant admin privileges.
+    const currentRole = (dbUser && dbUser.role === 'admin') ? 'admin' : 'user';
     return {
       ...activeProfileRaw,
       role: currentRole as 'user' | 'admin'

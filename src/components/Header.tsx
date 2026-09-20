@@ -587,33 +587,7 @@ export default function Header({
                   </div>
                 </div>
 
-                {/* Developer Admin Privilege Toggle Switch */}
-                <div className="border-t border-slate-100 pt-4 mt-4 flex items-center justify-between">
-                  <div className="flex flex-col pr-3">
-                    <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                      <span className="text-sm">🔑</span> Quyền Quản trị Admin
-                    </span>
-                    <span className="text-[10px] text-slate-400">Hiển thị menu quản trị hệ thống JLPT</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const currentRole = userProfile.role || 'user';
-                      const newRole = currentRole === 'admin' ? 'user' : 'admin';
-                      updateProfile({ role: newRole });
-                    }}
-                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
-                      userProfile.role === 'admin' ? 'bg-indigo-600' : 'bg-slate-200'
-                    }`}
-                  >
-                    <span
-                      className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
-                        userProfile.role === 'admin' ? 'translate-x-5' : 'translate-x-0'
-                      }`}
-                    />
-                  </button>
-                </div>
-
+                {/* Profile Save Button */}
                 <button
                   id="profile-btn-save"
                   type="submit"

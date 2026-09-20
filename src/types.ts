@@ -461,6 +461,8 @@ export interface StudyRoadmapConfig {
 }
 
 export interface UserProfile {
+  uid?: string;
+  email?: string;
   name: string;
   avatar: string;
   targetLevel: JLPTLevel;
