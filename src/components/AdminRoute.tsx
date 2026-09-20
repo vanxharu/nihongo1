@@ -13,7 +13,7 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children, onRequireLogin
   const location = useLocation();
   const hasTriggeredLogin = useRef(false);
 
-  const isAuthPending = loading || authStatus === 'INITIALIZING' || authStatus === 'AUTHENTICATING';
+  const isAuthPending = loading || authStatus === 'AUTH_INITIALIZING' || authStatus === 'INITIALIZING' || authStatus === 'AUTHENTICATING';
 
   useEffect(() => {
     if (!isAuthPending && !user && !hasTriggeredLogin.current) {

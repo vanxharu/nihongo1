@@ -356,12 +356,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const loginWithGoogle = async (returnUrl?: string) => {
+    console.log('[AUTH 01] Google login clicked');
     const platform = getAuthPlatform();
-    console.log('[AUTH] Login started');
     console.log(`[AUTH] Platform: ${platform}`);
-    setAuthStatus('AUTHENTICATING');
-    setGoogleAuthMessage('Đang kết nối với Google...');
-    setLoading(true);
+    console.log('[AUTH 02] Provider initialized');
 
     // Save current path to restore after redirect if popup is blocked
     try {
@@ -375,14 +373,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.warn('[AUTH] Could not save auth_return_url to sessionStorage:', e);
     }
 
-    console.log('[AUTH] Method: popup');
+    // Try popup first for responsive desktop experience
+    console.log('[AUTH 03] Starting popup');
+    setAuthStatus('AUTHENTICATING');
+    setGoogleAuthMessage('Đang kết nối với Google...');
+    setLoading(true);
 
     try {
       // Standard popup call without custom resolver to prevent transient activation loss
       const result = await signInWithPopup(auth, googleAuthProvider);
       if (result && result.user) {
-        console.log('[AUTH] Firebase currentUser: FOUND');
-        console.log('[AUTH] Profile loading');
+        console.log('[AUTH 07] auth.currentUser = FOUND');
+        console.log('[AUTH 09] Loading user profile');
         setUser(result.user);
         setLastAuthError(null);
 
@@ -436,6 +438,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           console.warn('[AUTH] Immediate database sync notice:', syncErr);
         }
 
+        console.log('[AUTH 10] Profile loaded');
+        console.log('[AUTH 11] Auth state updated');
+
         // Restore return URL
         try {
           const savedUrl = sessionStorage.getItem('auth_return_url') || sessionStorage.getItem('jpstudy_redirect_after_login');
@@ -451,7 +456,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           // ignore
         }
 
-        console.log('[AUTH] Authentication complete');
+        console.log('[AUTH 12] Authentication complete');
         setAuthStatus('AUTHENTICATED');
         setGoogleAuthMessage(null);
         return;
@@ -480,15 +485,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         errorCode === 'auth/cancelled-popup-request' ||
         errorCode === 'auth/operation-not-supported-in-this-environment'
       ) {
-        console.warn('[AUTH] Popup blocked, falling back to redirect flow');
-        console.log('[AUTH] Method: redirect');
+        console.warn('[AUTH] Popup blocked or not supported, falling back to redirect flow');
+        console.log('[AUTH 03] Starting redirect');
         setGoogleAuthMessage('Đang chuyển sang đăng nhập Google (redirect)...');
         await signInWithRedirect(auth, googleAuthProvider);
         return;
       }
 
       // Case 3: Other errors
-      console.error(`[AUTH] Error: code=${errorCode} message=${error?.message || ''}`);
+      console.error(`[AUTH ERROR]\ncode: ${errorCode}\nmessage: ${error?.message || ''}`);
       setAuthStatus('AUTH_ERROR');
       setGoogleAuthMessage(null);
       setLoading(false);
@@ -611,19 +616,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     let unsubscribeAuth: (() => void) | null = null;
 
     const initAuth = async () => {
+      console.log('[AUTH 04] App loaded after OAuth');
       const platform = getAuthPlatform();
       console.log(`[AUTH] Platform: ${platform}`);
-      console.log('[AUTH] Processing redirect result');
+      console.log('[AUTH 05] Processing redirect result');
 
       let redirectUser: User | null = null;
 
       try {
         const result = await getRedirectResult(auth);
         if (result && result.user) {
-          console.log('[AUTH] Redirect returned');
-          console.log('[AUTH] Redirect result: FOUND');
-          console.log('[AUTH] Firebase currentUser: FOUND');
-          console.log('[AUTH] Profile loading');
+          console.log('[AUTH 06] getRedirectResult = FOUND');
+          console.log('[AUTH 07] auth.currentUser = FOUND');
+          console.log('[AUTH 09] Loading user profile');
           redirectUser = result.user;
           setUser(result.user);
           setLastAuthError(null);
@@ -676,10 +681,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.warn('[AUTH] Immediate database sync notice after redirect:', syncErr);
           }
 
-          console.log('[AUTH] Authentication complete');
-          setAuthStatus('AUTHENTICATED');
-          setGoogleAuthMessage(null);
-          setLoading(false);
+          console.log('[AUTH 10] Profile loaded');
+          console.log('[AUTH 11] Auth state updated');
 
           // Restore saved return URL if available
           try {
@@ -696,13 +699,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           } catch (storageErr) {
             console.warn('[AUTH] Could not restore return URL from sessionStorage:', storageErr);
           }
+
+          console.log('[AUTH 12] Authentication complete');
+          setAuthStatus('AUTHENTICATED');
+          setGoogleAuthMessage(null);
+          setLoading(false);
         } else {
-          console.log('[AUTH] Redirect result: NULL');
+          console.log('[AUTH 06] getRedirectResult = NULL');
         }
       } catch (error: any) {
         const errorCode = error?.code || '';
-        console.error('[AUTH] Redirect result: ERROR');
-        console.error(`[AUTH] Error: code=${errorCode} message=${error?.message || ''}`);
+        console.error('[AUTH 06] getRedirectResult = ERROR');
+        console.error(`[AUTH ERROR]\ncode: ${errorCode}\nmessage: ${error?.message || ''}`);
 
         let userFriendlyMessage = error?.message || 'Đăng nhập bằng Google không thành công.';
         const currentHost = typeof window !== 'undefined' ? window.location.hostname : '';
@@ -733,15 +741,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // ignore
       }
 
+      console.log(`[AUTH 07] auth.currentUser = ${auth.currentUser ? 'FOUND' : 'NULL'}`);
+
       // Set up onIdTokenChanged as the single source of truth
       unsubscribeAuth = onIdTokenChanged(auth, async (currentUser) => {
         if (!isMounted) return;
 
         const effectiveUser = currentUser || redirectUser;
+        console.log(`[AUTH 08] onAuthStateChanged = ${effectiveUser ? 'FOUND' : 'NULL'}`);
+
         if (effectiveUser) {
-          console.log('[AUTH] onAuthStateChanged: FOUND');
-          console.log('[AUTH] Firebase currentUser: FOUND');
-          console.log('[AUTH] Profile loading');
+          console.log('[AUTH 09] Loading user profile');
           setUser(effectiveUser);
 
           // Hydrate from local storage or create default profile immediately
@@ -805,13 +815,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             console.warn('[AUTH] Could not sync profile with server on auth change (using cached local profile):', error);
           }
 
-          console.log('[AUTH] Authentication complete');
+          console.log('[AUTH 10] Profile loaded');
+          console.log('[AUTH 11] Auth state updated');
+          console.log('[AUTH 12] Authentication complete');
           setAuthStatus('AUTHENTICATED');
           setLoading(false);
         } else {
-          console.log('[AUTH] onAuthStateChanged: NULL');
-          console.log('[AUTH] Firebase currentUser: NULL');
-
           // Firebase has no currentUser. Check if there is an active local app session
           try {
             const rawSession = localStorage.getItem('jpstudy_app_session_v1');
@@ -828,32 +837,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 };
                 setUser(syntheticUser);
                 setToken(sessionToken);
-                console.log('[AUTH] Authentication restored from session token');
-                console.log('[AUTH] Authentication complete');
+                console.log('[AUTH 11] Auth state updated');
+                console.log('[AUTH 12] Authentication complete');
                 setAuthStatus('AUTHENTICATED');
                 setLoading(false);
-
-                // Background sync
-                fetch('/api/user/sync', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${sessionToken}`
-                  }
-                }).then(async res => {
-                  const ct = res.headers.get('content-type') || '';
-                  if (res.ok && ct.includes('application/json')) {
-                    return res.json();
-                  }
-                  return null;
-                }).then(data => {
-                  if (data && data.success && data.user) {
-                    const parsed = parseDbUser(data.user);
-                    setDbUser(parsed);
-                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-                    checkAndApplyRedirect(parsed.role);
-                  }
-                }).catch(() => {});
                 return;
               }
             }

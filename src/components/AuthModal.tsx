@@ -128,7 +128,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     setError('');
     setErrorCode('');
     clearAuthError();
-    setLoading(true);
     try {
       await loginWithGoogle();
       handleClose();
