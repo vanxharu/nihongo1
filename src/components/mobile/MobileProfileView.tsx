@@ -598,7 +598,7 @@ export default function MobileProfileView({
                     }`}
                   >
                     <UserAvatar avatar={user.photoURL} className="w-6 h-6 rounded-full" />
-                    <span>Dùng ảnh tài khoản Google</span>
+                    <span>Dùng ảnh đại diện tài khoản</span>
                   </button>
                 )}
 

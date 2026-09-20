@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword, 
   signOut, 
   User,
+  onAuthStateChanged,
   updateProfile as firebaseUpdateProfile
 } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -90,7 +91,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [authStatus, setAuthStatus] = useState<AuthStatus>('AUTH_INITIALIZING');
   const [googleAuthMessage, setGoogleAuthMessage] = useState<string | null>(null);
   const [lastAuthError, setLastAuthError] = useState<AuthErrorInfo | null>(null);
-  const redirectHandledRef = useRef<boolean>(false);
 
   const clearAuthError = () => setLastAuthError(null);
 
@@ -423,7 +423,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Rebuilt Google Login implementation using standalone GoogleAuthService
   const loginWithGoogle = async (returnUrl?: string) => {
     setAuthStatus('AUTHENTICATING');
-    setGoogleAuthMessage('Đang kết nối với Google...');
+    setGoogleAuthMessage('Đang đăng nhập với Google...');
     setLoading(true);
     clearAuthError();
 
@@ -450,6 +450,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       if (result.success && result.user) {
+        setGoogleAuthMessage('Đang xác nhận tài khoản...');
         setUser(result.user);
         setLastAuthError(null);
 
@@ -458,7 +459,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setAuthStatus('AUTHENTICATED');
         setGoogleAuthMessage(null);
         console.log('[AUTH] Authentication: COMPLETE');
-        checkAndApplyRedirect(profile.role);
+
+        const consumed = GoogleAuthService.consumeReturnUrl();
+        if (consumed && consumed.startsWith('/') && !consumed.startsWith('//')) {
+          navigate(consumed, { replace: true });
+        } else {
+          checkAndApplyRedirect(profile.role);
+        }
         return;
       }
     } catch (error: any) {
@@ -547,7 +554,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     try {
       try {
-        await signOut(auth);
+        await GoogleAuthService.signOut();
       } catch (e) {
         // ignore
       }
@@ -572,7 +579,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const initAuth = async () => {
       setAuthStatus('INITIALIZING');
 
-      // 1. Process redirect result if coming back from redirect flow
+      // 1. Process redirect result if coming back from Google OAuth redirect
       let redirectUser: User | null = null;
       try {
         redirectUser = await GoogleAuthService.checkRedirectResult();
@@ -585,7 +592,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setAuthStatus('AUTHENTICATED');
             setLoading(false);
             console.log('[AUTH] Authentication: COMPLETE');
-            checkAndApplyRedirect(profile.role);
+            const consumed = GoogleAuthService.consumeReturnUrl();
+            if (consumed && consumed.startsWith('/') && !consumed.startsWith('//')) {
+              navigate(consumed, { replace: true });
+            } else {
+              checkAndApplyRedirect(profile.role);
+            }
           }
         }
       } catch (redirectError: any) {
@@ -598,20 +610,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // 2. Register single source of truth auth listener
+      // 2. Single source of truth listener for auth state
       unsubscribeAuth = GoogleAuthService.listenAuthState(async (currentUser) => {
         if (!isMounted) return;
 
         const effectiveUser = currentUser || redirectUser;
         if (effectiveUser) {
           setUser(effectiveUser);
-          const profile = await loadOrCreateProfile(effectiveUser);
-          if (isMounted) {
-            setDbUser(profile);
-            setAuthStatus('AUTHENTICATED');
-            setLoading(false);
-            console.log('[AUTH] Authentication: COMPLETE');
-            checkAndApplyRedirect(profile.role);
+          setLastAuthError(null);
+          try {
+            const profile = await loadOrCreateProfile(effectiveUser);
+            if (isMounted) {
+              setDbUser(profile);
+              setAuthStatus('AUTHENTICATED');
+              setLoading(false);
+              console.log('[AUTH] Authentication: COMPLETE');
+              const consumed = GoogleAuthService.consumeReturnUrl();
+              if (consumed && consumed.startsWith('/') && !consumed.startsWith('//')) {
+                navigate(consumed, { replace: true });
+              } else {
+                checkAndApplyRedirect(profile.role);
+              }
+            }
+          } catch (profileErr) {
+            console.error('[AUTH] Profile: ERROR', profileErr);
+            if (isMounted) {
+              setAuthStatus('AUTHENTICATED');
+              setLoading(false);
+            }
           }
         } else {
           // Check if there is an active local app session
@@ -632,7 +658,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setToken(sessionToken);
                 setAuthStatus('AUTHENTICATED');
                 setLoading(false);
-                console.log('[AUTH] Authentication: COMPLETE');
+                console.log('[AUTH] Authentication: COMPLETE (session restored)');
                 return;
               }
             }

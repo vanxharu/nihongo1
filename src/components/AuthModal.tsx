@@ -127,7 +127,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   };
 
   const handleGoogleSignIn = async () => {
-    if (loading || googleLoading) return;
+    if (loading || googleLoading || !!googleAuthMessage) return;
     setError('');
     setErrorCode('');
     clearAuthError();
@@ -340,7 +340,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         {/* Divider */}
         <div className="relative flex items-center justify-center my-5">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-50" />
+            <div className="w-full border-t border-slate-100" />
           </div>
           <span className="relative bg-white px-3 text-xs text-slate-400 font-medium">Hoặc tiếp tục với</span>
         </div>
@@ -348,6 +348,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         {/* Google OAuth Login */}
         <button
           type="button"
+          id="google-signin-btn"
           onClick={handleGoogleSignIn}
           disabled={loading || googleLoading || !!googleAuthMessage}
           className="w-full py-2.5 border border-slate-200 hover:bg-slate-50 active:bg-slate-100 disabled:opacity-75 font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer text-slate-700 shadow-xs"

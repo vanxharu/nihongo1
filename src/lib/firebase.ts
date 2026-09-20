@@ -1,9 +1,7 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { 
   getAuth, 
-  GoogleAuthProvider, 
   browserLocalPersistence, 
-  browserPopupRedirectResolver, 
   setPersistence 
 } from 'firebase/auth';
 import localFirebaseConfig from '../../firebase-applet-config.json';
@@ -30,7 +28,8 @@ if (typeof window !== 'undefined') {
   });
 }
 
-export { app, firebaseConfig, browserPopupRedirectResolver, browserLocalPersistence };
+export { app, firebaseConfig, browserLocalPersistence };
+
 
 
 
