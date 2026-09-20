@@ -787,16 +787,23 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Bypass SW for non-GET, API routes, Vite dev server, JS modules, and hot reloads
+  // Bypass SW for cross-origin requests, non-GET, Firebase Auth internal handlers, OAuth callbacks, and dev modules
   if (
     event.request.method !== 'GET' ||
+    url.origin !== self.location.origin ||
+    url.pathname.startsWith('/__/') ||
+    url.pathname.includes('/__/auth') ||
+    url.pathname.includes('/__/firebase') ||
     url.pathname.includes('/api/') ||
     url.pathname.startsWith('/@') ||
     url.pathname.startsWith('/src/') ||
     url.pathname.startsWith('/node_modules/') ||
     url.search.includes('import') ||
     url.search.includes('v=') ||
-    url.search.includes('t=')
+    url.search.includes('t=') ||
+    url.search.includes('apiKey') ||
+    url.search.includes('auth') ||
+    url.search.includes('oauth')
   ) {
     return;
   }

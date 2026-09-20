@@ -136,9 +136,15 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       const code = err?.code || '';
       setErrorCode(code);
       if (code === 'auth/popup-closed-by-user') {
-        setError('Bạn đã đóng cửa sổ đăng nhập.');
+        setError('Bạn đã đóng cửa sổ đăng nhập Google.');
       } else if (code === 'auth/unauthorized-domain') {
         setError(`Tên miền "${currentHostname}" chưa được cấp phép trong Firebase Authentication của dự án nihongo-fd01e.`);
+      } else if (code === 'auth/operation-not-allowed') {
+        setError('Phương thức đăng nhập Google chưa được kích hoạt trong Firebase Authentication Console.');
+      } else if (code === 'auth/network-request-failed') {
+        setError('Lỗi kết nối mạng khi liên hệ với Google Authentication. Vui lòng kiểm tra Internet.');
+      } else if (code === 'auth/internal-error') {
+        setError('Lỗi nội bộ Firebase Authentication. Vui lòng thử lại hoặc tải lại trang.');
       } else if (code === 'auth/account-exists-with-different-credential') {
         setError('Email này đã liên kết với phương thức đăng nhập khác. Vui lòng đăng nhập bằng Email & Mật khẩu.');
       } else if (err?.message) {

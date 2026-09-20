@@ -11,8 +11,17 @@ import {
   updateProfile as firebaseUpdateProfile
 } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { auth, googleAuthProvider } from '../lib/firebase';
+import { auth, googleAuthProvider, browserPopupRedirectResolver } from '../lib/firebase';
 import { UserProfile } from '../types';
+
+export const getAuthPlatform = (): 'pwa' | 'mobile' | 'desktop' => {
+  if (typeof window === 'undefined') return 'desktop';
+  const isPwa = window.matchMedia?.('(display-mode: standalone)')?.matches || (window.navigator as any)?.standalone === true;
+  if (isPwa) return 'pwa';
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  if (isMobile) return 'mobile';
+  return 'desktop';
+};
 
 export type AuthStatus = 'INITIALIZING' | 'AUTHENTICATING' | 'AUTHENTICATED' | 'UNAUTHENTICATED' | 'ERROR';
 
@@ -340,31 +349,57 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const loginWithGoogle = async (returnUrl?: string) => {
+    const platform = getAuthPlatform();
     setAuthStatus('AUTHENTICATING');
     setGoogleAuthMessage('Đang kết nối với Google...');
     setLoading(true);
 
     // Save current path to restore after redirect if popup is blocked
     try {
-      const targetUrl = returnUrl || (location.pathname + location.search + location.hash);
-      sessionStorage.setItem('auth_return_url', targetUrl);
-      sessionStorage.setItem('jpstudy_redirect_after_login', targetUrl);
+      const currentFullPath = location.pathname + location.search + location.hash;
+      const targetUrl = returnUrl || currentFullPath;
+      if (targetUrl && !targetUrl.startsWith('/login') && targetUrl !== '/') {
+        sessionStorage.setItem('auth_return_url', targetUrl);
+        sessionStorage.setItem('jpstudy_redirect_after_login', targetUrl);
+      }
     } catch (e) {
       console.warn('[AUTH] Could not save auth_return_url to sessionStorage:', e);
     }
 
-    if (import.meta.env.DEV) {
-      console.log('[AUTH] Google login started');
-      console.log('[AUTH] Trying popup');
-    }
+    console.log(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: popup\nstatus: starting`);
 
     try {
-      const result = await signInWithPopup(auth, googleAuthProvider);
+      const result = await signInWithPopup(auth, googleAuthProvider, browserPopupRedirectResolver);
       if (result && result.user) {
         setUser(result.user);
         setLastAuthError(null);
-        
-        // Immediately fetch authoritative user profile and role from backend database
+
+        // Immediately update dbUser with basic info so UI updates instantly
+        const initialProfile: UserProfile = {
+          name: result.user.displayName || (result.user.email ? result.user.email.split('@')[0] : 'Học viên JLPT'),
+          avatar: result.user.photoURL || '🦊',
+          targetLevel: 'N4',
+          xp: 0,
+          streak: 1,
+          coins: 0,
+          lastActiveDate: new Date().toISOString().split('T')[0] || '',
+          studyDays: [new Date().toISOString().split('T')[0] || ''],
+          completedLessons: [],
+          vocabStatus: {},
+          grammarStatus: {},
+          kanjiStatus: {},
+          dailyTestResults: [],
+          role: 'user'
+        };
+
+        setDbUser((prev) => {
+          if (prev && prev.name && prev.name !== 'Học viên JLPT') {
+            return { ...prev, avatar: result.user.photoURL || prev.avatar };
+          }
+          return initialProfile;
+        });
+
+        // Sync with backend if available
         try {
           const idToken = await result.user.getIdToken();
           setToken(idToken);
@@ -375,7 +410,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               'Authorization': `Bearer ${idToken}`
             }
           });
-          if (syncResponse.ok) {
+          const contentType = syncResponse.headers.get('content-type') || '';
+          if (syncResponse.ok && contentType.includes('application/json')) {
             const syncData = await syncResponse.json();
             if (syncData.success && syncData.user) {
               const parsed = parseDbUser(syncData.user);
@@ -385,24 +421,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
           }
         } catch (syncErr) {
-          console.warn('[AUTH] Immediate database sync after popup login:', syncErr);
+          console.warn('[AUTH] Immediate database sync notice:', syncErr);
+        }
+
+        // Restore return URL
+        try {
+          const savedUrl = sessionStorage.getItem('auth_return_url') || sessionStorage.getItem('jpstudy_redirect_after_login');
+          if (savedUrl) {
+            sessionStorage.removeItem('auth_return_url');
+            sessionStorage.removeItem('jpstudy_redirect_after_login');
+            const currentFullPath = location.pathname + location.search + location.hash;
+            if (savedUrl.startsWith('/') && !savedUrl.startsWith('//') && savedUrl !== currentFullPath) {
+              navigate(savedUrl, { replace: true });
+            }
+          }
+        } catch (e) {
+          // ignore
         }
       }
-      if (import.meta.env.DEV) {
-        console.log('[AUTH] Firebase user authenticated');
-        console.log('[AUTH] Loading profile');
-        console.log('[AUTH] Login complete');
-      }
+
+      console.log(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: popup\nstatus: success`);
       setAuthStatus('AUTHENTICATED');
       setGoogleAuthMessage(null);
     } catch (error: any) {
       const errorCode = error?.code || '';
+      console.error(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: popup\nerrorCode: ${errorCode}\nerrorMessage: ${error?.message || ''}`);
 
       // Case 1: User deliberately closed the popup window
       if (errorCode === 'auth/popup-closed-by-user') {
-        if (import.meta.env.DEV) {
-          console.log('[AUTH] Popup closed by user');
-        }
         setAuthStatus('UNAUTHENTICATED');
         setGoogleAuthMessage(null);
         const closedErr = new Error('Bạn đã đóng cửa sổ đăng nhập.');
@@ -410,29 +456,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw closedErr;
       }
 
-      // Case 2: Popup blocked by browser, or not supported in environment
+      // Case 2: Popup blocked by browser, or cancelled/unsupported in environment (e.g. desktop popup blocker, Windows PWA)
       if (
         errorCode === 'auth/popup-blocked' ||
         errorCode === 'auth/cancelled-popup-request' ||
         errorCode === 'auth/operation-not-supported-in-this-environment'
       ) {
-        if (import.meta.env.DEV) {
-          console.warn('[AUTH] Popup blocked (code:', errorCode, '). Falling back to redirect.');
-          console.log('[AUTH] Falling back to redirect');
-        }
-        setGoogleAuthMessage('Đang chuyển sang đăng nhập Google...');
+        console.warn(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: redirect\nfallbackReason: ${errorCode}\nstatus: redirecting`);
+        setGoogleAuthMessage('Đang chuyển sang đăng nhập Google (redirect)...');
         // Execute redirect fallback
         await signInWithRedirect(auth, googleAuthProvider);
         return;
       }
 
-      // Case 3: Other errors (e.g. auth/unauthorized-domain, auth/network-request-failed)
-      console.error('[AUTH][ERROR] code:', errorCode, 'message:', error?.message);
+      // Case 3: Other specific error codes (unauthorized-domain, operation-not-allowed, network-request-failed, internal-error)
       setAuthStatus('ERROR');
       setGoogleAuthMessage(null);
+
+      let userFriendlyMessage = error?.message || 'Đăng nhập bằng Google không thành công.';
+      const currentHost = typeof window !== 'undefined' ? window.location.hostname : '';
+      if (errorCode === 'auth/unauthorized-domain') {
+        userFriendlyMessage = `Tên miền "${currentHost}" chưa được cấp phép trong Firebase Authentication của dự án nihongo-fd01e.`;
+      } else if (errorCode === 'auth/operation-not-allowed') {
+        userFriendlyMessage = 'Phương thức đăng nhập Google chưa được kích hoạt trong Firebase Authentication Console.';
+      } else if (errorCode === 'auth/network-request-failed') {
+        userFriendlyMessage = 'Lỗi kết nối mạng khi liên hệ với Google Authentication. Vui lòng kiểm tra Internet.';
+      } else if (errorCode === 'auth/internal-error') {
+        userFriendlyMessage = 'Lỗi nội bộ Firebase Authentication. Vui lòng tải lại trang và thử lại.';
+      } else if (errorCode === 'auth/account-exists-with-different-credential') {
+        userFriendlyMessage = 'Email này đã liên kết với phương thức đăng nhập khác. Vui lòng đăng nhập bằng Email & Mật khẩu.';
+      }
+
       setLastAuthError({
         code: errorCode,
-        message: error?.message || 'Đăng nhập bằng Google không thành công.'
+        message: userFriendlyMessage
       });
       throw error;
     } finally {
@@ -534,11 +591,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     redirectHandledRef.current = true;
 
     const checkRedirectResult = async () => {
+      const platform = getAuthPlatform();
       try {
         const result = await getRedirectResult(auth);
         if (result && result.user) {
+          console.log(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: redirect\nstatus: success`);
           setUser(result.user);
           setLastAuthError(null);
+
+          const initialProfile: UserProfile = {
+            name: result.user.displayName || (result.user.email ? result.user.email.split('@')[0] : 'Học viên JLPT'),
+            avatar: result.user.photoURL || '🦊',
+            targetLevel: 'N4',
+            xp: 0,
+            streak: 1,
+            coins: 0,
+            lastActiveDate: new Date().toISOString().split('T')[0] || '',
+            studyDays: [new Date().toISOString().split('T')[0] || ''],
+            completedLessons: [],
+            vocabStatus: {},
+            grammarStatus: {},
+            kanjiStatus: {},
+            dailyTestResults: [],
+            role: 'user'
+          };
+
+          setDbUser((prev) => {
+            if (prev && prev.name && prev.name !== 'Học viên JLPT') {
+              return { ...prev, avatar: result.user.photoURL || prev.avatar };
+            }
+            return initialProfile;
+          });
           
           try {
             const idToken = await result.user.getIdToken();
@@ -550,35 +633,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 'Authorization': `Bearer ${idToken}`
               }
             });
-            if (syncResponse.ok) {
+            const contentType = syncResponse.headers.get('content-type') || '';
+            if (syncResponse.ok && contentType.includes('application/json')) {
               const syncData = await syncResponse.json();
               if (syncData.success && syncData.user) {
                 const parsed = parseDbUser(syncData.user);
                 setDbUser(parsed);
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+                checkAndApplyRedirect(parsed.role);
               }
             }
           } catch (syncErr) {
-            console.warn('[AUTH] Immediate database sync after redirect login:', syncErr);
-          }
-          if (import.meta.env.DEV) {
-            console.log('[AUTH] Redirect result received');
-            console.log('[AUTH] Firebase user authenticated');
-            console.log('[AUTH] Loading profile');
+            console.warn('[AUTH] Immediate database sync notice after redirect:', syncErr);
           }
           setAuthStatus('AUTHENTICATED');
           setGoogleAuthMessage(null);
 
           // Restore saved return URL if available
           try {
-            const savedUrl = sessionStorage.getItem('auth_return_url');
+            const savedUrl = sessionStorage.getItem('auth_return_url') || sessionStorage.getItem('jpstudy_redirect_after_login');
             if (savedUrl) {
               sessionStorage.removeItem('auth_return_url');
+              sessionStorage.removeItem('jpstudy_redirect_after_login');
               const currentFullPath = location.pathname + location.search + location.hash;
-              if (savedUrl.startsWith('/') && savedUrl !== currentFullPath) {
-                if (import.meta.env.DEV) {
-                  console.log('[AUTH] Restoring return URL after redirect:', savedUrl);
-                }
+              if (savedUrl.startsWith('/') && !savedUrl.startsWith('//') && savedUrl !== currentFullPath) {
+                console.log(`[AUTH][GOOGLE]\nplatform: ${platform}\nrestoringReturnUrl: ${savedUrl}`);
                 navigate(savedUrl, { replace: true });
               }
             }
@@ -589,12 +668,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } catch (error: any) {
         const errorCode = error?.code || '';
         if (errorCode) {
-          console.error('[AUTH][ERROR] Redirect result failed with code:', errorCode, 'message:', error?.message);
+          console.error(`[AUTH][GOOGLE]\nplatform: ${platform}\nmethod: redirect\nerrorCode: ${errorCode}\nerrorMessage: ${error?.message || ''}`);
           setAuthStatus('ERROR');
           setGoogleAuthMessage(null);
+
+          let userFriendlyMessage = error?.message || 'Đăng nhập bằng Google không thành công.';
+          const currentHost = typeof window !== 'undefined' ? window.location.hostname : '';
+          if (errorCode === 'auth/unauthorized-domain') {
+            userFriendlyMessage = `Tên miền "${currentHost}" chưa được cấp phép trong Firebase Authentication của dự án nihongo-fd01e.`;
+          } else if (errorCode === 'auth/operation-not-allowed') {
+            userFriendlyMessage = 'Phương thức đăng nhập Google chưa được kích hoạt trong Firebase Authentication Console.';
+          } else if (errorCode === 'auth/network-request-failed') {
+            userFriendlyMessage = 'Lỗi kết nối mạng khi liên hệ với Google Authentication. Vui lòng kiểm tra Internet.';
+          } else if (errorCode === 'auth/internal-error') {
+            userFriendlyMessage = 'Lỗi nội bộ Firebase Authentication. Vui lòng tải lại trang và thử lại.';
+          }
+
           setLastAuthError({
             code: errorCode,
-            message: error?.message || 'Đăng nhập bằng Google không thành công.'
+            message: userFriendlyMessage
           });
         }
       }
@@ -710,12 +802,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           });
 
           if (response.ok) {
-            const data = await response.json();
-            if (data.success && data.user) {
-              const parsed = parseDbUser(data.user);
-              setDbUser(parsed);
-              localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-              checkAndApplyRedirect(parsed.role);
+            const contentType = response.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+              const data = await response.json();
+              if (data.success && data.user) {
+                const parsed = parseDbUser(data.user);
+                setDbUser(parsed);
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+                checkAndApplyRedirect(parsed.role);
+              }
             }
           }
           setAuthStatus('AUTHENTICATED');
@@ -750,8 +845,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${sessionToken}`
                 }
-              }).then(res => res.json()).then(data => {
-                if (data.success && data.user) {
+              }).then(async res => {
+                const ct = res.headers.get('content-type') || '';
+                if (res.ok && ct.includes('application/json')) {
+                  return res.json();
+                }
+                return null;
+              }).then(data => {
+                if (data && data.success && data.user) {
                   const parsed = parseDbUser(data.user);
                   setDbUser(parsed);
                   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));

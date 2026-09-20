@@ -64,6 +64,32 @@ const PORT = 3000;
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
 
+// Transparent Firebase Auth reverse proxy for localhost & custom domains
+app.all('/__/auth/*', async (req, res) => {
+  try {
+    const targetUrl = `https://nihongo-fd01e.firebaseapp.com${req.originalUrl}`;
+    const proxyRes = await axios({
+      method: req.method as any,
+      url: targetUrl,
+      headers: {
+        ...req.headers,
+        host: 'nihongo-fd01e.firebaseapp.com'
+      },
+      data: req.body,
+      responseType: 'stream',
+      validateStatus: () => true
+    });
+    res.status(proxyRes.status);
+    Object.entries(proxyRes.headers).forEach(([k, v]) => {
+      if (v) res.setHeader(k, v as any);
+    });
+    proxyRes.data.pipe(res);
+  } catch (err: any) {
+    console.error('[AUTH PROXY] Failed to proxy Firebase auth request:', err?.message || err);
+    res.status(502).send('Auth proxy failed');
+  }
+});
+
 // Mascot API endpoints
 app.get('/api/mascot/status', (req, res) => {
   const mascotDir = path.join(process.cwd(), 'public', 'mascot');

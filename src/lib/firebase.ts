@@ -1,5 +1,11 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  browserLocalPersistence, 
+  browserPopupRedirectResolver, 
+  setPersistence 
+} from 'firebase/auth';
 import localFirebaseConfig from '../../firebase-applet-config.json';
 
 // Use environment variables if provided (e.g. on Vercel deployment), otherwise fall back to local config
@@ -16,8 +22,18 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const auth = getAuth(app);
 
+// Enforce browserLocalPersistence so session persists across refresh on desktop, mobile, and PWA
+if (typeof window !== 'undefined') {
+  setPersistence(auth, browserLocalPersistence).catch((err) => {
+    console.warn('[AUTH] Could not enforce browserLocalPersistence:', err);
+  });
+}
+
 export const googleAuthProvider = new GoogleAuthProvider();
 googleAuthProvider.setCustomParameters({
   prompt: 'select_account'
 });
+
+export { browserPopupRedirectResolver, browserLocalPersistence };
+
 
