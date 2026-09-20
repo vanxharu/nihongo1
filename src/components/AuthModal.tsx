@@ -28,8 +28,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     clearAuthError();
     setLoading(true);
     try {
-      const targetEmail = loginEmail || email || 'vanvan20001220@gmail.com';
-      const displayNameVal = displayName || (targetEmail.toLowerCase() === 'vanvan20001220@gmail.com' ? 'Vân Vân' : targetEmail.split('@')[0]);
+      const targetEmail = (loginEmail || email || '').trim();
+      if (!targetEmail) {
+        setError('Vui lòng nhập địa chỉ email của bạn ở ô trên để đăng nhập.');
+        return;
+      }
+      const displayNameVal = displayName || targetEmail.split('@')[0];
       await quickLogin(targetEmail, displayNameVal);
       handleClose();
     } catch (err: any) {
@@ -259,7 +263,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <div className="pt-2.5 border-t border-amber-200/80">
               <button
                 type="button"
-                onClick={() => handleQuickLogin(email || 'vanvan20001220@gmail.com')}
+                onClick={() => handleQuickLogin(email)}
                 disabled={loading}
                 className="w-full py-2.5 px-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer active:scale-98"
               >

@@ -7,20 +7,22 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function isEmailVerified() {
+      return isSignedIn() && (request.auth.token.email_verified == true);
+    }
+
     function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
+      return isEmailVerified() && request.auth.uid == userId;
     }
 
     function isAdmin() {
-      return isSignedIn() && (
-        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin') ||
-        (request.auth.token.email == 'vanvan20001220@gmail.com')
-      );
+      return isEmailVerified() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
 
     // User document access control:
-    // 1. Any authenticated user can read and create their own profile.
+    // 1. Authenticated, verified user can read and create their own profile.
     // 2. Default role on creation must be 'user' (cannot grant oneself admin).
     // 3. Updates to one's own profile cannot modify the 'role' field (prevents escalation).
     // 4. Admins have full access to read, update (including roles), and delete users.
@@ -29,12 +31,6 @@ service cloud.firestore {
       allow create: if isOwner(userId) && (!('role' in request.resource.data) || request.resource.data.role == 'user');
       allow update: if (isOwner(userId) && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']))) || isAdmin();
       allow delete: if isAdmin();
-    }
-
-    // Default rule for app educational collections
-    match /{document=**} {
-      allow read: if true;
-      allow write: if isAdmin();
     }
   }
 }

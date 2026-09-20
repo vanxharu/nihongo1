@@ -460,6 +460,8 @@ export interface StudyRoadmapConfig {
   completedDays: number[];
 }
 
+export type UserRole = 'user' | 'admin';
+
 export interface UserProfile {
   uid?: string;
   email?: string;
@@ -488,7 +490,7 @@ export interface UserProfile {
   };
   studyRoadmap?: StudyRoadmapConfig;
   unlockedBadges?: string[];
-  role?: 'user' | 'admin';
+  role?: UserRole;
   isVip?: boolean;
   notebooks?: NotebookFolder[];
   savedWords?: NotebookWord[];

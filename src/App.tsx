@@ -25,6 +25,8 @@ import NotFoundPage from './components/NotFoundPage';
 import { BRAND_NAME } from './constants/brand';
 import { getTabFromPathname, TAB_TO_ROUTE_MAP, getRoutePageTitle } from './routes/routesConfig';
 
+import AdminRoute from './components/AdminRoute';
+
 const KanjiExplorer = lazyWithRetry(() => import('./components/KanjiExplorer'));
 const DailyExamQuiz = lazyWithRetry(() => import('./components/DailyExamQuiz'));
 const ProgressDashboard = lazyWithRetry(() => import('./components/ProgressDashboard'));
@@ -835,13 +837,13 @@ export default function App() {
         } 
       />
 
-      {/* 19. Admin (Strict RBAC: Only accounts with admin role can access) */}
+      {/* 19. Admin (Strict RBAC: Protected by AdminRoute) */}
       <Route 
         path="/admin" 
         element={
-          activeProfile?.role === 'admin' 
-            ? <AdminPanel userProfile={activeProfile} /> 
-            : <Navigate to="/" replace />
+          <AdminRoute onRequireLogin={() => setIsAuthModalOpen(true)}>
+            <AdminPanel userProfile={activeProfile} />
+          </AdminRoute>
         } 
       />
 

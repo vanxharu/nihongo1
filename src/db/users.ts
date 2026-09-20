@@ -2,19 +2,32 @@ import { db, withDbRetry } from './index';
 import { users } from './schema';
 import { eq } from 'drizzle-orm';
 
-export const ADMIN_EMAILS = new Set(['vanvan20001220@gmail.com']);
+export function getBootstrapAdminEmails(): Set<string> {
+  const envVar = process.env.ADMIN_EMAILS || '';
+  const set = new Set<string>();
+  if (envVar) {
+    envVar.split(',').forEach(email => {
+      const trimmed = email.trim().toLowerCase();
+      if (trimmed) set.add(trimmed);
+    });
+  }
+  return set;
+}
+
+export const ADMIN_EMAILS = getBootstrapAdminEmails();
 
 export async function getOrCreateUser(uid: string, email: string) {
   return await withDbRetry(async () => {
     const normalizedEmail = (email || '').toLowerCase().trim();
-    const isSystemAdmin = normalizedEmail ? ADMIN_EMAILS.has(normalizedEmail) : false;
+    const bootstrapAdmins = getBootstrapAdminEmails();
+    const isBootstrapAdmin = normalizedEmail ? bootstrapAdmins.has(normalizedEmail) : false;
 
     // 1. Check if user already exists by UID
     const existingByUid = await db.select().from(users).where(eq(users.uid, uid)).execute();
     if (existingByUid.length > 0) {
       const u = existingByUid[0];
-      // Ensure system admin account maintains admin role
-      if (isSystemAdmin && u.role !== 'admin') {
+      // Ensure bootstrap admin accounts receive admin role upon login
+      if (isBootstrapAdmin && u.role !== 'admin') {
         const updated = await db.update(users)
           .set({ role: 'admin' })
           .where(eq(users.uid, uid))
@@ -25,16 +38,17 @@ export async function getOrCreateUser(uid: string, email: string) {
     }
 
     // 2. If UID is not found, check if a user with this email already exists
-    // (This automatically preserves all learning progress, XP, streak, achievements when switching Firebase projects!)
+    // (Preserves learning progress, XP, streak, achievements when linking accounts)
     if (normalizedEmail) {
       const existingByEmail = await db.select().from(users).where(eq(users.email, normalizedEmail)).execute();
       if (existingByEmail.length > 0) {
         const u = existingByEmail[0];
-        // Update to the new project UID seamlessly & ensure proper role
+        // Preserve admin status if existing user was admin or is bootstrap admin
+        const targetRole = u.role === 'admin' ? 'admin' : (isBootstrapAdmin ? 'admin' : (u.role || 'user'));
         const updated = await db.update(users)
           .set({ 
             uid: uid,
-            role: isSystemAdmin ? 'admin' : (u.role || 'user')
+            role: targetRole
           })
           .where(eq(users.id, u.id))
           .returning();
@@ -44,30 +58,39 @@ export async function getOrCreateUser(uid: string, email: string) {
 
     const todayStr = new Date().toISOString().split('T')[0] || '';
     const defaultName = normalizedEmail ? normalizedEmail.split('@')[0] : 'Học viên JLPT';
-    const initialRole = isSystemAdmin ? 'admin' : 'user';
+    const initialRole = isBootstrapAdmin ? 'admin' : 'user';
 
-    const result = await db.insert(users)
-      .values({
-        uid,
-        email: normalizedEmail,
-        name: defaultName,
-        avatar: '🦊',
-        targetLevel: 'N4',
-        xp: 0,
-        streak: 0,
-        coins: 0,
-        lastActiveDate: todayStr,
-        studyDays: JSON.stringify([todayStr]),
-        completedLessons: JSON.stringify([]),
-        vocabStatus: JSON.stringify({}),
-        grammarStatus: JSON.stringify({}),
-        kanjiStatus: JSON.stringify({}),
-        dailyTestResults: JSON.stringify([]),
-        role: initialRole,
-      })
-      .returning();
+    try {
+      const result = await db.insert(users)
+        .values({
+          uid,
+          email: normalizedEmail,
+          name: defaultName,
+          avatar: '🦊',
+          targetLevel: 'N4',
+          xp: 0,
+          streak: 0,
+          coins: 0,
+          lastActiveDate: todayStr,
+          studyDays: JSON.stringify([todayStr]),
+          completedLessons: JSON.stringify([]),
+          vocabStatus: JSON.stringify({}),
+          grammarStatus: JSON.stringify({}),
+          kanjiStatus: JSON.stringify({}),
+          dailyTestResults: JSON.stringify([]),
+          role: initialRole,
+        })
+        .returning();
 
-    return result[0];
+      return result[0];
+    } catch (insertErr: any) {
+      // Race condition safety: if concurrent requests inserted the same UID
+      const reCheck = await db.select().from(users).where(eq(users.uid, uid)).execute();
+      if (reCheck.length > 0) {
+        return reCheck[0];
+      }
+      throw insertErr;
+    }
   });
 }
 

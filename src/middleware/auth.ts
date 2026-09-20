@@ -2,10 +2,24 @@ import { Request, Response, NextFunction } from 'express';
 import { adminAuth } from '../lib/firebase-admin';
 import { DecodedIdToken } from 'firebase-admin/auth';
 import { getOrCreateUser } from '../db/users';
+import { UserRole } from '../types';
 
 export interface AuthRequest extends Request {
   user?: DecodedIdToken;
-  dbUser?: any; // To store our internal users row
+  dbUser?: {
+    id?: number;
+    uid: string;
+    email: string;
+    name: string | null;
+    avatar: string | null;
+    targetLevel: string | null;
+    xp: number | null;
+    streak: number | null;
+    coins: number | null;
+    role: UserRole;
+    isVip?: boolean | null;
+    [key: string]: any;
+  };
 }
 
 export const requireAuth = async (
@@ -41,7 +55,7 @@ export const requireAuth = async (
             uid: sessionData.uid,
             email: sessionData.email,
             name: sessionData.name || sessionData.email.split('@')[0],
-            role: sessionData.role || 'user',
+            role: sessionData.role === 'admin' ? 'admin' : 'user',
             email_verified: true,
             auth_time: Math.floor((sessionData.timestamp || Date.now()) / 1000)
           };
@@ -59,7 +73,11 @@ export const requireAuth = async (
     
     // Upsert user into database to ensure relations work
     try {
-      req.dbUser = await getOrCreateUser(decodedToken.uid, decodedToken.email || '');
+      const userFromDb = await getOrCreateUser(decodedToken.uid, decodedToken.email || '');
+      req.dbUser = {
+        ...userFromDb,
+        role: (userFromDb.role === 'admin' ? 'admin' : 'user') as UserRole
+      };
     } catch (dbErr) {
       console.warn('DB user retrieval failed, falling back to basic token user:', dbErr);
       req.dbUser = {
@@ -78,7 +96,7 @@ export const requireAuth = async (
         grammarStatus: '{}',
         kanjiStatus: '{}',
         dailyTestResults: '[]',
-        role: decodedToken.role || 'user'
+        role: (decodedToken.role === 'admin' ? 'admin' : 'user') as UserRole
       };
     }
 
@@ -87,4 +105,19 @@ export const requireAuth = async (
     console.error('Error verifying Firebase ID token:', error);
     return res.status(401).json({ error: 'Unauthorized: Invalid token' });
   }
+};
+
+/**
+ * Middleware ensuring that only authenticated users with database role === 'admin'
+ * are permitted to access administrative resources.
+ */
+export const requireAdmin = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+): Promise<any> => {
+  if (!req.dbUser || req.dbUser.role !== 'admin') {
+    return res.status(403).json({ error: 'Forbidden: Admin access only' });
+  }
+  next();
 };

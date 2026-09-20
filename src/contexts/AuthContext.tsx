@@ -60,7 +60,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // CRITICAL SECURITY: Never trust cached role from localStorage for admin privileges before server verification!
+        return {
+          ...parsed,
+          role: 'user'
+        };
       }
     } catch (e) {
       console.warn("Could not load initial user profile from localStorage:", e);
@@ -75,6 +80,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const redirectHandledRef = useRef<boolean>(false);
 
   const clearAuthError = () => setLastAuthError(null);
+
+  const checkAndApplyRedirect = (userRole?: string) => {
+    try {
+      const savedUrl = sessionStorage.getItem('jpstudy_redirect_after_login') || sessionStorage.getItem('auth_return_url');
+      if (savedUrl) {
+        sessionStorage.removeItem('jpstudy_redirect_after_login');
+        sessionStorage.removeItem('auth_return_url');
+        // Validate internal route strictly (must start with single '/', not '//')
+        if (savedUrl.startsWith('/') && !savedUrl.startsWith('//')) {
+          if (savedUrl.startsWith('/admin')) {
+            if (userRole === 'admin') {
+              navigate(savedUrl, { replace: true });
+            } else {
+              navigate('/', { replace: true });
+            }
+          } else {
+            navigate(savedUrl, { replace: true });
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Could not process redirect after login:', e);
+    }
+  };
 
   // Helper to parse the DB user response safely
   const parseDbUser = (dbData: any): UserProfile => {
@@ -229,8 +258,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, pass: string) => {
     setLoading(true);
+    setAuthStatus('AUTHENTICATING');
+    clearAuthError();
     try {
-      await signInWithEmailAndPassword(auth, email, pass);
+      const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+      if (userCredential && userCredential.user) {
+        const idToken = await userCredential.user.getIdToken();
+        setToken(idToken);
+        const syncResponse = await fetch('/api/user/sync', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+          }
+        });
+        if (syncResponse.ok) {
+          const syncData = await syncResponse.json();
+          if (syncData.success && syncData.user) {
+            const parsed = parseDbUser(syncData.user);
+            setDbUser(parsed);
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+            checkAndApplyRedirect(parsed.role);
+          }
+        }
+      }
+      setAuthStatus('AUTHENTICATED');
+    } catch (err: any) {
+      setAuthStatus('ERROR');
+      setLastAuthError({
+        code: err?.code || 'auth/login-failed',
+        message: err?.message || 'Đăng nhập không thành công.'
+      });
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -238,6 +297,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (email: string, pass: string, displayName?: string) => {
     setLoading(true);
+    setAuthStatus('AUTHENTICATING');
+    clearAuthError();
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
       if (displayName && userCredential.user) {
@@ -245,6 +306,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           displayName: displayName
         });
       }
+      if (userCredential && userCredential.user) {
+        const idToken = await userCredential.user.getIdToken();
+        setToken(idToken);
+        const syncResponse = await fetch('/api/user/sync', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${idToken}`
+          }
+        });
+        if (syncResponse.ok) {
+          const syncData = await syncResponse.json();
+          if (syncData.success && syncData.user) {
+            const parsed = parseDbUser(syncData.user);
+            setDbUser(parsed);
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+            checkAndApplyRedirect(parsed.role);
+          }
+        }
+      }
+      setAuthStatus('AUTHENTICATED');
+    } catch (err: any) {
+      setAuthStatus('ERROR');
+      setLastAuthError({
+        code: err?.code || 'auth/register-failed',
+        message: err?.message || 'Đăng ký không thành công.'
+      });
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -259,6 +348,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const targetUrl = returnUrl || (location.pathname + location.search + location.hash);
       sessionStorage.setItem('auth_return_url', targetUrl);
+      sessionStorage.setItem('jpstudy_redirect_after_login', targetUrl);
     } catch (e) {
       console.warn('[AUTH] Could not save auth_return_url to sessionStorage:', e);
     }
@@ -291,6 +381,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               const parsed = parseDbUser(syncData.user);
               setDbUser(parsed);
               localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+              checkAndApplyRedirect(parsed.role);
             }
           }
         } catch (syncErr) {
@@ -304,9 +395,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       setAuthStatus('AUTHENTICATED');
       setGoogleAuthMessage(null);
-      try {
-        sessionStorage.removeItem('auth_return_url');
-      } catch {}
     } catch (error: any) {
       const errorCode = error?.code || '';
 
@@ -317,9 +405,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
         setAuthStatus('UNAUTHENTICATED');
         setGoogleAuthMessage(null);
-        try {
-          sessionStorage.removeItem('auth_return_url');
-        } catch {}
         const closedErr = new Error('Bạn đã đóng cửa sổ đăng nhập.');
         (closedErr as any).code = 'auth/popup-closed-by-user';
         throw closedErr;
@@ -349,9 +434,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         code: errorCode,
         message: error?.message || 'Đăng nhập bằng Google không thành công.'
       });
-      try {
-        sessionStorage.removeItem('auth_return_url');
-      } catch {}
       throw error;
     } finally {
       setLoading(false);
@@ -363,7 +445,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuthStatus('AUTHENTICATING');
     clearAuthError();
     try {
-      const email = (emailInput || 'vanvan20001220@gmail.com').toLowerCase().trim();
+      const email = (emailInput || '').toLowerCase().trim();
+      if (!email) {
+        throw new Error('Vui lòng cung cấp địa chỉ email để đăng nhập.');
+      }
       const response = await fetch('/api/auth/quick-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -407,6 +492,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         setAuthStatus('AUTHENTICATED');
         setLastAuthError(null);
+        checkAndApplyRedirect(parsed.role);
       }
     } catch (err: any) {
       console.error('Quick login error:', err);
@@ -583,7 +669,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (prev) return prev;
           try {
             const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-            if (saved) return JSON.parse(saved);
+            if (saved) {
+              const parsed = JSON.parse(saved);
+              return {
+                ...parsed,
+                role: 'user' // Default to 'user' until server confirms role
+              };
+            }
           } catch (e) {
             // ignore
           }
@@ -623,6 +715,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               const parsed = parseDbUser(data.user);
               setDbUser(parsed);
               localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+              checkAndApplyRedirect(parsed.role);
             }
           }
           setAuthStatus('AUTHENTICATED');
@@ -662,6 +755,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   const parsed = parseDbUser(data.user);
                   setDbUser(parsed);
                   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
+                  checkAndApplyRedirect(parsed.role);
                 }
               }).catch(() => {});
               return;

@@ -199,16 +199,16 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
 
         <div className="bg-slate-50/50 border border-slate-100 p-4 rounded-2xl my-6 text-left text-xs text-slate-800 space-y-2">
           <p className="font-bold text-slate-900 flex items-center gap-1">
-            💡 Làm thế nào để thử nghiệm tính năng này?
+            💡 Yêu cầu quyền quản trị viên
           </p>
           <p>
-            1. Vui lòng đăng ký / đăng nhập bằng địa chỉ email sở hữu của bạn: <span className="font-mono font-bold text-slate-600">vanvan20001220@gmail.com</span>
+            1. Vui lòng đăng ký hoặc đăng nhập bằng tài khoản quản trị viên được phân quyền trong hệ thống.
           </p>
           <p>
-            2. Hệ thống sẽ tự động nhận diện email sở hữu và cấp quyền <span className="font-bold text-emerald-600">Admin</span> cho bạn ngay lập tức!
+            2. Hệ thống sẽ tự động đối soát cơ sở dữ liệu và mở khóa các công cụ quản lý khi tài khoản có vai trò <span className="font-bold text-emerald-600">Admin</span>.
           </p>
           <p>
-            3. Sau khi đăng nhập bằng email trên, tab này sẽ mở ra giao diện quản lý người dùng đầy đủ.
+            3. Sau khi xác thực thành công quyền Admin, bạn có thể quản lý người dùng, từ vựng, ngữ pháp và Hán tự.
           </p>
         </div>
 

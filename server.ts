@@ -19,7 +19,7 @@ import { synthesizeAzureSpeech } from './src/server/azureTts';
 import { cleanVocabSymbols, sanitizeVocabItem, KANJI_TO_HAN_VIET } from './src/utils/japaneseUtils';
 import { deduplicateGrammars } from './src/utils/grammarDeduplicator';
 import { KANJI_DICTIONARY } from './src/data/kanjiDictionary';
-import { requireAuth } from './src/middleware/auth';
+import { requireAuth, requireAdmin } from './src/middleware/auth';
 import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid } from './src/db/users';
 
 const KuroshiroClass = (Kuroshiro as any).default || Kuroshiro;
@@ -4094,9 +4094,11 @@ app.post("/api/transcribe-audio", async (req, res) => {
 // 5.5 Quick Auth & Direct Login (Bypasses third-party cookie/domain restrictions, derives role purely from DB)
 app.post('/api/auth/quick-login', async (req: any, res) => {
   try {
-    const rawEmail = (req.body?.email || 'vanvan20001220@gmail.com').toString().toLowerCase().trim();
-    const isOwner = rawEmail === 'vanvan20001220@gmail.com';
-    const name = req.body?.name || (isOwner ? 'Vân Vân' : rawEmail.split('@')[0]);
+    const rawEmail = req.body?.email ? req.body.email.toString().toLowerCase().trim() : '';
+    if (!rawEmail) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
+    const name = req.body?.name || rawEmail.split('@')[0];
     const uid = 'usr_' + Buffer.from(rawEmail).toString('hex').slice(0, 24);
 
     const dbUser = await getOrCreateUser(uid, rawEmail);
@@ -4218,11 +4220,8 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
 });
 
 // Admin-only endpoints for user management
-app.get('/api/admin/users', requireAuth, async (req: any, res) => {
+app.get('/api/admin/users', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    if (req.dbUser.role !== 'admin') {
-      return res.status(403).json({ error: "Forbidden: Admin access only" });
-    }
     const allUsersList = await getAllUsers();
     res.json({ success: true, users: allUsersList });
   } catch (error: any) {
@@ -4231,11 +4230,8 @@ app.get('/api/admin/users', requireAuth, async (req: any, res) => {
   }
 });
 
-app.post('/api/admin/users/update', requireAuth, async (req: any, res) => {
+app.post('/api/admin/users/update', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    if (req.dbUser.role !== 'admin') {
-      return res.status(403).json({ error: "Forbidden: Admin access only" });
-    }
     const { uid, role, xp, coins, streak, name, isVip } = req.body;
     if (!uid) {
       return res.status(400).json({ error: "uid is required" });
@@ -4249,11 +4245,8 @@ app.post('/api/admin/users/update', requireAuth, async (req: any, res) => {
   }
 });
 
-app.post('/api/admin/users/delete', requireAuth, async (req: any, res) => {
+app.post('/api/admin/users/delete', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    if (req.dbUser.role !== 'admin') {
-      return res.status(403).json({ error: "Forbidden: Admin access only" });
-    }
     const { uid } = req.body;
     if (!uid) {
       return res.status(400).json({ error: "uid is required" });
@@ -4267,11 +4260,8 @@ app.post('/api/admin/users/delete', requireAuth, async (req: any, res) => {
   }
 });
 
-app.post('/api/admin/kanjis/update', requireAuth, async (req: any, res) => {
+app.post('/api/admin/kanjis/update', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    if (req.dbUser.role !== 'admin') {
-      return res.status(403).json({ error: "Forbidden: Admin access only" });
-    }
     const { id, meaningVi, onyomi, kunyomi, strokesCount, exampleWords, mnemonic, exampleSentence, exampleTranslation } = req.body;
     if (!id) {
       return res.status(400).json({ error: "id is required" });
@@ -4302,11 +4292,8 @@ app.post('/api/admin/kanjis/update', requireAuth, async (req: any, res) => {
   }
 });
 
-app.post('/api/admin/kanjis/ai-fill', requireAuth, async (req: any, res) => {
+app.post('/api/admin/kanjis/ai-fill', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    if (req.dbUser.role !== 'admin') {
-      return res.status(403).json({ error: "Forbidden: Admin access only" });
-    }
     const { character } = req.body;
     if (!character) {
       return res.status(400).json({ error: "character is required" });
@@ -4832,9 +4819,8 @@ Chỉ trả về JSON hợp lệ, không bọc markdown.
 
 
 // Admin Vocab Management
-app.post('/api/admin/vocabularies/update', requireAuth, async (req: any, res) => {
+app.post('/api/admin/vocabularies/update', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    if (req.dbUser.role !== 'admin') return res.status(403).json({ error: "Forbidden" });
     const { id, lessonId, word, kanji, reading, meaning, type } = req.body;
     
     if (id) {
@@ -4849,9 +4835,8 @@ app.post('/api/admin/vocabularies/update', requireAuth, async (req: any, res) =>
   }
 });
 
-app.post('/api/admin/vocabularies/import', requireAuth, async (req: any, res) => {
+app.post('/api/admin/vocabularies/import', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    if (req.dbUser.role !== 'admin') return res.status(403).json({ error: "Forbidden" });
     const { items } = req.body;
     if (!items || !Array.isArray(items)) {
       return res.status(400).json({ error: "Invalid data format. Expected 'items' array." });
@@ -4920,9 +4905,8 @@ app.post('/api/admin/vocabularies/import', requireAuth, async (req: any, res) =>
   }
 });
 
-app.post('/api/admin/vocabularies/delete', requireAuth, async (req: any, res) => {
+app.post('/api/admin/vocabularies/delete', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    if (req.dbUser.role !== 'admin') return res.status(403).json({ error: "Forbidden" });
     await db.delete(vocabularies).where(eq(vocabularies.id, req.body.id));
     res.json({ success: true });
   } catch (err: any) {
@@ -4931,9 +4915,8 @@ app.post('/api/admin/vocabularies/delete', requireAuth, async (req: any, res) =>
 });
 
 // Admin Grammar Management
-app.post('/api/admin/grammars/update', requireAuth, async (req: any, res) => {
+app.post('/api/admin/grammars/update', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    if (req.dbUser.role !== 'admin') return res.status(403).json({ error: "Forbidden" });
     const { id, lessonId, structure, meaning, explanation } = req.body;
     
     if (id) {
@@ -4948,9 +4931,8 @@ app.post('/api/admin/grammars/update', requireAuth, async (req: any, res) => {
   }
 });
 
-app.post('/api/admin/grammars/delete', requireAuth, async (req: any, res) => {
+app.post('/api/admin/grammars/delete', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    if (req.dbUser.role !== 'admin') return res.status(403).json({ error: "Forbidden" });
     await db.delete(grammars).where(eq(grammars.id, req.body.id));
     res.json({ success: true });
   } catch (err: any) {
