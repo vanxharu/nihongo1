@@ -7,6 +7,7 @@
       "properties": {
         "uid": { "type": "string", "description": "Firebase Auth UID" },
         "email": { "type": "string", "description": "User email" },
+        "username": { "type": "string", "description": "Unique username" },
         "name": { "type": "string", "description": "Display name" },
         "avatar": { "type": "string", "description": "Avatar emoji/icon" },
         "targetLevel": { "type": "string", "description": "Target JLPT level" },

@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { User, LogIn, ChevronRight, ChevronDown, ChevronLeft, RefreshCw, Trophy, Sparkles, Menu, Volume2, VolumeX, TrendingUp, BookOpen, CheckCircle2, Bell, Monitor } from 'lucide-react';
+import { User, LogIn, ChevronRight, ChevronDown, ChevronLeft, RefreshCw, Trophy, Settings, Menu, Volume2, VolumeX, TrendingUp, BookOpen, CheckCircle2, Bell, Monitor, Flame } from 'lucide-react';
 import { UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'motion/react';
@@ -53,6 +53,9 @@ export default function Header({
   const [tempTarget, setTempTarget] = useState(userProfile.targetLevel);
 
   const getDisplayUserName = (name?: string, email?: string | null) => {
+    if (userProfile.username) {
+      return userProfile.username;
+    }
     if (name && name !== 'Học viên JLPT' && !name.includes('@')) {
       return name;
     }
@@ -205,8 +208,11 @@ export default function Header({
           id="mobile-tablet-header"
           className="xl:hidden flex items-center justify-between h-11 px-3 sm:px-4 bg-[#0F1424]/95 backdrop-blur-md border-b border-[#1B223C] sticky top-0 z-40 select-none shrink-0 pt-[env(safe-area-inset-top,0px)]"
         >
-          {/* Left: Back button to Practice Hub + Tab Title */}
+          {/* Left: Logo Emblem & Tab Title / Back button */}
           <div className="flex items-center gap-2 min-w-0">
+            <Link to="/" className="flex items-center shrink-0 hover:scale-105 transition-transform" title={BRAND_NAME}>
+              <JpStudyLogo size="xs" dark={true} showText={false} />
+            </Link>
             {setCurrentTab && (
               <button
                 type="button"
@@ -214,10 +220,10 @@ export default function Header({
                 className="flex items-center gap-1 text-[#E89A3C] hover:text-white text-xs font-bold transition-colors cursor-pointer shrink-0"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Luyện tập</span>
+                <span className="hidden sm:inline">Luyện tập</span>
               </button>
             )}
-            <span className="text-slate-600 hidden sm:inline">•</span>
+            <span className="text-slate-600">•</span>
             <span className="text-xs sm:text-sm font-bold text-white tracking-tight truncate">
               {getTabTitle()}
             </span>
@@ -270,18 +276,16 @@ export default function Header({
         id="app-header" 
         className="hidden xl:flex h-14 sm:h-16 border-b border-[#1B223C] bg-[#0F1424]/95 backdrop-blur-md px-6 items-center justify-between sticky top-0 z-40 select-none shrink-0"
       >
-        {/* Left side: Breadcrumb and Target Level */}
-        <div id="header-pathway" className="flex items-center gap-2 min-w-0">
-          <div className="flex items-center gap-1.5 min-w-0 text-sm">
-            <Link to="/" className="font-extrabold text-slate-400 hover:text-white transition-colors shrink-0">
-              {BRAND_NAME}
-            </Link>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-            <span className="font-bold text-slate-100 tracking-tight truncate">{getTabTitle()}</span>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-[#1B223C] border border-[#E89A3C]/40 text-amber-300 shrink-0 ml-1">
-              JLPT {userProfile.targetLevel}
-            </span>
-          </div>
+        {/* Left side: Logo & Breadcrumb and Target Level */}
+        <div id="header-pathway" className="flex items-center gap-3 min-w-0">
+          <Link to="/" className="flex items-center gap-2 hover:opacity-95 transition-opacity shrink-0 group" title={`Trang chủ ${BRAND_NAME}`}>
+            <JpStudyLogo size="xs" dark={true} showText={true} showHanko={true} showSubtitle={false} />
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+          <span className="font-bold text-slate-100 tracking-tight truncate">{getTabTitle()}</span>
+          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-[#1B223C] border border-[#E89A3C]/40 text-amber-300 shrink-0">
+            JLPT {userProfile.targetLevel}
+          </span>
         </div>
 
       {/* Center Spacer */}
@@ -600,13 +604,13 @@ export default function Header({
                       onClick={() => setIsVoiceModalOpen(true)}
                       className="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-                      <span>Chọn từ 7 giọng AI chuẩn & giọng thiết bị ({getVoiceDisplayName(currentVoice)})</span>
+                      <Volume2 className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Chọn từ 7 giọng đọc chuẩn & giọng thiết bị ({getVoiceDisplayName(currentVoice)})</span>
                     </button>
                   </div>
                   
                   <div className="text-[10px] text-slate-500 mt-1.5 flex items-center gap-1">
-                    <span>✨</span>
+                    <span>🎙️</span>
                     <span>Tự động ngắt nghỉ, nhấn từ khóa và chuẩn nhịp JLPT N4–N2.</span>
                   </div>
                 </div>
@@ -650,8 +654,8 @@ export default function Header({
                 className="w-full py-2.5 px-3 bg-purple-50 hover:bg-purple-100/80 border border-purple-200 text-purple-900 font-bold text-xs rounded-xl transition-all flex items-center justify-between cursor-pointer"
               >
                 <span className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-purple-600" />
-                  Cấu hình API ChatGPT / AI dùng chung
+                  <Settings className="w-4 h-4 text-purple-600" />
+                  Cấu hình API kết nối hệ thống
                 </span>
                 <span className="text-[10px] font-mono bg-purple-200 px-2 py-0.5 rounded text-purple-900 font-black">
                   Cài đặt ⚙️
@@ -677,8 +681,8 @@ export default function Header({
 
               <div className="bg-slate-50/50 p-3.5 rounded-xl border border-slate-100 flex items-center justify-between text-xs">
                 <span className="text-slate-500 font-medium">Tổng kinh nghiệm:</span>
-                <span className="font-mono text-slate-950 font-bold flex items-center gap-1 text-purple-600">
-                  <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+                <span className="font-mono text-slate-950 font-bold flex items-center gap-1 text-amber-600">
+                  <Flame className="w-3.5 h-3.5 text-amber-500" />
                   {userProfile.xp} XP
                 </span>
               </div>

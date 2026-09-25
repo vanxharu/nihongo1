@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { 
   BookOpen, Compass, Layers, Plus, Edit2, Trash2, Database, RefreshCw, X, 
   FileSpreadsheet, UploadCloud, Download, CheckCircle2, AlertCircle, AlertTriangle, Eye,
-  Search, Sparkles, Filter, Check, ArrowRight, Tag, HelpCircle, FileDown, Layers2
+  Search, Filter, Check, ArrowRight, Tag, HelpCircle, FileDown, Layers2
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
@@ -870,7 +870,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
                 {parsedItems.length > 0 && !importSuccess && (
                   <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 rounded-2xl p-3 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                      <CheckCircle2 className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
                       <div className="text-amber-900 dark:text-amber-200 font-bold">
                         Phân tích thành công <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">{parsedItems.length}</span> từ vựng hợp lệ!
                         {skippedCount > 0 && (

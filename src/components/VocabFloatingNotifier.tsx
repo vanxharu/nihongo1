@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Volume2, Sparkles, BookOpen } from 'lucide-react';
+import { Volume2, Flame, BookOpen } from 'lucide-react';
 import { speakJapanese } from '../utils/audio';
 import JapaneseFuriganaText from './JapaneseFuriganaText';
 import {
@@ -167,7 +167,7 @@ export default function VocabFloatingNotifier({ onEarnXp }: VocabFloatingNotifie
                 className="px-2 py-1 bg-emerald-600/30 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-500/30 rounded-lg text-[10px] font-extrabold flex items-center gap-1 transition-colors shrink-0 cursor-pointer"
                 title="Nhận 5 XP học từ vựng"
               >
-                <Sparkles className="w-3 h-3 text-amber-400" />
+                <Flame className="w-3 h-3 text-amber-400" />
                 +5 XP
               </button>
             )}

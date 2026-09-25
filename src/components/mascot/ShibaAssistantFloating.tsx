@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  Sparkles, 
+  Lightbulb, 
   MessageCircle, 
   Flame, 
   X, 
@@ -116,7 +116,7 @@ export default function ShibaAssistantFloating({
                   animate={{ opacity: 1, x: 0 }}
                   className="hidden sm:flex items-center gap-1.5 mr-2 px-3 py-1.5 bg-[#1B223C] border border-[#E89A3C]/40 rounded-full shadow-lg shadow-black/40 text-xs font-bold text-amber-200 backdrop-blur-md whitespace-nowrap"
                 >
-                  <Sparkles className="w-3.5 h-3.5 text-[#E89A3C] shrink-0 animate-pulse" />
+                  <Lightbulb className="w-3.5 h-3.5 text-[#E89A3C] shrink-0" />
                   <span>{bubbleText}</span>
                   <button 
                     type="button" 
@@ -192,7 +192,7 @@ export default function ShibaAssistantFloating({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-[10px] font-black text-amber-400 uppercase flex items-center gap-1">
-                      <Sparkles className="w-2.5 h-2.5" /> Lời khuyên hôm nay
+                      <Lightbulb className="w-2.5 h-2.5" /> Lời khuyên hôm nay
                     </span>
                     <div className="flex items-center gap-1">
                       <button

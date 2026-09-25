@@ -4,7 +4,7 @@ import {
   Volume2,
   Check,
   X,
-  Sparkles,
+  GraduationCap,
   Eye,
   EyeOff,
   RotateCcw,
@@ -481,9 +481,9 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                     {checkInfo?.isLoadingAi ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
                     ) : (
-                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                      <GraduationCap className="w-3.5 h-3.5 text-purple-400" />
                     )}
-                    <span>AI đánh giá</span>
+                    <span>Chấm điểm nhận xét</span>
                   </button>
 
                   <button
@@ -542,14 +542,14 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                       <div className="p-3 bg-purple-950/20 rounded-xl border border-purple-800/40 text-xs text-purple-200 space-y-2">
                         <div className="flex items-center justify-between flex-wrap gap-2">
                           <div className="font-bold text-purple-300 flex items-center gap-1.5">
-                            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                            <GraduationCap className="w-3.5 h-3.5 text-purple-400" />
                             <span>
                               {checkInfo.aiFeedback.aiProvider === 'chatgpt'
                                 ? 'ChatGPT (OpenAI)'
                                 : checkInfo.aiFeedback.aiProvider === 'gemini_fallback'
-                                ? 'Gemini AI (Tự động dự phòng)'
-                                : 'AI'}{' '}
-                              đánh giá:
+                                ? 'Gemini (Dự phòng)'
+                                : 'Hệ thống'}{' '}
+                              nhận xét:
                             </span>
                             <span className="px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-200 font-extrabold">
                               {checkInfo.aiFeedback.score > 10 ? Math.round(checkInfo.aiFeedback.score / 10) : checkInfo.aiFeedback.score}/10
@@ -660,9 +660,9 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                     {checkInfo?.isLoadingAi ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
                     ) : (
-                      <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                      <GraduationCap className="w-3.5 h-3.5 text-purple-400" />
                     )}
-                    <span>AI đánh giá</span>
+                    <span>Chấm điểm nhận xét</span>
                   </button>
 
                   <button
@@ -711,14 +711,14 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                       <div className="p-3 bg-purple-950/20 rounded-xl border border-purple-800/40 text-xs text-purple-200 space-y-2">
                         <div className="flex items-center justify-between flex-wrap gap-2">
                           <div className="font-bold text-purple-300 flex items-center gap-1.5">
-                            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                            <GraduationCap className="w-3.5 h-3.5 text-purple-400" />
                             <span>
                               {checkInfo.aiFeedback.aiProvider === 'chatgpt'
                                 ? 'ChatGPT (OpenAI)'
                                 : checkInfo.aiFeedback.aiProvider === 'gemini_fallback'
-                                ? 'Gemini AI (Tự động dự phòng)'
-                                : 'AI'}{' '}
-                              đánh giá:
+                                ? 'Gemini (Dự phòng)'
+                                : 'Hệ thống'}{' '}
+                              nhận xét:
                             </span>
                             <span className="px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-200 font-extrabold">
                               {checkInfo.aiFeedback.score > 10 ? Math.round(checkInfo.aiFeedback.score / 10) : checkInfo.aiFeedback.score}/10

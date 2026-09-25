@@ -8,7 +8,6 @@ import {
   Play,
   CheckCircle2,
   RotateCcw,
-  Sparkles,
   Search,
   Check,
   Award,

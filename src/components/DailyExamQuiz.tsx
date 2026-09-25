@@ -20,7 +20,7 @@ import {
   Star,
   Check,
   Zap,
-  Sparkles,
+  FileSpreadsheet,
   BarChart2,
   Bookmark,
   Headphones,
@@ -33,6 +33,7 @@ import {
   Globe,
   Timer,
   History,
+  PenTool,
   FileDown,
   RefreshCw
 } from 'lucide-react';
@@ -976,8 +977,8 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
               : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white'
           }`}
         >
-          <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
-          <span>✨ Soạn Đề AI</span>
+          <PenTool className="w-4 h-4 text-amber-300" />
+          <span>Soạn Đề Mới</span>
         </button>
 
         <button
@@ -1209,8 +1210,8 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[11px] font-mono font-bold flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                        AI JLPT Builder Studio
+                        <PenTool className="w-3.5 h-3.5 text-amber-400" />
+                        JLPT Builder Studio
                       </span>
                       <span className="text-xs font-mono text-indigo-300 bg-indigo-900/60 px-2 py-0.5 rounded border border-indigo-700/50">
                         Đã soạn {aiGeneratedExams.length} đề
@@ -1220,7 +1221,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                       Tự Động Soạn Đề Thi JLPT Chuẩn Cấu Trúc
                     </h2>
                     <p className="text-xs text-slate-300">
-                      Hệ thống AI tự động tổng hợp Từ vựng, Ngữ pháp, Đọc hiểu & Nghe hiểu chuẩn khung thi thực tế.
+                      Hệ thống tự động tổng hợp Từ vựng, Ngữ pháp, Đọc hiểu &amp; Nghe hiểu chuẩn khung thi thực tế.
                     </p>
                   </div>
 
@@ -1229,7 +1230,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                     onClick={() => handleGenerateAiExam(aiSelectedLevel)}
                     className="px-5 py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-500 text-slate-950 font-black text-xs rounded-xl transition-all shadow-lg hover:shadow-amber-500/20 flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed shrink-0"
                   >
-                    <Sparkles className="w-4 h-4 text-slate-950" />
+                    <PenTool className="w-4 h-4 text-slate-950" />
                     <span>{isGenerating ? 'Đang soạn đề thi...' : `🚀 Soạn Đề ${aiSelectedLevel} Ngay`}</span>
                   </button>
                 </div>
@@ -1308,18 +1309,18 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
               <div className="space-y-3 pt-2">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-300 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-400" />
-                    <span>Danh sách đề thi AI đã khởi tạo ({aiGeneratedExams.length})</span>
+                    <BookOpen className="w-4 h-4 text-amber-400" />
+                    <span>Danh sách đề thi đã khởi tạo ({aiGeneratedExams.length})</span>
                   </h3>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {aiGeneratedExams.length === 0 ? (
                     <div className="col-span-full py-12 text-center bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-                      <Sparkles className="w-10 h-10 text-indigo-400/60 mx-auto mb-2 animate-pulse" />
-                      <p className="text-sm font-bold text-slate-300">Chưa có đề thi AI nào được tạo</p>
+                      <BookOpen className="w-10 h-10 text-indigo-400/60 mx-auto mb-2" />
+                      <p className="text-sm font-bold text-slate-300">Chưa có đề thi nào được tạo</p>
                       <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-                        Bấm nút <strong className="text-amber-300">"Soạn Đề {aiSelectedLevel} Ngay"</strong> ở trên để AI biên soạn đề thi JLPT mới nhất cho bạn.
+                        Bấm nút <strong className="text-amber-300">"Soạn Đề {aiSelectedLevel} Ngay"</strong> ở trên để hệ thống biên soạn đề thi JLPT mới nhất cho bạn.
                       </p>
                     </div>
                   ) : (
@@ -1396,7 +1397,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {filteredExams.length === 0 ? (
                   <div className="col-span-full py-10 text-center bg-slate-900 border border-slate-800 rounded-2xl p-6">
-                    <Sparkles className="w-8 h-8 text-indigo-400/60 mx-auto mb-1 animate-pulse" />
+                    <BookOpen className="w-8 h-8 text-indigo-400/60 mx-auto mb-1" />
                     <p className="text-xs font-bold text-slate-300">Không tìm thấy đề thi phù hợp</p>
                     <p className="text-[11px] text-slate-400 mt-0.5 max-w-sm mx-auto">
                       Thử chọn trình độ khác hoặc tìm kiếm với từ khóa khác.
@@ -1409,7 +1410,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
             </div>
           )}
 
-          {/* AI Generation Loading Modal */}
+          {/* Generation Loading Modal */}
           {isGenerating && (
             <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-3">
               <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 max-w-sm w-full shadow-2xl text-center space-y-4 animate-fade-in">
@@ -1417,12 +1418,12 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                   <div className="absolute inset-0 rounded-full border-3 border-indigo-500/30 animate-ping" />
                   <div className="absolute inset-0 rounded-full border-3 border-indigo-500 border-t-transparent animate-spin" />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-indigo-400 animate-pulse" />
+                    <PenTool className="w-5 h-5 text-indigo-400" />
                   </div>
                 </div>
 
                 <div className="space-y-0.5">
-                  <h3 className="font-bold text-slate-100 text-sm">Đang soạn đề thi bằng AI</h3>
+                  <h3 className="font-bold text-slate-100 text-sm">Đang soạn đề thi mới</h3>
                   <p className="text-[11px] text-slate-400">
                     Đang thiết lập đề thi JLPT cấp độ <span className="font-bold text-indigo-400">{aiSelectedLevel}</span>...
                   </p>

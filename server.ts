@@ -20,7 +20,7 @@ import { cleanVocabSymbols, sanitizeVocabItem, KANJI_TO_HAN_VIET } from './src/u
 import { deduplicateGrammars } from './src/utils/grammarDeduplicator';
 import { KANJI_DICTIONARY } from './src/data/kanjiDictionary';
 import { requireAuth, requireAdmin } from './src/middleware/auth';
-import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid } from './src/db/users';
+import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid, findUserByIdentifier } from './src/db/users';
 
 const KuroshiroClass = (Kuroshiro as any).default || Kuroshiro;
 const KuromojiAnalyzerClass = (KuromojiAnalyzer as any).default || KuromojiAnalyzer;
@@ -4117,22 +4117,82 @@ app.post("/api/transcribe-audio", async (req, res) => {
 
 // Configure Vite middleware in development or serve built files in production
 
-// 5.5 Quick Auth & Direct Login (Bypasses third-party cookie/domain restrictions, derives role purely from DB)
+// 5.4 Username/Identifier Resolver (Enables login by username or email)
+app.post('/api/auth/resolve-identifier', async (req: any, res) => {
+  try {
+    const rawIdentifier = (req.body?.identifier || '').toString().trim();
+    if (!rawIdentifier) {
+      return res.status(400).json({ success: false, error: 'Identifier is required' });
+    }
+
+    if (rawIdentifier.includes('@')) {
+      return res.json({
+        success: true,
+        isEmail: true,
+        email: rawIdentifier.toLowerCase()
+      });
+    }
+
+    const foundUser = await findUserByIdentifier(rawIdentifier);
+    if (!foundUser) {
+      return res.status(404).json({
+        success: false,
+        error: 'Không tìm thấy tài khoản với tên đăng nhập này.'
+      });
+    }
+
+    return res.json({
+      success: true,
+      isEmail: false,
+      email: foundUser.email,
+      username: foundUser.username || foundUser.name,
+      displayName: foundUser.name
+    });
+  } catch (err: any) {
+    console.error('Error in /api/auth/resolve-identifier:', err);
+    return res.status(500).json({ success: false, error: err.message || 'Lookup failed' });
+  }
+});
+
+// 5.5 Quick Auth & Direct Login (Supports username or email, derives role purely from DB)
 app.post('/api/auth/quick-login', async (req: any, res) => {
   try {
-    const rawEmail = req.body?.email ? req.body.email.toString().toLowerCase().trim() : '';
-    if (!rawEmail) {
-      return res.status(400).json({ error: 'Email is required' });
+    const input = (req.body?.identifier || req.body?.email || '').toString().trim();
+    if (!input) {
+      return res.status(400).json({ error: 'Email hoặc tên đăng nhập là bắt buộc' });
     }
-    const name = req.body?.name || rawEmail.split('@')[0];
-    const uid = 'usr_' + Buffer.from(rawEmail).toString('hex').slice(0, 24);
 
-    const dbUser = await getOrCreateUser(uid, rawEmail);
+    let rawEmail = input.toLowerCase();
+    let name = req.body?.name || '';
+    let dbUser: any = null;
+
+    if (!rawEmail.includes('@')) {
+      // Input is a username
+      const foundUser = await findUserByIdentifier(input);
+      if (foundUser) {
+        dbUser = foundUser;
+        rawEmail = foundUser.email;
+        name = foundUser.name || name || input;
+      } else {
+        // Fallback email for username
+        const cleanUser = input.toLowerCase().replace(/[^a-z0-9_]/g, '');
+        rawEmail = `${cleanUser}@nihongo.edu.vn`;
+        name = name || input;
+      }
+    } else {
+      name = name || rawEmail.split('@')[0];
+    }
+
+    if (!dbUser) {
+      const uid = 'usr_' + Buffer.from(rawEmail).toString('hex').slice(0, 24);
+      dbUser = await getOrCreateUser(uid, rawEmail);
+    }
 
     const tokenPayload = {
       uid: dbUser.uid,
       email: dbUser.email,
       name: dbUser.name || name,
+      username: dbUser.username || dbUser.name || name,
       role: dbUser.role || 'user',
       timestamp: Date.now()
     };

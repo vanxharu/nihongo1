@@ -12,7 +12,6 @@ import {
   X, 
   Volume2, 
   Flag, 
-  Sparkles, 
   Trophy,
   RotateCcw
 } from 'lucide-react';
@@ -520,7 +519,7 @@ export default function MiniTestModal({
                   }`}
                 >
                   <div className="flex items-center gap-2 font-bold mb-1.5">
-                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <Lightbulb className="w-4 h-4 text-amber-400" />
                     <span>Giải thích chi tiết:</span>
                   </div>
                   <p className="text-xs sm:text-sm text-slate-300">

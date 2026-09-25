@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   BookOpen, 
-  Bot,
+  MessagesSquare,
   ArrowRight, 
   CheckSquare, 
   PenTool, 
@@ -186,17 +186,17 @@ export default function MobilePracticeHub({
 
           <div className="flex items-start justify-between w-full relative z-10">
             <div className="w-11 h-11 rounded-xl bg-[#2e1526] border border-[#f472b6]/40 text-[#f472b6] flex items-center justify-center font-bold shadow-inner">
-              <Bot className="w-5 h-5" />
+              <MessagesSquare className="w-5 h-5" />
             </div>
             <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-pink-400 group-hover:translate-x-0.5 transition-all mt-1" />
           </div>
 
           <div className="relative z-10">
             <div className="text-[15px] font-bold text-white group-hover:text-pink-200 transition-colors leading-tight">
-              Chat AI
+              Luyện Kaiwa
             </div>
             <div className="text-xs font-semibold text-[#f472b6] mt-0.5">
-              AIチャット
+              会話練習
             </div>
           </div>
         </button>

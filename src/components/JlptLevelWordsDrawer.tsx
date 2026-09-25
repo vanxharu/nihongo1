@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Volume2, X, Sparkles, BookOpen } from 'lucide-react';
+import { Volume2, X, BookOpen } from 'lucide-react';
 import { JLPT_LEVEL_CONFIG } from './JlptUnderlineArticle';
 import { speakJapanese } from '../utils/audio';
 import { LessonReadingVocab } from '../types';

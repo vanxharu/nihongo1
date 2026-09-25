@@ -15,7 +15,6 @@ import {
   Clock, 
   CheckCircle2, 
   XCircle, 
-  Sparkles, 
   Headphones, 
   Play, 
   Pause, 
@@ -937,13 +936,13 @@ export const PdfExamBookletViewer: React.FC<PdfExamBookletViewerProps> = ({
             >
               {isGrading ? (
                 <>
-                  <Sparkles className="w-3.5 h-3.5 animate-spin shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 animate-spin shrink-0" />
                   <span className="whitespace-nowrap">Đang chấm...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                  <span className="whitespace-nowrap">Nộp Bài & AI Chấm Đề</span>
+                  <Award className="w-3.5 h-3.5 shrink-0" />
+                  <span className="whitespace-nowrap">Nộp Bài & Chấm Đề</span>
                 </>
               )}
             </button>

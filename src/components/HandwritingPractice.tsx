@@ -7,7 +7,6 @@ import {
   Undo2, 
   Redo2, 
   Trash2, 
-  Sparkles, 
   CheckCircle2, 
   XCircle, 
   Volume2, 
@@ -757,8 +756,8 @@ export default function HandwritingPractice({
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-              <span>AI Tạo Đề</span>
+              <PenTool className="w-3.5 h-3.5 text-amber-300" />
+              <span>Tạo Đề Mới</span>
             </button>
           </div>
         </div>
@@ -1097,12 +1096,12 @@ export default function HandwritingPractice({
                 {isGrading ? (
                   <>
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>AI đang phân tích nét...</span>
+                    <span>Đang phân tích nét...</span>
                   </>
                 ) : (
                   <>
-                    <Sparkles className="w-4 h-4 text-amber-300" />
-                    <span>Chấm Điểm Bằng AI</span>
+                    <Award className="w-4 h-4 text-amber-300" />
+                    <span>Chấm Điểm Nét Chữ</span>
                   </>
                 )}
               </button>
@@ -1177,11 +1176,11 @@ export default function HandwritingPractice({
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl max-w-2xl mx-auto space-y-5">
           <div className="text-center space-y-1">
             <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-2">
-              <Sparkles className="w-6 h-6" />
+              <PenTool className="w-6 h-6" />
             </div>
-            <h2 className="text-lg font-black text-white">AI Sinh Đề Luyện Viết Tự Động</h2>
+            <h2 className="text-lg font-black text-white">Sinh Đề Luyện Viết Tự Động</h2>
             <p className="text-xs text-slate-400">
-              Yêu cầu AI tạo bộ đề bài luyện viết riêng theo chủ đề bạn mong muốn
+              Tạo bộ đề bài luyện viết riêng theo chủ đề bạn mong muốn
             </p>
           </div>
 
@@ -1237,11 +1236,11 @@ export default function HandwritingPractice({
               {isGeneratingAi ? (
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin" />
-                  <span>Gemini đang tạo đề bài...</span>
+                  <span>Đang tạo đề bài...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 text-amber-300" />
+                  <PenTool className="w-4 h-4 text-amber-300" />
                   <span>Tạo 4 Bài Tập Luyện Viết Mới</span>
                 </>
               )}
@@ -1265,11 +1264,11 @@ export default function HandwritingPractice({
                   <div className="relative w-16 h-16 mx-auto">
                     <div className="absolute inset-0 rounded-full bg-indigo-500/30 animate-ping" />
                     <div className="relative w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center shadow-xl">
-                      <Sparkles className="w-8 h-8 text-white animate-spin" />
+                      <Award className="w-8 h-8 text-white animate-spin" />
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-white">AI Sensei Đang Chấm Nét Chữ...</h3>
+                    <h3 className="text-lg font-black text-white">Đang Chấm Nét Chữ...</h3>
                     <p className="text-xs text-slate-400 mt-1">
                       Đang nhận diện hình thái nét vẽ, thứ tự nét, độ cân xứng và ngữ pháp tiếng Nhật
                     </p>

@@ -8,7 +8,6 @@ import {
   Printer, 
   RotateCcw, 
   FileText, 
-  Sparkles, 
   Share2, 
   CheckCircle2, 
   XCircle, 
@@ -506,7 +505,7 @@ export function JlptOfficialScoreReport({
         <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-2 shadow-2xs print:hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+              <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
               Luyện tiếp các kỹ năng khác của đề thi này:
             </span>
             <button

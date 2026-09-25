@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, ChevronLeft, Sparkles, Trophy } from 'lucide-react';
+import { BookOpen, ChevronLeft, Award, Trophy } from 'lucide-react';
 import { JLPTLevel } from '../../types';
 
 interface BookLibraryHeaderProps {
@@ -34,7 +34,7 @@ export const BookLibraryHeader: React.FC<BookLibraryHeaderProps> = ({
             THƯ VIỆN GIÁO TRÌNH JLPT CHÍNH THỨC
           </span>
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs font-medium">
-            <Sparkles className="w-3 h-3 text-amber-400" />
+            <Award className="w-3 h-3 text-amber-400" />
             {totalBooksCount} giáo trình
           </span>
         </div>

@@ -6,7 +6,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   BookOpen,
-  Sparkles,
   Volume2,
   VolumeX,
   Eye,
@@ -1574,8 +1573,8 @@ export default function AiReadingPractice({
                           </>
                         ) : (
                           <>
-                            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                            <span>Phân tích AI</span>
+                            <BookOpen className="w-3.5 h-3.5 text-amber-300" />
+                            <span>Phân tích bài đọc</span>
                           </>
                         )}
                       </button>
@@ -1676,7 +1675,7 @@ export default function AiReadingPractice({
                       className="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-indigo-950/70 border border-indigo-500/40 text-indigo-200 text-xs shadow-lg"
                     >
                       <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-indigo-400 shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
                         <span className="font-semibold text-white">{refreshNotification.text}</span>
                       </div>
                       <button
@@ -1995,7 +1994,7 @@ export default function AiReadingPractice({
                       className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-emerald-200 text-xs shadow-lg"
                     >
                       <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                         <span className="font-semibold text-white">{refreshNotification.text}</span>
                       </div>
                       <button
@@ -2509,7 +2508,7 @@ export default function AiReadingPractice({
                       </>
                     ) : (
                       <>
-                        <Sparkles className="w-4 h-4 text-amber-300" />
+                        <BookOpen className="w-4 h-4 text-amber-300" />
                         <span>Phân tích & Soạn câu hỏi đọc hiểu ngay</span>
                       </>
                     )}

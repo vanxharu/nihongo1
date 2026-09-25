@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Volume2, VolumeX, Check, X, Sparkles, Smartphone, Play, Square } from 'lucide-react';
+import { Volume2, VolumeX, Check, X, Headphones, Smartphone, Play, Square } from 'lucide-react';
 import { 
   AzureVoiceChoice, 
   getPreferredVoice, 
@@ -159,8 +159,8 @@ export default function VoiceSelectorModal({
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                Giọng đọc AI Chuẩn (7)
+                <Headphones className="w-3.5 h-3.5" />
+                Giọng đọc bản xứ (7)
               </button>
               <button
                 type="button"

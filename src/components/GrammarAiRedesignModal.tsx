@@ -8,7 +8,6 @@
 
 import React, { useState } from 'react';
 import {
-  Sparkles,
   RefreshCw,
   Check,
   X,
@@ -18,7 +17,7 @@ import {
   History,
   AlertCircle,
   CheckCircle2,
-  Bot,
+  GraduationCap,
   ArrowRight,
   HelpCircle,
   Lightbulb,
@@ -223,11 +222,11 @@ export const GrammarAiRedesignModal: React.FC<GrammarAiRedesignModalProps> = ({
         <div className="p-4 sm:p-5 border-b border-[#2b3353] bg-gradient-to-r from-[#171d33] via-[#1a233d] to-[#171d33] flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black shadow-lg shadow-indigo-500/20">
-              <Bot className="w-5 h-5" />
+              <GraduationCap className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-bold text-white">AI Thiết Kế Lại Toàn Bộ Bài Học</h3>
+                <h3 className="text-base sm:text-lg font-bold text-white">Soạn Lại Cấu Trúc Toàn Bộ Bài Học</h3>
                 <span className="px-2 py-0.5 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded text-xs font-black">
                   {grammarItem.level}
                 </span>
@@ -254,12 +253,8 @@ export const GrammarAiRedesignModal: React.FC<GrammarAiRedesignModalProps> = ({
               disabled={isGenerating}
               className="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow-md shadow-indigo-600/20 transition-all disabled:opacity-50"
             >
-              {isGenerating ? (
-                <RefreshCw className="w-4 h-4 animate-spin" />
-              ) : (
-                <Sparkles className="w-4 h-4" />
-              )}
-              <span>Tạo toàn bộ bài học (Lý thuyết, Ví dụ, Bài tập)</span>
+              <RefreshCw className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
+              <span>Soạn toàn bộ bài học (Lý thuyết, Ví dụ, Bài tập)</span>
             </button>
           </div>
 
@@ -292,11 +287,11 @@ export const GrammarAiRedesignModal: React.FC<GrammarAiRedesignModalProps> = ({
           {!generatedData && !isGenerating && (
             <div className="py-12 text-center space-y-3">
               <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mx-auto text-indigo-400">
-                <Sparkles className="w-7 h-7" />
+                <BookOpen className="w-7 h-7" />
               </div>
               <h4 className="text-base font-bold text-white">Sẵn sàng thiết kế bài học chuẩn sư phạm</h4>
               <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
-                Nhấn nút <strong>"Tạo toàn bộ bài học"</strong> ở trên để AI phân tích cấu trúc, tạo quy tắc biến đổi, ngữ cảnh sử dụng, mẹo nhớ, ví dụ thực tế và bài tập JLPT.
+                Nhấn nút <strong>"Soạn toàn bộ bài học"</strong> ở trên để phân tích cấu trúc, tạo quy tắc biến đổi, ngữ cảnh sử dụng, mẹo nhớ, ví dụ thực tế và bài tập JLPT.
               </p>
             </div>
           )}
@@ -428,7 +423,7 @@ export const GrammarAiRedesignModal: React.FC<GrammarAiRedesignModalProps> = ({
                   {generatedData.memoryTip && (
                     <div className="bg-purple-950/40 border border-purple-500/30 p-4 rounded-xl space-y-1">
                       <div className="text-xs font-bold text-purple-300 flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5" /> MẸO GHI NHỚ
+                        <Lightbulb className="w-3.5 h-3.5" /> MẸO GHI NHỚ
                       </div>
                       <p className="text-xs sm:text-sm text-purple-100">{generatedData.memoryTip}</p>
                     </div>

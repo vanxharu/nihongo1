@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Disc3, Sparkles, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Disc3, Award, CheckCircle2 } from 'lucide-react';
 import { StudyBook } from '../../types';
 
 interface BookCoverVisualProps {
@@ -67,7 +67,7 @@ export const BookCoverVisual: React.FC<BookCoverVisualProps> = ({
           </div>
 
           <div className="flex items-center justify-center gap-1 text-amber-900 text-[8.5px] sm:text-[9.5px] font-bold pt-0.5">
-            <Sparkles className="w-3 h-3 text-amber-600" />
+            <Award className="w-3 h-3 text-amber-600" />
             <span>32 bài từ vựng + đề ôn tập</span>
           </div>
         </div>

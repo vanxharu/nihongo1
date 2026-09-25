@@ -12,7 +12,6 @@ import {
   Play, 
   Square, 
   HelpCircle, 
-  Sparkles, 
   RotateCcw, 
   ArrowLeft, 
   FileText, 
@@ -254,7 +253,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
               }`}
               title={isFocusMode ? 'Tắt chế độ tập trung cao' : 'Bật chế độ tập trung Zen (ẩn yếu tố phụ)'}
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Eye className="w-3.5 h-3.5" />
               <span className="hidden lg:inline text-[11px]">{isFocusMode ? 'Zen: Bật' : 'Zen'}</span>
             </button>
 

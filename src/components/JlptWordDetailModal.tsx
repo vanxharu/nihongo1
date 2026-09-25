@@ -16,7 +16,6 @@ import {
   Loader2, 
   Heart,
   BookOpen,
-  Sparkles,
   Lightbulb
 } from 'lucide-react';
 import { speakJapanese } from '../utils/audio';
@@ -1116,7 +1115,7 @@ export const JlptWordDetailModal: React.FC<JlptWordDetailModalProps> = ({
                       <div className="bg-[#15151e]/50 border border-zinc-800/80 rounded-2xl p-4 sm:p-5 space-y-3">
                         <div className="flex items-center justify-between pb-1 border-b border-zinc-800/80">
                           <div className="flex items-center gap-2">
-                            <Sparkles className="w-4 h-4 text-purple-400" />
+                            <BookOpen className="w-4 h-4 text-purple-400" />
                             <h4 className="text-sm font-bold text-white tracking-wide">
                               Từ ghép phổ biến chứa 「{activeKanji.character}」
                             </h4>

@@ -11,7 +11,6 @@ import {
   Monitor,
   RefreshCw,
   Info,
-  Sparkles,
   Volume2,
   Pin,
   Palette,

@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { 
-  Bot, 
   Send, 
   Mic, 
   MicOff, 
   Volume2, 
   VolumeX,
-  Sparkles, 
   RotateCcw, 
   Settings, 
   HelpCircle, 
@@ -76,7 +74,7 @@ const JAPANESE_PERSONAS: AiPersona[] = [
     description: 'Chú cún Shiba Inu mặc happi truyền thống, đeo băng đô 日本語. Luôn vui vẻ, ấm áp, kiên nhẫn giảng giải ngữ pháp và cổ vũ bạn mỗi ngày!',
     speakingStyle: '明るく元気いっぱい！親しみやすく励ましてくれる日本語',
     badgeColor: 'from-amber-500 to-rose-500',
-    icon: Sparkles,
+    icon: Smile,
     greeting: {
       'N5': {
         japanese: 'ヤッホー！ぼくは「にほんしば」だよ！一緒に楽しく日本語を勉強しよう！今日はどんな言葉を覚えたい？',
@@ -1341,7 +1339,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
           {hints.length > 0 && !isKeyboardOpen && !isInputFocused && (
             <div className="px-3 py-1.5 bg-[#0F1424]/95 border-t border-slate-800/80 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-none transition-all duration-150">
               <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider shrink-0 flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-amber-400" />
+                <Lightbulb className="w-3 h-3 text-amber-400" />
                 <span>Gợi ý:</span>
               </span>
               <div className="flex items-center gap-1.5 flex-nowrap">

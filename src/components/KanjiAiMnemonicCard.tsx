@@ -11,13 +11,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  Sparkles, 
   RefreshCw, 
   Volume2, 
   AlertCircle, 
   Loader2, 
   Lightbulb, 
-  Brain, 
+  Flame, 
   Layers, 
   BookOpen, 
   Quote 
@@ -148,12 +147,12 @@ export const KanjiAiMnemonicCard: React.FC<KanjiAiMnemonicCardProps> = ({
       <div className="flex items-center justify-between gap-2 border-b border-amber-200/80 pb-2.5 pt-0.5">
         <div className="flex items-center gap-2 min-w-0">
           <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-400 text-white flex items-center justify-center shadow-xs shrink-0">
-            <Sparkles className="w-4 h-4 text-white animate-pulse" />
+            <Lightbulb className="w-4 h-4 text-white" />
           </div>
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="text-xs font-black text-amber-950 uppercase tracking-wide font-display">
-                Mẹo nhớ Kanji AI
+                Mẹo nhớ chữ Hán
               </span>
               <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-600 text-white uppercase tracking-wider font-mono shadow-3xs">
                 Liên tưởng
@@ -169,7 +168,7 @@ export const KanjiAiMnemonicCard: React.FC<KanjiAiMnemonicCardProps> = ({
         <button
           onClick={handleRegenerate}
           disabled={loading || isRegenerating}
-          title="Tạo lại mẹo nhớ liên tưởng mới khác từ AI"
+          title="Tạo lại mẹo nhớ liên tưởng mới khác"
           className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold text-amber-950 bg-white hover:bg-amber-100/90 active:bg-amber-200 border border-amber-300 hover:border-amber-400 rounded-xl shadow-xs transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shrink-0 active:scale-95"
         >
           <RefreshCw className={`w-3.5 h-3.5 text-amber-700 ${isRegenerating ? 'animate-spin' : ''}`} />
@@ -185,12 +184,11 @@ export const KanjiAiMnemonicCard: React.FC<KanjiAiMnemonicCardProps> = ({
             <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center animate-pulse">
               <Loader2 className="w-6 h-6 text-amber-600 animate-spin" />
             </div>
-            <Sparkles className="w-4 h-4 text-amber-500 absolute -top-1 -right-1 animate-bounce" />
           </div>
           <div className="space-y-1">
             <p className="text-sm font-bold text-amber-950">Đang sáng tạo mẹo nhớ liên tưởng…</p>
             <p className="text-xs text-amber-800/80 max-w-xs leading-relaxed">
-              AI đang phân tích bộ thủ và tạo câu chuyện sống động cho chữ 「<span className="font-bold text-amber-900 text-sm font-display">{kanji}</span>」...
+              Phân tích bộ thủ và tạo câu chuyện sống động cho chữ 「<span className="font-bold text-amber-900 text-sm font-display">{kanji}</span>」...
             </p>
           </div>
         </div>
@@ -274,7 +272,7 @@ export const KanjiAiMnemonicCard: React.FC<KanjiAiMnemonicCardProps> = ({
           {mnemonicData.memory_sentence && (
             <div className="space-y-1.5">
               <div className="flex items-center gap-1.5">
-                <Brain className="w-3.5 h-3.5 text-rose-500" />
+                <Flame className="w-3.5 h-3.5 text-rose-500" />
                 <span className="text-[10px] text-rose-900 font-extrabold uppercase tracking-wider font-mono">
                   Câu chốt khắc sâu:
                 </span>

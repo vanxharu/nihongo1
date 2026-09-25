@@ -10,8 +10,8 @@ import {
   ThumbsDown,
   MoreHorizontal,
   Plus,
-  Brain,
-  Sparkles,
+  BookOpen,
+  Loader2,
   RotateCcw, 
   X, 
   Send,
@@ -804,8 +804,8 @@ export default function JapaneseLiveVoiceCall({
           )}
           {callStatus === 'processing' && (
             <span className="text-amber-300 flex items-center gap-1.5 justify-center">
-              <Sparkles className="w-3 h-3 animate-spin" />
-              <span>Đang suy nghĩ...</span>
+              <Loader2 className="w-3 h-3 animate-spin" />
+              <span>Đang xử lý hội thoại...</span>
             </span>
           )}
           {callStatus === 'muted' && (
@@ -948,8 +948,8 @@ export default function JapaneseLiveVoiceCall({
                 isReasoningOpen ? 'bg-zinc-800 text-white' : 'text-zinc-300 hover:text-white hover:bg-zinc-800'
               }`}
             >
-              <Brain className="w-4 h-4 text-purple-400" />
-              <span>Suy luận</span>
+              <BookOpen className="w-4 h-4 text-purple-400" />
+              <span>Giải thích</span>
             </button>
 
             {/* Microphone Mute / Unmute Button */}
@@ -979,7 +979,7 @@ export default function JapaneseLiveVoiceCall({
         </div>
       </div>
 
-      {/* Reasoning Drawer (When "🧠 Suy luận" is clicked) */}
+      {/* Reasoning Drawer */}
       <AnimatePresence>
         {isReasoningOpen && (
           <motion.div
@@ -990,8 +990,8 @@ export default function JapaneseLiveVoiceCall({
           >
             <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
               <div className="flex items-center gap-2 text-purple-400 font-bold text-sm">
-                <Brain className="w-4 h-4" />
-                <span>Phân Tích Suy Luận & Ngữ Pháp (AI Reasoning)</span>
+                <BookOpen className="w-4 h-4" />
+                <span>Phân Tích &amp; Giải Thích Ngữ Pháp</span>
               </div>
               <button onClick={() => setIsReasoningOpen(false)} className="text-zinc-400 hover:text-white">
                 <X className="w-4 h-4" />

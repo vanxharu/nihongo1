@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
   RotateCcw,
-  Sparkles,
+  GraduationCap,
   Award,
   CheckCircle2,
   XCircle,
@@ -182,14 +182,14 @@ export const GrammarPersonalizedReviewView: React.FC<GrammarPersonalizedReviewVi
       {/* Banner */}
       <div className="bg-gradient-to-r from-purple-950/40 via-indigo-950/40 to-slate-900 border border-purple-500/30 rounded-3xl p-5 sm:p-7 shadow-xl">
         <div className="flex items-center gap-2 text-purple-400 font-bold text-xs uppercase tracking-wider mb-2">
-          <Sparkles className="w-4 h-4" />
+          <GraduationCap className="w-4 h-4" />
           Thuật toán Lặp lại Ngắt quãng (Spaced Repetition)
         </div>
         <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-white">
           Ôn Tập Cá Nhân Hóa & Khắc Phục Lỗi Sai
         </h1>
         <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-xl">
-          Hệ thống AI phân tích các mẫu ngữ pháp bạn thường nhầm lẫn hoặc đã lâu chưa ôn lại để tạo đề kiểm tra tập trung.
+          Hệ thống phân tích các mẫu ngữ pháp bạn thường nhầm lẫn hoặc đã lâu chưa ôn lại để tạo đề kiểm tra tập trung.
         </p>
       </div>
 

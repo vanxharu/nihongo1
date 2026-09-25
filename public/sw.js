@@ -1,5 +1,5 @@
 // JPStudy PWA Service Worker with Background Notification & Offline Support
-const CACHE_NAME = 'jpstudy-pwa-v4';
+const CACHE_NAME = 'jpstudy-pwa-v5';
 const DATA_CACHE_NAME = 'jpstudy-data-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
@@ -802,8 +802,7 @@ self.addEventListener('fetch', (event) => {
     url.search.includes('v=') ||
     url.search.includes('t=') ||
     url.search.includes('apiKey') ||
-    url.search.includes('auth') ||
-    url.search.includes('oauth')
+    url.search.includes('auth')
   ) {
     return;
   }

@@ -20,7 +20,6 @@ import {
   BookOpen, 
   Play, 
   TrendingUp,
-  Sparkles,
   Download,
   MessageSquare,
   Star,

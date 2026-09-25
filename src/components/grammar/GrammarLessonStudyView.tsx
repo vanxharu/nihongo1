@@ -3,7 +3,7 @@ import {
   ArrowLeft,
   BookOpen,
   Volume2,
-  Sparkles,
+  RefreshCw,
   Lightbulb,
   AlertTriangle,
   HelpCircle,
@@ -17,7 +17,7 @@ import {
   X,
   Send,
   Loader2,
-  Bot,
+  GraduationCap,
   ListChecks,
   Check
 } from 'lucide-react';
@@ -316,21 +316,21 @@ export const GrammarLessonStudyView: React.FC<GrammarLessonStudyViewProps> = ({
             id="btn-open-ai-tutor"
             onClick={() => setShowAiTutor(true)}
             className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-cyan-600/20 transition-all"
-            title="Hỏi AI Trợ Giảng"
+            title="Hỏi Trợ Giảng"
           >
-            <Bot className="w-4 h-4" />
-            <span>Hỏi AI Trợ Giảng</span>
+            <GraduationCap className="w-4 h-4" />
+            <span>Hỏi Trợ Giảng</span>
           </button>
 
-          {/* AI Redesign Button */}
+          {/* Redesign Button */}
           <button
             id="btn-ai-redesign-lesson"
             onClick={() => onOpenAiGeneratorModal(grammarItem)}
             className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md shadow-purple-600/20 transition-all"
-            title="AI Thiết kế lại bài học"
+            title="Soạn lại cấu trúc bài học"
           >
-            <Sparkles className="w-4 h-4" />
-            <span className="hidden sm:inline">AI Nâng cấp</span>
+            <RefreshCw className="w-4 h-4" />
+            <span className="hidden sm:inline">Soạn lại bài giảng</span>
           </button>
         </div>
       </div>
@@ -550,7 +550,7 @@ export const GrammarLessonStudyView: React.FC<GrammarLessonStudyViewProps> = ({
           {grammarItem.memoryTip && (
             <div className="bg-gradient-to-r from-purple-950/40 via-indigo-950/40 to-slate-900 border border-purple-500/30 rounded-2xl p-5 sm:p-6 space-y-2">
               <div className="flex items-center gap-2 text-purple-300 font-bold text-sm sm:text-base">
-                <Sparkles className="w-5 h-5" />
+                <Lightbulb className="w-5 h-5" />
                 <h2>5. Mẹo nhớ nhanh (Memory Tip)</h2>
               </div>
               <p className="text-sm sm:text-base text-purple-100 font-medium leading-relaxed">
@@ -957,11 +957,11 @@ export const GrammarLessonStudyView: React.FC<GrammarLessonStudyViewProps> = ({
             <div className="p-4 sm:p-5 bg-gradient-to-r from-cyan-950/60 via-slate-900 to-blue-950/60 border-b border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400">
-                  <Bot className="w-5 h-5" />
+                  <GraduationCap className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="text-sm sm:text-base font-bold text-white">
-                    Trợ Giảng AI: 【{grammarItem.structure}】
+                    Trợ Giảng Ngữ Pháp: 【{grammarItem.structure}】
                   </h3>
                   <p className="text-[11px] text-cyan-300">
                     Giải đáp mọi thắc mắc chuyên sâu về ngữ pháp

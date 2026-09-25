@@ -16,8 +16,7 @@ import {
   Circle, 
   RotateCw, 
   Layers, 
-  BrainCircuit, 
-  Sparkles, 
+  HelpCircle, 
   ChevronRight, 
   ChevronLeft, 
   Shuffle, 
@@ -447,7 +446,7 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
             }`}
           >
-            <BrainCircuit className="w-3 h-3" />
+            <HelpCircle className="w-3 h-3" />
             <span>Trắc nghiệm</span>
           </button>
           <button
@@ -460,7 +459,7 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
             }`}
           >
-            <Sparkles className="w-3 h-3 text-amber-500" />
+            <BookOpen className="w-3 h-3 text-amber-500" />
             <span>Bộ từ mẫu</span>
           </button>
         </div>

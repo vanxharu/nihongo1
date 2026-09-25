@@ -24,7 +24,7 @@ import {
   Smile, 
   Globe, 
   ChevronDown, 
-  Sparkles,
+  Lightbulb,
   HelpCircle
 } from 'lucide-react';
 import { speakJapanese } from '../utils/audio';
@@ -842,7 +842,7 @@ export default function Kaiwa() {
           {toggles.hints && hints.length > 0 && (
             <div className="space-y-1.5 mb-3.5">
               <div className="flex items-center gap-1 text-slate-400 text-[10px] uppercase tracking-wider font-bold">
-                <Sparkles className="w-3 h-3 text-amber-500 animate-pulse" />
+                <Lightbulb className="w-3 h-3 text-amber-500" />
                 <span>Gợi ý phản xạ nhanh:</span>
               </div>
               <div className="flex flex-wrap gap-2">

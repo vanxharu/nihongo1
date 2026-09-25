@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { GoogleAuthService } from '../services/googleAuth';
-import { LogIn, UserPlus, Mail, Lock, AlertCircle, Sparkles, X, Chrome, Copy, Check, ExternalLink } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock, AlertCircle, User, X, Copy, Check, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import JpStudyLogo from './JpStudyLogo';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -10,33 +10,34 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const { login, register, loginWithGoogle, quickLogin, googleAuthMessage, lastAuthError, clearAuthError } = useAuth();
+  const { login, register, quickLogin, lastAuthError, clearAuthError } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
+  const [identifier, setIdentifier] = useState('');
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
   const [errorCode, setErrorCode] = useState('');
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [copiedDomain, setCopiedDomain] = useState(false);
 
   const currentHostname = typeof window !== 'undefined' ? window.location.hostname : '';
   const isInIframe = typeof window !== 'undefined' && window.self !== window.top;
 
-  const handleQuickLogin = async (loginEmail?: string) => {
+  const handleQuickLogin = async (loginIdentifier?: string) => {
     setError('');
     setErrorCode('');
     clearAuthError();
     setLoading(true);
     try {
-      const targetEmail = (loginEmail || email || '').trim();
-      if (!targetEmail) {
-        setError('Vui lòng nhập địa chỉ email của bạn ở ô trên để đăng nhập.');
+      const targetIdentifier = (loginIdentifier || identifier || email || '').trim();
+      if (!targetIdentifier) {
+        setError('Vui lòng nhập tên đăng nhập hoặc email của bạn ở ô trên để đăng nhập.');
         return;
       }
-      const displayNameVal = displayName || targetEmail.split('@')[0];
-      await quickLogin(targetEmail, displayNameVal);
+      const displayNameVal = displayName || username || targetIdentifier.split('@')[0];
+      await quickLogin(targetIdentifier, displayNameVal);
       handleClose();
     } catch (err: any) {
       setError(err?.message || 'Đăng nhập thất bại.');
@@ -78,30 +79,37 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     clearAuthError();
     setLoading(true);
 
-    if (!email || !password) {
-      setError('Vui lòng nhập đầy đủ email và mật khẩu.');
-      setLoading(false);
-      return;
-    }
-
-    if (!isLogin && password.length < 6) {
-      setError('Mật khẩu phải dài ít nhất 6 ký tự.');
-      setLoading(false);
-      return;
+    if (isLogin) {
+      if (!identifier.trim() || !password) {
+        setError('Vui lòng nhập tên đăng nhập hoặc email và mật khẩu.');
+        setLoading(false);
+        return;
+      }
+    } else {
+      if (!email.trim() || !password) {
+        setError('Vui lòng nhập đầy đủ địa chỉ email và mật khẩu.');
+        setLoading(false);
+        return;
+      }
+      if (password.length < 6) {
+        setError('Mật khẩu phải dài ít nhất 6 ký tự.');
+        setLoading(false);
+        return;
+      }
     }
 
     try {
       if (isLogin) {
-        await login(email, password);
+        await login(identifier.trim(), password);
       } else {
-        await register(email, password, displayName || undefined);
+        await register(email.trim(), password, displayName.trim() || undefined, username.trim() || undefined);
       }
       handleClose();
     } catch (err: any) {
       console.error(err);
       if (err.code === 'auth/unauthorized-domain') {
         try {
-          await handleQuickLogin(email);
+          await handleQuickLogin(identifier || email);
           return;
         } catch {
           // continue to regular error messaging if fallback fails
@@ -109,13 +117,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       }
       let vietnameseMsg = 'Đã xảy ra lỗi. Vui lòng thử lại.';
       if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-        vietnameseMsg = 'Sai thông tin đăng nhập. Vui lòng kiểm tra lại.';
+        vietnameseMsg = 'Sai thông tin đăng nhập hoặc mật khẩu. Vui lòng kiểm tra lại.';
       } else if (err.code === 'auth/user-not-found') {
-        vietnameseMsg = 'Tài khoản không tồn tại.';
+        vietnameseMsg = 'Tài khoản không tồn tại. Vui lòng kiểm tra lại tên đăng nhập hoặc email.';
       } else if (err.code === 'auth/email-already-in-use') {
         vietnameseMsg = 'Email này đã được sử dụng bởi một tài khoản khác.';
       } else if (err.code === 'auth/invalid-email') {
-        vietnameseMsg = 'Địa chỉ email không hợp lệ.';
+        vietnameseMsg = 'Địa chỉ email hoặc tên đăng nhập không hợp lệ.';
       } else if (err.message) {
         vietnameseMsg = err.message;
       }
@@ -123,28 +131,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       setError(vietnameseMsg);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    if (loading || googleLoading || !!googleAuthMessage) return;
-    setError('');
-    setErrorCode('');
-    clearAuthError();
-    setGoogleLoading(true);
-    try {
-      await loginWithGoogle();
-      handleClose();
-    } catch (err: any) {
-      const code = err?.code || '';
-      setErrorCode(code);
-      if (code === 'auth/popup-closed-by-user') {
-        setError('Bạn đã đóng cửa sổ đăng nhập Google.');
-      } else {
-        setError(GoogleAuthService.formatErrorMessage(err));
-      }
-    } finally {
-      setGoogleLoading(false);
     }
   };
 
@@ -169,16 +155,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         {/* Header Logo */}
         <div className="text-center mb-6">
-          <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-md">
-            <Sparkles className="w-6 h-6 fill-amber-100" />
+          <div className="flex justify-center mb-3">
+            <JpStudyLogo size="lg" layout="vertical" dark={false} showSubtitle={true} />
           </div>
-          <h2 className="text-2xl font-display font-bold text-slate-950">
-            {isLogin ? 'Chào mừng quay trở lại!' : 'Bắt đầu học ngay!'}
-          </h2>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
             {isLogin 
-              ? 'Đăng nhập để đồng bộ tiến trình học, bài đã thuộc & vị trí đang học trên tất cả thiết bị.' 
-              : 'Đăng ký tài khoản để lưu từ vựng, ngữ pháp, Hán tự & tự động quay lại đúng chỗ khi học máy khác.'}
+              ? 'Đăng nhập để đồng bộ tiến trình học, bài đã thuộc & vị trí trên mọi thiết bị.' 
+              : 'Tạo tài khoản để lưu từ vựng, ngữ pháp, chữ Hán và đồng bộ tiến độ học.'}
           </p>
         </div>
 
@@ -260,7 +243,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <div className="pt-2.5 border-t border-amber-200/80">
               <button
                 type="button"
-                onClick={() => handleQuickLogin(email)}
+                onClick={() => handleQuickLogin(identifier || email)}
                 disabled={loading}
                 className="w-full py-2.5 px-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer active:scale-98"
               >
@@ -282,36 +265,91 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         {/* Input Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
+          {isLogin ? (
+            /* Login Mode: Username or Email */
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tên hiển thị</label>
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                Tên đăng nhập hoặc Email
+              </label>
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Ví dụ: Neko-chan"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50/50"
+                  placeholder="Nhập username hoặc email..."
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
+                  required
+                  autoComplete="username"
                 />
-                <UserPlus className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                {identifier.includes('@') ? (
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                ) : (
+                  <UserPlus className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                )}
               </div>
+              <span className="text-[11px] text-slate-400 mt-1 block">
+                💡 Đăng nhập dễ dàng bằng Username (tên người dùng) hoặc Email.
+              </span>
             </div>
-          )}
+          ) : (
+            /* Register Mode: Username, Display Name, Email */
+            <>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                  Tên đăng nhập (Username)
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Ví dụ: neko_chan, minhn4..."
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                    className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50 font-mono"
+                    required
+                    autoComplete="username"
+                  />
+                  <UserPlus className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                </div>
+                <span className="text-[11px] text-slate-400 mt-1 block">
+                  Dùng để đăng nhập sau này (viết liền không dấu, số, gạch dưới).
+                </span>
+              </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Địa chỉ Email</label>
-            <div className="relative">
-              <input
-                type="email"
-                placeholder="email@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50/50"
-                required
-              />
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-            </div>
-          </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                  Tên hiển thị (Nickname)
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Ví dụ: Học viên Chăm chỉ"
+                    value={displayName}
+                    onChange={(e) => setDisplayName(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
+                  />
+                  <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                  Địa chỉ Email
+                </label>
+                <div className="relative">
+                  <input
+                    type="email"
+                    placeholder="email@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
+                    required
+                    autoComplete="email"
+                  />
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                </div>
+              </div>
+            </>
+          )}
 
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Mật khẩu</label>
@@ -321,11 +359,18 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 placeholder="••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50/50"
+                className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
                 required
+                minLength={6}
+                autoComplete={isLogin ? 'current-password' : 'new-password'}
               />
               <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
             </div>
+            {!isLogin && (
+              <span className="text-[11px] text-slate-400 mt-1 block">
+                Tối thiểu 6 ký tự.
+              </span>
+            )}
           </div>
 
           <button
@@ -336,35 +381,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             {loading ? 'Đang xử lý...' : isLogin ? 'Đăng nhập' : 'Tạo tài khoản'}
           </button>
         </form>
-
-        {/* Divider */}
-        <div className="relative flex items-center justify-center my-5">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-100" />
-          </div>
-          <span className="relative bg-white px-3 text-xs text-slate-400 font-medium">Hoặc tiếp tục với</span>
-        </div>
-
-        {/* Google OAuth Login */}
-        <button
-          type="button"
-          id="google-signin-btn"
-          onClick={handleGoogleSignIn}
-          disabled={loading || googleLoading || !!googleAuthMessage}
-          className="w-full py-2.5 border border-slate-200 hover:bg-slate-50 active:bg-slate-100 disabled:opacity-75 font-semibold text-xs rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer text-slate-700 shadow-xs"
-        >
-          {googleAuthMessage ? (
-            <>
-              <div className="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin" />
-              <span>{googleAuthMessage}</span>
-            </>
-          ) : (
-            <>
-              <Chrome className="w-4 h-4 text-slate-700" />
-              <span>Đăng nhập với Google</span>
-            </>
-          )}
-        </button>
       </motion.div>
     </div>
   );

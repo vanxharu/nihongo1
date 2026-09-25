@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, MessageCircle, Flame, ArrowRight, BookOpen, Volume2 } from 'lucide-react';
+import { Award, MessageCircle, Flame, ArrowRight, BookOpen, Volume2 } from 'lucide-react';
 import ShibaMascot from './ShibaMascot';
 import { speakJapanese } from '../../utils/audio';
 
@@ -86,7 +86,7 @@ export default function ShibaCompanionBanner({
               />
             </div>
             <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#e64556] text-[10px] text-white font-bold shadow">
-              <Sparkles className="w-3 h-3" />
+              <Award className="w-3 h-3" />
             </span>
           </div>
 

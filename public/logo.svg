@@ -1,102 +1,135 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 120" width="100%" height="100%">
   <defs>
-    <!-- Background Gradient for Icon -->
-    <linearGradient id="iconBgDragon" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0F172A" />
-      <stop offset="50%" stop-color="#091E2A" />
-      <stop offset="100%" stop-color="#05131C" />
+    <!-- Background Lacquer Slate to Deep Indigo Gradient -->
+    <linearGradient id="logo-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="50%" stop-color="#18182E" />
+      <stop offset="100%" stop-color="#0B0F19" />
     </linearGradient>
 
-    <linearGradient id="iconBorderDragon" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#10B981" />
-      <stop offset="50%" stop-color="#34D399" />
-      <stop offset="100%" stop-color="#F43F5E" />
+    <!-- Outer Rim Glowing Gradient -->
+    <linearGradient id="logo-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="50%" stop-color="#E11D48" />
+      <stop offset="100%" stop-color="#F59E0B" />
     </linearGradient>
 
-    <!-- Dragon Body Gradient -->
-    <linearGradient id="dragonSkinLogo" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#34D399" />
-      <stop offset="100%" stop-color="#10B981" />
+    <!-- Rising Sun Crimson Vermilion Gradient -->
+    <linearGradient id="logo-sun" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF4365" />
+      <stop offset="55%" stop-color="#E11D48" />
+      <stop offset="100%" stop-color="#9F1239" />
     </linearGradient>
 
-    <linearGradient id="dragonCreamLogo" x1="0%" y1="0%" x2="0%" y2="100%">
+    <!-- Auspicious Japanese Gold Gradient -->
+    <linearGradient id="logo-gold" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FEF08A" />
-      <stop offset="100%" stop-color="#FDE047" />
+      <stop offset="50%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#D97706" />
     </linearGradient>
 
-    <filter id="shadowLogoDragon" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.3" />
+    <!-- Text Gradient for "Go!" -->
+    <linearGradient id="logo-text-accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="60%" stop-color="#E11D48" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+
+    <!-- Mount Fuji Shading Gradient -->
+    <linearGradient id="logo-fuji" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0.98" />
+    </linearGradient>
+
+    <!-- Soft Drop Shadow -->
+    <filter id="logo-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0B0F19" flood-opacity="0.35" />
     </filter>
   </defs>
 
-  <!-- Left Cute Chubby Dragon Mascot Icon Badge -->
-  <g transform="translate(10, 10)" filter="url(#shadowLogoDragon)">
-    <rect width="140" height="140" rx="36" fill="url(#iconBgDragon)" />
-    <rect x="3" y="3" width="134" height="134" rx="33" fill="none" stroke="url(#iconBorderDragon)" stroke-width="2.5" opacity="0.85" />
+  <!-- Left: Authentic Japanese Educational Crest Emblem -->
+  <g transform="translate(10, 10)" filter="url(#logo-shadow)">
+    <!-- Emblem Base Squircle with Japanese Lacquer Finish -->
+    <rect width="100" height="100" rx="26" fill="url(#logo-bg)" />
+    
+    <!-- Precision Decorative Gold & Crimson Stroke Rim -->
+    <rect 
+      x="2.5" 
+      y="2.5" 
+      width="95" 
+      height="95" 
+      rx="23.5" 
+      fill="none" 
+      stroke="url(#logo-rim)" 
+      stroke-width="1.8" 
+      stroke-opacity="0.8" 
+    />
 
-    <!-- Chubby Dragon Mascot miniaturized in badge -->
-    <g transform="translate(-5, -5) scale(0.29)">
+    <!-- Sacred Japanese Rising Sun (Hinomaru) -->
+    <circle cx="50" cy="50" r="33" fill="url(#logo-sun)" />
+    
+    <!-- Subtle Concentric Auspicious Gold Dashed Ring -->
+    <circle 
+      cx="50" 
+      cy="50" 
+      r="33" 
+      fill="none" 
+      stroke="#FEF08A" 
+      stroke-width="1" 
+      stroke-dasharray="2.5 2.5" 
+      stroke-opacity="0.5" 
+    />
 
-      <!-- Horns -->
-      <path d="M 190 135 Q 160 65 195 70 Q 210 110 205 130 Z" fill="#FDE047" stroke="#CA8A04" stroke-width="2" />
-      <path d="M 322 135 Q 352 65 317 70 Q 302 110 307 130 Z" fill="#FDE047" stroke="#CA8A04" stroke-width="2" />
+    <!-- Mount Fuji (富士山) Silhouette at the Horizon -->
+    <path d="M 25 73 L 42 49 L 58 49 L 75 73 Z" fill="url(#logo-fuji)" />
+    <path d="M 42 49 L 45 54 L 48 52 L 50 55 L 52 52 L 55 54 L 58 49 Z" fill="#FFFFFF" opacity="0.95" />
 
-      <!-- Dragon Head -->
-      <ellipse cx="256" cy="210" rx="130" ry="110" fill="url(#dragonSkinLogo)" />
-      <!-- Snout Cream -->
-      <ellipse cx="256" cy="235" rx="90" ry="65" fill="url(#dragonCreamLogo)" />
+    <!-- Gateway of Wisdom (Torii Gate & Open Book of Scholarship) -->
+    <path d="M 16 35.5 C 28 29.5, 42 31.5, 50 33 C 58 31.5, 72 29.5, 84 35.5 C 76 37.5, 62 35.5, 50 37 C 38 35.5, 24 37.5, 16 35.5 Z" fill="#FFFFFF" />
+    <path d="M 24 33.5 Q 50 31 76 33.5" stroke="url(#logo-gold)" stroke-width="1.2" stroke-linecap="round" />
+    <path d="M 23 42 L 77 42" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" />
 
-      <!-- Rosy Cheeks -->
-      <ellipse cx="170" cy="230" rx="20" ry="14" fill="#F43F5E" opacity="0.8" />
-      <ellipse cx="342" cy="230" rx="20" ry="14" fill="#F43F5E" opacity="0.8" />
+    <!-- Central Signet Tablet (Gakuzuka) with Golden Accent -->
+    <rect x="46.5" y="35" width="7" height="8" rx="1.5" fill="url(#logo-gold)" stroke="#991B1B" stroke-width="0.8" />
+    <line x1="47.5" y1="39" x2="52.5" y2="39" stroke="#991B1B" stroke-width="0.8" />
 
-      <!-- Red Hachimaki -->
-      <path d="M 136 150 Q 256 130 376 150 L 380 176 Q 256 156 132 176 Z" fill="#FF2A54" />
-      <circle cx="256" cy="153" r="14" fill="#FEF08A" stroke="#CA8A04" stroke-width="1.5" />
-      <text x="256" y="158" font-family="sans-serif" font-weight="900" font-size="12" fill="#E60033" text-anchor="middle">勝</text>
+    <!-- Main Pillars (Hashira) -->
+    <path d="M 31 35 L 29 74" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+    <path d="M 69 35 L 71 74" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
 
-      <!-- Eyes -->
-      <g>
-        <ellipse cx="200" cy="195" rx="16" ry="22" fill="#0F172A" />
-        <circle cx="194" cy="186" r="8" fill="#FFFFFF" />
-      </g>
-      <g>
-        <ellipse cx="312" cy="195" rx="16" ry="22" fill="#0F172A" />
-        <circle cx="306" cy="186" r="8" fill="#FFFFFF" />
-      </g>
+    <!-- Stone Pedestals -->
+    <path d="M 25 74 L 33 74" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" />
+    <path d="M 67 74 L 75 74" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" />
 
-      <!-- Mouth -->
-      <path d="M 236 235 Q 246 248 256 237 Q 266 248 276 235" fill="none" stroke="#064E3B" stroke-width="4" stroke-linecap="round" />
-
-      <!-- Book -->
-      <g transform="translate(256, 365)">
-        <path d="M -85 -30 Q -40 -40 0 -25 L 0 25 Q -40 10 -85 20 Z" fill="#0284C7" />
-        <path d="M 85 -30 Q 40 -40 0 -25 L 0 25 Q 40 10 85 20 Z" fill="#0284C7" />
-        <path d="M -80 -33 Q -40 -42 0 -28 L 0 22 Q -40 9 -80 17 Z" fill="#FFFFFF" />
-        <path d="M 80 -33 Q 40 -42 0 -28 L 0 22 Q 40 9 80 17 Z" fill="#FFFFFF" />
-        <text x="-40" y="-2" font-family="sans-serif" font-weight="900" font-size="28" fill="#F43F5E" text-anchor="middle">あ</text>
-        <text x="40" y="-2" font-family="sans-serif" font-weight="900" font-size="28" fill="#10B981" text-anchor="middle">竜</text>
-      </g>
-      
-      <!-- Paws -->
-      <ellipse cx="175" cy="355" rx="20" ry="16" fill="url(#dragonCreamLogo)" stroke="#059669" stroke-width="2" />
-      <ellipse cx="337" cy="355" rx="20" ry="16" fill="url(#dragonCreamLogo)" stroke="#059669" stroke-width="2" />
-
+    <!-- Floating Golden Sakura Blossom -->
+    <g transform="translate(73, 24) scale(0.85)">
+      <circle cx="0" cy="-6" r="3.2" fill="url(#logo-gold)" />
+      <circle cx="5.7" cy="-1.8" r="3.2" fill="url(#logo-gold)" />
+      <circle cx="3.5" cy="4.8" r="3.2" fill="url(#logo-gold)" />
+      <circle cx="-3.5" cy="4.8" r="3.2" fill="url(#logo-gold)" />
+      <circle cx="-5.7" cy="-1.8" r="3.2" fill="url(#logo-gold)" />
+      <circle cx="0" cy="0" r="2.2" fill="#E11D48" />
     </g>
   </g>
 
-  <!-- Right Brand Typography -->
-  <g transform="translate(170, 0)">
-    <!-- JP in Emerald / Pink Accent -->
-    <text x="0" y="90" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="68" fill="#34D399" letter-spacing="-1">JP<tspan fill="#F43F5E">Study</tspan></text>
+  <!-- Right: Modern Brand Typography & Hanko Seal -->
+  <g transform="translate(130, 28)">
+    <!-- Primary Brand Wordmark: NihonGo! -->
+    <text x="0" y="44" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="900" font-size="44" letter-spacing="-1.2" fill="#0F172A">
+      Nihon<tspan fill="url(#logo-text-accent)">Go!</tspan>
+    </text>
 
-    <!-- Dragon Sparkle Icon -->
-    <g transform="translate(325, 42) scale(1.1)">
-      <path d="M 0 -15 L 4 -4 L 15 0 L 4 4 L 0 15 L -4 4 L -15 0 L -4 -4 Z" fill="#FDE047" />
+    <!-- Traditional Japanese Hanko Seal (印鑑) Badge -->
+    <g transform="translate(242, 14)">
+      <rect width="64" height="28" rx="6" fill="#DC2626" stroke="#F87171" stroke-width="1.2" />
+      <text x="32" y="19" font-family="'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif" font-weight="900" font-size="13" fill="#FEF08A" text-anchor="middle" letter-spacing="2">
+        日本語
+      </text>
     </g>
-    
-    <!-- Subtitle Cute Dragon Badge -->
-    <rect x="2" y="108" width="245" height="32" rx="10" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1.5" />
-    <text x="14" y="129" font-family="'Noto Sans JP', sans-serif" font-weight="800" font-size="13" fill="#047857" letter-spacing="0.5">🐲 Rồng Mập Học Tiếng Nhật Kawaii</text>
+
+    <!-- Subtitle / Educational Mission -->
+    <text x="2" y="72" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-weight="600" font-size="15" fill="#64748B" letter-spacing="0.2">
+      Học tiếng Nhật &amp; Luyện thi JLPT N5 — N1
+    </text>
   </g>
 </svg>

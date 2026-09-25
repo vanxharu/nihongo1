@@ -1,6 +1,6 @@
 import { db, withDbRetry } from './index';
 import { users } from './schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 
 export function getBootstrapAdminEmails(): Set<string> {
   const envVar = process.env.ADMIN_EMAILS || '';
@@ -58,6 +58,7 @@ export async function getOrCreateUser(uid: string, email: string) {
 
     const todayStr = new Date().toISOString().split('T')[0] || '';
     const defaultName = normalizedEmail ? normalizedEmail.split('@')[0] : 'Học viên JLPT';
+    const defaultUsername = normalizedEmail ? normalizedEmail.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '') : defaultName.toLowerCase().replace(/[^a-z0-9_]/g, '');
     const initialRole = isBootstrapAdmin ? 'admin' : 'user';
 
     try {
@@ -65,6 +66,7 @@ export async function getOrCreateUser(uid: string, email: string) {
         .values({
           uid,
           email: normalizedEmail,
+          username: defaultUsername,
           name: defaultName,
           avatar: '🦊',
           targetLevel: 'N4',
@@ -98,6 +100,9 @@ export async function updateUserProfile(uid: string, fields: any, allowRoleChang
   return await withDbRetry(async () => {
     const updateData: any = {};
     
+    if (fields.username !== undefined) {
+      updateData.username = fields.username.toLowerCase().trim().replace(/[^a-z0-9_]/g, '');
+    }
     if (fields.name !== undefined) updateData.name = fields.name;
     if (fields.avatar !== undefined) updateData.avatar = fields.avatar;
     if (fields.targetLevel !== undefined) updateData.targetLevel = fields.targetLevel;
@@ -146,6 +151,34 @@ export async function getAllUsers() {
 export async function deleteUserByUid(uid: string) {
   return await withDbRetry(async () => {
     return await db.delete(users).where(eq(users.uid, uid)).returning();
+  });
+}
+
+export async function findUserByIdentifier(identifier: string) {
+  return await withDbRetry(async () => {
+    const raw = (identifier || '').trim();
+    if (!raw) return null;
+    const lower = raw.toLowerCase();
+
+    // 1. Direct match on username or email
+    const byUsernameOrEmail = await db.select().from(users).where(
+      sql`LOWER(${users.username}) = ${lower} OR LOWER(${users.email}) = ${lower}`
+    ).execute();
+    if (byUsernameOrEmail.length > 0) return byUsernameOrEmail[0];
+
+    // 2. Match on name
+    const byName = await db.select().from(users).where(
+      sql`LOWER(${users.name}) = ${lower}`
+    ).execute();
+    if (byName.length > 0) return byName[0];
+
+    // 3. Match on email prefix (e.g. "vanvan20001220" from "vanvan20001220@gmail.com")
+    const byPrefix = await db.select().from(users).where(
+      sql`LOWER(SPLIT_PART(${users.email}, '@', 1)) = ${lower}`
+    ).execute();
+    if (byPrefix.length > 0) return byPrefix[0];
+
+    return null;
   });
 }
 

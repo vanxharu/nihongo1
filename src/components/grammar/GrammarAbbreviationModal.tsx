@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, HelpCircle, BookOpen, Layers, Sparkles } from 'lucide-react';
+import { X, HelpCircle, BookOpen, Layers, Lightbulb } from 'lucide-react';
 
 interface GrammarAbbreviationModalProps {
   isOpen: boolean;
@@ -173,7 +173,7 @@ export default function GrammarAbbreviationModal({ isOpen, onClose }: GrammarAbb
 
             {/* Practical connection tip */}
             <div className="p-4 rounded-xl bg-sky-950/40 border border-sky-800/40 text-xs text-sky-200 flex items-start gap-3">
-              <Sparkles className="w-4 h-4 text-sky-400 flex-shrink-0 mt-0.5" />
+              <Lightbulb className="w-4 h-4 text-sky-400 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="font-semibold text-sky-300 mb-0.5">Mẹo ghi nhớ công thức kết nối:</p>
                 <p className="text-slate-300 leading-relaxed">

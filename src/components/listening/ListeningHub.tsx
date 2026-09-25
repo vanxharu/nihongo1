@@ -8,7 +8,6 @@ import {
   CheckCircle2, 
   Play, 
   RotateCcw, 
-  Sparkles, 
   Flame, 
   Layers, 
   Award, 
@@ -509,7 +508,7 @@ export const ListeningHub: React.FC<ListeningHubProps> = ({
           </div>
         ) : (
           <div className="flex items-center gap-1.5 text-[11px] text-emerald-400 font-medium">
-            <Sparkles className="w-3.5 h-3.5" />
+            <Award className="w-3.5 h-3.5" />
             <span>Mỗi bài hoàn thành nhận +50 XP</span>
           </div>
         )}

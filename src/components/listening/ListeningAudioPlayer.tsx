@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, RotateCcw, Volume2, VolumeX, Gauge, ShieldAlert, Sparkles } from 'lucide-react';
+import { Play, Pause, RotateCcw, Volume2, VolumeX, Gauge, ShieldAlert } from 'lucide-react';
 
 interface ListeningAudioPlayerProps {
   audioUrl?: string;

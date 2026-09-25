@@ -5,6 +5,7 @@ export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   uid: text('uid').notNull().unique(), // Firebase Auth UID
   email: text('email').notNull(),
+  username: varchar('username', { length: 100 }),
   name: text('name'),
   avatar: text('avatar'),
   targetLevel: varchar('target_level', { length: 10 }),

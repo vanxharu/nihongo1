@@ -11,9 +11,8 @@ import {
   Circle, 
   Volume2, 
   Bookmark, 
-  Sparkles, 
   Layers, 
-  BrainCircuit, 
+  HelpCircle, 
   FileText, 
   ChevronRight, 
   ChevronLeft, 
@@ -292,8 +291,8 @@ export default function LessonHub({ userProfile, onUpdateProfile, onNavigateToTa
             {[
               { key: 'vocab', label: `1. Từ vựng (${activeVocabList.length})`, icon: BookOpen },
               { key: 'kanji', label: '2. Hán tự bài học', icon: FileText },
-              { key: 'quiz', label: '3. Trắc nghiệm nhanh', icon: BrainCircuit },
-              { key: 'reading', label: '4. Đọc hiểu ứng dụng', icon: Sparkles }
+              { key: 'quiz', label: '3. Trắc nghiệm nhanh', icon: HelpCircle },
+              { key: 'reading', label: '4. Đọc hiểu ứng dụng', icon: BookOpen }
             ].map(tab => {
               const Icon = tab.icon;
               const isActive = activeLessonTab === tab.key;

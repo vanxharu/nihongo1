@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Lightbulb, PenTool, Sparkles, BookOpen, Clock, Brain, CheckCircle2 } from 'lucide-react';
+import { X, Lightbulb, PenTool, BookOpen, Clock, CheckCircle2 } from 'lucide-react';
 
 interface StudyTipsModalProps {
   isOpen: boolean;

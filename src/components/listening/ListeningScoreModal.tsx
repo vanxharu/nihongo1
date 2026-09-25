@@ -12,7 +12,7 @@ import {
   Info,
   ChevronDown,
   ChevronUp,
-  Sparkles,
+  Headphones,
   ExternalLink
 } from 'lucide-react';
 import { ListeningExamAttempt, ListeningQuestionResult } from '../../types/listeningExamTypes';
@@ -172,7 +172,7 @@ export const ListeningScoreModal: React.FC<ListeningScoreModalProps> = ({
             <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
               <div className="flex items-center gap-2">
                 <h4 className="text-sm sm:text-base font-extrabold text-white flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <Headphones className="w-4 h-4 text-amber-400" />
                   Phân tích câu hỏi & Nghe lại
                 </h4>
                 {wrongCount > 0 && (

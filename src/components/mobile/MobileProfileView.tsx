@@ -15,7 +15,6 @@ import {
   RefreshCw, 
   LogOut, 
   ExternalLink,
-  Sparkles,
   ShieldCheck,
   Flame,
   CheckCircle2,
@@ -37,6 +36,7 @@ import {
 import PremiumModal from './PremiumModal';
 import ConfirmModal from '../ConfirmModal';
 import ShibaMascot from '../mascot/ShibaMascot';
+import JpStudyLogo from '../JpStudyLogo';
 import UserAvatar from '../UserAvatar';
 import VoiceSelectorModal from '../VoiceSelectorModal';
 
@@ -133,11 +133,11 @@ export default function MobileProfileView({
 
   return (
     <div className="w-full max-w-lg md:max-w-2xl mx-auto px-4 py-3 space-y-6 text-white pb-12">
-      {/* Top Header */}
+      {/* Top Header with Brand */}
       <div className="flex items-center justify-between pt-1">
-        <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-          Cá nhân
-        </h1>
+        <div className="flex items-center gap-2">
+          <JpStudyLogo size="sm" dark={true} showSubtitle={false} />
+        </div>
         <button
           type="button"
           onClick={handleShare}
@@ -234,8 +234,13 @@ export default function MobileProfileView({
             className="w-11 h-11 rounded-2xl bg-[#E89A3C]/15 border border-[#E89A3C]/30 text-amber-400 text-2xl shrink-0"
           />
           <div className="min-w-0">
-            <div className="text-sm font-black text-white truncate">
-              {user ? (userProfile.name || user.displayName || user.email?.split('@')[0] || 'Học viên NihonGo') : 'Đăng nhập'}
+            <div className="text-sm font-black text-white truncate flex items-center gap-1.5">
+              <span>{user ? (userProfile.name || user.displayName || user.email?.split('@')[0] || 'Học viên NihonGo') : 'Đăng nhập'}</span>
+              {user && userProfile.username && (
+                <span className="text-[10px] font-mono font-normal text-amber-400 bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.2 rounded-md shrink-0">
+                  @{userProfile.username}
+                </span>
+              )}
             </div>
             <div className="text-xs text-slate-400 truncate mt-0.5">
               {user 
@@ -634,6 +639,19 @@ export default function MobileProfileView({
                   maxLength={30}
                 />
               </div>
+
+              {/* Username badge */}
+              {userProfile.username && (
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-400">
+                    Tên đăng nhập (Username)
+                  </label>
+                  <div className="bg-[#12172A] border border-slate-800 rounded-xl px-4 py-2.5 text-amber-400 font-mono text-xs flex items-center justify-between">
+                    <span>@{userProfile.username}</span>
+                    <span className="text-[10px] text-slate-500 font-sans">Dùng để đăng nhập</span>
+                  </div>
+                </div>
+              )}
 
               {/* JLPT Target Level Selector */}
               <div className="space-y-2">

@@ -14,7 +14,6 @@ import {
   HelpCircle, 
   MoreVertical, 
   ExternalLink,
-  Sparkles,
   CheckCircle2,
   Share2,
   PlusSquare,
@@ -307,7 +306,7 @@ export default function PwaInstallPrompt({ onDismiss, initialTab }: PwaInstallPr
               {deferredPrompt && (
                 <div className="p-4 bg-gradient-to-r from-rose-950/80 to-indigo-950/80 border border-rose-500/50 rounded-2xl text-center space-y-2">
                   <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-rose-300">
-                    <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
+                    <Download className="w-4 h-4 text-amber-400" />
                     <span>Trình duyệt đã sẵn sàng cài đặt tự động 1-Click!</span>
                   </div>
                   <button
@@ -658,7 +657,7 @@ export function SidebarWindowsInstallCard() {
 
         <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-[10px] text-sky-400 font-bold">
           <span className="flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-amber-400" />
+            <Monitor className="w-3 h-3 text-amber-400" />
             {deferredPrompt ? 'Cài đặt ngay 1-click' : 'Xem hướng dẫn'}
           </span>
           <span className="text-slate-500 group-hover:text-white group-hover:translate-x-0.5 transition-all">→</span>

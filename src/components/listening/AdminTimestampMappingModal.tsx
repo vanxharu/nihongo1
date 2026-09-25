@@ -10,7 +10,7 @@ import {
   ShieldCheck, 
   FileText,
   RotateCcw,
-  Sparkles,
+  Lightbulb,
   ChevronRight,
   Edit3,
   BookOpen
@@ -788,7 +788,7 @@ export const AdminTimestampMappingModal: React.FC<AdminTimestampMappingModalProp
 
                 {/* Helpful note for Admin */}
                 <div className="p-3 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-300 text-xs flex items-start gap-2">
-                  <Sparkles className="w-4 h-4 shrink-0 text-teal-400 mt-0.5" />
+                  <Lightbulb className="w-4 h-4 shrink-0 text-teal-400 mt-0.5" />
                   <span>
                     Dữ liệu câu hỏi, 4 đáp án và lời thoại được nạp tự động 100% từ đề thi JLPT gốc. Admin chỉ cần phát video bên trái, bấm <strong>Đặt START</strong> và <strong>Đặt END</strong>, sau đó nhấn <strong>Lưu bộ đề & Timestamp</strong>.
                   </span>

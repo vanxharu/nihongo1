@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { Database, Users, Settings, Activity, Server, AlertCircle, 
   Search, Shield, Trash2, Edit3, UserCheck, Award, Flame, Coins, Calendar, X, HelpCircle,
-  FileSpreadsheet, UploadCloud, Download, Sparkles, Headphones
+  FileSpreadsheet, UploadCloud, Download, Headphones
 } from 'lucide-react';
 import AdminDataPanel from "./AdminDataPanel";
 import ConfirmModal from "./ConfirmModal";
@@ -348,7 +348,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
           <div className="bg-slate-900 text-white rounded-xl p-3.5 border border-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="space-y-1 z-10 max-w-xl">
               <div className="inline-flex items-center gap-1 px-2 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">
-                <Sparkles className="w-3 h-3 text-emerald-400" />
+                <Shield className="w-3 h-3 text-emerald-400" />
                 <span>Quản trị Nâng cao</span>
               </div>
               <h3 className="text-sm font-bold text-white flex items-center gap-1.5">

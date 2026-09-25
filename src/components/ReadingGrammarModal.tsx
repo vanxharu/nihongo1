@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { BookOpen, X, Sparkles, ChevronRight } from 'lucide-react';
+import { BookOpen, X, ChevronRight } from 'lucide-react';
 import { LessonReadingGrammar } from '../types';
 
 interface ReadingGrammarModalProps {

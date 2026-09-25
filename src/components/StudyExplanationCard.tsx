@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { 
   EyeOff,
-  Bot,
-  Sparkles,
+  GraduationCap,
+  BookOpen,
   Send,
   ChevronDown,
   ChevronUp,
@@ -325,7 +325,7 @@ export const StudyExplanationCard: React.FC<StudyExplanationCardProps> = ({
       <div className="flex items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-slate-700/70">
         <div className="flex items-center gap-2">
           <div className="w-5 h-5 rounded-md bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
-            <Sparkles className="w-3.5 h-3.5" />
+            <BookOpen className="w-3.5 h-3.5" />
           </div>
           <div className="flex items-center gap-1.5">
             <span className="text-xs font-extrabold text-emerald-300">
@@ -456,12 +456,12 @@ export const StudyExplanationCard: React.FC<StudyExplanationCardProps> = ({
               onClick={handleToggleAi}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-300 bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/50 shadow-xs transition-all active:scale-95"
             >
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{isAiExpanded ? 'Thu gọn phân tích chi tiết' : '✨ Phân tích chuyên sâu & Mẹo làm bài'}</span>
+              <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
+              <span>{isAiExpanded ? 'Thu gọn phân tích chi tiết' : 'Phân tích chuyên sâu & Mẹo làm bài'}</span>
               {isAiExpanded ? <ChevronUp className="w-3.5 h-3.5 ml-0.5 text-emerald-400" /> : <ChevronDown className="w-3.5 h-3.5 ml-0.5 text-emerald-400" />}
             </button>
             <span className="text-[10px] text-slate-400 flex items-center gap-1 font-medium">
-              <Bot className="w-3 h-3 text-emerald-400" /> {aiProvider}
+              <GraduationCap className="w-3 h-3 text-emerald-400" /> {aiProvider}
             </span>
           </div>
 

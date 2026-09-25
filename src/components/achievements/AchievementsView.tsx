@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ArrowLeft, Lock, Sparkles, CheckCircle2, Search, X, Filter } from 'lucide-react';
+import { ArrowLeft, Lock, Award, CheckCircle2, Search, X, Filter } from 'lucide-react';
 import { UserProfile } from '../../types';
 import { 
   ACHIEVEMENTS_LIST, 
@@ -349,7 +349,7 @@ export const AchievementsView: React.FC<AchievementsViewProps> = ({
             <div className="flex flex-col items-center gap-2 pt-1">
               {selectedAchievement.rewardXp && (
                 <div className="text-xs font-black text-amber-400 flex items-center gap-1">
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <Award className="w-3.5 h-3.5" />
                   <span>Phần thưởng: +{selectedAchievement.rewardXp} XP</span>
                 </div>
               )}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Loader2, Sparkles, ChevronDown, ChevronUp, CheckCircle2, BookOpen } from 'lucide-react';
+import { Search, Loader2, GraduationCap, ChevronDown, ChevronUp, CheckCircle2, BookOpen } from 'lucide-react';
 import { safeFetchJson } from '../../utils/safeApi';
 
 interface SentenceAnalyzerBarProps {
@@ -117,12 +117,12 @@ export const SentenceAnalyzerBar: React.FC<SentenceAnalyzerBarProps> = ({ onAnal
           Phân tích câu 「文の分析」
         </h2>
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-purple-950/80 text-purple-300 border border-purple-700/50">
-          <Sparkles className="w-3 h-3 text-purple-400" />
-          Beta
+          <BookOpen className="w-3 h-3 text-purple-400" />
+          Cú pháp
         </span>
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-950/70 text-blue-300 border border-blue-600/40">
-          <Sparkles className="w-3 h-3 text-blue-400" />
-          ChatGPT / AI
+          <GraduationCap className="w-3 h-3 text-blue-400" />
+          Phân tích chi tiết
         </span>
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-amber-950/70 text-amber-300 border border-amber-600/40">
           👑 Trọn đời
@@ -193,7 +193,7 @@ export const SentenceAnalyzerBar: React.FC<SentenceAnalyzerBarProps> = ({ onAnal
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               <span className="text-sm font-semibold text-slate-200">Kết quả phân tích cú pháp</span>
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-purple-950/70 text-purple-300 border border-purple-800/50">
-                <Sparkles className="w-3 h-3 text-purple-400" />
+                <GraduationCap className="w-3 h-3 text-purple-400" />
                 {result.aiProvider === 'chatgpt'
                   ? 'ChatGPT (OpenAI)'
                   : result.aiProvider === 'gemini_fallback'

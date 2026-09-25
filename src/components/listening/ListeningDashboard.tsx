@@ -10,7 +10,7 @@ import {
   Target, 
   RotateCcw, 
   ArrowRight,
-  Sparkles,
+  Trophy,
   BookOpen
 } from 'lucide-react';
 import { ListeningDashboardStats, ListeningExamAttempt } from '../../types/listeningExamTypes';
@@ -98,7 +98,7 @@ export const ListeningDashboard: React.FC<ListeningDashboardProps> = ({
         <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
           <div className="flex items-center justify-between text-slate-400 text-xs mb-2">
             <span>Điểm cao nhất</span>
-            <Sparkles className="w-4 h-4 text-amber-400" />
+            <Trophy className="w-4 h-4 text-amber-400" />
           </div>
           <div className="text-2xl sm:text-3xl font-black text-amber-400">
             {stats.bestEstimatedScore}

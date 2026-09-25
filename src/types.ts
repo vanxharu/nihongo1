@@ -465,6 +465,7 @@ export type UserRole = 'user' | 'admin';
 export interface UserProfile {
   uid?: string;
   email?: string;
+  username?: string;
   name: string;
   avatar: string;
   targetLevel: JLPTLevel;

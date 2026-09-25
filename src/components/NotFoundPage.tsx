@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home, BookOpen, FileText, Headphones, Award, Route, Search, ArrowRight } from 'lucide-react';
 import ShibaMascot from './mascot/ShibaMascot';
+import JpStudyLogo from './JpStudyLogo';
 import { BRAND_NAME } from '../constants/brand';
 
 export default function NotFoundPage() {
@@ -17,6 +18,13 @@ export default function NotFoundPage() {
   return (
     <div className="flex-1 flex items-center justify-center p-4 sm:p-6 min-h-[70vh]">
       <div className="w-full max-w-lg bg-[#111827]/90 border border-slate-800 rounded-3xl p-6 sm:p-8 text-center space-y-6 shadow-2xl backdrop-blur-md">
+        {/* Brand Logo Header */}
+        <div className="flex justify-center">
+          <Link to="/" className="inline-block hover:opacity-90 transition-opacity">
+            <JpStudyLogo size="md" dark={true} showSubtitle={true} layout="vertical" />
+          </Link>
+        </div>
+
         {/* Mascot */}
         <div className="flex justify-center">
           <div className="p-4 rounded-3xl bg-slate-800/60 border border-slate-700/60 inline-block shadow-inner">

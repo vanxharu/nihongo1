@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Sparkles, BookOpen, Award, Briefcase, ChevronRight, Volume2 } from 'lucide-react';
+import { X, Lightbulb, BookOpen, Award, Briefcase, ChevronRight, Volume2 } from 'lucide-react';
 import { getKanjiCategory, getLocalKanjiDetails, DEFAULT_CATEGORY } from '../utils/kanjiHelper';
 import { speakJapanese } from '../utils/audio';
 import { KANJI_DICTIONARY } from '../data/kanjiDictionary';
@@ -197,7 +197,7 @@ export default function KanjiDetailModal({ kanjiChar, isOpen, onClose, onSelectW
                 {wordData?.etymology && (
                   <div className="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-4 space-y-2">
                     <span className="text-[11px] font-bold text-indigo-800 tracking-wider uppercase block flex items-center gap-1.5">
-                      <Sparkles className="w-4 h-4" /> Nguồn gốc ghép từ
+                      <BookOpen className="w-4 h-4" /> Nguồn gốc ghép từ
                     </span>
                     <p className="text-sm text-slate-700 font-medium leading-relaxed">
                       {wordData.etymology}
@@ -221,7 +221,7 @@ export default function KanjiDetailModal({ kanjiChar, isOpen, onClose, onSelectW
                 ) : wordData?.mnemonic ? (
                   <div className="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-4 space-y-2 shadow-xs">
                     <span className="text-[11px] font-bold text-amber-800 tracking-wider uppercase block flex items-center gap-1.5">
-                      <Sparkles className="w-4 h-4 text-amber-500" /> Mẹo ghi nhớ
+                      <Lightbulb className="w-4 h-4 text-amber-500" /> Mẹo ghi nhớ
                     </span>
                     <p className="text-sm text-amber-950/80 font-medium leading-relaxed">
                       {wordData.mnemonic}

@@ -6,7 +6,7 @@
 import React from 'react';
 import {
   X,
-  Sparkles,
+  Award,
   Eye,
   Type,
   Radio,
@@ -136,7 +136,7 @@ export const ReadingOptionsModal: React.FC<ReadingOptionsModalProps> = ({
               <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 transition">
                 <div className="space-y-0.5 pr-2">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-cyan-400" />
+                    <Type className="w-4 h-4 text-cyan-400" />
                     <span className="font-semibold text-slate-100">Phiên âm Furigana</span>
                   </div>
                   <p className="text-xs text-slate-400">Hiện cách đọc Hiragana trên đầu chữ Hán</p>
@@ -264,7 +264,7 @@ export const ReadingOptionsModal: React.FC<ReadingOptionsModalProps> = ({
               <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-800/60 border border-slate-700/60 hover:bg-slate-800 transition">
                 <div className="space-y-0.5 pr-2">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                    <Award className="w-4 h-4 text-emerald-400" />
                     <span className="font-semibold text-slate-100">Gạch chân cấp độ JLPT</span>
                   </div>
                   <p className="text-xs text-slate-400">

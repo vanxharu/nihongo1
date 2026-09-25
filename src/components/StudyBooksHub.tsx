@@ -14,7 +14,7 @@ import {
   ChevronRight, 
   RotateCcw, 
   BookmarkCheck, 
-  Sparkles, 
+  Lightbulb, 
   PenTool, 
   Eraser, 
   Highlighter, 
@@ -29,7 +29,6 @@ import {
   Layers,
   Search,
   BookMarked,
-  Lightbulb,
   Target,
   Volume2
 } from 'lucide-react';
@@ -889,7 +888,7 @@ export default function StudyBooksHub({ userProfile, updateProfile, onEarnXp, on
             }`}
             title="Tự động hiện đáp án & giải thích ngay khi khoanh chọn"
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Lightbulb className="w-3.5 h-3.5" />
             <span className="hidden md:inline">Hiện giải thích tức thì</span>
           </button>
 
@@ -1263,7 +1262,7 @@ export default function StudyBooksHub({ userProfile, updateProfile, onEarnXp, on
                           onClick={() => handleToggleCheck(question.id)}
                           className="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-sm active:scale-95"
                         >
-                          <Sparkles className="w-3.5 h-3.5" />
+                          <Lightbulb className="w-3.5 h-3.5" />
                           Kiểm tra đáp án & Giải thích
                         </button>
                       </div>

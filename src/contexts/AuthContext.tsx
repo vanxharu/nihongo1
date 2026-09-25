@@ -9,7 +9,6 @@ import {
 } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { auth } from '../lib/firebase';
-import { GoogleAuthService } from '../services/googleAuth';
 import { UserProfile } from '../types';
 
 export const getAuthPlatform = (): 'pwa' | 'mobile' | 'desktop' => {
@@ -41,13 +40,11 @@ interface AuthContextType {
   token: string | null;
   loading: boolean;
   authStatus: AuthStatus;
-  googleAuthMessage: string | null;
   lastAuthError: AuthErrorInfo | null;
   clearAuthError: () => void;
-  login: (email: string, pass: string) => Promise<void>;
-  register: (email: string, pass: string, displayName?: string) => Promise<void>;
-  loginWithGoogle: (returnUrl?: string) => Promise<void>;
-  quickLogin: (email?: string, name?: string) => Promise<void>;
+  login: (identifier: string, pass: string) => Promise<void>;
+  register: (email: string, pass: string, displayName?: string, username?: string) => Promise<void>;
+  quickLogin: (identifier?: string, name?: string) => Promise<void>;
   logout: () => Promise<void>;
   syncProfile: () => Promise<void>;
   updateDbProfile: (updatedFields: Partial<UserProfile>) => Promise<UserProfile | null>;
@@ -89,7 +86,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [authStatus, setAuthStatus] = useState<AuthStatus>('AUTH_INITIALIZING');
-  const [googleAuthMessage, setGoogleAuthMessage] = useState<string | null>(null);
   const [lastAuthError, setLastAuthError] = useState<AuthErrorInfo | null>(null);
 
   const clearAuthError = () => setLastAuthError(null);
@@ -121,6 +117,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Helper to parse the DB user response safely
   const parseDbUser = (dbData: any): UserProfile => {
     const parsed: UserProfile = {
+      uid: dbData.uid || undefined,
+      email: dbData.email || undefined,
+      username: dbData.username || undefined,
       name: dbData.name || 'Học viên JLPT',
       avatar: dbData.avatar || '🦊',
       targetLevel: (dbData.targetLevel || dbData.target_level || 'N4') as any,
@@ -269,12 +268,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return updateDbProfileWithToken(activeToken, updatedFields);
   };
 
-  const login = async (email: string, pass: string) => {
+  const login = async (identifier: string, pass: string) => {
     setLoading(true);
     setAuthStatus('AUTHENTICATING');
     clearAuthError();
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+      let effectiveEmail = (identifier || '').trim();
+      
+      // If user entered a username (does not contain @), resolve to account email
+      if (!effectiveEmail.includes('@')) {
+        const resolveRes = await fetch('/api/auth/resolve-identifier', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ identifier: effectiveEmail })
+        });
+        
+        if (resolveRes.ok) {
+          const resolveData = await resolveRes.json();
+          if (resolveData.success && resolveData.email) {
+            effectiveEmail = resolveData.email;
+          } else {
+            const err: any = new Error(resolveData.error || 'Không tìm thấy tài khoản với tên đăng nhập này.');
+            err.code = 'auth/user-not-found';
+            throw err;
+          }
+        } else {
+          const resolveData = await resolveRes.json().catch(() => ({}));
+          const err: any = new Error(resolveData.error || 'Không tìm thấy tài khoản với tên đăng nhập này.');
+          err.code = 'auth/user-not-found';
+          throw err;
+        }
+      }
+
+      const userCredential = await signInWithEmailAndPassword(auth, effectiveEmail, pass);
       if (userCredential && userCredential.user) {
         const idToken = await userCredential.user.getIdToken();
         setToken(idToken);
@@ -308,20 +334,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const register = async (email: string, pass: string, displayName?: string) => {
+  const register = async (email: string, pass: string, displayName?: string, username?: string) => {
     setLoading(true);
     setAuthStatus('AUTHENTICATING');
     clearAuthError();
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-      if (displayName && userCredential.user) {
+      const chosenName = displayName || username || email.split('@')[0];
+      if (userCredential && userCredential.user) {
         await firebaseUpdateProfile(userCredential.user, {
-          displayName: displayName
+          displayName: chosenName
         });
       }
       if (userCredential && userCredential.user) {
         const idToken = await userCredential.user.getIdToken();
         setToken(idToken);
+
+        // Update profile in DB with chosen username and name
+        const cleanUsername = username ? username.toLowerCase().trim().replace(/[^a-z0-9_]/g, '') : undefined;
+        try {
+          await fetch('/api/user/profile', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${idToken}`
+            },
+            body: JSON.stringify({
+              name: chosenName,
+              username: cleanUsername
+            })
+          });
+        } catch (profileErr) {
+          console.warn('Could not save username on registration:', profileErr);
+        }
+
         const syncResponse = await fetch('/api/user/sync', {
           method: 'POST',
           headers: {
@@ -420,82 +466,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return defaultProfile;
   };
 
-  // Rebuilt Google Login implementation using standalone GoogleAuthService
-  const loginWithGoogle = async (returnUrl?: string) => {
-    setAuthStatus('AUTHENTICATING');
-    setGoogleAuthMessage('Đang đăng nhập với Google...');
-    setLoading(true);
-    clearAuthError();
-
-    const currentFullPath = location.pathname + location.search + location.hash;
-    const targetUrl = returnUrl || currentFullPath;
-
-    try {
-      const result = await GoogleAuthService.signInWithGoogle(targetUrl);
-
-      if (result.cancelled) {
-        setAuthStatus('UNAUTHENTICATED');
-        setGoogleAuthMessage(null);
-        setLoading(false);
-        setLastAuthError({
-          code: 'auth/popup-closed-by-user',
-          message: GoogleAuthService.formatErrorMessage({ code: 'auth/popup-closed-by-user' })
-        });
-        return;
-      }
-
-      if (result.isRedirect) {
-        setGoogleAuthMessage('Đang chuyển sang đăng nhập Google (redirect)...');
-        return;
-      }
-
-      if (result.success && result.user) {
-        setGoogleAuthMessage('Đang xác nhận tài khoản...');
-        setUser(result.user);
-        setLastAuthError(null);
-
-        const profile = await loadOrCreateProfile(result.user);
-        setDbUser(profile);
-        setAuthStatus('AUTHENTICATED');
-        setGoogleAuthMessage(null);
-        console.log('[AUTH] Authentication: COMPLETE');
-
-        const consumed = GoogleAuthService.consumeReturnUrl();
-        if (consumed && consumed.startsWith('/') && !consumed.startsWith('//')) {
-          navigate(consumed, { replace: true });
-        } else {
-          checkAndApplyRedirect(profile.role);
-        }
-        return;
-      }
-    } catch (error: any) {
-      const errorCode = error?.code || '';
-      const friendlyMessage = GoogleAuthService.formatErrorMessage(error);
-      setAuthStatus('AUTH_ERROR');
-      setGoogleAuthMessage(null);
-      setLastAuthError({
-        code: errorCode,
-        message: friendlyMessage
-      });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const quickLogin = async (emailInput?: string, nameInput?: string) => {
+  const quickLogin = async (identifierInput?: string, nameInput?: string) => {
     setLoading(true);
     setAuthStatus('AUTHENTICATING');
     clearAuthError();
     try {
-      const email = (emailInput || '').toLowerCase().trim();
-      if (!email) {
-        throw new Error('Vui lòng cung cấp địa chỉ email để đăng nhập.');
+      const identifier = (identifierInput || '').trim();
+      if (!identifier) {
+        throw new Error('Vui lòng cung cấp email hoặc tên đăng nhập để tiếp tục.');
       }
       const response = await fetch('/api/auth/quick-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, name: nameInput })
+        body: JSON.stringify({ identifier, email: identifier, name: nameInput })
       });
 
       if (!response.ok) {
@@ -554,7 +537,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     try {
       try {
-        await GoogleAuthService.signOut();
+        await signOut(auth);
       } catch (e) {
         // ignore
       }
@@ -562,7 +545,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setDbUser(null);
       setToken(null);
       setAuthStatus('UNAUTHENTICATED');
-      setGoogleAuthMessage(null);
       setLastAuthError(null);
       localStorage.removeItem(LOCAL_STORAGE_KEY);
       localStorage.removeItem('jpstudy_app_session_v1');
@@ -571,117 +553,71 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Integrated Auth Lifecycle
+  // Integrated Auth Lifecycle (Pure Firebase onAuthStateChanged)
   useEffect(() => {
     let isMounted = true;
-    let unsubscribeAuth: (() => void) | null = null;
+    setAuthStatus('INITIALIZING');
 
-    const initAuth = async () => {
-      setAuthStatus('INITIALIZING');
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (!isMounted) return;
 
-      // 1. Process redirect result if coming back from Google OAuth redirect
-      let redirectUser: User | null = null;
-      try {
-        redirectUser = await GoogleAuthService.checkRedirectResult();
-        if (redirectUser && isMounted) {
-          setUser(redirectUser);
-          setLastAuthError(null);
-          const profile = await loadOrCreateProfile(redirectUser);
+      if (currentUser) {
+        setUser(currentUser);
+        setLastAuthError(null);
+        try {
+          const profile = await loadOrCreateProfile(currentUser);
           if (isMounted) {
             setDbUser(profile);
             setAuthStatus('AUTHENTICATED');
             setLoading(false);
             console.log('[AUTH] Authentication: COMPLETE');
-            const consumed = GoogleAuthService.consumeReturnUrl();
-            if (consumed && consumed.startsWith('/') && !consumed.startsWith('//')) {
-              navigate(consumed, { replace: true });
-            } else {
-              checkAndApplyRedirect(profile.role);
-            }
+            checkAndApplyRedirect(profile.role);
+          }
+        } catch (profileErr) {
+          console.error('[AUTH] Error loading profile:', profileErr);
+          if (isMounted) {
+            setAuthStatus('AUTHENTICATED');
+            setLoading(false);
           }
         }
-      } catch (redirectError: any) {
-        if (isMounted) {
-          const errorCode = redirectError?.code || '';
-          setLastAuthError({
-            code: errorCode,
-            message: GoogleAuthService.formatErrorMessage(redirectError)
-          });
+      } else {
+        // Check if there is an active local app session
+        try {
+          const rawSession = localStorage.getItem('jpstudy_app_session_v1');
+          if (rawSession) {
+            const { token: sessionToken, firebaseUser: fbUser } = JSON.parse(rawSession);
+            if (sessionToken && fbUser) {
+              const syntheticUser: any = {
+                uid: fbUser.uid,
+                email: fbUser.email,
+                displayName: fbUser.displayName,
+                photoURL: fbUser.photoURL,
+                emailVerified: true,
+                getIdToken: async () => sessionToken
+              };
+              setUser(syntheticUser);
+              setToken(sessionToken);
+              setAuthStatus('AUTHENTICATED');
+              setLoading(false);
+              console.log('[AUTH] Authentication: COMPLETE (session restored)');
+              return;
+            }
+          }
+        } catch (sessionErr) {
+          console.warn('[AUTH] Could not restore app session:', sessionErr);
         }
+
+        setDbUser(null);
+        setToken(null);
+        setUser(null);
+        setAuthStatus('UNAUTHENTICATED');
+        setLoading(false);
       }
-
-      // 2. Single source of truth listener for auth state
-      unsubscribeAuth = GoogleAuthService.listenAuthState(async (currentUser) => {
-        if (!isMounted) return;
-
-        const effectiveUser = currentUser || redirectUser;
-        if (effectiveUser) {
-          setUser(effectiveUser);
-          setLastAuthError(null);
-          try {
-            const profile = await loadOrCreateProfile(effectiveUser);
-            if (isMounted) {
-              setDbUser(profile);
-              setAuthStatus('AUTHENTICATED');
-              setLoading(false);
-              console.log('[AUTH] Authentication: COMPLETE');
-              const consumed = GoogleAuthService.consumeReturnUrl();
-              if (consumed && consumed.startsWith('/') && !consumed.startsWith('//')) {
-                navigate(consumed, { replace: true });
-              } else {
-                checkAndApplyRedirect(profile.role);
-              }
-            }
-          } catch (profileErr) {
-            console.error('[AUTH] Profile: ERROR', profileErr);
-            if (isMounted) {
-              setAuthStatus('AUTHENTICATED');
-              setLoading(false);
-            }
-          }
-        } else {
-          // Check if there is an active local app session
-          try {
-            const rawSession = localStorage.getItem('jpstudy_app_session_v1');
-            if (rawSession) {
-              const { token: sessionToken, firebaseUser: fbUser } = JSON.parse(rawSession);
-              if (sessionToken && fbUser) {
-                const syntheticUser: any = {
-                  uid: fbUser.uid,
-                  email: fbUser.email,
-                  displayName: fbUser.displayName,
-                  photoURL: fbUser.photoURL,
-                  emailVerified: true,
-                  getIdToken: async () => sessionToken
-                };
-                setUser(syntheticUser);
-                setToken(sessionToken);
-                setAuthStatus('AUTHENTICATED');
-                setLoading(false);
-                console.log('[AUTH] Authentication: COMPLETE (session restored)');
-                return;
-              }
-            }
-          } catch (sessionErr) {
-            console.warn('[AUTH] Could not restore app session:', sessionErr);
-          }
-
-          setDbUser(null);
-          setToken(null);
-          setUser(null);
-          setAuthStatus('UNAUTHENTICATED');
-          setLoading(false);
-        }
-      });
-    };
-
-    initAuth();
+    });
 
     return () => {
       isMounted = false;
-      if (unsubscribeAuth) {
-        unsubscribeAuth();
-      }
+      unsubscribe();
     };
   }, []);
 
@@ -749,12 +685,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       token,
       loading,
       authStatus,
-      googleAuthMessage,
       lastAuthError,
       clearAuthError,
       login,
       register,
-      loginWithGoogle,
       quickLogin,
       logout,
       syncProfile,

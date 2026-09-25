@@ -10,7 +10,7 @@ import {
   CheckCircle, 
   RefreshCw, 
   PenTool, 
-  Sparkles, 
+  Lightbulb, 
   Volume2,
   ChevronLeft,
   ChevronRight,
@@ -957,8 +957,8 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
                     {/* Bottom Flip Reminder */}
                     <div className="w-full pb-1">
                       <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-500 shadow-3xs">
-                        <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                        <span>Chạm vào thẻ để xem Âm Ôn, Âm Khôn & Mẹo nhớ AI</span>
+                        <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
+                        <span>Chạm vào thẻ để xem Âm Ôn, Âm Khôn & Mẹo nhớ</span>
                       </div>
                     </div>
                   </motion.div>
@@ -1279,7 +1279,7 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
                       }}
                       className="flex-1 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer shadow-3xs"
                     >
-                      <Sparkles className="w-3 h-3" />
+                      <CheckCircle className="w-3 h-3" />
                       Kiểm tra nét (+5 XP)
                     </button>
                   </div>
@@ -1318,10 +1318,10 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
                   onClick={handleAiAutoFill}
                   disabled={aiLoading}
                   className="px-3 py-1.5 bg-gradient-to-r from-slate-500 to-purple-600 hover:from-slate-600 hover:to-purple-700 disabled:from-slate-100 disabled:to-slate-100 disabled:text-slate-400 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer transition-all shadow-md shadow-slate-600/10 border-none select-none"
-                  title="Sử dụng AI điền tự động toàn bộ trường thông tin"
+                  title="Điền tự động toàn bộ trường thông tin"
                 >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  {aiLoading ? "Đang điền..." : "Tự động điền bằng AI"}
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  {aiLoading ? "Đang điền..." : "Tự động điền dữ liệu"}
                 </button>
               </div>
 

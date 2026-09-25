@@ -24,7 +24,7 @@ import {
   Check, 
   AlertCircle, 
   HelpCircle, 
-  Sparkles, 
+  PenTool, 
   Volume2, 
   Play, 
   Square, 
@@ -1407,7 +1407,7 @@ export const JlptRealBookletExam: React.FC<JlptRealBookletExamProps> = ({
                   }`}
                   title="Tự động nhận diện nét vẽ vòng tròn hoặc chạm bằng bút để khoanh đáp án"
                 >
-                  <Sparkles className={`w-3.5 h-3.5 ${smartPenRecognition ? 'text-amber-400 animate-pulse' : 'text-slate-500'}`} />
+                  <PenTool className={`w-3.5 h-3.5 ${smartPenRecognition ? 'text-amber-400 animate-pulse' : 'text-slate-500'}`} />
                   <span className="hidden sm:inline">Khoanh: {smartPenRecognition ? 'BẬT' : 'TẮT'}</span>
                 </button>
 
@@ -1562,7 +1562,7 @@ export const JlptRealBookletExam: React.FC<JlptRealBookletExamProps> = ({
             key={recognitionFeedback.key}
             className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 text-amber-300 border border-amber-500/50 shadow-2xl px-4 py-2 rounded-full font-sans text-xs font-bold flex items-center gap-2 pointer-events-none animate-in fade-in slide-in-from-top-4 duration-200"
           >
-            <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
+            <PenTool className="w-4 h-4 text-amber-400" />
             <span>{recognitionFeedback.message}</span>
           </div>
         )}
@@ -1866,12 +1866,12 @@ export const JlptRealBookletExam: React.FC<JlptRealBookletExamProps> = ({
                     >
                       {isReviewingNotes ? (
                         <>
-                          <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                          <CheckCircle2 className="w-3.5 h-3.5 animate-spin" />
                           <span>Đang chấm ghi chú...</span>
                         </>
                       ) : (
                         <>
-                          <Sparkles className="w-3.5 h-3.5" />
+                          <CheckCircle2 className="w-3.5 h-3.5" />
                           <span>Chấm & Sửa lại ghi chú</span>
                         </>
                       )}

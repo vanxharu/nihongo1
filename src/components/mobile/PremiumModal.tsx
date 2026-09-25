@@ -3,12 +3,11 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, 
   Crown, 
-  Sparkles, 
   CheckCircle2, 
   Zap, 
   ShieldCheck, 
   WifiOff, 
-  Bot, 
+  GraduationCap, 
   BookOpen 
 } from 'lucide-react';
 
@@ -28,8 +27,8 @@ export default function PremiumModal({ isOpen, onClose, onUpgrade }: PremiumModa
       desc: 'Tải toàn bộ từ vựng, ngữ pháp, kanji và âm thanh bản xứ về máy'
     },
     {
-      icon: Bot,
-      title: 'Gia sư AI chấm điểm & giải thích chi tiết',
+      icon: GraduationCap,
+      title: 'Trợ giảng giải thích & hướng dẫn chi tiết',
       desc: 'Hỏi đáp ngữ pháp chuyên sâu, giải nghĩa kanji, luyện viết không giới hạn'
     },
     {
@@ -113,7 +112,7 @@ export default function PremiumModal({ isOpen, onClose, onUpgrade }: PremiumModa
               }}
               className="w-full py-3.5 px-4 bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white rounded-2xl font-bold text-sm shadow-lg shadow-sky-600/30 active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <Sparkles className="w-4 h-4 text-amber-300" />
+              <Crown className="w-4 h-4 text-amber-300" />
               <span>Kích hoạt Premium ngay</span>
             </button>
             <p className="text-[10px] text-center text-slate-500">

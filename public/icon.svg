@@ -1,183 +1,201 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <!-- Background Gradient - Deep Japanese Navy/Indigo with Vermilion Glow -->
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Background Lacquer Slate to Deep Indigo Gradient -->
+    <linearGradient id="icon-bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#0F172A" />
-      <stop offset="50%" stop-color="#1E1B4B" />
-      <stop offset="100%" stop-color="#090D16" />
+      <stop offset="50%" stop-color="#181A33" />
+      <stop offset="100%" stop-color="#090D18" />
     </linearGradient>
 
-    <!-- Outer Border Japanese Gold & Crimson Gradient -->
-    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#E11D48" />
-      <stop offset="50%" stop-color="#FB7185" />
+    <!-- Outer Rim Glowing Gradient -->
+    <linearGradient id="icon-rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="50%" stop-color="#E11D48" />
       <stop offset="100%" stop-color="#F59E0B" />
     </linearGradient>
 
-    <!-- Crimson Daruma Body Gradient (Shu-iro / Traditional Vermilion Red) -->
-    <linearGradient id="darumaRed" x1="0%" y1="0%" x2="0%" y2="100%">
+    <!-- Rising Sun Crimson Vermilion Gradient -->
+    <linearGradient id="icon-sun" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#FF385C" />
-      <stop offset="45%" stop-color="#E11D48" />
+      <stop offset="50%" stop-color="#E11D48" />
       <stop offset="100%" stop-color="#9F1239" />
     </linearGradient>
 
-    <!-- Golden Headband / Accent Gradient -->
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Auspicious Japanese Gold Gradient -->
+    <linearGradient id="icon-gold" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FEF08A" />
       <stop offset="50%" stop-color="#FBBF24" />
       <stop offset="100%" stop-color="#D97706" />
     </linearGradient>
 
-    <!-- Rising Sun Gradient -->
-    <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#FF4D6D" />
-      <stop offset="70%" stop-color="#E11D48" />
-      <stop offset="100%" stop-color="#BE123C" />
+    <!-- Mount Fuji Shading Gradient -->
+    <linearGradient id="icon-fuji" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+
+    <!-- Soft Radial Sun Aura Glow -->
+    <radialGradient id="icon-aura" cx="50%" cy="46%" r="50%">
+      <stop offset="0%" stop-color="#FF385C" stop-opacity="0.4" />
+      <stop offset="70%" stop-color="#E11D48" stop-opacity="0.1" />
+      <stop offset="100%" stop-color="#E11D48" stop-opacity="0" />
     </radialGradient>
 
-    <!-- Mount Fuji Snow & Silhouette Gradients -->
-    <linearGradient id="fujiBase" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#38BDF8" />
-      <stop offset="100%" stop-color="#1E293B" />
-    </linearGradient>
-
-    <linearGradient id="sakuraGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFF1F2" />
-      <stop offset="100%" stop-color="#FDA4AF" />
-    </linearGradient>
-
-    <!-- Glow & Shadow Filters -->
-    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="8" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-
-    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000000" flood-opacity="0.45" />
+    <!-- Soft Drop Shadow Filter -->
+    <filter id="icon-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#000000" flood-opacity="0.4" />
     </filter>
   </defs>
 
   <!-- Base Squircle -->
-  <rect width="512" height="512" rx="120" fill="url(#bgGrad)" />
+  <rect width="512" height="512" rx="128" fill="url(#icon-bg)" />
 
-  <!-- Outer Border Japanese Crest Stroke -->
-  <rect x="12" y="12" width="488" height="488" rx="108" fill="none" stroke="url(#borderGrad)" stroke-width="4" opacity="0.85" />
+  <!-- Outer Japanese Crest Dual Border -->
+  <rect 
+    x="14" 
+    y="14" 
+    width="484" 
+    height="484" 
+    rx="114" 
+    fill="none" 
+    stroke="url(#icon-rim)" 
+    stroke-width="8" 
+    stroke-opacity="0.85" 
+  />
 
-  <!-- JAPANESE RISING SUN (HINOMARU) AURA -->
-  <circle cx="256" cy="180" r="140" fill="url(#sunGrad)" opacity="0.85" filter="url(#softGlow)" />
-  <circle cx="256" cy="180" r="140" fill="none" stroke="#FEF08A" stroke-width="2" stroke-dasharray="6 6" opacity="0.5" />
+  <!-- Sun Aura Ambient Glow -->
+  <circle cx="256" cy="235" r="210" fill="url(#icon-aura)" />
 
-  <!-- MOUNT FUJI (富士山) SILHOUETTE IN SUN -->
-  <g opacity="0.35">
-    <path d="M 120 280 L 220 165 L 292 165 L 392 280 Z" fill="#0F172A" />
-    <!-- Snow peak -->
-    <path d="M 220 165 L 235 185 L 245 175 L 256 190 L 267 175 L 277 185 L 292 165 Z" fill="#FFFFFF" />
-  </g>
-
-  <!-- TORII GATE (鳥居) SUBTLE OUTLINE -->
-  <g opacity="0.4" stroke="#FFE4E6" stroke-width="3" stroke-linecap="round">
-    <!-- Top curved beam -->
-    <path d="M 170 120 Q 256 108 342 120" fill="none" />
-    <path d="M 180 135 L 332 135" fill="none" stroke-width="2.5" />
-    <!-- Pillars -->
-    <line x1="200" y1="135" x2="195" y2="220" />
-    <line x1="312" y1="135" x2="317" y2="220" />
-  </g>
-
-  <!-- FLOATING SAKURA (桜) PETALS -->
-  <g filter="url(#dropShadow)">
-    <!-- Top Left Sakura Blossom -->
-    <g transform="translate(85, 95) scale(0.9)">
-      <path d="M0,0 C-10,-20 10,-20 0,0 C20,-10 20,10 0,0 C10,20 -10,20 0,0 C-20,10 -20,-10 0,0" fill="url(#sakuraGrad)" />
-      <circle cx="0" cy="0" r="3" fill="#F43F5E" />
-    </g>
-    <!-- Top Right Sakura Blossom -->
-    <g transform="translate(425, 90) scale(0.85) rotate(25)">
-      <path d="M0,0 C-10,-20 10,-20 0,0 C20,-10 20,10 0,0 C10,20 -10,20 0,0 C-20,10 -20,-10 0,0" fill="url(#sakuraGrad)" />
-      <circle cx="0" cy="0" r="3" fill="#F43F5E" />
-    </g>
-    <!-- Tiny Petals Floating -->
-    <path d="M 100 210 Q 112 215 110 225 Q 100 225 100 210 Z" fill="#FDA4AF" opacity="0.9" />
-    <path d="M 405 220 Q 418 226 415 236 Q 403 234 405 220 Z" fill="#FDA4AF" opacity="0.9" />
-    <path d="M 75 300 Q 88 305 84 316 Q 72 312 75 300 Z" fill="#FDA4AF" opacity="0.8" />
-    <path d="M 435 310 Q 445 318 440 328 Q 430 322 435 310 Z" fill="#FDA4AF" opacity="0.8" />
-  </g>
-
-  <!-- MAIN AUSPICIOUS DARUMA DOLL (達磨 - SYMBOL OF JLPT MASTERY & SUCCESS) -->
-  <g transform="translate(0, 15)" filter="url(#dropShadow)">
+  <!-- Center Sacred Japanese Rising Sun (Hinomaru) -->
+  <g filter="url(#icon-shadow)">
+    <circle cx="256" cy="235" r="165" fill="url(#icon-sun)" />
     
-    <!-- DARUMA MAIN ROUND BODY -->
-    <ellipse cx="256" cy="275" rx="135" ry="128" fill="url(#darumaRed)" stroke="#BE123C" stroke-width="3" />
-
-    <!-- DARUMA WHITE FACE AREA (Heart/Double Oval Shape) -->
-    <path d="M 175 235 C 175 180 220 170 256 195 C 292 170 337 180 337 235 C 337 280 295 295 256 295 C 217 295 175 280 175 235 Z" fill="#FFFDF7" stroke="#FBBF24" stroke-width="2.5" />
-
-    <!-- DARUMA GOLDEN HACHIMAKI (VICTORY HEADBAND) -->
-    <path d="M 152 188 Q 256 162 360 188 L 358 214 Q 256 190 154 214 Z" fill="url(#goldGrad)" stroke="#B45309" stroke-width="2" />
-    
-    <!-- Headband Ribbon Tails -->
-    <path d="M 154 200 Q 125 205 115 228 Q 130 234 150 212 Z" fill="#F59E0B" />
-    <path d="M 154 200 Q 120 190 105 208 Q 120 220 148 208 Z" fill="#D97706" />
-
-    <!-- Center Kanji: '必勝' (Sure Victory / Tất Thắng) or '合格' (Pass JLPT) -->
-    <circle cx="256" cy="189" r="15" fill="#991B1B" stroke="#FEF08A" stroke-width="1.5" />
-    <text x="256" y="195" font-family="'Noto Sans JP', sans-serif" font-weight="900" font-size="13" fill="#FEF08A" text-anchor="middle">勝</text>
-
-    <!-- TRADITIONAL JAPANESE EYEBROWS (Crane / Feather Style) -->
-    <!-- Left Eyebrow -->
-    <path d="M 192 214 Q 212 204 236 216 Q 220 216 192 214 Z" fill="#1E293B" />
-    <!-- Right Eyebrow -->
-    <path d="M 320 214 Q 300 204 276 216 Q 292 216 320 214 Z" fill="#1E293B" />
-
-    <!-- DETERMINED & FRIENDLY ANIME / JAPANESE EYES -->
-    <!-- Left Eye (Big Sparkling Eye) -->
-    <g>
-      <ellipse cx="218" cy="235" rx="14" ry="17" fill="#0F172A" />
-      <circle cx="213" cy="228" r="6" fill="#FFFFFF" />
-      <circle cx="223" cy="241" r="3" fill="#FFFFFF" />
-      <circle cx="223" cy="231" r="2" fill="#E11D48" />
-    </g>
-    <!-- Right Eye (Big Sparkling Eye) -->
-    <g>
-      <ellipse cx="294" cy="235" rx="14" ry="17" fill="#0F172A" />
-      <circle cx="289" cy="228" r="6" fill="#FFFFFF" />
-      <circle cx="299" cy="241" r="3" fill="#FFFFFF" />
-      <circle cx="299" cy="231" r="2" fill="#E11D48" />
-    </g>
-
-    <!-- ROSY CHEEKS WITH SAKURA TINT -->
-    <ellipse cx="196" cy="254" rx="14" ry="9" fill="#FB7185" opacity="0.8" />
-    <ellipse cx="316" cy="254" rx="14" ry="9" fill="#FB7185" opacity="0.8" />
-
-    <!-- CUTE MUSTACHE & DETERMINED SMILE -->
-    <!-- Whiskers / Mustache (Turtle tail style) -->
-    <path d="M 214 266 Q 236 264 246 256" fill="none" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round" />
-    <path d="M 298 266 Q 276 264 266 256" fill="none" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round" />
-
-    <!-- Happy Confident Smile -->
-    <path d="M 242 268 Q 256 278 270 268" fill="none" stroke="#991B1B" stroke-width="3" stroke-linecap="round" />
-    <ellipse cx="256" cy="272" rx="4" ry="2.5" fill="#E11D48" />
-
-    <!-- DARUMA GOLDEN BELLY PATTERN WITH KANJI '日本' (NIHON) -->
-    <!-- Golden Fan/Cloud Border -->
-    <path d="M 195 315 Q 256 302 317 315 Q 330 365 310 395 Q 256 408 202 395 Q 182 365 195 315 Z" fill="#991B1B" stroke="url(#goldGrad)" stroke-width="2.5" />
-    
-    <!-- Gold Cloud flourishes -->
-    <path d="M 205 330 Q 220 322 232 334" fill="none" stroke="#FDE047" stroke-width="2" stroke-linecap="round" />
-    <path d="M 307 330 Q 292 322 280 334" fill="none" stroke="#FDE047" stroke-width="2" stroke-linecap="round" />
-
-    <!-- Kanji '日本語' (Nihon / Nihongo) in Gold Calligraphy -->
-    <text x="256" y="362" font-family="'Noto Serif JP', 'Yu Mincho', serif" font-weight="900" font-size="34" fill="#FEF08A" text-anchor="middle" filter="url(#softGlow)" letter-spacing="2">日本語</text>
-
-    <!-- Tiny Auspicious Gold Dots -->
-    <circle cx="230" cy="385" r="3" fill="#FDE047" />
-    <circle cx="256" cy="388" r="4" fill="#FDE047" />
-    <circle cx="282" cy="385" r="3" fill="#FDE047" />
+    <!-- Delicate Concentric Auspicious Gold Dashed Ring -->
+    <circle 
+      cx="256" 
+      cy="235" 
+      r="165" 
+      fill="none" 
+      stroke="#FEF08A" 
+      stroke-width="3" 
+      stroke-dasharray="10 8" 
+      stroke-opacity="0.6" 
+    />
   </g>
 
-  <!-- BOTTOM JAPANESE CALLIGRAPHY BRAND PILL -->
-  <g transform="translate(256, 475)">
-    <rect x="-85" y="-18" width="170" height="28" rx="14" fill="#1E1B4B" stroke="#E11D48" stroke-width="2" />
-    <text x="0" y="2" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="13" fill="#FDA4AF" text-anchor="middle" letter-spacing="1">NIHONGO 🌸</text>
+  <!-- Mount Fuji (富士山) Silhouette at the Dawn Horizon -->
+  <g id="icon-mt-fuji">
+    <path 
+      d="M 125 350 L 215 230 L 297 230 L 387 350 Z" 
+      fill="url(#icon-fuji)" 
+    />
+    <!-- Sacred Snow Peak -->
+    <path 
+      d="M 215 230 L 230 256 L 245 246 L 256 262 L 267 246 L 282 256 L 297 230 Z" 
+      fill="#FFFFFF" 
+      opacity="0.95" 
+    />
+  </g>
+
+  <!-- Gateway of Wisdom (Torii Gate & Open Book of Scholarship) -->
+  <g id="icon-torii-gate" filter="url(#icon-shadow)">
+    <!-- Upper Kasagi Beam (Arching gracefully like the wings of an open book) -->
+    <path 
+      d="M 85 162 C 145 132, 215 142, 256 149 C 297 142, 367 132, 427 162 C 387 172, 317 162, 256 169 C 195 162, 125 172, 85 162 Z" 
+      fill="#FFFFFF" 
+    />
+
+    <!-- Kasagi Golden Accent Line -->
+    <path 
+      d="M 125 152 Q 256 140 387 152" 
+      stroke="url(#icon-gold)" 
+      stroke-width="5" 
+      stroke-linecap="round" 
+    />
+
+    <!-- Second Horizontal Beam (Shimaki / Nuki) -->
+    <path 
+      d="M 120 195 L 392 195" 
+      stroke="#FFFFFF" 
+      stroke-width="16" 
+      stroke-linecap="round" 
+    />
+
+    <!-- Central Signet Tablet (Gakuzuka) with Golden Accent -->
+    <rect 
+      x="238" 
+      y="160" 
+      width="36" 
+      height="40" 
+      rx="6" 
+      fill="url(#icon-gold)" 
+      stroke="#991B1B" 
+      stroke-width="3" 
+    />
+    <line x1="244" y1="180" x2="268" y2="180" stroke="#991B1B" stroke-width="3.5" />
+
+    <!-- Main Vertical Pillars (Hashira) -->
+    <path 
+      d="M 160 162 L 150 355" 
+      stroke="#FFFFFF" 
+      stroke-width="20" 
+      stroke-linecap="round" 
+    />
+    <path 
+      d="M 352 162 L 362 355" 
+      stroke="#FFFFFF" 
+      stroke-width="20" 
+      stroke-linecap="round" 
+    />
+
+    <!-- Stone Pedestals (Kamebara / Daiishi) -->
+    <path 
+      d="M 130 355 L 170 355" 
+      stroke="#FFFFFF" 
+      stroke-width="16" 
+      stroke-linecap="round" 
+    />
+    <path 
+      d="M 342 355 L 382 355" 
+      stroke="#FFFFFF" 
+      stroke-width="16" 
+      stroke-linecap="round" 
+    />
+  </g>
+
+  <!-- Floating Golden Sakura Blossom of JLPT Mastery (Top-Right) -->
+  <g id="icon-sakura" transform="translate(370, 105) scale(2.6)" filter="url(#icon-shadow)">
+    <circle cx="0" cy="-6" r="3.2" fill="url(#icon-gold)" />
+    <circle cx="5.7" cy="-1.8" r="3.2" fill="url(#icon-gold)" />
+    <circle cx="3.5" cy="4.8" r="3.2" fill="url(#icon-gold)" />
+    <circle cx="-3.5" cy="4.8" r="3.2" fill="url(#icon-gold)" />
+    <circle cx="-5.7" cy="-1.8" r="3.2" fill="url(#icon-gold)" />
+    <circle cx="0" cy="0" r="2.2" fill="#E11D48" />
+  </g>
+
+  <!-- Traditional Inkan Seal & Brand Banner at the Bottom -->
+  <g transform="translate(256, 436)" filter="url(#icon-shadow)">
+    <rect 
+      x="-110" 
+      y="-26" 
+      width="220" 
+      height="52" 
+      rx="26" 
+      fill="#DC2626" 
+      stroke="url(#icon-gold)" 
+      stroke-width="3" 
+    />
+    <text 
+      x="0" 
+      y="9" 
+      font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" 
+      font-weight="900" 
+      font-size="22" 
+      fill="#FFFFFF" 
+      text-anchor="middle" 
+      letter-spacing="2"
+    >
+      Nihon<tspan fill="#FEF08A">Go!</tspan>
+    </text>
   </g>
 </svg>

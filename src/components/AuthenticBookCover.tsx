@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { BookOpen, Disc3, Award, Sparkles, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Disc3, Award, CheckCircle2 } from 'lucide-react';
 import { StudyBook } from '../types';
 
 interface AuthenticBookCoverProps {
@@ -155,7 +155,7 @@ export const AuthenticBookCover: React.FC<AuthenticBookCoverProps> = ({
 
           {/* Cute mascot illustration placeholder */}
           <div className="flex items-center justify-center gap-2 pt-1 text-amber-800 text-[10px] font-bold">
-            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            <Award className="w-3.5 h-3.5 text-amber-600" />
             <span>Đầy đủ 30 bài + Kiểm tra thực hành</span>
           </div>
         </div>

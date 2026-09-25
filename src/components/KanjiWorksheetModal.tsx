@@ -8,7 +8,6 @@ import {
   Settings, 
   Grid, 
   FileText, 
-  Sparkles,
   Sliders,
   Type,
   Check

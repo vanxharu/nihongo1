@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   BookMarked, 
-  Brain, 
   Puzzle, 
-  Bot, 
+  MessagesSquare, 
   Menu, 
   BarChart3, 
   ShieldCheck, 
@@ -16,7 +15,6 @@ import {
   LogIn, 
   LogOut,
   X, 
-  Sparkles, 
   Flame, 
   Layers, 
   ChevronRight, 
@@ -26,6 +24,7 @@ import {
   Radio, 
   Award, 
   Sliders,
+  Settings,
   PenTool,
   Route,
   TrendingUp,
@@ -41,6 +40,7 @@ import { JLPT_LEVEL_INFO } from './LevelProgressBar';
 import { getPlayerLevelInfo } from '../utils/xpSystem';
 import { calculateUnlockedAchievements, TOTAL_ACHIEVEMENTS_COUNT } from '../data/achievementsData';
 import { BRAND_NAME } from '../constants/brand';
+import JpStudyLogo from './JpStudyLogo';
 import UserAvatar from './UserAvatar';
 import VoiceSelectorModal from './VoiceSelectorModal';
 
@@ -218,15 +218,9 @@ export default function MobileBottomNav({
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-xl bg-indigo-500/20 text-indigo-400">
-                    <Sliders className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-black text-white">Menu chức năng & Cá nhân</h3>
-                    <p className="text-[11px] text-slate-400 font-semibold">{BRAND_NAME}</p>
-                  </div>
-                </div>
+                <Link to="/" onClick={() => setIsMoreOpen(false)} className="outline-hidden">
+                  <JpStudyLogo size="sm" dark={true} showSubtitle={true} />
+                </Link>
                 <button
                   type="button"
                   onClick={() => setIsMoreOpen(false)}
@@ -309,7 +303,7 @@ export default function MobileBottomNav({
                 {[
                   { id: 'reading', path: '/doc-hieu', label: 'Đọc hiểu & Tin tức', icon: BookOpen, color: 'text-indigo-400', desc: 'Báo chí & Hội thoại' },
                   { id: 'study-books', path: '/sach', label: 'Sách ôn thi', icon: BookMarked, color: 'text-amber-400', desc: '3 Sách N4 chuẩn' },
-                  { id: 'japanese-chat', path: '/chat-ai', label: 'Chat AI Kaiwa', icon: Bot, color: 'text-purple-400', desc: 'Hội thoại thông minh' },
+                  { id: 'japanese-chat', path: '/chat-ai', label: 'Luyện Kaiwa', icon: MessagesSquare, color: 'text-amber-400', desc: 'Hội thoại giao tiếp' },
                   { id: 'notebook', path: '/so-tay', label: 'Sổ tay từ vựng', icon: Bookmark, color: 'text-amber-400', desc: 'Flashcard & Quiz' },
                   { id: 'achievements', path: '/thanh-tich', label: 'Thành tựu', icon: Trophy, color: 'text-amber-400', desc: `Mở khóa ${unlockedCount}/${TOTAL_ACHIEVEMENTS_COUNT}` },
                   { id: 'progress', path: '/xep-hang', label: 'Tiến độ học tập', icon: BarChart3, color: 'text-teal-400', desc: 'Thống kê & Streak' },
@@ -398,8 +392,8 @@ export default function MobileBottomNav({
                 className="w-full flex items-center justify-between p-3 rounded-2xl bg-purple-950/40 border border-purple-800/40 text-purple-200 text-xs font-bold transition-all cursor-pointer hover:bg-purple-900/50"
               >
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-purple-400" />
-                  <span>Cấu hình API ChatGPT / AI dùng chung</span>
+                  <Settings className="w-4 h-4 text-purple-400" />
+                  <span>Cấu hình API kết nối hệ thống</span>
                 </div>
                 <span className="text-[10px] px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">
                   Cài đặt ⚙️

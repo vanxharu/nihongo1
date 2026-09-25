@@ -8,7 +8,7 @@ import {
   Eye, 
   EyeOff, 
   Volume2, 
-  Sparkles, 
+  Headphones, 
   Send, 
   Lock, 
   Unlock, 
@@ -110,7 +110,7 @@ export const ListeningQuestionManager: React.FC<ListeningQuestionManagerProps> =
                 : 'text-slate-400 hover:text-white'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
+            <Headphones className="w-3.5 h-3.5" />
             <span>Luyện tập</span>
           </button>
 

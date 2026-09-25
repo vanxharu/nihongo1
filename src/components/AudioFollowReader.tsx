@@ -4,7 +4,7 @@
  */
 
 import React, { useMemo, useEffect, useRef } from 'react';
-import { Radio, Sparkles, Compass } from 'lucide-react';
+import { Radio, Compass } from 'lucide-react';
 import { AudioMark, LessonReadingSentence, LessonReadingVocab } from '../types';
 import { hasKanji } from '../utils/japaneseUtils';
 import { detectWordPos, PosType } from '../utils/posUtils';

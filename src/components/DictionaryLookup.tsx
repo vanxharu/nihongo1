@@ -9,7 +9,6 @@ import {
   BookOpen, 
   Volume2, 
   Bookmark, 
-  Sparkles, 
   History, 
   TrendingUp, 
   Layers, 

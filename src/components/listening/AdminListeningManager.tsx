@@ -12,7 +12,6 @@ import {
   AlertTriangle, 
   ExternalLink, 
   Clock, 
-  Sparkles,
   RefreshCw,
   Video
 } from 'lucide-react';
@@ -498,7 +497,7 @@ export const AdminListeningManager: React.FC = () => {
                     className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold text-xs border border-slate-700 flex items-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
                     title="Lấy tự động thông tin tiêu đề và kênh từ YouTube"
                   >
-                    <Sparkles className={`w-3.5 h-3.5 ${isFetchingInfo ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={`w-3.5 h-3.5 ${isFetchingInfo ? 'animate-spin' : ''}`} />
                     <span>Lấy tin tự động</span>
                   </button>
                 </div>

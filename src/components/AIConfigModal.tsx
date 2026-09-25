@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, 
-  Sparkles, 
+  Settings, 
   Key, 
-  Cpu, 
+  Server, 
   CheckCircle2, 
   AlertTriangle, 
   RotateCw, 
@@ -16,7 +16,7 @@ import {
   ExternalLink,
   ShieldCheck,
   Zap,
-  Bot
+  Sliders
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -181,11 +181,11 @@ export default function AIConfigModal({ isOpen, onClose, onConfigSaved }: AIConf
         <div className="p-4 sm:p-5 border-b border-[#30363d] flex items-center justify-between bg-gradient-to-r from-purple-950/40 via-blue-950/20 to-transparent">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
-              <Sparkles className="w-5 h-5" />
+              <Settings className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-2">
-                Cấu hình API ChatGPT / AI
+                Cấu hình API kết nối hệ thống
                 <span className="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
                   Dùng chung toàn web
                 </span>
@@ -273,7 +273,7 @@ export default function AIConfigModal({ isOpen, onClose, onConfigSaved }: AIConf
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <Bot className="w-4 h-4 text-purple-400" />
+                        <Sliders className="w-4 h-4 text-purple-400" />
                         <span className="font-bold text-sm text-slate-200">ChatGPT (OpenAI)</span>
                       </div>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
@@ -365,7 +365,7 @@ export default function AIConfigModal({ isOpen, onClose, onConfigSaved }: AIConf
               {/* Model Choice */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
-                  <Cpu className="w-3.5 h-3.5 text-purple-400" />
+                  <Sliders className="w-3.5 h-3.5 text-purple-400" />
                   3. Chọn Model ChatGPT sử dụng
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -418,7 +418,7 @@ export default function AIConfigModal({ isOpen, onClose, onConfigSaved }: AIConf
                       </>
                     ) : (
                       <>
-                        <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                        <Key className="w-3.5 h-3.5 text-purple-400" />
                         Kiểm tra kết nối ngay
                       </>
                     )}

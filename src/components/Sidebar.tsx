@@ -9,8 +9,7 @@ import {
   BookMarked, 
   BarChart3, 
   Puzzle, 
-  Brain, 
-  Bot, 
+  MessagesSquare, 
   BookOpen, 
   ShieldCheck, 
   X, 
@@ -23,7 +22,6 @@ import {
   ChevronUp, 
   Award,
   PenTool,
-  Sparkles,
   Route,
   TrendingUp,
   Trophy,
@@ -130,12 +128,12 @@ export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, 
     { 
       id: 'japanese-chat', 
       path: '/chat-ai',
-      label: 'Chat AI Tiếng Nhật', 
-      icon: Bot, 
-      iconColor: 'text-purple-400', 
-      activeBg: 'bg-gradient-to-r from-purple-500/25 via-indigo-500/15 to-transparent border-purple-400/60 text-purple-100 shadow-[0_0_18px_rgba(168,85,247,0.25)]',
-      activeIconBg: 'bg-purple-400/25 border border-purple-400/50 shadow-[0_0_10px_rgba(168,85,247,0.4)]',
-      dotColor: 'bg-purple-400 shadow-[0_0_8px_#C084FC]'
+      label: 'Luyện thoại Kaiwa', 
+      icon: MessagesSquare, 
+      iconColor: 'text-amber-400', 
+      activeBg: 'bg-gradient-to-r from-amber-500/25 via-orange-500/15 to-transparent border-amber-400/60 text-amber-100 shadow-[0_0_18px_rgba(245,158,11,0.25)]',
+      activeIconBg: 'bg-amber-400/25 border border-amber-400/50 shadow-[0_0_10px_rgba(245,158,11,0.4)]',
+      dotColor: 'bg-amber-400 shadow-[0_0_8px_#F59E0B]'
     }
   ];
 
@@ -210,7 +208,7 @@ export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, 
             className="flex items-center gap-2 cursor-pointer outline-hidden"
             title="Về Trang chủ NihonGo!"
           >
-            <JpStudyLogo size="md" dark={true} />
+            <JpStudyLogo size="md" dark={true} showSubtitle={true} />
           </Link>
 
           {/* Close button for mobile & tablet view */}

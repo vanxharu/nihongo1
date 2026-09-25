@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Bookmark, Check, X, FolderPlus, Sparkles } from 'lucide-react';
+import { Bookmark, Check, X, FolderPlus } from 'lucide-react';
 import { 
   getStoredNotebooks, 
   addWordToNotebook, 

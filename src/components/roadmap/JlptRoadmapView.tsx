@@ -5,7 +5,6 @@ import {
   Lock, 
   Check, 
   ClipboardList, 
-  Sparkles, 
   Info, 
   Calendar, 
   Play, 
@@ -14,7 +13,6 @@ import {
   HelpCircle,
   Clock,
   BookOpen,
-  Brain,
   Headphones
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import {
   Search,
   Filter,
-  Sparkles,
+  RefreshCw,
   BookOpen,
   CheckCircle2,
   AlertTriangle,
@@ -126,8 +126,8 @@ export const GrammarCatalogView: React.FC<GrammarCatalogViewProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="px-3 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                Hệ Thống Ngữ Pháp AI Thế Hệ Mới
+                <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
+                Hệ Thống Ngữ Pháp Toàn Diện Chuẩn JLPT
               </span>
             </div>
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight">
@@ -313,8 +313,8 @@ export const GrammarCatalogView: React.FC<GrammarCatalogViewProps> = ({
 
                     {isAiEnhanced && (
                       <span className="px-2 py-0.5 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-md text-[10px] font-semibold flex items-center gap-1">
-                        <Sparkles className="w-2.5 h-2.5 text-purple-400" />
-                        AI Enhanced
+                        <BookOpen className="w-2.5 h-2.5 text-purple-400" />
+                        Chi tiết mở rộng
                       </span>
                     )}
                   </div>
@@ -410,9 +410,9 @@ export const GrammarCatalogView: React.FC<GrammarCatalogViewProps> = ({
                       id={`btn-ai-redesign-${item.id}`}
                       onClick={() => onOpenAiGeneratorModal(item)}
                       className="p-2 bg-slate-800 hover:bg-slate-700 text-purple-400 hover:text-purple-300 border border-slate-700 rounded-xl transition-colors"
-                      title="AI Thiết kế bài học hoàn chỉnh"
+                      title="Thiết kế bài học chi tiết"
                     >
-                      <Sparkles className="w-4 h-4" />
+                      <RefreshCw className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
