@@ -1,12 +1,13 @@
 // JPStudy PWA Service Worker with Background Notification & Offline Support
-const CACHE_NAME = 'jpstudy-pwa-v5';
+const CACHE_NAME = 'jpstudy-pwa-v6-brand';
 const DATA_CACHE_NAME = 'jpstudy-data-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
   '/icon.svg',
-  '/logo.svg'
+  '/logo.svg',
+  '/brand/nihon-shiba-2026.png'
 ];
 
 // In-memory / cached reminder state

@@ -42,39 +42,8 @@ export interface MascotProps {
 }
 
 // Map any state/pose to the corresponding official Nihon Shiba asset
-export function getMascotAssetUrl(stateOrPose: MascotState | string = 'default'): string {
-  const norm = String(stateOrPose).toLowerCase().replace(/[-_]/g, '');
-
-  if (norm.includes('study') || norm.includes('learning')) {
-    return '/mascot/shiba_studying.png';
-  }
-  if (norm.includes('think') || norm.includes('curious')) {
-    return '/mascot/shiba_thinking.png';
-  }
-  if (norm.includes('celebrat') || norm.includes('success') || norm.includes('cheer') || norm.includes('levelup') || norm.includes('achievement') || norm.includes('missioncomplete') || norm.includes('streakreward') || norm.includes('correct')) {
-    return '/mascot/shiba_cheering.png';
-  }
-  if (norm.includes('listen')) {
-    return '/mascot/shiba_listening.png';
-  }
-  if (norm.includes('read')) {
-    return '/mascot/shiba_reading.png';
-  }
-  if (norm.includes('walk') || norm.includes('adventure')) {
-    return '/mascot/shiba_walking.png';
-  }
-  if (norm.includes('flag') || norm.includes('encourage') || norm.includes('warning') || norm.includes('reminder') || norm.includes('wrong')) {
-    return '/mascot/shiba_flag.png';
-  }
-  if (norm.includes('wink') || norm.includes('joy') || norm.includes('happy')) {
-    return '/mascot/shiba_winking.png';
-  }
-  if (norm.includes('empty')) {
-    return '/mascot/shiba_thinking.png';
-  }
-
-  // Default original mascot asset
-  return '/mascot/mascot.png';
+export function getMascotAssetUrl(_stateOrPose: MascotState | string = 'default'): string {
+  return '/brand/nihon-shiba-2026.png';
 }
 
 export const Mascot: React.FC<MascotProps> = ({
@@ -118,8 +87,8 @@ export const Mascot: React.FC<MascotProps> = ({
   }, [activeState]);
 
   const handleImageError = () => {
-    if (imgSrc !== '/mascot/mascot.svg') {
-      setImgSrc('/mascot/mascot.svg');
+    if (imgSrc !== '/brand/nihon-shiba-2026.svg') {
+      setImgSrc('/brand/nihon-shiba-2026.svg');
     } else {
       setHasError(true);
     }
@@ -209,7 +178,7 @@ export const Mascot: React.FC<MascotProps> = ({
             />
           ) : (
             <img
-              src="/image.png"
+              src="/brand/nihon-shiba-2026.png"
               alt={alt}
               className="w-full h-full object-contain drop-shadow-md"
               referrerPolicy="no-referrer"

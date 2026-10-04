@@ -113,16 +113,7 @@ export const AchievementsView: React.FC<AchievementsViewProps> = ({
           <div className="flex items-center gap-3 sm:gap-4 relative z-10">
             {/* Daruma mascot on left */}
             <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0 border border-white/30 shadow-inner">
-              <svg viewBox="0 0 100 100" width={38} height={38} className="w-full h-full drop-shadow">
-                <ellipse cx="50" cy="54" rx="34" ry="34" fill="#DC2626" stroke="#991B1B" strokeWidth="2" />
-                <path d="M 28 50 C 28 30, 72 30, 72 50 C 72 66, 28 66, 28 50 Z" fill="#FFFBEB" stroke="#B45309" strokeWidth="1.5" />
-                <circle cx="40" cy="46" r="4" fill="#0F172A" />
-                <circle cx="60" cy="46" r="4" fill="#0F172A" />
-                <circle cx="41.5" cy="44.5" r="1.5" fill="#FFFFFF" />
-                <circle cx="61.5" cy="44.5" r="1.5" fill="#FFFFFF" />
-                <path d="M 38 56 Q 50 52 62 56 Q 50 60 38 56 Z" fill="#0F172A" />
-                <text x="50" y="78" fontSize="7.5" fontWeight="black" fill="#FDE047" textAnchor="middle" fontFamily="monospace">JLPT</text>
-              </svg>
+              <img src="/brand/nihon-shiba-2026.png" alt="Nihon Shiba" className="h-full w-full object-contain" />
             </div>
 
             {/* Texts */}
