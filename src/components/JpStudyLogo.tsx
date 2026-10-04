@@ -13,7 +13,7 @@ interface JpStudyLogoProps {
 
 /** Official mascot emblem shared by every logo placement. */
 export function NihonGoEmblem({ className = '', size = 40 }: { className?: string; size?: number | string }) {
-  return <img src="/brand/nihon-shiba-2026.png" alt="Nihon Shiba" width={typeof size === 'number' ? size : undefined} height={typeof size === 'number' ? size : undefined} style={{width:size,height:size}} className={`shrink-0 object-contain drop-shadow-sm ${className}`} />;
+  return <img src="/brand/nihon-shiba-2026-corrected.png" alt="Nihon Shiba" width={typeof size === 'number' ? size : undefined} height={typeof size === 'number' ? size : undefined} style={{width:size,height:size}} className={`shrink-0 object-contain drop-shadow-sm ${className}`} />;
 }
 
 /**

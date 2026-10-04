@@ -113,7 +113,7 @@ export const AchievementsView: React.FC<AchievementsViewProps> = ({
           <div className="flex items-center gap-3 sm:gap-4 relative z-10">
             {/* Daruma mascot on left */}
             <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0 border border-white/30 shadow-inner">
-              <img src="/brand/nihon-shiba-2026.png" alt="Nihon Shiba" className="h-full w-full object-contain" />
+              <img src="/brand/nihon-shiba-2026-corrected.png" alt="Nihon Shiba" className="h-full w-full object-contain" />
             </div>
 
             {/* Texts */}

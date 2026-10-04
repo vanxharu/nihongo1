@@ -5,7 +5,7 @@
   "description": "Nền tảng học tiếng Nhật JLPT, Hán tự Kanji, ôn tập thông minh và thi thử trên Windows PC & Di động",
   "icons": [
     {
-      "src": "/brand/nihon-shiba-2026.png",
+      "src": "/brand/nihon-shiba-2026-corrected.png",
       "type": "image/png",
       "sizes": "1254x1254",
       "purpose": "any"

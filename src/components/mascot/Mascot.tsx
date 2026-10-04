@@ -43,7 +43,7 @@ export interface MascotProps {
 
 // Map any state/pose to the corresponding official Nihon Shiba asset
 export function getMascotAssetUrl(_stateOrPose: MascotState | string = 'default'): string {
-  return '/brand/nihon-shiba-2026.png';
+  return '/brand/nihon-shiba-2026-corrected.png';
 }
 
 export const Mascot: React.FC<MascotProps> = ({
@@ -87,8 +87,8 @@ export const Mascot: React.FC<MascotProps> = ({
   }, [activeState]);
 
   const handleImageError = () => {
-    if (imgSrc !== '/brand/nihon-shiba-2026.svg') {
-      setImgSrc('/brand/nihon-shiba-2026.svg');
+    if (imgSrc !== '/brand/nihon-shiba-2026-corrected.svg') {
+      setImgSrc('/brand/nihon-shiba-2026-corrected.svg');
     } else {
       setHasError(true);
     }
@@ -178,7 +178,7 @@ export const Mascot: React.FC<MascotProps> = ({
             />
           ) : (
             <img
-              src="/brand/nihon-shiba-2026.png"
+              src="/brand/nihon-shiba-2026-corrected.png"
               alt={alt}
               className="w-full h-full object-contain drop-shadow-md"
               referrerPolicy="no-referrer"

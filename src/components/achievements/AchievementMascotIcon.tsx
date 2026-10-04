@@ -52,7 +52,7 @@ export const AchievementMascotIcon: React.FC<MascotIconProps> = ({
       className={`relative inline-flex items-center justify-center select-none ${filterClass} ${className}`}
       style={{ width: size, height: size }}
     >
-      <img src="/brand/nihon-shiba-2026.png" alt={`Nihon Shiba · ${type}`} width={size} height={size} className="h-full w-full object-contain drop-shadow" />
+      <img src="/brand/nihon-shiba-2026-corrected.png" alt={`Nihon Shiba · ${type}`} width={size} height={size} className="h-full w-full object-contain drop-shadow" />
     </div>
   );
 };
