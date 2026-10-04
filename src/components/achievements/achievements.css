@@ -101,9 +101,10 @@
   border-radius: 17px;
   margin-top: 18px;
 }
-.collection-next > div {
+.collection-next > div:not(.badge-emblem) {
   flex: 1;
 }
+.badge-emblem { flex: none; }
 .collection-next small {
   font-size: 9px;
   letter-spacing: 1px;

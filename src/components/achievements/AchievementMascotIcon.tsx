@@ -55,7 +55,7 @@ export const AchievementMascotIcon: React.FC<MascotIconProps> = ({
 
   return (
     <div 
-      className={`relative inline-flex items-center justify-center select-none ${filterClass} ${className}`}
+      className={`badge-emblem relative inline-flex items-center justify-center select-none ${filterClass} ${className}`}
       style={{ width:size, height:size, borderRadius:['28%','50%','35% 35% 50% 50%','22%','50%'][tier%5], background:`radial-gradient(ellipse at 50% 35%,${colors[tier%5]}30,#111b2b)`, border:`2px solid ${colors[tier%5]}80`, boxShadow:`inset 0 0 0 3px #111b2b,0 3px 10px #0003` }}
     >
       <span role="img" aria-label={`Huy hiệu Shiba ${badgeNumber || type}`} className="badge-illustration" style={{ position:'relative',width:'90%',height:'90%',overflow:'hidden',display:'block',transition:'transform .25s' }}><img src="/mascot/shiba-journey-atlas.png" alt="" style={{position:'absolute',width:'500%',height:'400%',maxWidth:'none',left:`${-(pose%5)*100}%`,top:`${-Math.floor(pose/5)*100}%`}} /></span>
