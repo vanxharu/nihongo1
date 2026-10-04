@@ -34,6 +34,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../types';
 import { SidebarWindowsInstallCard } from './PwaInstallPrompt';
 import { calculateUnlockedAchievements, TOTAL_ACHIEVEMENTS_COUNT } from '../data/achievementsData';
+import { readGuestRoadmap } from '../data/jlptRoadmap';
 
 interface SidebarProps {
   currentTab: string;
@@ -51,7 +52,7 @@ export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, 
   const isSecondaryActive = ['notebook', 'achievements', 'progress', 'admin'].includes(currentTab);
   const [showMoreOptions, setShowMoreOptions] = useState<boolean>(isSecondaryActive);
 
-  const unlockedCount = calculateUnlockedAchievements(userProfile).size;
+  const unlockedCount = calculateUnlockedAchievements(userProfile.uid ? userProfile : { ...userProfile, studyRoadmap: readGuestRoadmap() || undefined }).size;
 
   // CHỨC NĂNG CHÍNH VỚI URL ROUTE CHUẨN
   const primaryMenuItems = [

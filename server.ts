@@ -24,6 +24,7 @@ import { deduplicateGrammars } from './src/utils/grammarDeduplicator';
 import { KANJI_DICTIONARY } from './src/data/kanjiDictionary';
 import { requireAuth, requireAdmin } from './src/middleware/auth';
 import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid, findUserByIdentifier } from './src/db/users';
+import { readLearningProfile, saveLearningProfile } from './src/server/learningProfile';
 
 const KuroshiroClass = (Kuroshiro as any).default || Kuroshiro;
 const KuromojiAnalyzerClass = (KuromojiAnalyzer as any).default || KuromojiAnalyzer;
@@ -4227,7 +4228,8 @@ app.post('/api/auth/quick-login', async (req: any, res) => {
 // 6. User Auth, Profile Sync, and Streak routes
 app.post('/api/user/sync', requireAuth, async (req: any, res) => {
   try {
-    const dbUser = req.dbUser;
+    const learning = await readLearningProfile(req.dbUser.uid);
+    const dbUser = { ...req.dbUser, ...learning };
     
     // Check and update streak logic
     const todayStr = new Date().toISOString().split('T')[0] || '';
@@ -4260,7 +4262,7 @@ app.post('/api/user/sync', requireAuth, async (req: any, res) => {
           streak: updatedStreak,
           lastActiveDate: newLastActive
         });
-        res.json({ success: true, user: updatedUser || dbUser });
+        res.json({ success: true, user: { ...(updatedUser || dbUser), ...learning } });
       } catch (dbErr) {
         console.warn("DB update failed in /api/user/sync, returning memory dbUser:", dbErr);
         res.json({ success: true, user: { ...dbUser, streak: updatedStreak, lastActiveDate: newLastActive } });
@@ -4276,7 +4278,8 @@ app.post('/api/user/sync', requireAuth, async (req: any, res) => {
 
 app.post('/api/user/profile', requireAuth, async (req: any, res) => {
   try {
-    const dbUser = req.dbUser;
+    const learning = req.body.studyRoadmap !== undefined ? await saveLearningProfile(req.dbUser.uid, req.body.studyRoadmap) : await readLearningProfile(req.dbUser.uid);
+    const dbUser = { ...req.dbUser, ...learning };
     const { 
       name, avatar, targetLevel, xp, coins, studyDays, 
       completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition 
@@ -4287,7 +4290,7 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
         name, avatar, targetLevel, xp, coins, studyDays, 
         completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition
       });
-      res.json({ success: true, user: updatedUser || dbUser });
+      res.json({ success: true, user: { ...(updatedUser || dbUser), ...learning } });
     } catch (dbErr) {
       console.warn("DB update failed in /api/user/profile, returning updated in-memory object:", dbErr);
       const fallbackUser = {

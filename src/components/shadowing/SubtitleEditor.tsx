@@ -15,6 +15,8 @@ export default function SubtitleEditor({ videoId, title, cues, selected, revisio
   const [end, setEnd] = useState('5');
   const [notice, setNotice] = useState('');
   const [busy, setBusy] = useState(false);
+  const [signedIn, setSignedIn] = useState(Boolean(auth.currentUser));
+  useEffect(() => auth.onAuthStateChanged(user => setSignedIn(Boolean(user))), []);
   useEffect(() => { if (title) setName(title); }, [title]);
   useEffect(() => {
     const cue = cues[selected];
@@ -60,6 +62,7 @@ export default function SubtitleEditor({ videoId, title, cues, selected, revisio
   const field = 'w-full rounded-lg border border-slate-600 bg-slate-950 p-2 text-slate-100';
   return <section aria-label="Soạn phụ đề video" className="space-y-3 rounded-xl border border-slate-600 bg-slate-900 p-4">
     <h2 className="font-bold">Soạn phụ đề</h2>
+    {!signedIn && <div className="flex flex-wrap items-center gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-3"><p className="flex-1 text-sm text-amber-100">Đăng nhập để lưu video và phụ đề của bạn.</p><button type="button" className="rounded-lg bg-white px-4 py-2 text-sm font-bold text-slate-900" onClick={() => window.dispatchEvent(new Event('nihongo:open-login'))}>Đăng nhập với Google / email</button></div>}
     <label className="block text-sm">Tên video<input className={field} value={name} onChange={e => setName(e.target.value)} /></label>
     <details><summary className="cursor-pointer text-sm">Nhập SRT / VTT hoặc tải file</summary>
       <input type="file" accept=".srt,.vtt,text/plain" aria-label="File phụ đề" onChange={async e => { const file = e.target.files?.[0]; if (file && file.size <= 2_000_000) setBulk(await file.text()); else setNotice('Chọn file phụ đề dưới 2 MB.'); }} />

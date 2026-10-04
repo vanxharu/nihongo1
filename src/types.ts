@@ -458,6 +458,9 @@ export interface StudyRoadmapConfig {
   startDate: string; // YYYY-MM-DD
   currentDay: number;
   completedDays: number[];
+  /** Roadmap v2 self-reported study tasks, scoped to this plan. */
+  dailyTasks?: Record<string, string[]>;
+  curriculumVersion?: number;
 }
 
 export type UserRole = 'user' | 'admin';
@@ -480,7 +483,7 @@ export interface UserProfile {
   vocabStatus: Record<string, 'new' | 'learning' | 'mastered' | SRSStatus>;
   grammarStatus: Record<string, any>; // true if passed or UserGrammarProgress state object
   kanjiStatus: Record<string, boolean>; // true if passed drawing test
-  dailyTestResults: { date: string; score: number; total: number }[];
+  dailyTestResults: { date: string; score: number; total: number; level?: JLPTLevel; fullExam?: boolean; examId?: string; sections?: Record<'knowledge' | 'reading' | 'listening', { correct:number; total:number }> }[];
   lastPosition?: LearningPosition;
   notificationSettings?: any;
   shadowingStats?: {

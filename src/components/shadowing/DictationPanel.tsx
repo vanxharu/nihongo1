@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Eye, Play, RotateCcw, SkipBack, SkipForward } from 'lucide-react';
 import { dictationChunks, normalizeDictation, shuffledChunkIds } from '../../utils/shadowing';
+import { playCorrectSound, playIncorrectSound } from '../../utils/audio';
 
 interface Props {
   sentence: string;
@@ -31,8 +32,8 @@ export default function DictationPanel(props: Props) {
     if (!normalizeDictation(value) || !normalizeDictation(props.sentence)) return;
     const matched = normalizeDictation(value) === normalizeDictation(props.sentence);
     setCorrect(matched); props.onReveal(matched);
-    if (matched) setFeedback('Chính xác! Bạn có thể chuyển sang câu tiếp theo.');
-    else { setMistakes(n => n + 1); setFeedback('Chưa khớp lời thoại. Hãy nghe lại, kiểm tra từ còn thiếu hoặc dùng gợi ý từng từ.'); }
+    if (matched) { playCorrectSound(); setFeedback('Chính xác! Bạn có thể chuyển sang câu tiếp theo.'); }
+    else { playIncorrectSound(); setMistakes(n => n + 1); setFeedback('Chưa khớp lời thoại. Hãy nghe lại, kiểm tra từ còn thiếu hoặc dùng gợi ý từng từ.'); }
   }
   function listen(replay: boolean) {
     if (props.onPlay() && replay) setReplays(n => n + 1);

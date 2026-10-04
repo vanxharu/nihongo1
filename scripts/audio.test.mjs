@@ -49,6 +49,11 @@ function setup({ voices = [japanese('Kyoko')], speechSupported = true, construct
     setTimeout: (callback) => { const id = ++timerId; timers.set(id, callback); return id; },
     clearTimeout: (id) => timers.delete(id),
   });
+  const motionSource = ts.transpileModule(readFileSync(new URL('../src/utils/learningMotion.ts', import.meta.url), 'utf8'), { compilerOptions:{module:ts.ModuleKind.CommonJS} }).outputText;
+  vm.runInContext(motionSource, context);
+  const motionExports = context.exports;
+  context.exports = {};
+  context.require = () => motionExports;
   vm.runInContext(source, context);
   return {
     api: context.exports, audios, utterances, storage, window, timers, voiceListeners,

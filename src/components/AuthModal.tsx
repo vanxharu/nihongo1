@@ -10,7 +10,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const { login, register, quickLogin, lastAuthError, clearAuthError } = useAuth();
+  const { login, loginWithGoogle, register, quickLogin, lastAuthError, clearAuthError } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [identifier, setIdentifier] = useState('');
   const [email, setEmail] = useState('');
@@ -165,6 +165,16 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           </p>
         </div>
 
+        <button type="button" disabled={loading} className="mb-4 flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 font-bold text-slate-900 disabled:opacity-50" onClick={async () => {
+          setLoading(true); setError(''); setErrorCode('');
+          try { await loginWithGoogle(); handleClose(); }
+          catch (err: any) {
+            if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
+              setErrorCode(err.code || '');
+              setError(err.code === 'auth/popup-blocked' ? 'Trình duyệt chặn cửa sổ đăng nhập. Cho phép cửa sổ bật lên rồi thử lại.' : err.code === 'auth/operation-not-allowed' ? 'Đăng nhập Google chưa được bật trong Firebase của ứng dụng. Bạn vẫn có thể đăng nhập bằng email.' : err.code === 'auth/unauthorized-domain' ? 'Tên miền này chưa được cấp phép đăng nhập trong Firebase.' : 'Chưa đăng nhập được bằng Google. Hãy thử lại hoặc dùng email.');
+            }
+          } finally { setLoading(false); }
+        }}><span aria-hidden="true" className="text-xl text-blue-600">G</span>{loading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}</button>
         {/* Tab Selection */}
         <div className="flex bg-slate-50 p-1.5 rounded-xl mb-4">
           <button

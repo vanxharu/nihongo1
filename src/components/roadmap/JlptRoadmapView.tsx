@@ -1,500 +1,737 @@
-import React, { useState } from 'react';
-import { 
-  ArrowLeft, 
-  Repeat, 
-  Lock, 
-  Check, 
-  ClipboardList, 
-  Info, 
-  Calendar, 
-  Play, 
-  Award, 
-  ChevronRight,
-  HelpCircle,
-  Clock,
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  ArrowRight,
   BookOpen,
-  Headphones
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { UserProfile, JLPTLevel, StudyRoadmapConfig } from '../../types';
-import MiniTestModal from './MiniTestModal';
-import { AchievementMascotIcon } from '../achievements/AchievementMascotIcon';
+  Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Clock3,
+  Flag,
+  Headphones,
+  Map,
+  Settings2,
+  Sparkles,
+  Target,
+  X,
+} from "lucide-react";
+import type { JLPTLevel, StudyRoadmapConfig, UserProfile } from "../../types";
+import { useAuth } from "../../contexts/AuthContext";
+import ShibaMascot from "../mascot/ShibaMascot";
+import {
+  completeRoadmapDay,
+  GUEST_ROADMAP_KEY,
+  readGuestRoadmap,
+  JLPT_JOURNEYS,
+  normalizedRoadmap,
+  ROADMAP_LEVELS,
+  roadmapDay,
+  stageRange,
+} from "../../data/jlptRoadmap";
+import "./roadmap.css";
 
 interface JlptRoadmapViewProps {
   userProfile: UserProfile;
-  updateProfile: (updated: Partial<UserProfile>) => void;
+  updateProfile: (updated: Partial<UserProfile>) => void | Promise<void>;
   onEarnXp?: (amount: number, reason: string) => void;
 }
+const today = () =>
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+const taskIcons = [BookOpen, Sparkles, BookOpen, Headphones, Target];
 
 export default function JlptRoadmapView({
   userProfile,
   updateProfile,
-  onEarnXp
 }: JlptRoadmapViewProps) {
-  const currentLevel: JLPTLevel = userProfile.targetLevel || 'N4';
-  const roadmap: StudyRoadmapConfig = userProfile.studyRoadmap || {
-    targetLevel: currentLevel,
-    durationDays: 60,
-    startDate: new Date().toISOString().split('T')[0],
-    currentDay: 1,
-    completedDays: []
-  };
+  const { user } = useAuth();
+  const [guestPlan, setGuestPlan] = useState(readGuestRoadmap);
+  const saved = user ? userProfile.studyRoadmap : guestPlan;
+  const activeLevel = saved?.targetLevel || userProfile.targetLevel || "N5";
+  const [level, setLevel] = useState<JLPTLevel>(activeLevel);
+  const accountPlan = `${user?.uid || 'guest'}:${activeLevel}`;
+  useEffect(() => {
+    setLevel(activeLevel);
+    setSelectedDay(normalizedRoadmap(saved, activeLevel, today()).currentDay);
+  }, [accountPlan]);
+  const plan = normalizedRoadmap(saved, level, today());
+  const preview = level !== activeLevel;
+  const [selectedDay, setSelectedDay] = useState(plan.currentDay);
+  const selected = roadmapDay(level, plan.durationDays, selectedDay);
+  const [openStage, setOpenStage] = useState(selected.index);
+  const [settings, setSettings] = useState(false);
+  const [duration, setDuration] = useState<30 | 60 | 90>(plan.durationDays);
+  const [resetAccepted, setResetAccepted] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [celebrate, setCelebrate] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const dailyRef = useRef<HTMLElement>(null);
+  const journey = JLPT_JOURNEYS[level];
+  const complete = plan.completedDays.includes(selected.day);
+  const checked = complete
+    ? selected.tasks.map((t) => t.id)
+    : plan.dailyTasks?.[String(selected.day)] || [];
+  const allChecked = selected.tasks.every((t) => checked.includes(t.id));
+  const progress = Math.round(
+    (plan.completedDays.length / plan.durationDays) * 100,
+  );
+  const needsReset =
+    !!saved?.completedDays.length &&
+    (level !== saved.targetLevel || duration !== saved.durationDays);
 
-  // State
-  const [isDurationModalOpen, setIsDurationModalOpen] = useState(false);
-  const [selectedDuration, setSelectedDuration] = useState<30 | 60 | 90>(roadmap.durationDays || 60);
-  const [activeMiniTestDay, setActiveMiniTestDay] = useState<number | null>(null);
+  useEffect(() => {
+    if (!settings) return;
+    const previous = document.activeElement as HTMLElement | null;
+    dialogRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    return () => previous?.focus();
+  }, [settings]);
 
-  const completedCount = roadmap.completedDays?.length || 0;
-  const progressPercent = Math.min(100, Math.round((completedCount / roadmap.durationDays) * 100));
-
-  // Generate day plan curriculum
-  const daysList = Array.from({ length: roadmap.durationDays }, (_, i) => {
-    const day = i + 1;
-    let type: 'test' | 'adaptive' | 'kanji' | 'grammar' | 'listening' | 'reading' = 'adaptive';
-    let title = 'Luyện thích ứng';
-    let questionCount = 7;
-
-    if (day === 1) {
-      type = 'test';
-      title = 'Đề mini khởi động';
-      questionCount = 7;
-    } else if (day % 7 === 0) {
-      type = 'test';
-      title = `Mini Test tuần ${day / 7}`;
-      questionCount = 10;
-    } else if (day % 4 === 1) {
-      type = 'kanji';
-      title = 'Cách đọc kanji';
-    } else if (day % 4 === 2) {
-      type = 'grammar';
-      title = 'Chọn mẫu ngữ pháp';
-    } else if (day % 4 === 3) {
-      type = 'listening';
-      title = 'Luyện nghe hiểu hình ảnh';
-    } else {
-      type = 'reading';
-      title = 'Đọc hiểu đoạn ngắn';
+  const persist = async (next: StudyRoadmapConfig, finish = false) => {
+    setSaving(true);
+    setError("");
+    try {
+      if (user) {
+        const fields: Partial<UserProfile> = {
+          studyRoadmap: next,
+          targetLevel: next.targetLevel,
+        };
+        if (finish) {
+          fields.completedLessons = [
+            ...new Set([
+              ...(userProfile.completedLessons || []),
+              `roadmap_${next.targetLevel.toLowerCase()}_day_${selected.day}`,
+            ]),
+          ];
+          fields.studyDays = [
+            ...new Set([...(userProfile.studyDays || []), today()]),
+          ];
+          fields.lastActiveDate = today();
+        }
+        // Self-reported study completion is not a test score and does not award test XP.
+        await updateProfile(fields);
+      } else {
+        localStorage.setItem(GUEST_ROADMAP_KEY, JSON.stringify(next));
+        setGuestPlan(next);
+      }
+      return true;
+    } catch {
+      setError(
+        "Chưa lưu được tiến độ. Hãy thử lại; các ngày đã lưu vẫn được giữ nguyên.",
+      );
+      return false;
+    } finally {
+      setSaving(false);
     }
-
-    const isCompleted = roadmap.completedDays?.includes(day);
-    const isUnlocked = day === 1 || isCompleted || (roadmap.completedDays?.includes(day - 1));
-
-    return {
-      day,
-      type,
-      title,
-      questionCount,
-      isCompleted,
-      isUnlocked,
-      isActive: day === roadmap.currentDay
-    };
-  });
-
-  const handleSaveDuration = () => {
-    const newRoadmap: StudyRoadmapConfig = {
-      targetLevel: currentLevel,
-      durationDays: selectedDuration,
-      startDate: new Date().toISOString().split('T')[0],
-      currentDay: 1,
-      completedDays: []
-    };
-    updateProfile({ studyRoadmap: newRoadmap });
-    setIsDurationModalOpen(false);
   };
-
-  const handleCompleteDay = (day: number, correctCount: number) => {
-    const nextCompleted = Array.from(new Set([...(roadmap.completedDays || []), day]));
-    const nextDay = Math.min(roadmap.durationDays, day + 1);
-
-    const newRoadmap: StudyRoadmapConfig = {
-      ...roadmap,
-      completedDays: nextCompleted,
-      currentDay: nextDay
-    };
-
-    const earnedXp = correctCount * 15 + 25;
-    const todayStr = new Date().toISOString().split('T')[0];
-    const lessonTag = `roadmap_${currentLevel.toLowerCase()}_day_${day}`;
-    
-    // Also record in completedLessons and dailyTestResults for cross-screen sync (Progress & Achievements)
-    const updatedCompletedLessons = Array.from(new Set([...(userProfile.completedLessons || []), lessonTag]));
-    const updatedStudyDays = Array.from(new Set([...(userProfile.studyDays || []), todayStr]));
-    const updatedDailyTestResults = [
-      ...(userProfile.dailyTestResults || []),
-      { date: todayStr, score: correctCount, total: 7 }
-    ];
-
-    updateProfile({ 
-      studyRoadmap: newRoadmap,
-      completedLessons: updatedCompletedLessons,
-      studyDays: updatedStudyDays,
-      dailyTestResults: updatedDailyTestResults,
-      lastActiveDate: todayStr
+  const chooseLevel = (next: JLPTLevel) => {
+    const nextPlan = normalizedRoadmap(saved, next, today());
+    setLevel(next);
+    setSelectedDay(nextPlan.currentDay);
+    setOpenStage(
+      roadmapDay(next, nextPlan.durationDays, nextPlan.currentDay).index,
+    );
+    setCelebrate(false);
+    setError("");
+  };
+  const inspectDay = (day: number) => {
+    setSelectedDay(day);
+    setOpenStage(roadmapDay(level, plan.durationDays, day).index);
+    setCelebrate(false);
+  };
+  const openSettings = () => {
+    setDuration(plan.durationDays);
+    setResetAccepted(false);
+    setSettings(true);
+    setError("");
+  };
+  const saveSettings = async () => {
+    const changed = preview || duration !== plan.durationDays;
+    const next = changed
+      ? ({
+          targetLevel: level,
+          durationDays: duration,
+          startDate: today(),
+          currentDay: 1,
+          completedDays: [],
+          dailyTasks: {},
+          curriculumVersion: 2,
+        } as StudyRoadmapConfig)
+      : { ...plan, curriculumVersion: 2 };
+    if (await persist(next)) {
+      setSelectedDay(next.currentDay);
+      setOpenStage(roadmapDay(level, duration, next.currentDay).index);
+      setSettings(false);
+      setCelebrate(false);
+    }
+  };
+  const toggleTask = async (id: string) => {
+    const next = checked.includes(id)
+      ? checked.filter((t) => t !== id)
+      : [...checked, id];
+    await persist({
+      ...plan,
+      dailyTasks: { ...plan.dailyTasks, [String(selected.day)]: next },
+      curriculumVersion: 2,
     });
-
-    if (onEarnXp) {
-      onEarnXp(earnedXp, `Hoàn thành Ngày ${day} Lộ trình ${currentLevel}`);
-    }
+  };
+  const finishDay = async () => {
+    if (complete || !allChecked || saving || preview) return;
+    if (await persist(completeRoadmapDay(plan, selected.day), true))
+      setCelebrate(true);
+  };
+  const inspectToday = () => {
+    inspectDay(plan.currentDay);
+    dailyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
-    <div className="flex-1 w-full min-h-screen bg-[#0A0F1D] text-slate-100 flex flex-col items-center pb-24 select-none">
-      {/* Container with max-width for mobile-first precision */}
-      <div className="w-full max-w-md flex flex-col flex-1">
-        {/* Top Header */}
-        <div className="px-4 py-3.5 flex items-center justify-between border-b border-slate-800/80 bg-[#0A0F1D]/80 backdrop-blur-md sticky top-0 z-30">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-black text-white tracking-tight">
-              Lộ trình · {currentLevel}
-            </h1>
-          </div>
-
-          <button
-            onClick={() => setIsDurationModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 font-bold text-xs border border-sky-400/30 transition-all cursor-pointer active:scale-95"
-            title="Đổi thời gian lộ trình"
-          >
-            <Repeat className="w-3.5 h-3.5" />
-            <span>Đổi</span>
+    <div className="jlpt-journey">
+      <div className="journey-shell">
+        <div className="journey-topline">
+          <span>
+            <Map size={16} /> NHẬT KÝ HÀNH TRÌNH
+          </span>
+          <button onClick={openSettings}>
+            <Settings2 size={16} /> Điều chỉnh kế hoạch
           </button>
         </div>
-
-        {/* Purple Banner Card (As in Screenshot_20260914_130434.png) */}
-        <div className="p-4">
-          <div className="rounded-3xl p-5 bg-gradient-to-r from-[#7B5CF8] via-[#6E44E8] to-[#5B2BD4] text-white shadow-xl shadow-purple-950/40 relative overflow-hidden">
-            {/* Background sparkle accents */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-
-            <div className="flex items-center justify-between mb-3 relative z-10">
-              <span className="text-xl font-black tracking-tight">
-                Ngày {roadmap.currentDay} / {roadmap.durationDays}
-              </span>
-              <span className="text-sm font-bold bg-white/20 px-2.5 py-0.5 rounded-full backdrop-blur-xs">
-                {completedCount}/{roadmap.durationDays} ✓
-              </span>
+        <section className="journey-hero">
+          <div className="journey-hero-copy">
+            <span className="journey-eyebrow">NIHON SHIBA · JLPT {level}</span>
+            <h1>
+              Mỗi bước nhỏ.
+              <br />
+              <em>Một thế giới mới.</em>
+            </h1>
+            <p>{journey.description}</p>
+            <div className="journey-hero-actions">
+              <button
+                className="journey-primary"
+                onClick={preview ? openSettings : inspectToday}
+              >
+                {preview
+                  ? `Chọn lộ trình ${level}`
+                  : progress === 100
+                    ? "Xem lại hành trình"
+                    : "Tiếp tục hành trình"}
+                <ArrowRight size={18} />
+              </button>
+              <span>{plan.durationDays} buổi học · theo nhịp của bạn</span>
             </div>
-
-            {/* Smooth Rounded Progress bar */}
-            <div className="w-full h-2.5 bg-black/20 rounded-full overflow-hidden p-0.5">
-              <div
-                className="h-full bg-white rounded-full transition-all duration-500 shadow-sm"
-                style={{ width: `${Math.max(5, progressPercent)}%` }}
-              />
+          </div>
+          <div className="journey-hero-art" aria-hidden="true">
+            <span className="journey-orbit orbit-one" />
+            <span className="journey-orbit orbit-two" />
+            <span className="journey-petal petal-one">✿</span>
+            <span className="journey-petal petal-two">✿</span>
+            <span className="journey-mountain" />
+            <ShibaMascot pose="welcome" size={210} animated={false} />
+            <div className="journey-mascot-note">
+              一緒に頑張ろう！<small>Cùng nhau cố gắng nhé!</small>
             </div>
+          </div>
+        </section>
+
+        <nav className="journey-levels" aria-label="Chọn cấp độ lộ trình">
+          {ROADMAP_LEVELS.map((item, index) => (
+            <button
+              key={item}
+              aria-pressed={level === item}
+              onClick={() => chooseLevel(item)}
+            >
+              <span>{item}</span>
+              <small>
+                {
+                  ["Khởi đầu", "Đời sống", "Kết nối", "Mở rộng", "Chuyên sâu"][
+                    index
+                  ]
+                }
+              </small>
+              {level === item && <span className="journey-level-dot" />}
+            </button>
+          ))}
+        </nav>
+        <div className="journey-level-heading">
+          <div>
+            <h2>{journey.title}</h2>
+            <p>{journey.japanese}</p>
+          </div>
+          <span className="journey-status">
+            {preview ? "Đang xem trước" : "Lộ trình của bạn"}
+          </span>
+        </div>
+        <p className="journey-prerequisite">
+          <BookOpen size={17} />
+          <span>
+            {journey.prerequisite} Kế hoạch 30／60／90 buổi là nhịp gợi ý, có
+            thể lặp lại buổi khó.
+          </span>
+        </p>
+        {error && (
+          <p role="alert" className="journey-error">
+            {error}
+          </p>
+        )}
+        <div className="journey-metrics">
+          <div>
+            <span>HÀNH TRÌNH ĐÃ ĐI</span>
+            <strong>
+              {progress}
+              <small>%</small>
+            </strong>
+            <div
+              role="progressbar"
+              aria-label="Tiến độ lộ trình"
+              aria-valuenow={progress}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              className="journey-progress"
+            >
+              <i style={{ width: `${progress}%` }} />
+            </div>
+            <p>
+              {plan.completedDays.length} / {plan.durationDays} buổi hoàn thành
+            </p>
+          </div>
+          <div>
+            <span>NHỊP HỌC MỖI BUỔI</span>
+            <strong>
+              {selected.minutes}
+              <small>phút</small>
+            </strong>
+            <p>5 hoạt động · học, luyện, ôn</p>
+            <Clock3 className="metric-watermark" />
+          </div>
+          <div>
+            <span>ĐIỂM ĐẾN TIẾP THEO</span>
+            <strong className="journey-next-stage">
+              {progress === 100
+                ? "Hành trình trọn vẹn"
+                : JLPT_JOURNEYS[level].stages[
+                    roadmapDay(level, plan.durationDays, plan.currentDay).index
+                  ].name}
+            </strong>
+            <p>
+              {progress === 100
+                ? "Ôn lại các phần còn chưa chắc"
+                : `Buổi ${plan.currentDay} · tiếp tục từ nơi bạn đã dừng`}
+            </p>
+            <Flag className="metric-watermark" />
           </div>
         </div>
 
-        {/* Gamified Road Map View (Winding path for all durationDays) */}
-        <div className="flex-1 px-4 py-2 relative flex flex-col items-center">
-          {/* S-curve dashed background road */}
-          <div className="w-full relative flex flex-col items-center space-y-7 sm:space-y-8 pt-10 sm:pt-12">
-            {daysList.map((item, idx) => {
-              // Zigzag layout offset: alternate center, slight left, center, slight right
-              const offsets = [
-                'translate-x-0',
-                '-translate-x-12',
-                'translate-x-0',
-                'translate-x-12'
-              ];
-              const offsetClass = offsets[idx % offsets.length];
-
-              return (
-                <div 
-                  key={item.day}
-                  id={`roadmap-day-${item.day}`}
-                  className={`relative flex items-center justify-center w-full ${offsetClass}`}
+        <div className="journey-workspace">
+          <aside
+            className="journey-daily"
+            ref={dailyRef}
+            aria-label="Kế hoạch buổi học"
+          >
+            <div className="journey-daily-mascot">
+              <ShibaMascot
+                pose={celebrate ? "celebration" : "studying"}
+                size={76}
+                animated={false}
+              />
+              <div>
+                <span>SHIBA ĐỒNG HÀNH</span>
+                <p>
+                  {celebrate
+                    ? "Bạn đã tiến thêm một bước!"
+                    : complete
+                      ? "Ôn lại để nhớ lâu hơn nhé."
+                      : "Học chắc từng chút một nhé!"}
+                </p>
+              </div>
+            </div>
+            <div className="journey-day-heading">
+              <div>
+                <span>
+                  {selected.checkpoint ? "MỐC KIỂM TRA" : "KẾ HOẠCH BUỔI HỌC"}
+                </span>
+                <h3>Buổi {selected.day.toString().padStart(2, "0")}</h3>
+              </div>
+              <div className="journey-day-navigation">
+                <button
+                  aria-label="Buổi trước"
+                  disabled={selected.day === 1}
+                  onClick={() => inspectDay(selected.day - 1)}
                 >
-                  {/* Connecting dashed line to previous node */}
-                  {idx > 0 && (
-                    <div className="absolute -top-7 sm:-top-8 w-1 h-7 sm:h-8 border-l-2 border-dashed border-slate-700/60 pointer-events-none" />
-                  )}
-
-                  {/* If Day 1: Display the cute Shiba mascot on top with neat speech tag */}
-                  {item.day === 1 && (
-                    <div className="absolute -top-16 flex flex-col items-center pointer-events-none z-20">
-                      <div className="relative flex items-center justify-center">
-                        <div className="w-12 h-12 flex items-center justify-center drop-shadow-md">
-                          <AchievementMascotIcon
-                            type="shiba-start"
-                            isUnlocked={true}
-                            size={48}
-                          />
-                        </div>
-                        <span className="text-xs absolute -top-1 -right-2 filter drop-shadow">
-                          🎌
-                        </span>
-                      </div>
-                      <div className="bg-[#5B2BD4] border border-purple-400/40 text-purple-100 text-[10px] font-bold px-2 py-0.5 rounded-full shadow -mt-1 backdrop-blur-xs">
-                        Bắt đầu nào!
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Active / Unlocked Node */}
-                  {item.isUnlocked ? (
-                    <div className="relative flex items-center">
-                      {/* Left Badge Label for Day 1 or Test Days */}
-                      {item.day === 1 && (
-                        <div className="absolute right-full mr-4 flex flex-col items-end whitespace-nowrap">
-                          <span className="px-2 py-0.5 rounded-md bg-[#6E44E8] text-white text-[10px] font-black tracking-wider uppercase shadow-md">
-                            MINI TEST
-                          </span>
-                          <span className="text-xs font-bold text-slate-300 mt-0.5">
-                            7 câu
-                          </span>
-                        </div>
-                      )}
-
-                      {item.day > 1 && item.type === 'test' && (
-                        <div className="absolute right-full mr-4 flex flex-col items-end whitespace-nowrap">
-                          <span className="px-2 py-0.5 rounded-md bg-amber-500 text-slate-950 text-[10px] font-black tracking-wider uppercase shadow-md">
-                            {item.day === roadmap.durationDays ? 'ĐÍCH ĐẾN' : 'TEST TUẦN'}
-                          </span>
-                          <span className="text-xs font-bold text-amber-300 mt-0.5">
-                            {item.questionCount} câu
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Main Interactive Circle Node */}
-                      <button
-                        type="button"
-                        onClick={() => setActiveMiniTestDay(item.day)}
-                        className={`relative w-16 h-16 rounded-full p-1.5 cursor-pointer hover:scale-105 active:scale-95 transition-all group flex items-center justify-center ${
-                          item.day === roadmap.durationDays
-                            ? 'bg-gradient-to-tr from-amber-500 to-yellow-400 shadow-[0_0_24px_rgba(245,158,11,0.6)]'
-                            : 'bg-gradient-to-tr from-[#6E44E8] to-[#9367F9] shadow-[0_0_24px_rgba(123,92,248,0.6)]'
-                        }`}
-                      >
-                        {/* Outer Glow Ring */}
-                        <div className={`absolute inset-0 rounded-full border-2 animate-pulse ${
-                          item.day === roadmap.durationDays ? 'border-amber-300/80' : 'border-purple-400/80'
-                        }`} />
-
-                        {/* Top Number Pin */}
-                        <span className="absolute -top-1 -left-1 w-5 h-5 rounded-full bg-white text-[#5B2BD4] text-[11px] font-black flex items-center justify-center shadow-md">
-                          {item.day}
-                        </span>
-
-                        {/* Center Icon */}
-                        <div className={`w-full h-full rounded-full flex items-center justify-center ${
-                          item.day === roadmap.durationDays ? 'bg-amber-600' : 'bg-[#5225CC]'
-                        }`}>
-                          {item.isCompleted ? (
-                            <Check className="w-7 h-7 text-white font-black" />
-                          ) : item.day === roadmap.durationDays ? (
-                            <Award className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
-                          ) : (
-                            <ClipboardList className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
-                          )}
-                        </div>
-                      </button>
-
-                      {/* Right Label (if not Day 1) */}
-                      {item.day > 1 && (
-                        <div className="absolute left-full ml-4 whitespace-nowrap">
-                          <span className="text-xs font-bold text-sky-400 block">Ngày {item.day}</span>
-                          <span className="text-xs text-slate-300">{item.title}</span>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    /* Locked Node */
-                    <div className="relative flex items-center">
-                      {/* Left or Right Labels alternating */}
-                      {idx % 2 === 1 ? (
-                        <div className="absolute right-full mr-4 flex flex-col items-end whitespace-nowrap">
-                          <span className="text-xs font-bold text-slate-400">Ngày {item.day}</span>
-                          <span className="text-xs text-slate-500">{item.title}</span>
-                        </div>
-                      ) : (
-                        <div className="absolute left-full ml-4 whitespace-nowrap">
-                          <span className="text-xs font-bold text-slate-400">Ngày {item.day}</span>
-                          <span className="text-xs text-slate-500">{item.title}</span>
-                        </div>
-                      )}
-
-                      {/* Locked Gray Circle */}
-                      <div className="w-14 h-14 rounded-full bg-[#182235] border-2 border-slate-700/80 flex items-center justify-center shadow-inner">
-                        {item.day === roadmap.durationDays ? (
-                          <Award className="w-5 h-5 text-slate-500" />
-                        ) : (
-                          <Lock className="w-5 h-5 text-slate-500" />
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  aria-label="Buổi sau"
+                  disabled={selected.day === plan.durationDays}
+                  onClick={() => inspectDay(selected.day + 1)}
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            </div>
+            <p className="journey-daily-topic">
+              Chặng {selected.index + 1} · {selected.chapter.name}
+            </p>
+            <div className="journey-task-list">
+              {selected.tasks.map((task, index) => {
+                const Icon = taskIcons[index];
+                const done = checked.includes(task.id);
+                return (
+                  <details
+                    className={`journey-task ${done ? "task-done" : ""}`}
+                    key={`${selected.day}-${task.id}`}
+                    open={index === 0 ? true : undefined}
+                  >
+                    <summary>
+                      <Icon size={17} />
+                      <span>
+                        <small>
+                          {task.label} · {task.minutes} phút
+                        </small>
+                        <b>{task.text}</b>
+                      </span>
+                      <ChevronDown size={14} />
+                    </summary>
+                    <div className="journey-task-body">
+                      <p>{task.method}</p>
+                      <div>
+                        <Link to={task.route}>
+                          {task.action}
+                          <ArrowRight size={13} />
+                        </Link>
+                        {task.id === "words" && (
+                          <Link to={`/jlpt/${level}/kanji`}>
+                            Kanji
+                            <ArrowRight size={13} />
+                          </Link>
                         )}
                       </div>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={done}
+                          disabled={saving || preview || complete}
+                          onChange={() => toggleTask(task.id)}
+                        />{" "}
+                        Tôi đã học và ôn phần này
+                      </label>
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                  </details>
+                );
+              })}
+            </div>
+            <button
+              className="journey-primary journey-finish"
+              disabled={saving || complete || !allChecked || preview}
+              onClick={finishDay}
+            >
+              {complete ? (
+                <>
+                  <Check size={18} /> Đã hoàn thành buổi {selected.day}
+                </>
+              ) : saving ? (
+                "Đang lưu…"
+              ) : (
+                <>
+                  <Flag size={18} /> Hoàn thành buổi học
+                </>
+              )}
+            </button>
+            {celebrate && (
+              <div role="status" className="journey-celebration">
+                よくできました！ Tiến độ của bạn đã được lưu.
+                <button onClick={() => inspectDay(plan.currentDay)}>
+                  Đến buổi tiếp theo <ArrowRight size={14} />
+                </button>
+              </div>
+            )}
+            <p className="journey-save-note">
+              {preview
+                ? "Chọn lộ trình này để bắt đầu lưu tiến độ."
+                : user
+                  ? "Checklist được lưu cùng tài khoản của bạn."
+                  : "Tiến độ lưu trên trình duyệt này. Đăng nhập để dùng lộ trình đồng bộ tài khoản."}{" "}
+              Đánh dấu phản ánh việc bạn tự hoàn thành, không phải điểm kiểm
+              tra.
+            </p>
+          </aside>
 
-            {/* Cute Shiba mascot encouragement card at the bottom of the roadmap */}
-            <div className="w-full flex justify-end pr-4 sm:pr-6 pt-6 pointer-events-none">
-              <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#141E30]/90 border border-slate-800 shadow-xl backdrop-blur-sm">
-                <div className="w-12 h-12 rounded-xl bg-[#1E293B]/80 border border-slate-700/60 flex items-center justify-center shrink-0 p-0.5 shadow-inner">
-                  <AchievementMascotIcon
-                    type="shiba-start"
-                    isUnlocked={true}
-                    size={42}
-                  />
-                </div>
-                <div className="text-right pr-1">
-                  <span className="text-xs font-black text-amber-400 block">Cố lên bạn ơi!</span>
-                  <span className="text-[10px] text-slate-300 font-medium">Đích đến Ngày {roadmap.durationDays} 🎯</span>
-                </div>
+          <section
+            className="journey-map"
+            aria-label="Nội dung toàn bộ lộ trình"
+          >
+            <div className="journey-section-heading">
+              <div>
+                <span>6 CHẶNG · MỘT HÀNH TRÌNH</span>
+                <h2>Bản đồ chinh phục {level}</h2>
+              </div>
+              <button onClick={inspectToday}>
+                Về buổi đang học
+                <ArrowRight size={14} />
+              </button>
+            </div>
+            <div className="journey-stages">
+              {journey.stages.map((chapter, index) => {
+                const range = stageRange(index, plan.durationDays);
+                const doneCount = plan.completedDays.filter(
+                  (d) => d >= range.start && d <= range.end,
+                ).length;
+                const finished = doneCount === range.end - range.start + 1;
+                const expanded = index === openStage;
+                return (
+                  <article
+                    key={chapter.name}
+                    className={`journey-stage ${expanded ? "stage-expanded" : ""} ${finished ? "stage-finished" : ""}`}
+                  >
+                    <span className="journey-stage-node">
+                      {finished ? (
+                        <Check size={20} />
+                      ) : (
+                        String(index + 1).padStart(2, "0")
+                      )}
+                    </span>
+                    <button
+                      className="journey-stage-toggle"
+                      aria-expanded={expanded}
+                      aria-controls={`stage-content-${index}`}
+                      onClick={() => setOpenStage(expanded ? -1 : index)}
+                    >
+                      <div>
+                        <span>
+                          BUỔI {range.start}–{range.end}{" "}
+                          <i>
+                            {finished
+                              ? "Đã hoàn thành"
+                              : `${doneCount}/${range.end - range.start + 1} buổi`}
+                          </i>
+                        </span>
+                        <h3>{chapter.name}</h3>
+                        <p>{chapter.subtitle}</p>
+                      </div>
+                      <ChevronDown size={20} />
+                    </button>
+                    {expanded && (
+                      <div
+                        id={`stage-content-${index}`}
+                        className="journey-stage-body"
+                      >
+                        <div className="journey-outcome">
+                          <Target size={18} />
+                          <p>
+                            <b>Sau chặng này</b>
+                            {chapter.outcome}
+                          </p>
+                        </div>
+                        <div className="journey-curriculum">
+                          {[
+                            { name: "Từ vựng & Kanji", items: chapter.words },
+                            {
+                              name: "Ngữ pháp trọng tâm",
+                              items: chapter.grammar,
+                            },
+                            { name: "Đọc hiểu", items: chapter.reading },
+                            { name: "Nghe hiểu", items: chapter.listening },
+                          ].map((group) => (
+                            <div key={group.name}>
+                              <h4>{group.name}</h4>
+                              <ul>
+                                {group.items.map((text) => (
+                                  <li key={text}>{text}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="journey-checkpoint">
+                          <Flag size={17} />
+                          <p>
+                            <b>Kiểm tra cuối chặng</b>
+                            {chapter.checkpoint}
+                          </p>
+                        </div>
+                        <div
+                          className="journey-day-chips"
+                          aria-label={`Buổi học chặng ${index + 1}`}
+                        >
+                          {Array.from(
+                            { length: range.end - range.start + 1 },
+                            (_, j) => range.start + j,
+                          ).map((day) => (
+                            <button
+                              key={day}
+                              aria-label={`Xem buổi ${day}${plan.completedDays.includes(day) ? ", đã hoàn thành" : ""}`}
+                              aria-pressed={selected.day === day}
+                              className={
+                                plan.completedDays.includes(day)
+                                  ? "chip-complete"
+                                  : ""
+                              }
+                              onClick={() => {
+                                inspectDay(day);
+                                dailyRef.current?.scrollIntoView({
+                                  behavior: "smooth",
+                                  block: "start",
+                                });
+                              }}
+                            >
+                              {plan.completedDays.includes(day) && (
+                                <Check size={11} />
+                              )}
+                              {day}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+            <div className="journey-destination">
+              <ShibaMascot pose="flag" size={100} animated={false} />
+              <div>
+                <span>ĐÍCH ĐẾN KHÔNG CHỈ LÀ MỘT TẤM BẰNG</span>
+                <h3>Tiếng Nhật trở thành một phần của bạn.</h3>
+                <p>
+                  Hoàn thành, nhìn lại, rồi tiếp tục. Shiba luôn đi cùng bạn.
+                </p>
               </div>
             </div>
-          </div>
+          </section>
         </div>
+        <section className="journey-routine">
+          <div>
+            <span>HỌC ĐỀU · NHỚ SÂU</span>
+            <h2>Một nhịp học dễ duy trì</h2>
+          </div>
+          <div>
+            <b>01 · Gợi nhớ</b>
+            <p>Ôn lỗi cũ trước. Nhắc lại sau 1, 3 và 7 ngày.</p>
+          </div>
+          <div>
+            <b>02 · Đưa vào ngữ cảnh</b>
+            <p>Đặt câu, đọc đoạn và nghe câu thật chứa kiến thức mới.</p>
+          </div>
+          <div>
+            <b>03 · Nhìn lại</b>
+            <p>Cuối mỗi chặng, kiểm tra rồi dành thời gian chữa lỗi.</p>
+          </div>
+        </section>
+        <footer className="journey-footer">
+          Nội dung do NihonGo! biên soạn theo mục tiêu năng lực từng cấp.{" "}
+          <a
+            href="https://www.jlpt.jp/e/about/levelsummary.html"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Tham khảo mô tả chính thức JLPT ↗
+          </a>
+        </footer>
       </div>
 
-      {/* Modal: Chọn thời gian lộ trình (Screenshot_20260914_130452.png) */}
-      <AnimatePresence>
-        {isDurationModalOpen && (
-          <div className="fixed inset-0 z-[160] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-[#0D1524] border border-slate-700 rounded-3xl max-w-md w-full p-5 space-y-4 shadow-2xl text-slate-100"
-            >
-              {/* Header */}
-              <div className="flex items-center gap-3 pb-1 border-b border-slate-800">
-                <button
-                  onClick={() => setIsDurationModalOpen(false)}
-                  className="p-1 rounded-xl text-slate-400 hover:text-white transition-colors cursor-pointer"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-                <h3 className="text-lg font-black text-white">Chọn thời gian lộ trình</h3>
-              </div>
-
-              {/* Subtitle */}
-              <p className="text-xs text-slate-400 leading-normal">
-                Bạn muốn đạt mục tiêu JLPT {currentLevel} trong bao lâu?
-              </p>
-
-              {/* Warning Amber Box */}
-              <div className="p-3.5 rounded-2xl bg-[#2A1E11] border border-amber-600/40 flex items-start gap-2.5 text-xs text-amber-200 leading-relaxed">
-                <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                <span>Hãy chọn thời gian cho lộ trình mới. Lộ trình sẽ bắt đầu lại từ Ngày 1.</span>
-              </div>
-
-              {/* 3 Duration Options */}
-              <div className="space-y-3 pt-1">
-                {/* 30 days */}
-                <div
-                  onClick={() => setSelectedDuration(30)}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start justify-between ${
-                    selectedDuration === 30
-                      ? 'bg-[#181D33] border-purple-500 shadow-[0_0_15px_rgba(123,92,248,0.25)]'
-                      : 'bg-[#121927] border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="space-y-1">
-                    <span className="text-base font-black text-white block">30 ngày</span>
-                    <span className="text-xs font-bold text-sky-400 block">
-                      Cường độ cao · khoảng 20–30 phút/ngày
-                    </span>
-                    <span className="text-[11px] text-slate-400 block">
-                      Phù hợp nếu bạn đã có nền và muốn ôn nước rút.
-                    </span>
-                  </div>
-                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-1 shrink-0 ${
-                    selectedDuration === 30 ? 'border-purple-500 bg-purple-500' : 'border-slate-600'
-                  }`}>
-                    {selectedDuration === 30 && <Check className="w-3 h-3 text-white" />}
-                  </div>
-                </div>
-
-                {/* 60 days (Recommended) */}
-                <div
-                  onClick={() => setSelectedDuration(60)}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start justify-between ${
-                    selectedDuration === 60
-                      ? 'bg-[#181D33] border-purple-500 shadow-[0_0_15px_rgba(123,92,248,0.25)]'
-                      : 'bg-[#121927] border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-base font-black text-white">60 ngày</span>
-                      <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-bold border border-amber-400/30">
-                        Được đề xuất
-                      </span>
-                    </div>
-                    <span className="text-xs font-bold text-purple-400 block">
-                      Cân bằng · khoảng 15–25 phút/ngày
-                    </span>
-                    <span className="text-[11px] text-slate-400 block">
-                      Đủ thời gian luyện từng dạng bài, làm Mini Test và cải thiện điểm yếu.
-                    </span>
-                  </div>
-                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-1 shrink-0 ${
-                    selectedDuration === 60 ? 'border-purple-500 bg-purple-500' : 'border-slate-600'
-                  }`}>
-                    {selectedDuration === 60 && <Check className="w-3 h-3 text-white" />}
-                  </div>
-                </div>
-
-                {/* 90 days */}
-                <div
-                  onClick={() => setSelectedDuration(90)}
-                  className={`p-4 rounded-2xl border transition-all cursor-pointer flex items-start justify-between ${
-                    selectedDuration === 90
-                      ? 'bg-[#181D33] border-purple-500 shadow-[0_0_15px_rgba(123,92,248,0.25)]'
-                      : 'bg-[#121927] border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="space-y-1">
-                    <span className="text-base font-black text-white block">90 ngày</span>
-                    <span className="text-xs font-bold text-sky-400 block">
-                      Nhẹ nhàng · khoảng 10–20 phút/ngày
-                    </span>
-                    <span className="text-[11px] text-slate-400 block">
-                      Phù hợp nếu bạn muốn duy trì thói quen và tiến bộ từng bước.
-                    </span>
-                  </div>
-                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center mt-1 shrink-0 ${
-                    selectedDuration === 90 ? 'border-purple-500 bg-purple-500' : 'border-slate-600'
-                  }`}>
-                    {selectedDuration === 90 && <Check className="w-3 h-3 text-white" />}
-                  </div>
-                </div>
-              </div>
-
-              {/* Note */}
-              <div className="flex items-center gap-2 text-xs text-slate-400 pt-1">
-                <Calendar className="w-4 h-4 text-sky-400 shrink-0" />
-                <span>Lộ trình bắt đầu hôm nay. Học đúng thứ tự, theo nhịp của bạn.</span>
-              </div>
-
-              {/* Start Button */}
-              <button
-                type="button"
-                onClick={handleSaveDuration}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-sky-400 to-cyan-500 hover:from-sky-300 hover:to-cyan-400 text-slate-950 font-black text-sm shadow-lg shadow-sky-400/20 transition-all cursor-pointer flex items-center justify-center gap-2"
-              >
-                <Play className="w-4 h-4 fill-current" />
-                <span>Bắt đầu lộ trình {selectedDuration} ngày</span>
-              </button>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Mini Test Interactive Modal */}
-      {activeMiniTestDay !== null && (
-        <MiniTestModal
-          isOpen={true}
-          dayNumber={activeMiniTestDay}
-          onClose={() => setActiveMiniTestDay(null)}
-          onCompleteDay={(day, score) => {
-            handleCompleteDay(day, score);
-            setActiveMiniTestDay(null);
+      {settings && (
+        <div
+          className="journey-modal-backdrop"
+          onClick={(e) => {
+            if (e.target === e.currentTarget && !saving) setSettings(false);
           }}
-        />
+        >
+          <div
+            className="journey-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="journey-settings-title"
+            ref={dialogRef}
+            onKeyDown={(e) => {
+              if (e.key === "Escape" && !saving) setSettings(false);
+              if (e.key === "Tab") {
+                const items = Array.from(
+                  dialogRef.current?.querySelectorAll<HTMLElement>(
+                    "button:not(:disabled), input:not(:disabled), a[href]",
+                  ) || [],
+                );
+                const first = items[0],
+                  last = items[items.length - 1];
+                if (e.shiftKey && document.activeElement === first) {
+                  e.preventDefault();
+                  last?.focus();
+                }
+                if (!e.shiftKey && document.activeElement === last) {
+                  e.preventDefault();
+                  first?.focus();
+                }
+              }
+            }}
+          >
+            <button
+              className="journey-modal-close"
+              aria-label="Đóng điều chỉnh kế hoạch"
+              disabled={saving}
+              onClick={() => setSettings(false)}
+            >
+              <X size={20} />
+            </button>
+            <span className="journey-eyebrow">HỌC THEO NHỊP CỦA BẠN</span>
+            <h2 id="journey-settings-title">Kế hoạch {level}</h2>
+            <p>
+              Cùng nội dung, ba nhịp học. Mỗi buổi có thể kéo dài hơn nếu bạn
+              cần ôn thêm.
+            </p>
+            <div className="journey-duration-options">
+              {([30, 60, 90] as const).map((value) => (
+                <button
+                  key={value}
+                  aria-pressed={duration === value}
+                  onClick={() => setDuration(value)}
+                >
+                  <strong>
+                    {value}
+                    <small>buổi</small>
+                  </strong>
+                  <span>
+                    {value === 30
+                      ? "Tập trung · ~75 phút"
+                      : value === 60
+                        ? "Cân bằng · ~50 phút"
+                        : "Nhẹ nhàng · ~35 phút"}
+                  </span>
+                  {duration === value && <Check size={16} />}
+                </button>
+              ))}
+            </div>
+            <p className="journey-settings-info">
+              Đang chọn cấp {level}. Đổi cấp hoặc nhịp học sẽ bắt đầu kế hoạch
+              mới; giữ nguyên hai lựa chọn sẽ giữ tiến độ hiện tại.
+            </p>
+            {needsReset && (
+              <label className="journey-reset-warning">
+                <input
+                  type="checkbox"
+                  checked={resetAccepted}
+                  onChange={(e) => setResetAccepted(e.target.checked)}
+                />{" "}
+                Tôi muốn bắt đầu kế hoạch mới và thay thế tiến độ lộ trình cũ.
+              </label>
+            )}
+            {error && (
+              <p role="alert" className="journey-error">
+                {error}
+              </p>
+            )}
+            <button
+              className="journey-primary"
+              disabled={saving || (needsReset && !resetAccepted)}
+              onClick={saveSettings}
+            >
+              {saving ? "Đang lưu…" : "Áp dụng kế hoạch"}
+              <ArrowRight size={16} />
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

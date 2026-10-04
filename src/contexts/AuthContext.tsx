@@ -2,7 +2,9 @@ import React, { createContext, useContext, useState, useEffect, useRef, ReactNod
 import { 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
-  signOut, 
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
   User,
   onAuthStateChanged,
   updateProfile as firebaseUpdateProfile
@@ -43,6 +45,7 @@ interface AuthContextType {
   lastAuthError: AuthErrorInfo | null;
   clearAuthError: () => void;
   login: (identifier: string, pass: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   register: (email: string, pass: string, displayName?: string, username?: string) => Promise<void>;
   quickLogin: (identifier?: string, name?: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -133,6 +136,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       grammarStatus: dbData.grammarStatus ? (typeof dbData.grammarStatus === 'string' ? JSON.parse(dbData.grammarStatus) : dbData.grammarStatus) : {},
       kanjiStatus: dbData.kanjiStatus ? (typeof dbData.kanjiStatus === 'string' ? JSON.parse(dbData.kanjiStatus) : dbData.kanjiStatus) : {},
       dailyTestResults: dbData.dailyTestResults ? (typeof dbData.dailyTestResults === 'string' ? JSON.parse(dbData.dailyTestResults) : dbData.dailyTestResults) : [],
+      studyRoadmap: dbData.studyRoadmap,
+      shadowingStats: dbData.shadowingStats,
+      unlockedBadges: dbData.unlockedBadges,
+      savedWords: dbData.savedWords,
+      savedVocab: dbData.savedVocab,
       lastPosition: dbData.lastPosition ? (typeof dbData.lastPosition === 'string' ? JSON.parse(dbData.lastPosition) : dbData.lastPosition) : undefined,
       notificationSettings: dbData.notificationSettings || dbData.notification_settings 
         ? (typeof (dbData.notificationSettings || dbData.notification_settings) === 'string' 
@@ -256,6 +264,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.warn('Error updating profile on server, saved locally:', error);
     }
+    if (updatedFields.studyRoadmap !== undefined) throw new Error('Chưa đồng bộ được lộ trình lên máy chủ.');
     return optimisticProfile;
   };
 
@@ -266,6 +275,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setToken(activeToken);
     }
     return updateDbProfileWithToken(activeToken, updatedFields);
+  };
+
+  const loginWithGoogle = async () => {
+    clearAuthError();
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    await signInWithPopup(auth, provider);
   };
 
   const login = async (identifier: string, pass: string) => {
@@ -688,6 +704,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       lastAuthError,
       clearAuthError,
       login,
+      loginWithGoogle,
       register,
       quickLogin,
       logout,

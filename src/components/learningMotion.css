@@ -1,0 +1,169 @@
+.learning-feedback {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  overflow: hidden;
+}
+.learning-feedback-correct {
+  box-shadow: inset 0 0 0 2px #79e0af55;
+  animation: feedbackFade 0.8s ease both;
+}
+.learning-feedback-incorrect {
+  box-shadow: inset 0 0 0 2px #edb88c55;
+  animation: feedbackFade 0.8s ease both;
+}
+.learning-feedback-milestone {
+  animation: feedbackFade 1s ease both;
+}
+.learning-feedback i {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  font-style: normal;
+  color: #f9d084;
+  font-size: 18px;
+  animation: feedbackSpark 0.8s cubic-bezier(0.1, 0.7, 0.2, 1) both;
+  transform: rotate(var(--angle)) translateY(-15px);
+}
+.shiba-drag-handle {
+  position: absolute;
+  right: 22px;
+  top: -18px;
+  width: 22px;
+  height: 18px;
+  border-radius: 5px;
+  background: #222b42;
+  border: 1px solid #f4c57840;
+  font-size: 14px;
+  color: #ddb279;
+  cursor: grab;
+  touch-action: none;
+}
+.shiba-drag-handle:active {
+  cursor: grabbing;
+}
+.feedback-correct .shiba-sprite-window {
+  animation: shibaNod 0.5s ease;
+}
+.feedback-incorrect .shiba-sprite-window {
+  animation: shibaEncourage 0.5s ease;
+}
+.feedback-milestone .shiba-sprite-window {
+  animation: shibaHop 0.7s ease;
+}
+.shiba-sprite-window {
+  transform-origin: 50% 90%;
+}
+.is-animated.shiba-pose-2 {
+  animation: shibaNod 4s ease-in-out infinite;
+}
+.is-animated.shiba-pose-1,
+.is-animated.shiba-pose-3 {
+  animation: shibaBreathe 4s ease-in-out infinite;
+}
+.jlpt-journey .shiba-sprite-window {
+  animation: shibaBreathe 5s ease-in-out infinite;
+}
+#app-main-view button:not(:disabled):active {
+  transform: translateY(1px);
+}
+#app-main-view details[open] > div {
+  animation: panelReveal 0.2s ease-out;
+}
+.mascot-achievement-card:hover .badge-illustration {
+  transform: translateY(-3px) rotate(-3deg);
+}
+@keyframes feedbackFade {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes feedbackSpark {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(-15px) scale(0.3);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(-100px) scale(0.7);
+  }
+}
+@keyframes shibaHop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-12px) rotate(-5deg);
+  }
+  70% {
+    transform: translateY(-5px) rotate(3deg);
+  }
+}
+@keyframes shibaNod {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+@keyframes shibaBreathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.025);
+  }
+}
+@keyframes shibaEncourage {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  30% {
+    transform: rotate(-3deg);
+  }
+  65% {
+    transform: rotate(3deg);
+  }
+}
+@keyframes panelReveal {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .learning-feedback i {
+    display: none;
+  }
+  .learning-feedback,
+  .shiba-sprite-window,
+  #app-main-view details[open] > div {
+    animation: none !important;
+  }
+  .badge-illustration {
+    transition: none !important;
+    transform: none !important;
+  }
+  #app-main-view button:active {
+    transform: none !important;
+  }
+}

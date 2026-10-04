@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useReducedMotion, useDragControls } from 'motion/react';
 import { 
   Lightbulb, 
   MessageCircle, 
@@ -41,6 +41,24 @@ export default function ShibaAssistantFloating({
   const [bubbleText, setBubbleText] = useState<string>('Kon\'nichiwa! Cùng học nhé 🐕');
   const [currentPose, setCurrentPose] = useState<ShibaPose>('welcome');
   const [quoteIndex, setQuoteIndex] = useState(0);
+  const reducedMotion = useReducedMotion();
+  const dragControls = useDragControls();
+  const [feedback, setFeedback] = useState('');
+  const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    setFeedback('');
+    const handle = (event: Event) => {
+      const kind = (event as CustomEvent).detail?.kind;
+      if (!['correct', 'incorrect', 'milestone'].includes(kind)) return;
+      if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+      setFeedback(kind); setIsDismissed(false);
+      setCurrentPose(kind === 'incorrect' ? 'warning' : kind === 'milestone' ? 'celebration' : 'encourage');
+      setBubbleText(kind === 'incorrect' ? 'Không sao, cùng xem lại cách giải nhé!' : kind === 'milestone' ? 'Tuyệt vời! Một cột mốc mới!' : 'Đúng rồi! Bạn đang tiến bộ đấy!');
+      feedbackTimer.current = setTimeout(() => { setFeedback(''); setIsDismissed(true); }, 2600);
+    };
+    window.addEventListener('nihongo:learning-feedback', handle);
+    return () => { window.removeEventListener('nihongo:learning-feedback', handle); if (feedbackTimer.current) clearTimeout(feedbackTimer.current); };
+  }, [currentTab]);
 
   // Synchronize pose based on current tab
   useEffect(() => {
@@ -98,7 +116,8 @@ export default function ShibaAssistantFloating({
   return (
     <>
       {/* Floating Floating Mascot Anchor */}
-      <div className="fixed bottom-20 xl:bottom-6 right-3 sm:right-6 z-[90] select-none pointer-events-auto">
+      <motion.div drag={!isOpen && !reducedMotion} dragListener={false} dragControls={dragControls} dragMomentum={false} dragConstraints={{ left:-Math.max(0, Math.min(220, window.innerWidth - 120)), right:0, top:-Math.max(0, Math.min(240, window.innerHeight - 220)), bottom:0 }} className={`shiba-floating-anchor feedback-${feedback} fixed bottom-20 xl:bottom-6 right-3 sm:right-6 z-[90] select-none pointer-events-auto`}>
+        {!isOpen && <button type="button" aria-label="Kéo để di chuyển Shiba" className="shiba-drag-handle" onPointerDown={event => dragControls.start(event)}>⠿</button>}
         <AnimatePresence>
           {!isOpen && (
             <motion.div
@@ -117,7 +136,7 @@ export default function ShibaAssistantFloating({
                   className="hidden sm:flex items-center gap-1.5 mr-2 px-3 py-1.5 bg-[#1B223C] border border-[#E89A3C]/40 rounded-full shadow-lg shadow-black/40 text-xs font-bold text-amber-200 backdrop-blur-md whitespace-nowrap"
                 >
                   <Lightbulb className="w-3.5 h-3.5 text-[#E89A3C] shrink-0" />
-                  <span>{bubbleText}</span>
+                  <span role={feedback ? 'status' : undefined}>{bubbleText}</span>
                   <button 
                     type="button" 
                     onClick={(e) => { e.stopPropagation(); setIsDismissed(true); }}
@@ -302,7 +321,7 @@ export default function ShibaAssistantFloating({
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
     </>
   );
 }

@@ -3,6 +3,7 @@
  * using the Web Audio API without needing external static file assets.
  */
 
+import { showLearningFeedback } from './learningMotion';
 let audioCtx: AudioContext | null = null;
 
 function getAudioContext(): AudioContext {
@@ -30,6 +31,7 @@ export function setSoundEnabled(enabled: boolean): void {
  * Plays a pleasant double chime "ting" sound for correct answers
  */
 export function playCorrectSound() {
+  showLearningFeedback('correct');
   if (!isSoundEnabled()) return;
   try {
     const ctx = getAudioContext();
@@ -79,6 +81,7 @@ export function playCorrectSound() {
  * Plays a descending low "buzz" sound for incorrect answers
  */
 export function playIncorrectSound() {
+  showLearningFeedback('incorrect');
   if (!isSoundEnabled()) return;
   try {
     const ctx = getAudioContext();
@@ -178,6 +181,7 @@ export function playOwlSound() {
  * Plays a grand, satisfying ascending chime for major milestones & goals
  */
 export function playMilestoneChime() {
+  showLearningFeedback('milestone');
   if (!isSoundEnabled()) return;
   try {
     const ctx = getAudioContext();

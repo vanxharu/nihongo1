@@ -10,9 +10,10 @@ import Header from './components/Header';
 import { UserProfile, JLPTLevel } from './types';
 import { useAuth } from './contexts/AuthContext';
 import AuthModal from './components/AuthModal';
+import LearningMotion from './components/LearningMotion';
 import { ParticleCelebration, ParticleCelebrationRef } from './components/ParticleCelebration';
 import { playMilestoneChime } from './utils/audio';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion, MotionConfig } from 'motion/react';
 import { ArrowUp, Loader2, BookOpen, Layers, Compass, Languages, Menu } from 'lucide-react';
 import PwaInstallPrompt from './components/PwaInstallPrompt';
 import VocabFloatingNotifier from './components/VocabFloatingNotifier';
@@ -70,6 +71,7 @@ const DEFAULT_PROFILE: UserProfile = {
 };
 
 export default function App() {
+  const reducedMotion = useReducedMotion();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -83,6 +85,11 @@ export default function App() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  useEffect(() => {
+    const open = () => setIsAuthModalOpen(true);
+    window.addEventListener('nihongo:open-login', open);
+    return () => window.removeEventListener('nihongo:open-login', open);
+  }, []);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
   const [toast, setToast] = useState<{ message: string; visible: boolean } | null>(null);
 
@@ -547,13 +554,26 @@ export default function App() {
 
   const [selectedMaziiWord, setSelectedMaziiWord] = useState<any>(null);
 
+  function validRouteLevel(value?: string): JLPTLevel | undefined {
+    const upper = value?.toUpperCase();
+    return upper && ['N5','N4','N3','N2','N1'].includes(upper) ? upper as JLPTLevel : undefined;
+  }
+  function RoadmapVocabularyWrapper() {
+    const { level } = useParams();
+    return <VocabularyPractice userProfile={activeProfile} updateProfile={updateProfile} onEarnXp={handleEarnXp} initialLevel={validRouteLevel(level)} />;
+  }
+  function RoadmapKanjiWrapper() {
+    const { level } = useParams();
+    return <KanjiExplorer userProfile={{ ...activeProfile, targetLevel:validRouteLevel(level) || activeProfile.targetLevel }} updateProfile={updateProfile} onEarnXp={handleEarnXp} />;
+  }
   function GrammarPracticeRouteWrapper() {
-    const { lessonId } = useParams();
+    const { lessonId, level } = useParams();
+    const routeLevel = validRouteLevel(level);
     const parsedLesson = lessonId ? parseInt(lessonId, 10) : undefined;
 
     return (
       <GrammarPractice
-        userProfile={activeProfile}
+        userProfile={routeLevel ? { ...activeProfile, targetLevel:routeLevel } : activeProfile}
         updateProfile={updateProfile}
         onEarnXp={handleEarnXp}
         onNavigateTab={handleTabChange}
@@ -577,7 +597,7 @@ export default function App() {
 
     return (
       <DailyExamQuiz 
-        userProfile={activeProfile} 
+        userProfile={validRouteLevel(level) ? { ...activeProfile, targetLevel:validRouteLevel(level)! } : activeProfile} 
         updateProfile={updateProfile} 
         onEarnXp={handleEarnXp} 
       />
@@ -673,17 +693,9 @@ export default function App() {
       <Route path="/jlpt/:level" element={<DailyExamQuizRouteWrapper />} />
       <Route path="/jlpt/:level/listening" element={<Navigate to="/jlpt" replace />} />
       <Route path="/jlpt/:level/listening/:examId" element={<Navigate to="/jlpt" replace />} />
+      <Route path="/jlpt/:level/vocabulary" element={<RoadmapVocabularyWrapper />} />
       <Route path="/jlpt/:level/grammar" element={<GrammarPracticeRouteWrapper />} />
-      <Route 
-        path="/jlpt/:level/kanji" 
-        element={
-          <KanjiExplorer 
-            userProfile={activeProfile} 
-            updateProfile={updateProfile} 
-            onEarnXp={handleEarnXp} 
-          />
-        } 
-      />
+      <Route path="/jlpt/:level/kanji" element={<RoadmapKanjiWrapper />} />
       <Route path="/jlpt/:level/reading" element={<AiReadingPracticeRouteWrapper />} />
 
       {/* 7. Lộ trình học tập */}
@@ -848,9 +860,9 @@ export default function App() {
   };
 
   return (
-    <div id="app-root-container" className="flex h-screen overflow-hidden bg-[#0b1120] text-slate-100">
+    <MotionConfig reducedMotion="user"><div id="app-root-container" className="flex h-screen overflow-hidden bg-[#0b1120] text-slate-100">
       {/* Particle explosion layer */}
-      <ParticleCelebration ref={celebrationRef} />
+      {!reducedMotion && <ParticleCelebration ref={celebrationRef} />}
 
       {/* Left Navigation Sidebar Panel */}
       <Sidebar 
@@ -889,10 +901,10 @@ export default function App() {
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.15, ease: 'easeOut' }}
+              transition={{ duration: reducedMotion ? 0 : 0.22, ease: 'easeOut' }}
               className={`w-full ${
                 currentTab === 'japanese-chat' 
                   ? 'h-full flex-1 flex flex-col min-h-0 overflow-hidden' 
@@ -917,6 +929,7 @@ export default function App() {
       </div>
 
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+      <LearningMotion />
 
       {/* Scroll to Top Button */}
       <AnimatePresence>
@@ -1009,6 +1022,6 @@ export default function App() {
         onToggleSidebar={() => setIsSidebarOpen(prev => !prev)}
         isSidebarOpen={isSidebarOpen}
       />
-    </div>
+    </div></MotionConfig>
   );
 }

@@ -1,370 +1,263 @@
-import React, { useState, useMemo } from 'react';
-import { ArrowLeft, Lock, Award, CheckCircle2, Search, X, Filter } from 'lucide-react';
-import { UserProfile } from '../../types';
-import { 
-  ACHIEVEMENTS_LIST, 
-  TOTAL_ACHIEVEMENTS_COUNT, 
-  AchievementItem, 
+import React, { useMemo, useState, useEffect, useRef } from "react";
+import { ArrowLeft, Search, X, Lock, Check, ArrowRight } from "lucide-react";
+import type { UserProfile } from "../../types";
+import {
+  ACHIEVEMENTS_LIST,
+  achievementMetrics,
   calculateUnlockedAchievements,
-  AchievementCategory
-} from '../../data/achievementsData';
-import { AchievementMascotIcon } from './AchievementMascotIcon';
-
-interface AchievementsViewProps {
+  AchievementItem,
+} from "../../data/achievementsData";
+import { AchievementMascotIcon } from "./AchievementMascotIcon";
+import ShibaMascot from "../mascot/ShibaMascot";
+import "./achievements.css";
+import { readGuestRoadmap } from "../../data/jlptRoadmap";
+interface Props {
   userProfile: UserProfile;
   onBack: () => void;
 }
-
-type StatusFilter = 'all' | 'unlocked' | 'locked';
-
-export const AchievementsView: React.FC<AchievementsViewProps> = ({
-  userProfile,
-  onBack
-}) => {
-  const [selectedAchievement, setSelectedAchievement] = useState<AchievementItem | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-
-  // Compute unlocked status
-  const unlockedIds = useMemo(() => {
-    return calculateUnlockedAchievements(userProfile);
-  }, [userProfile]);
-
-  const unlockedCount = unlockedIds.size;
-  const progressPercent = Math.round((unlockedCount / TOTAL_ACHIEVEMENTS_COUNT) * 100);
-
-  // Category options
-  const categories = useMemo(() => {
-    return [
-      { id: 'all', label: 'Tất cả', count: TOTAL_ACHIEVEMENTS_COUNT },
-      { id: 'onboarding', label: 'Khởi đầu', count: ACHIEVEMENTS_LIST.filter(a => a.category === 'onboarding').length },
-      { id: 'streak', label: 'Thói quen', count: ACHIEVEMENTS_LIST.filter(a => a.category === 'streak').length },
-      { id: 'vocab', label: 'Từ vựng', count: ACHIEVEMENTS_LIST.filter(a => a.category === 'vocab').length },
-      { id: 'kanji', label: 'Hán tự', count: ACHIEVEMENTS_LIST.filter(a => a.category === 'kanji').length },
-      { id: 'grammar', label: 'Ngữ pháp', count: ACHIEVEMENTS_LIST.filter(a => a.category === 'grammar').length },
-      { id: 'practice', label: 'Luyện tập', count: ACHIEVEMENTS_LIST.filter(a => a.category === 'practice').length },
-      { id: 'milestone', label: 'Cấp độ & XP', count: ACHIEVEMENTS_LIST.filter(a => a.category === 'milestone').length },
-    ];
-  }, []);
-
-  // Filtered achievements
-  const filteredAchievements = useMemo(() => {
-    return ACHIEVEMENTS_LIST.filter((item) => {
-      // Category filter
-      if (selectedCategory !== 'all' && item.category !== selectedCategory) {
-        return false;
-      }
-
-      const isUnlocked = unlockedIds.has(item.id);
-
-      // Status filter
-      if (statusFilter === 'unlocked' && !isUnlocked) return false;
-      if (statusFilter === 'locked' && isUnlocked) return false;
-
-      // Search query
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase().trim();
-        const matchTitle = item.title.toLowerCase().includes(query);
-        const matchDesc = item.description.toLowerCase().includes(query);
-        const matchCat = item.categoryName.toLowerCase().includes(query);
-        const matchNum = item.number.toString() === query || `#${item.number}` === query;
-        if (!matchTitle && !matchDesc && !matchCat && !matchNum) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-  }, [selectedCategory, statusFilter, searchQuery, unlockedIds]);
-
+export const AchievementsView: React.FC<Props> = ({ userProfile, onBack }) => {
+  const [category, setCategory] = useState("all");
+  const [status, setStatus] = useState("all");
+  const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState<AchievementItem | null>(null);
+  const dialog = useRef<HTMLDivElement>(null);
+  const guestPlan = !userProfile.uid ? readGuestRoadmap() : undefined;
+  const profile = guestPlan
+    ? { ...userProfile, studyRoadmap: guestPlan }
+    : userProfile;
+  const earned = calculateUnlockedAchievements(profile);
+  const metrics = achievementMetrics(profile);
+  const categories = [
+    ["all", "Tất cả"],
+    ["onboarding", "Hành trình"],
+    ["streak", "Thói quen"],
+    ["vocab", "Từ & Sổ tay"],
+    ["kanji", "Kanji"],
+    ["grammar", "Ngữ pháp"],
+    ["practice", "Luyện tập"],
+    ["milestone", "Cột mốc"],
+  ];
+  const items = ACHIEVEMENTS_LIST.filter(
+    (a) =>
+      (category === "all" || a.category === category) &&
+      (status === "all" ||
+        (status === "unlocked" ? earned.has(a.id) : !earned.has(a.id))) &&
+      `${a.title} ${a.description} ${a.number}`
+        .toLocaleLowerCase("vi")
+        .includes(search.toLocaleLowerCase("vi").trim()),
+  );
+  const next = ACHIEVEMENTS_LIST.filter((a) => !earned.has(a.id)).sort(
+    (a, b) => metrics[b.metric] / b.threshold - metrics[a.metric] / a.threshold,
+  )[0];
+  useEffect(() => {
+    if (!selected) return;
+    const previous = document.activeElement as HTMLElement;
+    dialog.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    return () => previous?.focus();
+  }, [selected]);
+  const icon = (item: AchievementItem, size: number) => (
+    <AchievementMascotIcon
+      type={item.character}
+      poseIndex={item.poseIndex}
+      badgeNumber={item.number}
+      tier={item.tier}
+      isUnlocked={earned.has(item.id)}
+      size={size}
+    />
+  );
   return (
-    <div className="min-h-screen bg-[#0A0F1D] text-slate-100 flex flex-col items-center select-none pb-28 font-sans animate-fadeIn">
-      {/* Container */}
-      <div className="w-full max-w-4xl px-3 sm:px-6 pt-2 sm:pt-4 flex flex-col flex-1">
-        {/* Top Header with Back Arrow and Title "Thành tựu" */}
-        <div className="flex items-center justify-between pb-2.5 sm:pb-3">
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <button
-              type="button"
-              id="achievements-back-btn"
-              onClick={onBack}
-              className="p-1.5 sm:p-2 -ml-1 text-slate-200 hover:text-white active:scale-95 transition-all cursor-pointer rounded-xl hover:bg-slate-800/70"
-              aria-label="Quay lại"
-            >
-              <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
-            </button>
+    <div className="shiba-collection">
+      <div className="collection-shell">
+        <div className="collection-top">
+          <button onClick={onBack}>
+            <ArrowLeft size={16} /> Về tiến độ
+          </button>
+          <span>BỘ SƯU TẬP NIHON SHIBA</span>
+        </div>
+        <section className="collection-hero">
+          <div>
+            <span className="collection-eyebrow">MỖI NỖ LỰC · MỘT DẤU ẤN</span>
+            <h1>
+              100 khoảnh khắc.
+              <br />
+              <em>Một hành trình của bạn.</em>
+            </h1>
+            <p>
+              Shiba học, nghe, khám phá và ăn mừng cùng bạn. Mỗi huy hiệu có một
+              mục tiêu rõ ràng.
+            </p>
+            <div className="collection-total">
+              <strong>
+                {earned.size}
+                <small>/ 100 huy hiệu</small>
+              </strong>
+              <div className="collection-meter">
+                <i style={{ width: `${earned.size}%` }} />
+              </div>
+            </div>
+          </div>
+          <ShibaMascot pose="trophy" size={180} animated={false} />
+        </section>
+        {next && (
+          <button className="collection-next" onClick={() => setSelected(next)}>
+            {icon(next, 60)}
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                Thành tựu
-                <span className="text-[10px] sm:text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full">
-                  100 huy hiệu
-                </span>
-              </h1>
-            </div>
-          </div>
-        </div>
-
-        {/* Yellow Banner "Thành tựu - Mở khóa {unlockedCount}/100" with Progress */}
-        <div className="w-full bg-gradient-to-r from-[#EAB308] via-[#F59E0B] to-[#D97706] rounded-2xl sm:rounded-3xl p-3 sm:p-5 text-white shadow-xl shadow-amber-950/20 mb-3 sm:mb-4 relative overflow-hidden">
-          {/* Subtle sparkle decor */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/15 rounded-full blur-2xl pointer-events-none" />
-
-          <div className="flex items-center gap-3 sm:gap-4 relative z-10">
-            {/* Daruma mascot on left */}
-            <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0 border border-white/30 shadow-inner">
-              <img src="/brand/nihon-shiba-2026-corrected.png" alt="Nihon Shiba" className="h-full w-full object-contain" />
-            </div>
-
-            {/* Texts */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center justify-between">
-                <h2 className="text-base sm:text-xl font-black text-white tracking-tight leading-tight">
-                  Bộ sưu tập
-                </h2>
-                <span className="text-xs font-black bg-black/20 px-2 py-0.5 rounded-full text-amber-100">
-                  {progressPercent}%
-                </span>
-              </div>
-              <p className="text-xs sm:text-sm font-bold text-amber-100/95 mt-0.5 truncate">
-                Mở khóa {unlockedCount} / {TOTAL_ACHIEVEMENTS_COUNT} thành tựu
+              <small>MỤC TIÊU GẦN NHẤT</small>
+              <b>{next.title}</b>
+              <p>
+                {Math.min(next.threshold, metrics[next.metric])} /{" "}
+                {next.threshold} · {next.description}
               </p>
-
-              {/* Progress bar */}
-              <div className="w-full h-1.5 sm:h-2 bg-black/20 rounded-full overflow-hidden mt-1.5 sm:mt-2 p-0.5">
-                <div 
-                  className="h-full bg-white rounded-full transition-all duration-500 shadow-sm"
-                  style={{ width: `${Math.max(4, progressPercent)}%` }}
-                />
-              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Search and Status Filter Row */}
-        <div className="flex flex-col gap-2 mb-3">
-          <div className="relative w-full">
-            <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <ArrowRight size={18} />
+          </button>
+        )}
+        <div className="collection-tools">
+          <label>
+            <Search size={16} />
             <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Tìm kiếm thành tựu, từ khóa, số #..."
-              className="w-full bg-[#121927] border border-slate-800 rounded-xl pl-9 sm:pl-10 pr-8 sm:pr-9 py-1.5 sm:py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500/70 transition-all"
+              aria-label="Tìm huy hiệu"
+              placeholder="Tìm tên, mục tiêu hoặc số huy hiệu…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
-            {searchQuery && (
+          </label>
+          <div aria-label="Trạng thái huy hiệu">
+            {[
+              ["all", "Tất cả"],
+              ["unlocked", "Đã nhận"],
+              ["locked", "Chưa nhận"],
+            ].map(([key, label]) => (
               <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="p-1 text-slate-400 hover:text-white absolute right-2 sm:right-2.5 top-1/2 -translate-y-1/2 rounded-full hover:bg-slate-700/60"
+                key={key}
+                aria-pressed={status === key}
+                onClick={() => setStatus(key)}
               >
-                <X className="w-3.5 h-3.5" />
+                {label}
               </button>
-            )}
-          </div>
-
-          {/* Status Buttons: Tất cả, Đã mở, Chưa mở */}
-          <div className="flex items-center gap-1 sm:gap-1.5 p-1 rounded-xl bg-[#121927] border border-slate-800/80 text-xs">
-            <button
-              type="button"
-              onClick={() => setStatusFilter('all')}
-              className={`flex-1 py-1 sm:py-1.5 px-2 rounded-lg font-bold transition-all text-center whitespace-nowrap ${
-                statusFilter === 'all'
-                  ? 'bg-amber-500 text-slate-950 shadow'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Tất cả <span className="hidden sm:inline">({TOTAL_ACHIEVEMENTS_COUNT})</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setStatusFilter('unlocked')}
-              className={`flex-1 py-1 sm:py-1.5 px-2 rounded-lg font-bold transition-all text-center whitespace-nowrap ${
-                statusFilter === 'unlocked'
-                  ? 'bg-emerald-500 text-slate-950 shadow'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Đã mở <span className="hidden sm:inline">({unlockedCount})</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setStatusFilter('locked')}
-              className={`flex-1 py-1 sm:py-1.5 px-2 rounded-lg font-bold transition-all text-center whitespace-nowrap ${
-                statusFilter === 'locked'
-                  ? 'bg-slate-700 text-white shadow'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              Chưa mở <span className="hidden sm:inline">({TOTAL_ACHIEVEMENTS_COUNT - unlockedCount})</span>
-            </button>
+            ))}
           </div>
         </div>
-
-        {/* Categories Horizontal Scroll Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2.5 mb-1">
-          {categories.map((cat) => {
-            const isSelected = selectedCategory === cat.id;
-            return (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`shrink-0 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer flex items-center gap-1 sm:gap-1.5 ${
-                  isSelected
-                    ? 'bg-amber-500/20 border border-amber-500/80 text-amber-300 shadow-sm'
-                    : 'bg-[#121927] border border-slate-800/80 text-slate-400 hover:text-slate-200 hover:border-slate-700'
-                }`}
-              >
-                <span>{cat.label}</span>
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                  isSelected ? 'bg-amber-500 text-slate-950 font-black' : 'bg-slate-800 text-slate-400'
-                }`}>
-                  {cat.count}
-                </span>
-              </button>
-            );
-          })}
+        <nav className="collection-categories" aria-label="Nhóm thành tựu">
+          {categories.map(([key, label]) => (
+            <button
+              key={key}
+              aria-pressed={category === key}
+              onClick={() => setCategory(key)}
+            >
+              {label}
+              <small>
+                {key === "all"
+                  ? 100
+                  : ACHIEVEMENTS_LIST.filter((a) => a.category === key).length}
+              </small>
+            </button>
+          ))}
+        </nav>
+        <div className="collection-results">
+          <span>{items.length} huy hiệu</span>
+          <span>20 tư thế Shiba · 5 kiểu huy chương</span>
         </div>
-
-        {/* Showing Count */}
-        <div className="flex items-center justify-between text-xs text-slate-400 px-1 pb-2">
-          <span>Hiển thị {filteredAchievements.length} thành tựu</span>
-          {searchQuery && (
-            <span className="text-amber-400/90">Lọc theo: "{searchQuery}"</span>
-          )}
+        <div className="collection-grid">
+          {items.map((item) => (
+            <button
+              className={`mascot-achievement-card ${earned.has(item.id) ? "badge-earned" : ""}`}
+              key={item.id}
+              onClick={() => setSelected(item)}
+              aria-label={`${item.title}, ${earned.has(item.id) ? "đã nhận" : "chưa nhận"}`}
+            >
+              <span className="badge-category">{item.categoryName}</span>
+              {icon(item, 80)}
+              <h2>{item.title}</h2>
+              <span className="badge-status">
+                {earned.has(item.id) ? (
+                  <>
+                    <Check size={11} /> Đã nhận
+                  </>
+                ) : (
+                  <>
+                    <Lock size={10} /> {item.threshold.toLocaleString("vi-VN")}
+                  </>
+                )}
+              </span>
+            </button>
+          ))}
         </div>
-
-        {/* Adaptive Responsive Grid of Achievement Badges */}
-        {filteredAchievements.length === 0 ? (
-          <div className="py-16 flex flex-col items-center justify-center text-center text-slate-400">
-            <div className="w-12 h-12 rounded-full bg-slate-800/60 flex items-center justify-center mb-3">
-              <Search className="w-6 h-6 text-slate-500" />
-            </div>
-            <p className="text-sm font-bold text-slate-300">Không tìm thấy thành tựu nào</p>
-            <p className="text-xs text-slate-500 mt-1">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3">
-            {filteredAchievements.map((item) => {
-              const isUnlocked = unlockedIds.has(item.id);
-
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  id={`achievement-card-${item.id}`}
-                  onClick={() => setSelectedAchievement(item)}
-                  className={`flex flex-col items-center justify-between text-center p-2 sm:p-2.5 rounded-2xl border transition-all cursor-pointer min-h-[135px] sm:min-h-[146px] relative group ${
-                    isUnlocked
-                      ? 'bg-[#152033] border-amber-500/40 shadow-md shadow-amber-950/20 hover:border-amber-400 hover:bg-[#1a2840]'
-                      : 'bg-[#121927] border-slate-800/80 hover:border-slate-700/80 hover:bg-[#161f30]'
-                  }`}
-                >
-                  {/* Badge Number & XP in small header */}
-                  <div className="w-full flex items-center justify-between text-[10px] text-slate-500 px-0.5">
-                    <span className="font-mono text-slate-400">#{item.number}</span>
-                    {item.rewardXp && (
-                      <span className="font-bold text-amber-400/80">+{item.rewardXp} XP</span>
-                    )}
-                  </div>
-
-                  {/* Character Mascot Icon */}
-                  <div className="pt-1 flex-1 flex items-center justify-center">
-                    <AchievementMascotIcon
-                      type={item.character}
-                      isUnlocked={isUnlocked}
-                      size={52}
-                    />
-                  </div>
-
-                  {/* Title and Lock status */}
-                  <div className="w-full pt-1 flex flex-col items-center">
-                    <span className={`text-[11px] sm:text-xs font-bold line-clamp-2 leading-tight ${
-                      isUnlocked ? 'text-white' : 'text-slate-400'
-                    }`}>
-                      {item.title}
-                    </span>
-
-                    {/* Lock or Checkmark indicator */}
-                    <div className="mt-1 flex items-center justify-center">
-                      {isUnlocked ? (
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                      ) : (
-                        <Lock className="w-3.5 h-3.5 text-slate-500" />
-                      )}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
+        {!items.length && (
+          <div className="collection-empty">
+            <ShibaMascot pose="curious" size={80} animated={false} />
+            <p>Không có huy hiệu phù hợp. Hãy đổi bộ lọc hoặc từ tìm kiếm.</p>
           </div>
         )}
+        <p className="collection-note">
+          Huy hiệu được xác định từ hoạt động đã lưu; không suy đoán thời gian
+          học, thứ hạng hoặc điểm thi. Bộ sưu tập mới không xóa lịch sử học của
+          bạn.
+        </p>
       </div>
-
-      {/* Achievement Detail Modal when tapped */}
-      {selectedAchievement && (
-        <div 
-          className="fixed inset-0 bg-black/80 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fadeIn"
-          onClick={() => setSelectedAchievement(null)}
+      {selected && (
+        <div
+          className="badge-modal-backdrop"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setSelected(null);
+          }}
         >
-          <div 
-            className="w-full max-w-sm bg-[#152033] border border-slate-700/90 rounded-3xl p-6 text-center space-y-4 shadow-2xl relative"
-            onClick={(e) => e.stopPropagation()}
+          <div
+            ref={dialog}
+            className="badge-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="badge-title"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setSelected(null);
+              if (e.key === "Tab") {
+                const buttons = Array.from(
+                  dialog.current?.querySelectorAll<HTMLButtonElement>(
+                    "button",
+                  ) || [],
+                );
+                if (e.shiftKey && document.activeElement === buttons[0]) {
+                  e.preventDefault();
+                  buttons.at(-1)?.focus();
+                }
+                if (!e.shiftKey && document.activeElement === buttons.at(-1)) {
+                  e.preventDefault();
+                  buttons[0]?.focus();
+                }
+              }
+            }}
           >
-            {/* Mascot in modal */}
-            <div className="flex justify-center pt-2">
-              <AchievementMascotIcon
-                type={selectedAchievement.character}
-                isUnlocked={unlockedIds.has(selectedAchievement.id)}
-                size={92}
+            <button
+              aria-label="Đóng huy hiệu"
+              className="badge-close"
+              onClick={() => setSelected(null)}
+            >
+              <X size={20} />
+            </button>
+            <span className="collection-eyebrow">
+              HUY HIỆU {String(selected.number).padStart(3, "0")} ·{" "}
+              {selected.categoryName}
+            </span>
+            {icon(selected, 155)}
+            <h2 id="badge-title">{selected.title}</h2>
+            <p>{selected.description}</p>
+            <div className="collection-meter">
+              <i
+                style={{
+                  width: `${selected.threshold === 0 ? 100 : Math.min(100, (metrics[selected.metric] / selected.threshold) * 100)}%`,
+                }}
               />
             </div>
-
-            {/* Badge Title & Number */}
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[11px] font-bold mb-2">
-                <span className="text-amber-400 font-mono">#{selectedAchievement.number}</span>
-                <span>•</span>
-                <span>{selectedAchievement.categoryName}</span>
-              </div>
-              <h3 className="text-xl font-black text-white">
-                {selectedAchievement.title}
-              </h3>
-              <p className="text-xs font-medium text-slate-300 mt-2 leading-relaxed px-2">
-                {selectedAchievement.description}
-              </p>
-            </div>
-
-            {/* Reward and Status Indicators */}
-            <div className="flex flex-col items-center gap-2 pt-1">
-              {selectedAchievement.rewardXp && (
-                <div className="text-xs font-black text-amber-400 flex items-center gap-1">
-                  <Award className="w-3.5 h-3.5" />
-                  <span>Phần thưởng: +{selectedAchievement.rewardXp} XP</span>
-                </div>
-              )}
-
-              {unlockedIds.has(selectedAchievement.id) ? (
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 rounded-full text-xs font-bold">
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Đã mở khóa thành công!</span>
-                </div>
-              ) : (
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-800/90 border border-slate-700 text-slate-400 rounded-full text-xs font-bold">
-                  <Lock className="w-4 h-4" />
-                  <span>Chưa mở khóa</span>
-                </div>
-              )}
-            </div>
-
-            {/* Close Button */}
+            <p>
+              {earned.has(selected.id)
+                ? "Đã mở khóa từ tiến độ của bạn."
+                : `${metrics[selected.metric].toLocaleString("vi-VN")} / ${selected.threshold.toLocaleString("vi-VN")} · Tiếp tục học để đến cột mốc này.`}
+            </p>
             <button
-              type="button"
-              onClick={() => setSelectedAchievement(null)}
-              className="w-full py-2.5 bg-[#EAB308] hover:bg-[#CA8A04] active:scale-98 text-slate-950 font-black text-sm rounded-xl transition-all cursor-pointer shadow-md mt-2"
+              className="badge-dialog-done"
+              onClick={() => setSelected(null)}
             >
-              Đóng
+              Cùng Shiba tiếp tục hành trình
             </button>
           </div>
         </div>
@@ -372,5 +265,4 @@ export const AchievementsView: React.FC<AchievementsViewProps> = ({
     </div>
   );
 };
-
 export default AchievementsView;

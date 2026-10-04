@@ -40,7 +40,7 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { VocabularyItem, UserProfile, LearningPosition } from '../types';
+import { VocabularyItem, UserProfile, LearningPosition, JLPTLevel } from '../types';
 import { VOCABULARY_DATA } from '../data';
 import { 
   getHanViet, 
@@ -217,6 +217,7 @@ interface VocabularyPracticeProps {
   userProfile: UserProfile;
   updateProfile: (updated: Partial<UserProfile>) => void;
   onEarnXp: (amount: number) => void;
+  initialLevel?: JLPTLevel;
 }
 
 const KANJI_COMMON_READINGS: Record<string, string[]> = {
@@ -689,7 +690,7 @@ export const saveVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dok
   } catch {}
 };
 
-export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp }: VocabularyPracticeProps) {
+export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel }: VocabularyPracticeProps) {
   const [vocabData, setVocabData] = useState<VocabularyItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -731,6 +732,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
 
   // Level filter state - initialized from last saved position if authenticated
   const [levelFilter, setLevelFilter] = useState<string>(() => {
+    if (initialLevel) return initialLevel;
     if (!user) return 'N4';
     const pos = userProfile?.lastPosition;
     if (pos?.tab === 'vocabulary' && pos.level) {

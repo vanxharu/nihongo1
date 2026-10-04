@@ -46,6 +46,7 @@ import { JlptRealBookletExam } from './JlptRealBookletExam';
 import { JlptModernExamView } from './exam/JlptModernExamView';
 import { ExamHistoryModal } from './ExamHistoryModal';
 import { PrintableExamBooklet } from './PrintableExamBooklet';
+import { showLearningFeedback } from '../utils/learningMotion';
 import { PdfExamBookletViewer } from './PdfExamBookletViewer';
 
 const EXAM_PRAISES = [
@@ -806,6 +807,8 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
   };
 
   const handleSubmit = () => {
+    if (isSubmitted) return;
+    showLearningFeedback('milestone');
     setIsSubmitted(true);
     setSubmittedViewTab('certificate');
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -828,9 +831,11 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
 
     // Save test results to user history
     const todayStr = new Date().toISOString().split('T')[0] || '';
+    const sections = { knowledge:{correct:0,total:0}, reading:{correct:0,total:0}, listening:{correct:0,total:0} };
+    relevantQuestions.forEach(q => { const key = q.section === 'dokkai' ? 'reading' : q.section === 'choukai' ? 'listening' : 'knowledge'; sections[key].total++; if (userAnswers[q.id] === q.correctIndex) sections[key].correct++; });
     const updatedHistory = [
       ...(userProfile.dailyTestResults || []),
-      { date: todayStr, score: correctCount, total: relevantQuestions.length }
+      { date: todayStr, score: correctCount, total: relevantQuestions.length, level:selectedExam.level, examId:selectedExam.id, fullExam:selectedSectionMode === 'ALL', sections }
     ];
 
     updateProfile({

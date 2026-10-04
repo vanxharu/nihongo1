@@ -33,6 +33,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../types';
 import { speakJapanese } from '../utils/audio';
+import { showLearningFeedback } from '../utils/learningMotion';
 import ShibaMascot from './mascot/ShibaMascot';
 
 export interface HandwritingExercise {
@@ -603,6 +604,7 @@ export default function HandwritingPractice({
       if (!res.ok) throw new Error('Failed to grade handwriting');
 
       const result: GradingResult = await res.json();
+      if (typeof result.isCorrect === 'boolean') showLearningFeedback(result.isCorrect ? 'correct' : 'incorrect');
       setGradingResult(result);
 
       // Award XP to user profile
