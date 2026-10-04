@@ -37,9 +37,16 @@ export function localShadowingAnalysis(sentence: string): ShadowingAnalysis {
     const info = KANJI_DICTIONARY[character];
     return { character, meaning: info?.meaning || 'Chưa có dữ liệu trong từ điển', onyomi: info?.onyomi || '', kunyomi: info?.kunyomi || '', radical: info?.radical, components: info?.components, mnemonic: info?.mnemonic };
   });
+  const grammar = [
+    { test: /[てで]ください/, pattern: '～てください', meaning: 'Hãy / vui lòng làm…', explanation: 'Động từ thể て + ください dùng để đề nghị hoặc hướng dẫn người nghe thực hiện hành động.', example: '聞いてください。\nHãy nghe.' },
+    { test: /[てで]もいい/, pattern: '～てもいい', meaning: 'Có thể / được phép làm…', explanation: 'Động từ thể て + もいい diễn tả sự cho phép. Thêm ですか để hỏi xin phép.', example: 'メモを取ってもいいです。\nCó thể ghi chú.' },
+    { test: /[てで]います/, pattern: '～ています', meaning: 'Đang làm… / trạng thái đang tiếp diễn', explanation: 'Động từ thể て + います chỉ hành động đang diễn ra hoặc trạng thái kết quả. Cần đối chiếu ngữ cảnh để chọn nghĩa.', example: '話しています。\nĐang nói chuyện.' },
+    { test: /ませんか/, pattern: '～ませんか', meaning: 'Bạn có muốn cùng… không?', explanation: 'Dạng ませんか thường dùng để đưa ra lời mời lịch sự. Đối chiếu ngữ cảnh để phân biệt với câu hỏi phủ định.', example: '一緒に行きませんか。\nBạn có muốn cùng đi không?' },
+    { test: /ましょう(?:か)?/, pattern: '～ましょう', meaning: 'Cùng làm… / tôi làm… nhé?', explanation: 'Dạng ましょう dùng để rủ cùng làm; ましょうか có thể dùng để đề nghị giúp đỡ.', example: '始めましょう。\nChúng ta bắt đầu nhé.' },
+  ].filter(item => item.test.test(sentence)).map(({ test, ...item }) => item);
   return {
-    source: 'dictionary', translation: '', vocabulary, kanji, grammar: [],
-    note: 'Đang dùng từ điển có sẵn. Cần cấu hình AI trên máy chủ để dịch câu và phân tích ngữ pháp theo ngữ cảnh.',
+    source: 'dictionary', translation: '', vocabulary, kanji, grammar,
+    note: 'Đang dùng từ điển có sẵn. Các mẫu ngữ pháp được nhận diện theo cách viết. Bản dịch cả câu và phân tích ngữ cảnh cần dịch vụ AI.',
   };
 }
 
