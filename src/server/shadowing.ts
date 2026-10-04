@@ -139,7 +139,7 @@ export async function shadowingAnalyze(req: Request, res: Response) {
       content = result.choices[0]?.message.content || '';
     } else if (process.env.GEMINI_API_KEY) {
       const client = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY, httpOptions: { timeout: 25000 } });
-      const result = await client.models.generateContent({ model: process.env.SHADOWING_AI_MODEL || 'gemini-2.5-flash', contents: sentence, config: { systemInstruction: system, responseMimeType: 'application/json' } });
+      const result = await client.models.generateContent({ model: process.env.SHADOWING_AI_MODEL || 'gemini-3.5-flash-lite', contents: sentence, config: { systemInstruction: system, responseMimeType: 'application/json' } });
       content = result.text || '';
     } else return res.json(local);
     const analysis = validateAnalysis(JSON.parse(content));

@@ -160,7 +160,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
       </div>
       <div className="flex flex-wrap gap-2">
         <button disabled={!ready} onClick={playSegment} className="flex min-h-11 items-center gap-2 rounded-xl bg-violet-500 px-4 font-bold text-white disabled:opacity-40"><Play size={16} />Nghe & nhại đoạn này</button>
-        <button disabled={!running} onClick={stop} className="flex min-h-11 items-center gap-2 rounded-xl bg-slate-800 px-4 disabled:opacity-40"><Square size={15} />Dừng</button>
+        <button disabled={!ready} onClick={stop} className="flex min-h-11 items-center gap-2 rounded-xl bg-slate-800 px-4 disabled:opacity-40"><Square size={15} />Dừng</button>
         {!ready && <button aria-label="Tải lại video" onClick={() => setReload(n => n + 1)} className="rounded-xl bg-slate-800 p-3"><RotateCcw size={16} /></button>}
         <a href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 p-2 text-xs text-slate-400"><ExternalLink size={14} />YouTube</a>
       </div>

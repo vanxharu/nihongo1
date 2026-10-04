@@ -21,7 +21,8 @@ export default function SentenceInsights({ cue, videoId, cached, onResult, onClo
         const result = await requestSentenceAnalysis(cue.text);
         if (!Array.isArray(result.vocabulary) || !Array.isArray(result.kanji) || !Array.isArray(result.grammar)) throw new Error('Kết quả phân tích chưa hợp lệ.');
         if (controller.signal.aborted) return;
-        setData(result); resultRef.current(cue.text, result);
+        const enriched = { ...result, translation: result.translation || cue.translation || '' };
+        setData(enriched); resultRef.current(cue.text, enriched);
       } catch (e) {
         if (!controller.signal.aborted) setError(e instanceof Error ? e.message : 'Chưa phân tích được câu này.');
         else if (controller.signal.reason === 'timeout') setError('Phân tích quá lâu. Bạn có thể thử lại.');
