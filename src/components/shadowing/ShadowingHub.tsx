@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Headphones, Link2 } from 'lucide-react';
-import { DEFAULT_YOUTUBE_LISTENING_VIDEOS } from '../../data/youtubeListeningSeedData';
+import { SHADOWING_VIDEOS } from '../../data/shadowingVideos';
 import { formatDuration } from '../../utils/youtubeUtils';
 import { parseShadowingVideoId, parseShadowingTime, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
 import ShadowingPlayer, { ShadowingPlayerHandle } from './ShadowingPlayer';
 import KaraokeCaption from './KaraokeCaption';
 import DictationPanel from './DictationPanel';
 import SentenceInsights from './SentenceInsights';
+import { requestSentenceAnalysis } from './analysisRequest';
 import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment } from '../../utils/shadowing';
 import './shadowing.css';
 
@@ -44,6 +45,32 @@ export default function ShadowingHub() {
   const active = activeShadowingCue(cues, currentTime);
   const displayed = mode === 'dictation' ? cues[selected] : active >= 0 ? cues[active] : null;
   const displayedAnalysis = displayed ? cache.current.get(displayed.text) || null : null;
+  const [analysisError, setAnalysisError] = useState('');
+  const [analysisRetry, setAnalysisRetry] = useState(0);
+  const analysisTarget = useRef<{ text: string; video: string } | null>(null);
+  const analysisWorker = useRef(false);
+  useEffect(() => {
+    setAnalysisError('');
+    analysisTarget.current = displayed && (furigana || translation) && !displayedAnalysis
+      ? { text: displayed.text, video: videoId || '' } : null;
+    if (analysisWorker.current || !analysisTarget.current) return;
+    analysisWorker.current = true;
+    void (async () => {
+      try {
+        while (analysisTarget.current) {
+          const target = analysisTarget.current;
+          analysisTarget.current = null;
+          try {
+            const result = await requestSentenceAnalysis(target.text);
+            cache.current.set(target.text, result);
+            refreshAnalysis(n => n + 1);
+          } catch {
+            if (currentVideo.current === target.video) setAnalysisError('Chưa tải được cách đọc và bản dịch.');
+          }
+        }
+      } finally { analysisWorker.current = false; }
+    })();
+  }, [displayed?.text, videoId, furigana, translation, analysisRetry]);
   useEffect(() => {
     if (active >= 0 && mode !== 'dictation' && active !== selected) {
       selectCue(active);
@@ -137,9 +164,9 @@ export default function ShadowingHub() {
     if (mode === 'dictation') playerRef.current?.playSentence(cue.start, cue.end, autoPause);
     else if (cue?.start !== null && cue?.start !== undefined) playerRef.current?.seek(cue.start);
   }
-  const library = DEFAULT_YOUTUBE_LISTENING_VIDEOS.filter(v => v.status === 'active');
+  const library = SHADOWING_VIDEOS.filter(v => v.status === 'active');
   const sources = [...new Set(library.map(v => v.source))];
-  const sourceTitle = DEFAULT_YOUTUBE_LISTENING_VIDEOS.find(v => v.youtube_video_id === videoId)?.title;
+  const sourceTitle = SHADOWING_VIDEOS.find(v => v.youtube_video_id === videoId)?.title;
   return <div className="shadowing-page mx-auto max-w-7xl space-y-5 px-4 py-5 pb-28 text-slate-100 sm:px-6">
     {!videoId && <header className="shadowing-banner rounded-2xl p-5 sm:p-7">
       <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-300"><Headphones size={16} /> Nghe · nhại · hiểu</span>
@@ -168,6 +195,8 @@ export default function ShadowingHub() {
             <div className="mb-3 flex justify-end gap-3 text-xs"><label><input type="checkbox" checked={furigana} onChange={e => setFurigana(e.target.checked)} /> Furigana</label><label><input type="checkbox" checked={translation} onChange={e => setTranslation(e.target.checked)} /> Bản dịch</label></div>
             <div role="button" tabIndex={displayed ? 0 : -1} aria-label="Xem nghĩa và phân tích câu đang phát" aria-disabled={!displayed} onClick={() => displayed && setInsightCue({ ...displayed })} onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && displayed) { e.preventDefault(); setInsightCue({ ...displayed }); } }} className="cursor-pointer rounded-lg outline-none hover:bg-violet-500/10 focus-visible:ring-2 focus-visible:ring-violet-400">
 <KaraokeCaption text={displayed?.text || (cues.length ? '' : 'Đang tải phụ đề…')} time={currentTime} start={displayed?.start ?? null} end={displayed?.end ?? null} timings={displayed?.timings} analysis={displayedAnalysis} furigana={furigana} /></div>{translation && displayedAnalysis?.translation && <p className="mt-3 text-center text-sm text-slate-300">{displayedAnalysis.translation}</p>}
+            {displayed && (furigana || translation) && !displayedAnalysis && <p role="status" className="mt-2 text-center text-xs text-slate-400">{analysisError || 'Đang tải cách đọc và bản dịch…'}{analysisError && <button className="ml-2 underline" onClick={() => setAnalysisRetry(n => n + 1)}>Thử lại</button>}</p>}
+            {displayed && translation && displayedAnalysis && !displayedAnalysis.translation && <p role="status" className="mt-2 text-center text-xs text-amber-200">Bản dịch tạm thời chưa khả dụng.<button className="ml-2 underline" onClick={() => { cache.current.delete(displayed.text); refreshAnalysis(n => n + 1); setAnalysisRetry(n => n + 1); }}>Thử lại</button></p>}
             {mode === 'dictation' && revealed && <button className="mt-3 text-sm underline" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
           </section>}
 

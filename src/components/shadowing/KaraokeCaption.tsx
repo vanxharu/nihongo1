@@ -8,7 +8,7 @@ export default function KaraokeCaption({ text, time, start, end, timings, analys
   analysis: ShadowingAnalysis | null; furigana: boolean;
 }) {
   const measured = validShadowingTimings({ id: '', text, start, end, timings }) ? timings! : [];
-  const words = [...(analysis?.vocabulary || [])].filter(v => v.word).sort((a, b) => b.word.length - a.word.length);
+  const words = [...(analysis?.readings || analysis?.vocabulary || [])].filter(v => v.word).sort((a, b) => b.word.length - a.word.length);
   const pieces: { text: string; reading?: string; offset: number }[] = [];
   for (let offset = 0; offset < text.length;) {
     const word = words.find(v => text.startsWith(v.word, offset));

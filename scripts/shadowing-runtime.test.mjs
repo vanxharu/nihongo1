@@ -63,6 +63,8 @@ test('compiled Vercel entries load in native Node ESM and return timed captions'
     assert.equal(replies[1].status, 400);
     assert.equal(replies[2].data.source, 'dictionary');
     assert.ok(replies[2].data.vocabulary.length > 0);
+    assert.ok(replies[2].data.readings.some(r => r.word === '日本語' && r.reading === 'にほんご'));
+    assert.ok(replies[2].data.readings.some(r => r.word === '勉強' && r.reading === 'べんきょう'));
     assert.equal(replies[3].data.source, 'native-provider');
     assert.equal(replies[3].data.cues[0].start, 1.5);
     assert.equal(replies[3].data.cues[0].end, 3.5);

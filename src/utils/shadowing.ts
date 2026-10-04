@@ -47,6 +47,7 @@ export function parseShadowingAlignment(value: any, videoId: string): ShadowingC
 }
 
 export interface ShadowingAnalysis {
+  readings?: { word: string; reading: string }[];
   source: 'ai' | 'dictionary';
   translation: string;
   vocabulary: { word: string; reading: string; meaning: string; type?: string }[];

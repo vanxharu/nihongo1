@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ShadowingAnalysis, ShadowingCue, readShadowingResponse } from '../../utils/shadowing';
+import { ShadowingAnalysis, ShadowingCue } from '../../utils/shadowing';
+import { requestSentenceAnalysis } from './analysisRequest';
 
 export default function SentenceInsights({ cue, videoId, cached, onResult, onClose }: {
   cue: ShadowingCue; videoId: string; cached?: ShadowingAnalysis;
@@ -17,8 +18,7 @@ export default function SentenceInsights({ cue, videoId, cached, onResult, onClo
     setError(''); setData(null);
     void (async () => {
       try {
-        const response = await fetch('/api/shadowing/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sentence: cue.text }), signal: controller.signal });
-        const result = await readShadowingResponse(response);
+        const result = await requestSentenceAnalysis(cue.text);
         if (!Array.isArray(result.vocabulary) || !Array.isArray(result.kanji) || !Array.isArray(result.grammar)) throw new Error('Kết quả phân tích chưa hợp lệ.');
         if (controller.signal.aborted) return;
         setData(result); resultRef.current(cue.text, result);
