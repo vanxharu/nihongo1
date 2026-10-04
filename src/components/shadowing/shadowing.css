@@ -6,7 +6,8 @@
 .shadowing-video { position:relative; }
 .shadowing-video iframe { position:absolute;inset:0;width:100%;height:100%; }
 .karaoke-line { text-align:center;font-size:clamp(1.4rem,3vw,2rem);font-weight:750;line-height:2.2;overflow-wrap:anywhere; }
-.karaoke-line ruby { ruby-position:over; }
+.karaoke-line ruby { display:ruby;ruby-position:over;line-height:inherit;vertical-align:baseline;margin:0; }
+.karaoke-line ruby > rt { display:ruby-text;margin:0; }
 .karaoke-line rt { color:#94a3b8;font-size:.45em;font-weight:400; }
 .karaoke-stage { position:relative;overflow:hidden;border:1px solid #8b5cf647;background:radial-gradient(ellipse at 50% 0%,#46306d55,transparent 70%),linear-gradient(145deg,#141929,#0c1120);box-shadow:0 12px 36px #03071230; }
 .karaoke-meta { display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;color:#94a3b8;font-size:12px; }

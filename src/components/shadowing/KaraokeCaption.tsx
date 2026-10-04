@@ -15,7 +15,11 @@ function KaraokeCaption({ text, time, start, end, timings, analysis, furigana, v
     const word = words.find(v => text.startsWith(v.word, offset));
     const segment = segmenter?.segment(text.slice(offset))[Symbol.iterator]().next().value?.segment;
     const piece = word?.word || segment || String.fromCodePoint(text.codePointAt(offset)!);
-    pieces.push({ text: piece, reading: word?.reading, offset });
+    if (pieces.length && /^[、。，．！？!?…]+$/.test(piece)) {
+      pieces[pieces.length - 1].text += piece;
+    } else {
+      pieces.push({ text: piece, reading: word?.reading, offset });
+    }
     offset += piece.length;
   }
   // Visual-only fallback for captions without measured word onsets; never saved as alignment.
