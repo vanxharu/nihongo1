@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Headphones, Link2, Download, BookOpen, Languages, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Headphones, Link2, Download, Loader2 } from 'lucide-react';
 import { DEFAULT_YOUTUBE_LISTENING_VIDEOS } from '../../data/youtubeListeningSeedData';
 import { formatDuration } from '../../utils/youtubeUtils';
 import { parseShadowingVideoId, parseShadowingTime, parseShadowingSubtitles, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
@@ -26,11 +26,7 @@ export default function ShadowingHub() {
   const [importText, setImportText] = useState('');
   const [notice, setNotice] = useState('');
   const [loading, setLoading] = useState(false);
-  const [analyzing, setAnalyzing] = useState(false);
-  const [analysis, setAnalysis] = useState<ShadowingAnalysis | null>(null);
-  const [analysisTab, setAnalysisTab] = useState<'vocabulary' | 'kanji' | 'grammar'>('vocabulary');
   const transcriptRequest = useRef<AbortController | null>(null);
-  const analysisRequest = useRef<AbortController | null>(null);
   const currentVideo = useRef(videoId);
   currentVideo.current = videoId;
   const playerRef = useRef<ShadowingPlayerHandle>(null);
@@ -43,7 +39,7 @@ export default function ShadowingHub() {
   const cache = useRef(new Map<string, ShadowingAnalysis>());
   const active = activeShadowingCue(cues, currentTime);
   const displayed = mode === 'dictation' ? cues[selected] : active >= 0 ? cues[active] : cues[selected];
-  const displayedAnalysis = displayed ? cache.current.get(displayed.text) || (displayed.text === sentence ? analysis : null) : analysis;
+  const displayedAnalysis = displayed ? cache.current.get(displayed.text) || null : null;
   useEffect(() => {
     if (active >= 0 && mode !== 'dictation' && active !== selected) {
       selectCue(active);
@@ -56,15 +52,13 @@ export default function ShadowingHub() {
   function selectCue(index: number, source = cues) {
     const cue = source[index];
     if (!cue) return;
-    analysisRequest.current?.abort(); setAnalyzing(false);
     setSelected(index); setSentence(cue.text); setRevealed(false);
-    setAnalysis(cache.current.get(cue.text) || null);
     if (cue.start !== null && cue.end !== null) { setStart(String(cue.start)); setEnd(String(cue.end)); }
   }
 
   useEffect(() => {
-    transcriptRequest.current?.abort(); analysisRequest.current?.abort();
-    setLoading(false); setAnalyzing(false); setCues([]); setSentence(''); setAnalysis(null); setSelected(0);
+    transcriptRequest.current?.abort();
+    setLoading(false); setCues([]); setSentence(''); setSelected(0);
     setImportText(''); setNotice(''); setCurrentTime(0); setStart('0'); setEnd('10');
     setRevealed(false);
     if (videoId) {
@@ -79,30 +73,12 @@ export default function ShadowingHub() {
       } catch {}
       if (!restored) void loadCaptions();
     }
-    return () => { transcriptRequest.current?.abort(); analysisRequest.current?.abort(); };
+    return () => { transcriptRequest.current?.abort(); };
   }, [videoId]);
 
   function applyCues(next: ShadowingCue[]) {
     setCues(next); selectCue(0, next);
     if (videoId) { try { localStorage.setItem(`shadowing-cues:${videoId}`, JSON.stringify(next)); } catch {} }
-  }
-
-  function editSentence(text: string) {
-    playerRef.current?.pause();
-    analysisRequest.current?.abort(); setAnalyzing(false); setSentence(text); setAnalysis(null);
-    if (!cues[selected]) return;
-    const next = cues.map((cue, index) => index === selected ? { ...cue, text } : cue);
-    setCues(next);
-    try { localStorage.setItem(`shadowing-cues:${videoId}`, JSON.stringify(next)); } catch {}
-  }
-
-  function saveTiming() {
-    const from = parseShadowingTime(start), to = parseShadowingTime(end);
-    if (from === null || to === null || to <= from) { setNotice('Nhập mốc bắt đầu và kết thúc hợp lệ.'); return; }
-    playerRef.current?.pause();
-    const next = cues.length ? cues.map((cue, index) => index === selected ? { ...cue, start: from, end: to } : cue)
-      : [{ id: 'manual-0', text: sentence, start: from, end: to }];
-    applyCues(next); selectCue(selected, next); setNotice('Đã lưu mốc thời gian cho câu karaoke.');
   }
 
   function chooseVideo(input: string) {
@@ -123,7 +99,7 @@ export default function ShadowingHub() {
       if (!res.ok) throw new Error(data.error || 'Không lấy được phụ đề.');
       if (!Array.isArray(data.cues) || !data.cues.length) throw new Error('Video không có phụ đề tiếng Nhật.');
       if (controller.signal.aborted) return;
-      applyCues(data.cues); setNotice(`Đã tải ${data.cues.length} câu phụ đề tiếng Nhật. Phụ đề tự động có thể sai, bạn có thể sửa câu trước khi phân tích.`);
+      applyCues(data.cues);
     } catch (error) {
       if (!controller.signal.aborted) setNotice(error instanceof Error ? error.message : 'Không lấy được phụ đề.');
       else if (controller.signal.reason === 'timeout') setNotice('Tải phụ đề quá lâu. Hãy thử lại hoặc nhập lời thoại bên dưới.');
@@ -142,29 +118,6 @@ export default function ShadowingHub() {
     } catch (error) { setNotice(error instanceof Error ? error.message : 'Không đọc được phụ đề.'); }
   }
 
-  async function analyzeSentence() {
-    const text = sentence.trim();
-    if (!text || text.length > 600) { setNotice('Chọn hoặc nhập một câu tiếng Nhật, tối đa 600 ký tự.'); return; }
-    analysisRequest.current?.abort();
-    const controller = new AbortController(); analysisRequest.current = controller;
-    const timer = setTimeout(() => controller.abort('timeout'), 35000);
-    setAnalyzing(true); setAnalysis(null); setNotice('');
-    try {
-      const res = await fetch('/api/shadowing/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sentence: text }), signal: controller.signal });
-      const data = await readShadowingResponse(res);
-      if (!res.ok) throw new Error(data.error || 'Không phân tích được câu.');
-      if (!Array.isArray(data.vocabulary) || !Array.isArray(data.kanji) || !Array.isArray(data.grammar)) throw new Error('Dữ liệu phân tích không hợp lệ.');
-      if (controller.signal.aborted) return;
-      cache.current.set(text, data); setAnalysis(data);
-    } catch (error) {
-      if (!controller.signal.aborted) setNotice(error instanceof Error ? error.message : 'Không phân tích được câu.');
-      else if (controller.signal.reason === 'timeout') setNotice('Phân tích quá lâu. Hãy thử lại với một câu ngắn hơn.');
-    } finally {
-      clearTimeout(timer);
-      if (analysisRequest.current === controller) setAnalyzing(false);
-    }
-  }
-
   function jumpCue(index: number) {
     if (!cues[index]) return;
     playerRef.current?.pause();
@@ -180,7 +133,7 @@ export default function ShadowingHub() {
     {!videoId && <header className="shadowing-banner rounded-2xl p-5 sm:p-7">
       <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-300"><Headphones size={16} /> Nghe · nhại · hiểu</span>
       <h1 className="mt-2 text-3xl font-black">ようこそ! Shadowing & Chép chính tả</h1>
-      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300">Nghe một đoạn YouTube, nhại lại theo nhịp và ngữ điệu, rồi khám phá từ vựng, kanji và ngữ pháp trong từng câu.</p>
+      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300">Nghe một đoạn YouTube, nhại lại theo nhịp và ngữ điệu, luyện nghe và chép chính tả theo từng câu.</p>
       <form className="mt-5 flex flex-col gap-2 sm:flex-row" onSubmit={e => { e.preventDefault(); chooseVideo(urlInput); }}>
         <label className="sr-only" htmlFor="shadowing-youtube">Đường dẫn video YouTube</label>
         <input id="shadowing-youtube" className={field} value={urlInput} onChange={e => setUrlInput(e.target.value)} placeholder="Dán link YouTube hoặc ID video…" />
@@ -189,7 +142,7 @@ export default function ShadowingHub() {
     </header>}
     {notice && <p role="status" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">{notice}</p>}
     {!videoId ? <section className="space-y-6">
-      <div><h2 className="text-2xl font-black">Shadowing & Chép chính tả</h2><p className="mt-2 text-sm text-slate-300">Nghe từng câu, bắt chước phát âm và học từ vựng, kanji, ngữ pháp từ video YouTube.</p></div>
+      <div><h2 className="text-2xl font-black">Shadowing & Chép chính tả</h2><p className="mt-2 text-sm text-slate-300">Nghe từng câu, bắt chước phát âm và chép chính tả từ video YouTube.</p></div>
       {library[0] && category === 'Tất cả' && <div className="grid items-center gap-5 md:grid-cols-2"><button onClick={() => chooseVideo(library[0].youtube_video_id)} aria-label="Mở bài luyện nổi bật" className="overflow-hidden rounded-xl"><img src={library[0].thumbnail} alt={library[0].title} className="aspect-video w-full object-cover" /></button><div><span className="text-xs font-bold uppercase tracking-widest text-violet-300">Bắt đầu luyện</span><h3 className="mt-2 text-xl font-bold">{library[0].title}</h3><p className="mt-3 text-sm leading-relaxed text-slate-300">{library[0].description}</p><button className={`${button} mt-4 bg-violet-600`} onClick={() => chooseVideo(library[0].youtube_video_id)}>▶ Luyện cùng video</button></div></div>}
       <nav aria-label="Nguồn video" className="flex gap-2 overflow-x-auto border-b border-slate-500/30 pb-3">{['Tất cả', ...sources].map(source => <button key={source} onClick={() => setCategory(source)} className={`shrink-0 rounded-lg px-3 py-2 text-sm ${category === source ? 'bg-violet-500 text-white' : 'bg-slate-950/40 text-slate-300'}`}>{source}</button>)}</nav>
       {sources.filter(source => category === 'Tất cả' || category === source).map(source => <section key={source}><h3 className="mb-3 font-bold">{source}</h3><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{library.filter(v => v.source === source).map(v => <button key={v.id} onClick={() => chooseVideo(v.youtube_video_id)} className="overflow-hidden rounded-xl bg-slate-950/40 text-left hover:ring-2 hover:ring-violet-400"><div className="relative"><img src={v.thumbnail} alt="" loading="lazy" className="aspect-video w-full object-cover" /><span className="absolute bottom-2 right-2 rounded bg-black/80 px-1 text-xs">{v.duration}</span></div><div className="p-3"><h4 className="line-clamp-2 text-sm font-bold">{v.title}</h4><p className="mt-2 text-xs text-slate-400">{v.level} · Luyện từng câu</p></div></button>)}</div></section>)}
@@ -204,7 +157,7 @@ export default function ShadowingHub() {
             <div className="mb-3 flex justify-end gap-3 text-xs"><label><input type="checkbox" checked={furigana} onChange={e => setFurigana(e.target.checked)} /> Furigana</label><label><input type="checkbox" checked={translation} onChange={e => setTranslation(e.target.checked)} /> Bản dịch</label></div>
             <KaraokeCaption text={displayed?.text || sentence || 'Tải hoặc nhập phụ đề để bắt đầu'} time={currentTime} start={displayed?.start ?? parseShadowingTime(start)} end={displayed?.end ?? parseShadowingTime(end)} analysis={displayedAnalysis} furigana={furigana} />{translation && displayedAnalysis?.translation && <p className="mt-3 text-center text-sm text-slate-300">{displayedAnalysis.translation}</p>}
             {mode === 'dictation' && revealed && <button className="mt-3 text-sm underline" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
-            <p className="mt-3 text-center text-[11px] text-slate-500">Màu chữ chạy theo mốc từng câu; nhịp trong câu được ước lượng. Furigana và bản dịch hiện khi câu có kết quả phân tích.</p>
+            <p className="mt-3 text-center text-[11px] text-slate-500">Màu chữ chạy theo mốc từng câu; nhịp trong câu được ước lượng. </p>
           </section>}
           <details className="rounded-2xl border border-slate-700 bg-slate-900 p-4"><summary className="cursor-pointer font-bold">Tải / nhập phụ đề</summary>
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2"><h2 className="font-bold">Lời thoại & phụ đề</h2><button className={button} disabled={loading} onClick={loadCaptions}>{loading ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />}Tải phụ đề Nhật</button></div>
@@ -229,26 +182,6 @@ export default function ShadowingHub() {
               return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => jumpCue(i)} className={`w-full rounded-xl border p-3 text-left ${active ? 'border-blue-400 bg-blue-500/15' : selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950'}`}><span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>{mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} analysis={cache.current.get(cue.text) || null} furigana={furigana} />}{translation && (mode !== 'dictation' || revealed) && cache.current.get(cue.text)?.translation && <p className="mt-2 text-xs italic text-slate-400">{cache.current.get(cue.text)?.translation}</p>}</button>;
             })}</div>
 {!cues.length && <p className="p-3 text-sm text-slate-400">Tải phụ đề Nhật hoặc nhập SRT/VTT ở bên trái để chữ chạy theo video.</p>}</section>
-          <section className="space-y-3 rounded-2xl border border-slate-700 bg-slate-900 p-4">
-            <div className="flex items-center justify-between"><h2 className="font-bold">Câu đang luyện</h2><div className="flex gap-1"><button aria-label="Câu trước" disabled={selected <= 0} className={button} onClick={() => jumpCue(selected - 1)}><ChevronLeft size={16} /></button><button aria-label="Câu tiếp" disabled={!cues.length || selected >= cues.length - 1} className={button} onClick={() => jumpCue(selected + 1)}><ChevronRight size={16} /></button></div></div>
-            <label className="sr-only" htmlFor="shadowing-sentence">Câu tiếng Nhật cần phân tích</label>
-            {(mode !== 'dictation' || revealed) && <textarea id="shadowing-sentence" className={`${field} text-lg leading-relaxed`} value={sentence} maxLength={600} rows={3} placeholder="Nhập câu tiếng Nhật bạn vừa nghe…" onChange={e => editSentence(e.target.value)} />}
-            <div className="grid grid-cols-2 gap-3"><label className="text-xs text-slate-400">Bắt đầu (giây hoặc mm:ss)<input className={`${field} mt-1`} value={start} onChange={e => setStart(e.target.value)} /></label><label className="text-xs text-slate-400">Kết thúc<input className={`${field} mt-1`} value={end} onChange={e => setEnd(e.target.value)} /></label></div>
-            <button onClick={saveTiming} disabled={!sentence.trim()} className={button}>Lưu mốc karaoke</button>
-            <button disabled={analyzing || !sentence.trim() || (mode === 'dictation' && !revealed)} onClick={analyzeSentence} className={`${button} w-full bg-amber-400 text-slate-950 hover:bg-amber-300`}>{analyzing ? <Loader2 size={16} className="animate-spin" /> : <Languages size={16} />}Phân tích câu</button>
-          </section>
-          <section className="rounded-2xl border border-slate-700 bg-slate-900 p-4">
-            <div className="mb-4 flex gap-2" role="tablist" aria-label="Phân tích lời thoại">{([['vocabulary', 'Từ vựng'], ['kanji', 'Kanji'], ['grammar', 'Ngữ pháp']] as const).map(([id, label]) => <button key={id} id={`shadowing-tab-${id}`} role="tab" aria-controls="shadowing-analysis-panel" aria-selected={analysisTab === id} className={`min-h-11 flex-1 rounded-xl px-2 text-sm font-bold ${analysisTab === id ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-slate-300'}`} onClick={() => setAnalysisTab(id)}>{label}</button>)}</div>
-            <div id="shadowing-analysis-panel" role="tabpanel" aria-labelledby={`shadowing-tab-${analysisTab}`}>
-              {!analysis || (mode === 'dictation' && !revealed) ? <div className="py-8 text-center text-sm text-slate-400"><BookOpen className="mx-auto mb-3" />Chọn câu và nhấn “Phân tích câu” để xem nghĩa, cách đọc và cấu trúc.</div> : <div className="space-y-3">
-                {analysis.translation && <p className="rounded-xl bg-amber-400/10 p-3 text-sm text-amber-100">{analysis.translation}</p>}
-                {analysis.note && <p role="status" className="text-xs leading-relaxed text-slate-400">{analysis.note}</p>}
-                {analysisTab === 'vocabulary' && <>{analysis.vocabulary.map((v, i) => <article key={i} className="rounded-xl border border-slate-700 bg-slate-950 p-3"><h3 className="text-xl font-bold text-cyan-200">{v.word} <span className="text-sm font-normal text-slate-400">{v.reading}</span></h3><p className="mt-1 text-sm">{v.meaning}</p>{v.type && <p className="mt-1 text-xs text-slate-400">{v.type}</p>}</article>)}{!analysis.vocabulary.length && <p className="text-sm text-slate-400">Chưa tìm thấy từ vựng trong nguồn dữ liệu hiện tại.</p>}</>}
-                {analysisTab === 'kanji' && <>{analysis.kanji.map(k => <article key={k.character} className="space-y-2 rounded-xl border border-slate-700 bg-slate-950 p-3"><h3 className="text-3xl font-bold text-amber-300">{k.character}<span className="ml-3 text-sm font-normal text-slate-200">{k.meaning}</span></h3><p className="text-sm"><span className="text-slate-400">Âm On:</span> {k.onyomi || 'Chưa có'} · <span className="text-slate-400">Âm Kun:</span> {k.kunyomi || 'Chưa có'}</p>{k.radical && <p className="text-sm">Bộ thủ: {k.radical}</p>}{k.components && <p className="text-sm">Cấu tạo: {k.components}</p>}{k.mnemonic && <p className="text-sm text-slate-300">{k.mnemonic}</p>}</article>)}{!analysis.kanji.length && <p className="text-sm text-slate-400">Câu này không có kanji.</p>}</>}
-                {analysisTab === 'grammar' && <>{analysis.grammar.map((g, i) => <article key={i} className="space-y-2 rounded-xl border border-slate-700 bg-slate-950 p-3"><h3 className="text-lg font-bold text-purple-300">{g.pattern}</h3><p className="text-sm font-semibold">{g.meaning}</p><p className="whitespace-pre-line text-sm leading-relaxed text-slate-300">{g.explanation}</p>{g.example && <p className="whitespace-pre-line rounded-lg bg-slate-800 p-2 text-sm">{g.example}</p>}</article>)}{!analysis.grammar.length && <p className="text-sm text-slate-400">Chưa có phân tích ngữ pháp. {analysis.source === 'dictionary' ? 'Cần cấu hình AI để phân tích theo ngữ cảnh.' : 'Hãy thử một câu đầy đủ hơn.'}</p>}</>}
-              </div>}
-            </div>
-          </section>
           </>}
         </div>
       </div>
