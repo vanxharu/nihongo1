@@ -27,7 +27,51 @@
     <link href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho:wght@400;700&family=Itim&family=Klee+One:wght@400;600&family=Mali:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;600;700;900&family=Pangolin&family=Patrick+Hand&family=Shippori+Mincho:wght@400;500;600;700;800&family=Yomogi&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <div id="boot-status" role="status" style="position:fixed;inset:0;z-index:99999;display:grid;place-content:center;text-align:center;padding:24px;background:#0c1120;color:#f1f5f9;font:16px system-ui">
+      <h1 style="font-size:24px">NihonGo!</h1>
+      <p id="boot-message">Đang mở trang học…</p>
+      <button id="boot-retry" style="padding:12px 20px;border:0;border-radius:12px;background:#fbbf24;color:#111827;font:inherit;cursor:pointer">Tải lại trang</button>
+      <noscript>Vui lòng bật JavaScript để sử dụng trang học.</noscript>
+    </div>
     <div id="root"></div>
+    <script>
+      (() => {
+        const status = document.getElementById('boot-status');
+        const message = document.getElementById('boot-message');
+        let recovering = false;
+        const refresh = () => {
+          const url = new URL(location.href);
+          url.searchParams.set('__refresh', Date.now().toString());
+          location.replace(url.href);
+        };
+        window.nihongoRefreshPage = refresh;
+        window.nihongoRecoverModule = () => {
+          if (recovering || navigator.onLine === false) return false;
+          try {
+            const last = Number(sessionStorage.getItem('nihongo_module_recovery') || 0);
+            if (Date.now() - last < 600000) return false;
+            sessionStorage.setItem('nihongo_module_recovery', Date.now().toString());
+          } catch { return false; }
+          recovering = true;
+          refresh();
+          return true;
+        };
+        const failed = () => {
+          status.style.display = 'grid';
+          message.textContent = navigator.onLine === false ? 'Bạn đang mất kết nối. Hãy kết nối mạng rồi tải lại trang.' : 'Trang chưa tải được. Bạn có thể thử tải lại.';
+        };
+        document.getElementById('boot-retry').onclick = refresh;
+        window.addEventListener('vite:preloadError', () => window.nihongoRecoverModule());
+        window.addEventListener('error', event => {
+          if (event.target && event.target.tagName === 'SCRIPT' && event.target.type === 'module') {
+            failed(); window.nihongoRecoverModule();
+          } else if (!window.nihongoStarted) failed();
+        }, true);
+        window.addEventListener('unhandledrejection', () => { if (!window.nihongoStarted) failed(); });
+        window.nihongoAppStarted = () => { window.nihongoStarted = true; status.style.display = 'none'; };
+        setTimeout(() => { if (!window.nihongoStarted) failed(); }, 20000);
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

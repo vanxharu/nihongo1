@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
@@ -6,14 +6,23 @@ import './index.css';
 import { AuthProvider } from './contexts/AuthContext';
 import { getDefaultReminderSettings, syncRemindersWithServiceWorker } from './utils/notifications';
 import { BRAND_NAME } from './constants/brand';
+import { AppErrorBoundary } from './utils/lazyWithRetry';
+
+function StartupReady() {
+  useEffect(() => { (window as any).nihongoAppStarted?.(); }, []);
+  return null;
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <AppErrorBoundary fallbackTitle="Trang học chưa tải được">
     <BrowserRouter>
       <AuthProvider>
         <App />
+        <StartupReady />
       </AuthProvider>
     </BrowserRouter>
+    </AppErrorBoundary>
   </StrictMode>,
 );
 

@@ -27,15 +27,12 @@ export function lazyWithRetry<T extends React.ComponentType<any>>(
       lastError instanceof Error && 
       (lastError.message.includes('Failed to fetch dynamically imported module') ||
        lastError.message.includes('Loading chunk') ||
-       lastError.message.includes('dynamically imported module'));
+       lastError.message.includes('dynamically imported module') ||
+       lastError.message.includes('Importing a module script failed') ||
+       lastError.message.includes('error loading dynamically imported module'));
     
     if (isChunkError && typeof window !== 'undefined') {
-      const now = Date.now();
-      const lastReload = parseInt(sessionStorage.getItem('last_chunk_reload_ts') || '0', 10);
-      if (now - lastReload > 12000) {
-        sessionStorage.setItem('last_chunk_reload_ts', now.toString());
-        window.location.reload();
-      }
+      (window as any).nihongoRecoverModule?.();
     }
 
     throw lastError;
@@ -64,6 +61,7 @@ export class AppErrorBoundary extends React.Component<AppErrorBoundaryProps, App
   }
 
   override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    (window as any).nihongoAppStarted?.();
     console.error('AppErrorBoundary caught an error:', error, errorInfo);
   }
 
@@ -73,7 +71,8 @@ export class AppErrorBoundary extends React.Component<AppErrorBoundaryProps, App
       this.props.onReset();
     }
     if (typeof window !== 'undefined') {
-      window.location.reload();
+      if ((window as any).nihongoRefreshPage) (window as any).nihongoRefreshPage();
+      else window.location.reload();
     }
   };
 

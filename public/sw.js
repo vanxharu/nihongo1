@@ -1,5 +1,5 @@
 // JPStudy PWA Service Worker with Background Notification & Offline Support
-const CACHE_NAME = 'jpstudy-pwa-v8-audio-alignment';
+const CACHE_NAME = 'jpstudy-pwa-v9-network-navigation';
 const DATA_CACHE_NAME = 'jpstudy-data-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
@@ -784,64 +784,39 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event with cache-first and background revalidation
-self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-
-  // Bypass SW for cross-origin requests, non-GET, Firebase Auth internal handlers, OAuth callbacks, and dev modules
-  if (
-    event.request.method !== 'GET' ||
-    url.origin !== self.location.origin ||
-    url.pathname.startsWith('/__/') ||
-    url.pathname.includes('/__/auth') ||
-    url.pathname.includes('/__/firebase') ||
-    url.pathname.includes('/api/') ||
-    url.pathname.startsWith('/shadowing-alignments/') ||
-    url.pathname.startsWith('/@') ||
-    url.pathname.startsWith('/src/') ||
-    url.pathname.startsWith('/node_modules/') ||
-    url.search.includes('import') ||
-    url.search.includes('v=') ||
-    url.search.includes('t=') ||
-    url.search.includes('apiKey') ||
-    url.search.includes('auth')
-  ) {
-    return;
-  }
-
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        fetch(event.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, networkResponse.clone());
-            });
-          }
-        }).catch(() => {});
-        return cachedResponse;
+// Keep HTML fresh across deployments; only cache valid responses of each type.
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  const url = new URL(request.url);
+  if (request.method !== 'GET' || url.origin !== self.location.origin ||
+      /^\/(?:api|__|@|src|node_modules|shadowing-alignments|shadowing-prepared)(?:\/|$)/.test(url.pathname)) return;
+  const navigation = request.mode === 'navigate';
+  const asset = /\.(?:js|mjs|css)$/.test(url.pathname);
+  const valid = response => response && response.ok && (!asset ||
+    (url.pathname.endsWith('.css') ? /text\/css/i : /(?:javascript|ecmascript)/i).test(response.headers.get('content-type') || ''));
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME).catch(() => null);
+    if (navigation) {
+      try {
+        const response = await fetch(request, { cache: 'no-cache' });
+        if (!response.ok || !/text\/html/i.test(response.headers.get('content-type') || '')) return response;
+        if (cache) await cache.put('/index.html', response.clone()).catch(() => {});
+        return response;
+      } catch {
+        return await cache?.match('/index.html').catch(() => undefined) || new Response('Bạn đang mất kết nối. Hãy kết nối mạng rồi tải lại trang.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
       }
-
-      return fetch(event.request).then((networkResponse) => {
-        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
-          return networkResponse;
-        }
-
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-
-        return networkResponse;
-      }).catch(() => {
-        if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
-        }
-      });
-    })
-  );
+    }
+    const cached = await cache?.match(request).catch(() => undefined);
+    if (valid(cached)) return cached;
+    if (cached) await cache.delete(request).catch(() => {});
+    try {
+      const response = await fetch(request);
+      if (cache && valid(response)) await cache.put(request, response.clone()).catch(() => {});
+      // HTML returned for a missing JS module must never enter the asset cache.
+      return response;
+    } catch { return new Response('Resource unavailable', { status: 503 }); }
+  })());
 });
-
 // Periodic Background Sync (runs in background when app is closed on Android/PWA)
 self.addEventListener('periodicsync', (event) => {
   if (event.tag === 'jpstudy-vocab-sync' || event.tag === 'jpstudy-daily-sync') {
