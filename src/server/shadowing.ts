@@ -6,6 +6,25 @@ import { VOCABULARY_DATA } from '../data.js';
 import { KANJI_DICTIONARY } from '../data/kanjiDictionary.js';
 import type { ShadowingAnalysis, ShadowingCue } from '../utils/shadowing';
 
+export function parseManagedCaptions(data: any): ShadowingCue[] {
+  if (!/^ja(?:-|$)/.test(data?.lang || '') || !Array.isArray(data.content)) throw new Error('Japanese captions unavailable');
+  const cues: ShadowingCue[] = data.content.filter((c: any) => c && typeof c.text === 'string' && c.text.trim() &&
+    Number.isFinite(c.offset) && c.offset >= 0 && Number.isFinite(c.duration) && c.duration > 0 && (!c.lang || /^ja(?:-|$)/.test(c.lang)))
+    .slice(0, 500).map((c: any, index: number) => ({ id: `managed-${index}`, text: c.text.replace(/<[^>]*>/g, '').slice(0, 1000), start: c.offset / 1000, end: (c.offset + c.duration) / 1000 }));
+  if (!cues.length) throw new Error('Japanese captions unavailable');
+  return cues.sort((a, b) => a.start! - b.start!);
+}
+
+async function fetchManagedCaptions(videoId: string): Promise<ShadowingCue[]> {
+  const url = new URL('https://api.supadata.ai/v1/transcript');
+  url.searchParams.set('url', `https://www.youtube.com/watch?v=${videoId}`);
+  url.searchParams.set('lang', 'ja'); url.searchParams.set('text', 'false'); url.searchParams.set('mode', 'native');
+  const response = await fetch(url, { headers: { 'x-api-key': process.env.SUPADATA_API_KEY! }, signal: AbortSignal.timeout(20000) });
+  if (response.status === 202) throw new Error('Caption provider is still processing');
+  if (!response.ok) throw new Error(`Caption provider returned ${response.status}`);
+  return parseManagedCaptions(await response.json());
+}
+
 export function localShadowingAnalysis(sentence: string): ShadowingAnalysis {
   const seen = new Set<string>();
   const vocabulary = VOCABULARY_DATA.filter(v => {
@@ -61,7 +80,17 @@ export async function shadowingTranscript(req: Request, res: Response) {
     return res.json({ videoId, language: 'ja', cues });
   } catch (error) {
     console.error('[Shadowing transcript]', error instanceof Error ? error.message : 'Unknown transcript error');
-    return res.status(422).json({ error: 'Không lấy được phụ đề tiếng Nhật của video này. Bạn có thể dán lời thoại hoặc nhập file SRT/VTT bên dưới.' });
+    if (process.env.SUPADATA_API_KEY) {
+      try {
+        const cues = await fetchManagedCaptions(videoId);
+        res.setHeader('Cache-Control', 'public, max-age=300');
+        return res.json({ videoId, language: 'ja', source: 'native-provider', cues });
+      } catch (providerError) {
+        console.error('[Shadowing caption provider]', providerError instanceof Error ? providerError.message : 'Unknown provider error');
+        return res.status(422).json({ error: 'Dịch vụ phụ đề chưa trả được bản tiếng Nhật cho video này. Hãy thử lại hoặc nhập SRT/VTT.' });
+      }
+    }
+    return res.status(422).json({ error: 'Chưa tải được phụ đề tiếng Nhật từ YouTube. YouTube có thể hạn chế truy cập từ máy chủ. Hãy thử lại hoặc nhập SRT/VTT.', code: 'CAPTION_FETCH_UNAVAILABLE' });
   }
 }
 

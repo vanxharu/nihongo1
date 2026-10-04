@@ -12,4 +12,8 @@ Karaoke follows the YouTube playback clock, including speed changes and backward
 
 The Express development server and Vercel functions share handlers in `src/server/shadowing.ts`. Caption requests have bounded network timeouts. When captions cannot be obtained, manual import stays available.
 
+Vercel uses native Node ESM: API entry points and their runtime dependencies use explicit `.js` import extensions. `scripts/shadowing-runtime.test.mjs` compiles and executes both entries in native Node to catch deployment-only module resolution errors.
+
+YouTube may refuse transcript requests from cloud servers even when the same video has captions available locally. Configure the server-only `SUPADATA_API_KEY` environment variable to enable a managed original-caption fallback (Supadata `/v1/transcript`, `mode=native`, `lang=ja`). It never silently substitutes translated English or generated AI text for Japanese captions. Add the key to Production in Vercel and redeploy; do not place it in browser variables or source control. Requests consume the provider account's quota. Without the key, cloud restrictions remain an external limitation; API failures are reported as readable JSON errors.
+
 Checks: `npm run lint`, `npm run build`, `npm run test:shadowing`, `npm run test:audio`.

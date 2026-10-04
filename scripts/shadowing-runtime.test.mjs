@@ -31,6 +31,7 @@ test('compiled Vercel entries load in native Node ESM and return timed captions'
     writeFileSync(resolve(output, 'run.mjs'), `
       import transcript from './api/shadowing/transcript.js';
       import analyze from './api/shadowing/analyze.js';
+      import {parseManagedCaptions} from './src/server/shadowing.js';
       globalThis.fetch = async url => String(url).includes('/youtubei/')
         ? Response.json({captions:{playerCaptionsTracklistRenderer:{captionTracks:[{languageCode:'ja',baseUrl:'https://www.youtube.com/api/timedtext'}]}}})
         : new Response('<timedtext><body><p t="4520" d="8840"><s>日本語能力試験。</s></p></body></timedtext>');
@@ -39,10 +40,22 @@ test('compiled Vercel entries load in native Node ESM and return timed captions'
       await transcript({method:'GET',query:{videoId:'I3kvL128MIQ'}},res());
       await transcript({method:'GET',query:{videoId:'bad'}},res());
       await analyze({method:'POST',body:{sentence:'日本語を勉強しています。'}},res());
+      process.env.SUPADATA_API_KEY='test-only-key';
+      globalThis.fetch = async (url, init) => {
+        if (new URL(url).hostname === 'api.supadata.ai') {
+          if (new URL(url).searchParams.get('mode') !== 'native' || init.headers['x-api-key'] !== 'test-only-key') throw new Error('Invalid provider request');
+          return Response.json({lang:'ja',content:[{text:'日本語',offset:1500,duration:2000}]});
+        }
+        return String(url).includes('/youtubei/') ? Response.json({}) : new Response('<html></html>');
+      };
+      await transcript({method:'GET',query:{videoId:'I3kvL128MIQ'}},res());
+      let rejectedEnglish=false;
+      try {parseManagedCaptions({lang:'en',content:[{text:'English',offset:0,duration:2000}]})} catch {rejectedEnglish=true}
+      replies.push({rejectedEnglish});
       console.log(JSON.stringify(replies));
     `);
     const replies = JSON.parse(execFileSync(process.execPath, [resolve(output, 'run.mjs')], {
-      encoding: 'utf8', env: { ...process.env, OPENAI_API_KEY: '', GEMINI_API_KEY: '' },
+      encoding: 'utf8', env: { ...process.env, OPENAI_API_KEY: '', GEMINI_API_KEY: '', SUPADATA_API_KEY: '' },
     }));
     assert.equal(replies[0].status, 200);
     assert.ok(Math.abs(replies[0].data.cues[0].start - 4.52) < 0.00001);
@@ -50,5 +63,9 @@ test('compiled Vercel entries load in native Node ESM and return timed captions'
     assert.equal(replies[1].status, 400);
     assert.equal(replies[2].data.source, 'dictionary');
     assert.ok(replies[2].data.vocabulary.length > 0);
+    assert.equal(replies[3].data.source, 'native-provider');
+    assert.equal(replies[3].data.cues[0].start, 1.5);
+    assert.equal(replies[3].data.cues[0].end, 3.5);
+    assert.equal(replies[4].rejectedEnglish, true);
   } finally { rmSync(output, { recursive: true, force: true }); }
 });
