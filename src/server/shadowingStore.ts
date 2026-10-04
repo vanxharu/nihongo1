@@ -2,6 +2,9 @@ import type { Request, Response } from 'express';
 import { cert, getApps, initializeApp } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { getFirestore } from 'firebase-admin/firestore';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { SHADOWING_VIDEOS } from '../data/shadowingVideos.js';
 import { normalizeShadowingTimeline, validShadowingTimings } from '../utils/shadowing.js';
 import type { ShadowingCue } from '../utils/shadowing.js';
 
@@ -41,7 +44,7 @@ export function validateStoredCues(value: unknown): ShadowingCue[] {
   return normalizeShadowingTimeline(cues);
 }
 
-export async function writeVideo(ref: FirebaseFirestore.DocumentReference, title: string, cues: ShadowingCue[], revision?: string | null) {
+export async function writeVideo(ref: FirebaseFirestore.DocumentReference, title: string, cues: ShadowingCue[], revision?: string | null, sentenceVersion?: string) {
   const database = ref.firestore;
   const nextRevision = crypto.randomUUID();
   await database.runTransaction(async tx => {
@@ -50,13 +53,32 @@ export async function writeVideo(ref: FirebaseFirestore.DocumentReference, title
     const chunks = Array.from({ length: Math.ceil(cues.length / 50) }, (_, i) => cues.slice(i * 50, (i + 1) * 50));
     chunks.forEach((items, i) => tx.set(ref.collection('captions').doc(`${nextRevision}-${i}`), { cues: items }));
     // Readers follow a single revision, so partial updates never mix caption versions.
-    tx.set(ref, { title, videoId: ref.id, revision: nextRevision, chunkCount: chunks.length, cueCount: cues.length, updatedAt: new Date().toISOString() });
+    tx.set(ref, { title, videoId: ref.id, revision: nextRevision, chunkCount: chunks.length, cueCount: cues.length, updatedAt: new Date().toISOString(), ...(sentenceVersion ? { sentenceVersion } : {}) });
     if (previous.exists) for (let i = 0; i < (previous.data()?.chunkCount || 0); i++) tx.delete(ref.collection('captions').doc(`${previous.data()!.revision}-${i}`));
   });
   return nextRevision;
 }
 
-export async function readVideo(ref: FirebaseFirestore.DocumentReference) {
+/** Deploy trusted catalog corrections once; request data never controls these writes. */
+async function preparedCatalogVideo(database: FirebaseFirestore.Firestore, id: string) {
+  const ref = database.collection('shadowing_videos').doc(id);
+  const existing = await readVideo(ref);
+  if (!SHADOWING_VIDEOS.some(video => video.youtube_video_id === id)) return existing;
+  const version = '2026-10-04-v1';
+  if (existing?.sentenceVersion === version) return existing;
+  let source: string;
+  try { source = await readFile(path.join(process.cwd(), 'public', 'shadowing-prepared', `${id}.json`), 'utf8'); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === 'ENOENT') return existing; throw error; }
+  const packet = JSON.parse(source);
+  if (packet.videoId !== id || packet.sentenceVersion !== version || typeof packet.title !== 'string') throw new Error('INVALID_PREPARED_CATALOG');
+  const cues = validateStoredCues(packet.cues);
+  if (cues.some(cue => !cue.translation || !Array.isArray(cue.readings))) throw new Error('INCOMPLETE_PREPARED_CATALOG');
+  try { await writeVideo(ref, packet.title, cues, existing?.revision || null, version); }
+  catch (error) { if (!(error instanceof Error) || error.message !== 'REVISION_CONFLICT') throw error; }
+  return readVideo(ref);
+}
+
+export async function readVideo(ref: FirebaseFirestore.DocumentReference): Promise<(FirebaseFirestore.DocumentData & { cues: ShadowingCue[] }) | null> {
   return ref.firestore.runTransaction(async tx => {
   const info = await tx.get(ref);
   if (!info.exists) return null;
@@ -84,7 +106,7 @@ export async function shadowingVideo(req: Request, res: Response) {
       if (typeof id !== 'string' || !/^[\w-]{11}$/.test(id)) return res.status(400).json({ error: 'Link video không hợp lệ.' });
       let video = uid ? await readVideo(database.collection('shadowing_users').doc(uid).collection('videos').doc(id)) : null;
       const personal = !!video;
-      video ||= await readVideo(database.collection('shadowing_videos').doc(id));
+      video ||= await preparedCatalogVideo(database, id);
       res.setHeader('Cache-Control', uid ? 'private, no-store' : 'public, max-age=60');
       return video ? res.json({ ...video, personal }) : res.status(404).json({ error: 'Video chưa có phụ đề được lưu.' });
     }

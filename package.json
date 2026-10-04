@@ -14,6 +14,7 @@
     "test:shadowing": "node --test scripts/shadowing.test.mjs scripts/shadowing-runtime.test.mjs scripts/shadowing-alignment.test.mjs",
     "align:shadowing": "tsx scripts/align-shadowing.ts",
     "prepare:shadowing": "tsx scripts/prepare-shadowing.ts",
+    "prepare:shadowing:sentences": "tsx scripts/prepare-shadowing-sentences.ts",
     "import:shadowing": "tsx scripts/import-shadowing.ts"
   },
   "dependencies": {

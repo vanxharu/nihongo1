@@ -37,6 +37,13 @@ export function shadowingTextFill(time: number, offset: number, timings: Shadowi
   return timing && Number.isFinite(time) && time >= timing.start ? 100 : 0;
 }
 
+/** Native captions supply onsets only; aligned audio can also supply word ends. */
+export function currentShadowingWord(time: number, cueEnd: number | null, timings: ShadowingTextTiming[]): ShadowingTextTiming | undefined {
+  if (!Number.isFinite(time) || cueEnd === null || time >= cueEnd) return undefined;
+  const word = [...timings].reverse().find(t => time >= t.start);
+  return word && (word.end === word.start || time < word.end) ? word : undefined;
+}
+
 export function parseShadowingAlignment(value: any, videoId: string): ShadowingCue[] {
   if (value?.version !== 1 || value.videoId !== videoId || !Array.isArray(value.cues) || !value.cues.length || value.cues.length > 500) throw new Error('Invalid alignment');
   if (!value.cues.every((cue: ShadowingCue) => cue && typeof cue.id === 'string' && typeof cue.text === 'string' && cue.text.length <= 1000 &&

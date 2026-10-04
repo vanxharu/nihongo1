@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShadowingAnalysis, ShadowingTextTiming, shadowingTextFill, validShadowingTimings } from '../../utils/shadowing';
+import { ShadowingAnalysis, ShadowingTextTiming, shadowingTextFill, validShadowingTimings, currentShadowingWord } from '../../utils/shadowing';
 const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
 
 function KaraokeCaption({ text, time, start, end, timings, analysis, furigana }: {
@@ -8,7 +8,7 @@ function KaraokeCaption({ text, time, start, end, timings, analysis, furigana }:
   analysis: ShadowingAnalysis | null; furigana: boolean;
 }) {
   const measured = validShadowingTimings({ id: '', text, start, end, timings }) ? timings! : [];
-  const current = [...measured].reverse().find(t => time >= t.start && time < t.end);
+  const current = currentShadowingWord(time, end, measured);
   const words = [...(analysis?.readings || analysis?.vocabulary || [])].filter(v => v.word).sort((a, b) => b.word.length - a.word.length);
   const pieces: { text: string; reading?: string; offset: number }[] = [];
   for (let offset = 0; offset < text.length;) {

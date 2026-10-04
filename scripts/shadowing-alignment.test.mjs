@@ -15,6 +15,55 @@ function load(path, imports = {}) {
 const utils = load('../src/utils/shadowing.ts');
 const { attachForcedAlignment } = load('../src/server/shadowingAlignment.ts', { '../utils/shadowing.js': utils });
 const { parseYouTubeWordCaptions } = load('../src/server/shadowingNativeTiming.ts', { '../utils/shadowing.js': utils, cheerio });
+const { sentenceTokens, sentenceGroups } = load('../src/utils/shadowingSentences.ts', { './shadowing.js': utils });
+
+test('current word follows zero-duration native onsets and respects measured word ends', () => {
+  const onsets = [{ text: 'はい', textStart: 0, textEnd: 2, start: 1, end: 1 }, { text: 'そう', textStart: 2, textEnd: 4, start: 2, end: 2 }];
+  assert.equal(utils.currentShadowingWord(0.9, 3, onsets), undefined);
+  assert.equal(utils.currentShadowingWord(1.5, 3, onsets), onsets[0]);
+  assert.equal(utils.currentShadowingWord(2, 3, onsets), onsets[1]);
+  assert.equal(utils.currentShadowingWord(3, 3, onsets), undefined);
+  assert.equal(utils.currentShadowingWord(1.5, 3, [{ ...onsets[0], end: 1.2 }]), undefined);
+  assert.equal(utils.currentShadowingWord(1.1, 3, onsets), onsets[0]);
+});
+
+test('sentence editing joins broken clauses and separates replies at native word onsets', () => {
+  const source = [
+    { id: 'a', text: '昨日から頭が', start: 57.079, end: 58.92, timings: [{ text: '昨日から頭が', textStart: 0, textEnd: 6, start: 57.079, end: 57.079 }] },
+    { id: 'b', text: '痛いんですそうですか', start: 58.92, end: 64.6, timings: [{ text: '痛いんです', textStart: 0, textEnd: 5, start: 58.92, end: 58.92 }, { text: 'そうですか', textStart: 5, textEnd: 10, start: 61.879, end: 61.879 }] },
+  ];
+  const tokens = sentenceTokens(source);
+  const result = sentenceGroups(tokens, [{ endToken: 1, sourceText: '昨日から頭が痛いんです', translation: 'Tôi bị đau đầu từ hôm qua.' }, { endToken: 2, sourceText: 'そうですか', translation: 'Vậy sao?' }]);
+  assert.equal(result[0].start, 57.079);
+  assert.equal(result[0].end, 61.879);
+  assert.equal(result[1].start, 61.879);
+  assert.equal(result[0].translation, 'Tôi bị đau đầu từ hôm qua.');
+  assert.ok(result.every(utils.validShadowingTimings));
+  assert.equal(result.map(c => c.text).join(''), source.map(c => c.text).join(''));
+  assert.throws(() => sentenceGroups(tokens, [{ endToken: 1, sourceText: '頭が痛い', translation: 'wrong' }]), /match/);
+});
+
+test('whole caption without word timing cannot become fake measured words', () => {
+  const tokens = sentenceTokens([{ id: 'a', text: 'はい。', start: 1, end: 2 }, { id: 'b', text: '分かりました。', start: 2, end: 4 }]);
+  const result = sentenceGroups(tokens, [{ endToken: 1, sourceText: 'はい。分かりました。', translation: 'Vâng, tôi hiểu rồi.' }]);
+  assert.equal(result[0].timings, undefined);
+});
+
+test('prepared N4 dialogue keeps patient and doctor turns separate with their own translations', () => {
+  const packet = JSON.parse(readFileSync(new URL('../public/shadowing-prepared/R1Oy-PqXhz4.json', import.meta.url), 'utf8'));
+  const index = packet.cues.findIndex(c => c.text === '昨日から頭が痛くて喉も痛いんです');
+  assert.ok(index >= 0);
+  const [patient, reply, examination] = packet.cues.slice(index, index + 3);
+  assert.equal(reply.text, 'そうですか');
+  assert.equal(examination.text, 'じゃあちょっと喉を見ましょうね');
+  assert.equal(patient.start, 57.079);
+  assert.equal(patient.end, reply.start);
+  assert.equal(reply.end, examination.start);
+  assert.match(patient.translation, /đầu.*đau.*cổ họng.*đau/);
+  assert.equal(reply.translation, 'Vậy sao');
+  assert.ok([patient, reply, examination].every(utils.validShadowingTimings));
+  assert.ok(packet.cues.every((c,i) => c.translation && Array.isArray(c.readings) && c.end > c.start && (i === 0 || c.start >= packet.cues[i-1].end - 0.001)));
+});
 const cues = [{ id: 'a', text: '日 本。', start: 0, end: 9 }, { id: 'b', text: '語😀', start: 5, end: 12 }];
 const measured = { characters: [
   { text: '日', start: 1, end: 1.3 }, { text: ' ', start: 1.3, end: 1.5 },
