@@ -40,6 +40,7 @@ const LessonHub = lazyWithRetry(() => import('./components/LessonHub'));
 const HandwritingPractice = lazyWithRetry(() => import('./components/HandwritingPractice'));
 const StudyBooksHub = lazyWithRetry(() => import('./components/StudyBooksHub'));
 const ListeningHub = lazyWithRetry(() => import('./components/listening/ListeningHub').then(m => ({ default: m.ListeningHub })));
+const ShadowingHub = lazyWithRetry(() => import('./components/shadowing/ShadowingHub'));
 const GrammarPractice = lazyWithRetry(() => import('./components/GrammarPractice'));
 const JlptRoadmapView = lazyWithRetry(() => import('./components/roadmap/JlptRoadmapView'));
 const AchievementsView = lazyWithRetry(() => import('./components/achievements/AchievementsView'));
@@ -786,6 +787,7 @@ export default function App() {
 
       {/* 15. Từ điển Jisho */}
       <Route path="/tu-dien" element={<DictionaryLookup />} />
+      <Route path="/shadowing" element={<ShadowingHub />} />
 
       {/* 16. Bài học Minna */}
       <Route 

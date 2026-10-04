@@ -97,6 +97,10 @@ export default function MobileBottomNav({
   // 5 Main Navigation Items for Mobile Bottom Bar: Luyện tập, Lý thuyết, Lộ trình, Tiến độ, Cá nhân
   const mainNavItems = [
     {
+      id: 'shadowing', path: '/shadowing', label: 'Shadowing', icon: Volume2,
+      checkActive: (tab: string, pathname: string) => tab === 'shadowing' || pathname.startsWith('/shadowing'),
+    },
+    {
       id: 'practice',
       path: '/',
       label: 'Luyện tập',
