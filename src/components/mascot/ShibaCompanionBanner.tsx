@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Award, MessageCircle, Flame, ArrowRight, BookOpen, Volume2 } from 'lucide-react';
 import ShibaMascot from './ShibaMascot';
 import { speakJapanese } from '../../utils/audio';
+import { dailyShibaTip } from '../../utils/dailyShibaTip';
 
 interface ShibaCompanionBannerProps {
   onNavigate: (tab: string) => void;
@@ -10,34 +11,6 @@ interface ShibaCompanionBannerProps {
   streakCount?: number;
   className?: string;
 }
-
-const SHIBA_DAILY_TIPS: Record<string, { ja: string; vi: string; romaji: string }> = {
-  N5: {
-    ja: 'はじめまして！一緒に楽しく日本語を学ぼう！',
-    vi: 'Rất vui được gặp bạn! Hãy cùng học tiếng Nhật thật vui nào!',
-    romaji: 'Hajimemashite! Issho ni tanoshiku nihongo o manabou!'
-  },
-  N4: {
-    ja: '継続は力なり！毎日5分でも素晴らしい進歩だよ。',
-    vi: 'Kiên trì là sức mạnh! Mỗi ngày 5 phút cũng là tiến bộ vượt bậc rồi.',
-    romaji: 'Keizoku wa chikara nari! Mainichi gofun demo subarashii shinpo da yo.'
-  },
-  N3: {
-    ja: '七転び八起き！失敗を恐れずにたくさん話そう。',
-    vi: 'Ngã 7 lần, đứng dậy 8 lần! Đừng ngại sai mà hãy nói thật nhiều nhé.',
-    romaji: 'Nanakorobi yaoki! Shippai o osorezu ni takusan hanasou.'
-  },
-  N2: {
-    ja: '千里の道も一歩から。今日も着実に積み重ねよう！',
-    vi: 'Đường ngàn dặm bắt đầu từ một bước chân. Hôm nay cùng tích lũy nhé!',
-    romaji: 'Senri no michi mo ippo kara. Kyou mo chakujitsu ni tsumikasaneyou!'
-  },
-  N1: {
-    ja: '日進月歩！プロフェッショナルな日本語を目指そう。',
-    vi: 'Tiến bộ từng ngày từng tháng! Cùng hướng tới tiếng Nhật chuyên gia.',
-    romaji: 'Nisshin geppo! Purofesshonaru na nihongo o mezasou.'
-  }
-};
 
 export default function ShibaCompanionBanner({
   onNavigate,
@@ -49,7 +22,13 @@ export default function ShibaCompanionBanner({
   const [poseIndex, setPoseIndex] = useState<number>(0);
   const poses: Array<'waving' | 'studying' | 'cheering' | 'winking'> = ['waving', 'cheering', 'studying', 'winking'];
 
-  const tip = SHIBA_DAILY_TIPS[targetLevel] || SHIBA_DAILY_TIPS.N5;
+  const [tip, setTip] = useState(() => dailyShibaTip());
+  useEffect(() => {
+    const update = () => setTip(dailyShibaTip());
+    const timer = window.setInterval(update, 60000);
+    window.addEventListener('focus', update);
+    return () => { clearInterval(timer); window.removeEventListener('focus', update); };
+  }, []);
 
   const handleMascotClick = () => {
     // Cycle pose & speak encouragement

@@ -13,14 +13,14 @@
 .karaoke-mode { display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid #a78bfa40;border-radius:999px;background:#8b5cf615;color:#c4b5fd;font-weight:650; }
 .karaoke-stage .karaoke-line { margin:12px auto;max-width:32em;min-height:72px;font-size:clamp(1.45rem,3.1vw,2.35rem);line-height:2.25;letter-spacing:.025em; }
 .karaoke-stage .karaoke-line rt { color:#b7a9d6;font-weight:500;letter-spacing:.04em; }
-.karaoke-char { color:#f1f5f9;transition:color .12s ease,text-shadow .12s ease; }
-.karaoke-char.is-spoken { color:#fcd581; }
-.karaoke-char.is-current { color:#ffe8af;text-shadow:0 0 16px #fbbf2460;text-decoration:underline;text-decoration-color:#fbbf24;text-decoration-thickness:3px;text-underline-offset:8px; }
+@property --karaoke-fill { syntax:'<percentage>';inherits:false;initial-value:0%; }
+.karaoke-char { color:transparent;background:linear-gradient(90deg,#fcd581 0%,#ffe6a3 var(--karaoke-fill),#f1f5f9 var(--karaoke-fill),#f1f5f9 100%);background-clip:text;-webkit-background-clip:text;transition:--karaoke-fill .12s linear,text-shadow .3s ease; }
+.karaoke-char.is-current { text-shadow:0 0 12px #fbbf2445; }
 .karaoke-sentence-active .karaoke-char { color:#e0d6ff; }
 .karaoke-progress { height:3px;margin:14px auto 20px;max-width:280px;overflow:hidden;border-radius:999px;background:#ffffff12; }
 .karaoke-progress span { display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#a78bfa,#fcd581);transition:width .12s linear; }
 .karaoke-translation { max-width:42em;margin:18px auto 0;padding-top:16px;border-top:1px solid #ffffff0c;text-align:center;font-size:clamp(.9rem,1.4vw,1.05rem);line-height:1.7;color:#cbd5e1; }
-@media(prefers-reduced-motion:reduce) { .karaoke-char,.karaoke-progress span { transition:none; } }
+@media(prefers-reduced-motion:reduce) { .karaoke-char,.karaoke-progress span { transition:none; } .karaoke-char { background:none;color:#f1f5f9;text-shadow:none; } .karaoke-char.is-spoken { color:#fcd581; } }
 .shadowing-page button:focus-visible { outline:2px solid #a99aff;outline-offset:3px; }
 .shadowing-page .dictation-panel { background:#101010; }
 .shadowing-transcript { max-height:640px;scrollbar-width:thin; }

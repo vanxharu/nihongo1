@@ -44,6 +44,21 @@ export function currentShadowingWord(time: number, cueEnd: number | null, timing
   return word && (word.end === word.start || time < word.end) ? word : undefined;
 }
 
+/** Visual interpolation only: never store these estimates as measured word timing. */
+export function karaokeVisualFill(time: number, offset: number, timings: ShadowingTextTiming[], cueEnd: number | null): number {
+  const index = timings.findIndex(t => offset >= t.textStart && offset < t.textEnd);
+  if (index < 0 || !Number.isFinite(time) || cueEnd === null) return 0;
+  const word = timings[index];
+  if (time < word.start) return 0;
+  const finish = word.end > word.start ? word.end : Math.min(timings[index + 1]?.start ?? cueEnd, cueEnd, word.start + 0.9);
+  if (finish <= word.start || time >= finish) return 100;
+  const progress = (time - word.start) / (finish - word.start);
+  const characters = Array.from(word.text);
+  let position = 0, characterIndex = 0;
+  for (const char of characters) { if (position >= offset - word.textStart) break; position += char.length; characterIndex++; }
+  return Math.max(0, Math.min(100, (progress * characters.length - characterIndex) * 100));
+}
+
 export function parseShadowingAlignment(value: any, videoId: string): ShadowingCue[] {
   if (value?.version !== 1 || value.videoId !== videoId || !Array.isArray(value.cues) || !value.cues.length || value.cues.length > 500) throw new Error('Invalid alignment');
   if (!value.cues.every((cue: ShadowingCue) => cue && typeof cue.id === 'string' && typeof cue.text === 'string' && cue.text.length <= 1000 &&

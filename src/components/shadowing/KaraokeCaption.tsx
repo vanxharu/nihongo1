@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShadowingAnalysis, ShadowingTextTiming, shadowingTextFill, validShadowingTimings, currentShadowingWord } from '../../utils/shadowing';
+import { ShadowingAnalysis, ShadowingTextTiming, shadowingTextFill, karaokeVisualFill, validShadowingTimings, currentShadowingWord } from '../../utils/shadowing';
 const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
 
 function KaraokeCaption({ text, time, start, end, timings, analysis, furigana }: {
@@ -25,7 +25,8 @@ function KaraokeCaption({ text, time, start, end, timings, analysis, furigana }:
         const charOffset = offset; offset += char.length;
         const spoken = shadowingTextFill(time, charOffset, measured) === 100;
         const active = current && charOffset >= current.textStart && charOffset < current.textEnd;
-        return <span key={charOffset} className={`karaoke-char${spoken ? ' is-spoken' : ''}${active ? ' is-current' : ''}`}>{char}</span>;
+        const fill = karaokeVisualFill(time, charOffset, measured, end);
+        return <span key={charOffset} style={{ '--karaoke-fill': `${fill}%` } as React.CSSProperties} className={`karaoke-char${spoken ? ' is-spoken' : ''}${active ? ' is-current' : ''}`}>{char}</span>;
       })}</span>{furigana && piece.reading && piece.reading !== piece.text && <rt>{piece.reading}</rt>}</ruby>;
     })}
   </p>;

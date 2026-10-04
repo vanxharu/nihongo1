@@ -16,6 +16,23 @@ const utils = load('../src/utils/shadowing.ts');
 const { attachForcedAlignment } = load('../src/server/shadowingAlignment.ts', { '../utils/shadowing.js': utils });
 const { parseYouTubeWordCaptions } = load('../src/server/shadowingNativeTiming.ts', { '../utils/shadowing.js': utils, cheerio });
 const { sentenceTokens, sentenceGroups } = load('../src/utils/shadowingSentences.ts', { './shadowing.js': utils });
+const { dailyShibaTip } = load('../src/utils/dailyShibaTip.ts');
+
+test('visual sweep interpolates within a word and resets on backwards seeking without changing native timing', () => {
+  const timings = [{text:'日本',textStart:0,textEnd:2,start:1,end:1},{text:'語',textStart:2,textEnd:3,start:2,end:2}];
+  const before=JSON.stringify(timings);
+  assert.equal(utils.karaokeVisualFill(0.5,0,timings,3),0);
+  assert.ok(utils.karaokeVisualFill(1.2,0,timings,3)>0);
+  assert.equal(utils.karaokeVisualFill(1.2,1,timings,3),0);
+  assert.equal(utils.karaokeVisualFill(2,0,timings,3),100);
+  assert.equal(utils.karaokeVisualFill(0.5,0,timings,3),0);
+  assert.equal(JSON.stringify(timings),before);
+});
+test('daily Shiba greeting stays stable and changes at Vietnamese midnight', () => {
+  const first=dailyShibaTip(new Date('2026-10-04T01:00:00Z'));
+  assert.equal(first.ja,dailyShibaTip(new Date('2026-10-04T16:59:59Z')).ja);
+  assert.notEqual(first.ja,dailyShibaTip(new Date('2026-10-04T17:00:00Z')).ja);
+});
 
 test('current word follows zero-duration native onsets and respects measured word ends', () => {
   const onsets = [{ text: 'はい', textStart: 0, textEnd: 2, start: 1, end: 1 }, { text: 'そう', textStart: 2, textEnd: 4, start: 2, end: 2 }];
