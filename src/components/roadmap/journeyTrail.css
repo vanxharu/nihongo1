@@ -613,3 +613,123 @@
     margin-top: 18px;
   }
 }
+.trail-week-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px;
+  background: #131f31;
+  border-bottom: 1px solid #ffffff0a;
+}
+.trail-week-nav > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid #f5d08e25;
+  background: #ffffff05;
+  border-radius: 10px;
+  min-width: 36px;
+  min-height: 36px;
+  color: #f2d199;
+}
+.trail-week-nav > button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.trail-week-nav label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #aebbd1;
+  font-size: 11px;
+}
+.trail-week-nav select {
+  background: #223047;
+  border: 1px solid #e8c38e33;
+  border-radius: 9px;
+  color: #f4e7cf;
+  padding: 8px;
+  max-width: 200px;
+  font-size: 11px;
+}
+.trail-week-nav .trail-today {
+  margin-left: auto;
+  padding: 8px 12px;
+  font-size: 10px;
+}
+.trail-day-tasks {
+  margin: 16px 0 20px;
+  display: grid;
+  gap: 12px;
+  text-align: left;
+  list-style: none;
+}
+.trail-day-tasks li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px;
+  border-bottom: 1px solid #ffffff09;
+  padding-bottom: 10px;
+}
+.trail-day-tasks b {
+  font-size: 10px;
+  color: #eaca96;
+}
+.trail-day-tasks span {
+  grid-column: 1/-1;
+  font-size: 10px;
+  line-height: 1.7;
+  color: #b9c5d9;
+}
+.trail-day-tasks small {
+  grid-column: 2;
+  grid-row: 1;
+  color: #8da3bd;
+  font-size: 9px;
+}
+.trail-daily-map .trail-preview {
+  max-height: calc(100vh - 130px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.trail-daily-map .trail-preview-mascot {
+  margin-bottom: 12px;
+}
+.trail-daily-map .trail-preview h3 {
+  font-size: 28px;
+}
+.trail-daily-map .trail-finish {
+  font-size: 12px;
+  letter-spacing: 3px;
+}
+@media (max-width: 760px) {
+  .trail-week-nav {
+    padding: 12px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .trail-week-nav label {
+    gap: 4px;
+  }
+  .trail-week-nav select {
+    max-width: 170px;
+  }
+  .trail-week-nav .trail-today {
+    font-size: 9px;
+    padding: 8px;
+  }
+  .trail-day-tasks {
+    grid-column: 1/-1;
+  }
+  .trail-daily-map .trail-preview {
+    max-height: none;
+    overflow: visible;
+  }
+  .trail-daily-map .trail-preview h3 {
+    font-size: 24px;
+  }
+  .trail-daily-map .trail-preview-goal {
+    margin-top: 12px;
+  }
+}

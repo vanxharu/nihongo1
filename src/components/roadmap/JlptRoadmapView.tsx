@@ -231,7 +231,7 @@ export default function JlptRoadmapView({
                     : "Tiếp tục hành trình"}
                 <ArrowRight size={18} />
               </button>
-              <span>{plan.durationDays} buổi học · theo nhịp của bạn</span>
+              <span>{plan.durationDays} ngày học · theo nhịp của bạn</span>
             </div>
           </div>
           <div className="journey-hero-art" aria-hidden="true">
@@ -278,8 +278,8 @@ export default function JlptRoadmapView({
         <p className="journey-prerequisite">
           <BookOpen size={17} />
           <span>
-            {journey.prerequisite} Kế hoạch 30／60／90 buổi là nhịp gợi ý, có
-            thể lặp lại buổi khó.
+            {journey.prerequisite} Kế hoạch 30／60／90 ngày là nhịp gợi ý, có
+            thể lặp lại ngày khó.
           </span>
         </p>
         {error && (
@@ -290,7 +290,7 @@ export default function JlptRoadmapView({
         <JourneyTrail
           level={level}
           plan={plan}
-          selectedStage={selected.index}
+          selectedDay={selected.day}
           celebrate={celebrate}
           onSelect={inspectDay}
           onPractice={(day) => {
@@ -323,11 +323,11 @@ export default function JlptRoadmapView({
               <i style={{ width: `${progress}%` }} />
             </div>
             <p>
-              {plan.completedDays.length} / {plan.durationDays} buổi hoàn thành
+              {plan.completedDays.length} / {plan.durationDays} ngày hoàn thành
             </p>
           </div>
           <div>
-            <span>NHỊP HỌC MỖI BUỔI</span>
+            <span>NHỊP HỌC MỖI NGÀY</span>
             <strong>
               {selected.minutes}
               <small>phút</small>
@@ -347,7 +347,7 @@ export default function JlptRoadmapView({
             <p>
               {progress === 100
                 ? "Ôn lại các phần còn chưa chắc"
-                : `Buổi ${plan.currentDay} · tiếp tục từ nơi bạn đã dừng`}
+                : `Ngày ${plan.currentDay} · tiếp tục từ nơi bạn đã dừng`}
             </p>
             <Flag className="metric-watermark" />
           </div>
@@ -357,7 +357,7 @@ export default function JlptRoadmapView({
           <aside
             className="journey-daily"
             ref={dailyRef}
-            aria-label="Kế hoạch buổi học"
+            aria-label="Kế hoạch ngày học"
           >
             <div className="journey-daily-mascot">
               <ShibaMascot
@@ -379,20 +379,20 @@ export default function JlptRoadmapView({
             <div className="journey-day-heading">
               <div>
                 <span>
-                  {selected.checkpoint ? "MỐC KIỂM TRA" : "KẾ HOẠCH BUỔI HỌC"}
+                  {selected.checkpoint ? "MỐC KIỂM TRA" : "KẾ HOẠCH NGÀY HỌC"}
                 </span>
-                <h3>Buổi {selected.day.toString().padStart(2, "0")}</h3>
+                <h3>Ngày {selected.day.toString().padStart(2, "0")}</h3>
               </div>
               <div className="journey-day-navigation">
                 <button
-                  aria-label="Buổi trước"
+                  aria-label="Ngày trước"
                   disabled={selected.day === 1}
                   onClick={() => inspectDay(selected.day - 1)}
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <button
-                  aria-label="Buổi sau"
+                  aria-label="Ngày sau"
                   disabled={selected.day === plan.durationDays}
                   onClick={() => inspectDay(selected.day + 1)}
                 >
@@ -458,13 +458,13 @@ export default function JlptRoadmapView({
             >
               {complete ? (
                 <>
-                  <Check size={18} /> Đã hoàn thành buổi {selected.day}
+                  <Check size={18} /> Đã hoàn thành ngày {selected.day}
                 </>
               ) : saving ? (
                 "Đang lưu…"
               ) : (
                 <>
-                  <Flag size={18} /> Hoàn thành buổi học
+                  <Flag size={18} /> Hoàn thành ngày học
                 </>
               )}
             </button>
@@ -472,7 +472,7 @@ export default function JlptRoadmapView({
               <div role="status" className="journey-celebration">
                 よくできました！ Tiến độ của bạn đã được lưu.
                 <button onClick={() => inspectDay(plan.currentDay)}>
-                  Đến buổi tiếp theo <ArrowRight size={14} />
+                  Đến ngày tiếp theo <ArrowRight size={14} />
                 </button>
               </div>
             )}
@@ -497,7 +497,7 @@ export default function JlptRoadmapView({
                 <h2>Nội dung từng chặng {level}</h2>
               </div>
               <button onClick={inspectToday}>
-                Về buổi đang học
+                Về ngày đang học
                 <ArrowRight size={14} />
               </button>
             </div>
@@ -529,11 +529,11 @@ export default function JlptRoadmapView({
                     >
                       <div>
                         <span>
-                          BUỔI {range.start}–{range.end}{" "}
+                          NGÀY {range.start}–{range.end}{" "}
                           <i>
                             {finished
                               ? "Đã hoàn thành"
-                              : `${doneCount}/${range.end - range.start + 1} buổi`}
+                              : `${doneCount}/${range.end - range.start + 1} ngày`}
                           </i>
                         </span>
                         <h3>{chapter.name}</h3>
@@ -582,7 +582,7 @@ export default function JlptRoadmapView({
                         </div>
                         <div
                           className="journey-day-chips"
-                          aria-label={`Buổi học chặng ${index + 1}`}
+                          aria-label={`Ngày học chặng ${index + 1}`}
                         >
                           {Array.from(
                             { length: range.end - range.start + 1 },
@@ -590,7 +590,7 @@ export default function JlptRoadmapView({
                           ).map((day) => (
                             <button
                               key={day}
-                              aria-label={`Xem buổi ${day}${plan.completedDays.includes(day) ? ", đã hoàn thành" : ""}`}
+                              aria-label={`Xem ngày ${day}${plan.completedDays.includes(day) ? ", đã hoàn thành" : ""}`}
                               aria-pressed={selected.day === day}
                               className={
                                 plan.completedDays.includes(day)
@@ -705,7 +705,7 @@ export default function JlptRoadmapView({
             <span className="journey-eyebrow">HỌC THEO NHỊP CỦA BẠN</span>
             <h2 id="journey-settings-title">Kế hoạch {level}</h2>
             <p>
-              Cùng nội dung, ba nhịp học. Mỗi buổi có thể kéo dài hơn nếu bạn
+              Cùng nội dung, ba nhịp học. Mỗi ngày có thể kéo dài hơn nếu bạn
               cần ôn thêm.
             </p>
             <div className="journey-duration-options">
@@ -717,7 +717,7 @@ export default function JlptRoadmapView({
                 >
                   <strong>
                     {value}
-                    <small>buổi</small>
+                    <small>ngày</small>
                   </strong>
                   <span>
                     {value === 30
