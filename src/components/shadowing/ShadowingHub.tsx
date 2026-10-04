@@ -10,7 +10,7 @@ import DictationPanel from './DictationPanel';
 import SentenceInsights from './SentenceInsights';
 import SubtitleEditor from './SubtitleEditor';
 import { auth } from '../../lib/firebase';
-import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment } from '../../utils/shadowing';
+import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings } from '../../utils/shadowing';
 import './shadowing.css';
 
 const field = 'w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 focus:border-amber-400 focus:outline-none';
@@ -67,6 +67,8 @@ export default function ShadowingHub() {
   const active = activeShadowingCue(cues, currentTime);
   const displayed = mode === 'dictation' ? cues[selected] : active >= 0 ? cues[active] : null;
   const displayedAnalysis = displayed ? preparedAnalysis(displayed) : null;
+  const wordTimings = displayed && validShadowingTimings(displayed) ? displayed.timings! : [];
+  const spokenProgress = wordTimings.length ? 100 * wordTimings.filter(t => currentTime >= t.start).length / wordTimings.length : 0;
   useEffect(() => {
     if (!editing && active >= 0 && mode !== 'dictation' && active !== selected) {
       selectCue(active);
@@ -213,10 +215,13 @@ export default function ShadowingHub() {
           {editing && <SubtitleEditor videoId={videoId} title={sourceTitle || ''} cues={cues} selected={selected} revision={revision} onChange={next => { applyCues(next, true); try { localStorage.setItem(`shadowing-draft:${storageSuffix}`, JSON.stringify({ cues: next, revision })); } catch {} }} onSaved={(saved, title) => { setRevision(saved); setCustomTitle(title); try { localStorage.removeItem(`shadowing-draft:${storageSuffix}`); } catch {} setPersonalVideos(videos => [...videos.filter(v => v.videoId !== videoId), { videoId, title, cueCount: cues.length }]); }} />}
           <ShadowingPlayer ref={playerRef} key={videoId} videoId={videoId} start={parseShadowingTime(start)} end={parseShadowingTime(end)} sentenceKey={sentence} onTime={setCurrentTime} compact={mode === 'dictation'} />
 
-          {(mode === 'shadowing' || revealed) && <section className="rounded-xl border border-slate-600 bg-[#101010] p-5">
+          {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-5 sm:p-7">
+            <div className="karaoke-meta"><span className="karaoke-mode"><span aria-hidden="true">♫</span> {wordTimings.length ? 'Karaoke theo từ' : 'Luyện theo câu'}</span><span>{displayed ? `Câu ${(mode === 'dictation' ? selected : active) + 1} / ${cues.length}` : 'Sẵn sàng nghe'}</span></div>
             <div className="mb-3 flex justify-end gap-3 text-xs"><label><input type="checkbox" checked={furigana} onChange={e => setFurigana(e.target.checked)} /> Furigana</label><label><input type="checkbox" checked={translation} onChange={e => setTranslation(e.target.checked)} /> Bản dịch</label></div>
             <div role="button" tabIndex={displayed ? 0 : -1} aria-label="Xem nghĩa và phân tích câu đang phát" aria-disabled={!displayed} onClick={() => displayed && setInsightCue({ ...displayed })} onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && displayed) { e.preventDefault(); setInsightCue({ ...displayed }); } }} className="cursor-pointer rounded-lg outline-none hover:bg-violet-500/10 focus-visible:ring-2 focus-visible:ring-violet-400">
-<KaraokeCaption text={displayed?.text || (cues.length ? '' : 'Đang tải phụ đề…')} time={currentTime} start={displayed?.start ?? null} end={displayed?.end ?? null} timings={displayed?.timings} analysis={displayedAnalysis} furigana={furigana} /></div>{translation && displayedAnalysis?.translation && <p className="mt-3 text-center text-sm text-slate-300">{displayedAnalysis.translation}</p>}
+<KaraokeCaption text={displayed?.text || (cues.length ? 'Chọn một câu để bắt đầu nghe' : 'Đang tải phụ đề…')} time={currentTime} start={displayed?.start ?? null} end={displayed?.end ?? null} timings={displayed?.timings} analysis={displayedAnalysis} furigana={furigana} /></div>
+            {wordTimings.length > 0 && <div className="karaoke-progress" aria-hidden="true"><span style={{ width: `${spokenProgress}%` }} /></div>}
+            {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
             {displayed && translation && !displayedAnalysis?.translation && <button className="mt-2 w-full text-center text-xs text-slate-400 underline" onClick={() => setEditing(true)}>Chuẩn bị bản dịch trong phần Soạn phụ đề</button>}
             {mode === 'dictation' && revealed && <button className="mt-3 text-sm underline" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
           </section>}
