@@ -8,7 +8,7 @@ import ShadowingPlayer, { ShadowingPlayerHandle } from './ShadowingPlayer';
 import KaraokeCaption from './KaraokeCaption';
 import DictationPanel from './DictationPanel';
 import SentenceInsights from './SentenceInsights';
-import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse } from '../../utils/shadowing';
+import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment } from '../../utils/shadowing';
 import './shadowing.css';
 
 const field = 'w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 focus:border-amber-400 focus:outline-none';
@@ -24,10 +24,13 @@ export default function ShadowingHub() {
   const [start, setStart] = useState('0');
   const [end, setEnd] = useState('10');
   const [currentTime, setCurrentTime] = useState(0);
+  const playbackTime = useRef(currentTime);
+  playbackTime.current = currentTime;
   const [notice, setNotice] = useState('');
   const [insightCue, setInsightCue] = useState<ShadowingCue | null>(null);
   const [, refreshAnalysis] = useState(0);
   const transcriptRequest = useRef<AbortController | null>(null);
+  const alignmentRequest = useRef<AbortController | null>(null);
   const currentVideo = useRef(videoId);
   currentVideo.current = videoId;
   const playerRef = useRef<ShadowingPlayerHandle>(null);
@@ -59,6 +62,9 @@ export default function ShadowingHub() {
 
   useEffect(() => {
     transcriptRequest.current?.abort();
+    alignmentRequest.current?.abort();
+    const alignmentController = new AbortController();
+    alignmentRequest.current = alignmentController;
     setCues([]); setSentence(''); setSelected(0);
     setInsightCue(null);
     setNotice(''); setCurrentTime(0); setStart('0'); setEnd('10');
@@ -74,14 +80,25 @@ export default function ShadowingHub() {
           restored = true;
         }
       } catch {}
-      if (!restored) void loadCaptions();
+      // Recheck the alignment asset even when old sentence captions were cached.
+      void (async () => {
+        try {
+          const response = await fetch(`/shadowing-alignments/${videoId}.json`, { signal: alignmentController.signal, cache: 'no-cache' });
+          if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
+            const aligned = parseShadowingAlignment(await response.json(), videoId);
+            if (!alignmentController.signal.aborted) applyCues(aligned);
+            return;
+          }
+        } catch { /* Missing alignment keeps usable sentence captions. */ }
+        if (!restored && !alignmentController.signal.aborted) void loadCaptions();
+      })();
     }
-    return () => { transcriptRequest.current?.abort(); };
+    return () => { transcriptRequest.current?.abort(); alignmentController.abort(); };
   }, [videoId]);
 
   function applyCues(next: ShadowingCue[]) {
     next = normalizeShadowingTimeline(next);
-    setCues(next); selectCue(0, next);
+    setCues(next); selectCue(Math.max(0, activeShadowingCue(next, playbackTime.current)), next);
     if (videoId) { try { localStorage.setItem(`shadowing-cues:${videoId}`, JSON.stringify(next)); } catch {} }
   }
 
@@ -150,7 +167,7 @@ export default function ShadowingHub() {
           {(mode === 'shadowing' || revealed) && <section className="rounded-xl border border-slate-600 bg-[#101010] p-5">
             <div className="mb-3 flex justify-end gap-3 text-xs"><label><input type="checkbox" checked={furigana} onChange={e => setFurigana(e.target.checked)} /> Furigana</label><label><input type="checkbox" checked={translation} onChange={e => setTranslation(e.target.checked)} /> Bản dịch</label></div>
             <div role="button" tabIndex={displayed ? 0 : -1} aria-label="Xem nghĩa và phân tích câu đang phát" aria-disabled={!displayed} onClick={() => displayed && setInsightCue({ ...displayed })} onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && displayed) { e.preventDefault(); setInsightCue({ ...displayed }); } }} className="cursor-pointer rounded-lg outline-none hover:bg-violet-500/10 focus-visible:ring-2 focus-visible:ring-violet-400">
-<KaraokeCaption text={displayed?.text || (cues.length ? '' : 'Đang tải phụ đề…')} time={currentTime} start={displayed?.start ?? null} end={displayed?.end ?? null} analysis={displayedAnalysis} furigana={furigana} /></div>{translation && displayedAnalysis?.translation && <p className="mt-3 text-center text-sm text-slate-300">{displayedAnalysis.translation}</p>}
+<KaraokeCaption text={displayed?.text || (cues.length ? '' : 'Đang tải phụ đề…')} time={currentTime} start={displayed?.start ?? null} end={displayed?.end ?? null} timings={displayed?.timings} analysis={displayedAnalysis} furigana={furigana} /></div>{translation && displayedAnalysis?.translation && <p className="mt-3 text-center text-sm text-slate-300">{displayedAnalysis.translation}</p>}
             {mode === 'dictation' && revealed && <button className="mt-3 text-sm underline" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
           </section>}
 
@@ -162,7 +179,7 @@ export default function ShadowingHub() {
           {(mode === 'shadowing' || revealed) && <>
           <section className="rounded-xl bg-[#101010] p-3"><h2 className="mb-3 text-sm font-bold">BẢN CHÉP · {cues.length} câu</h2>            <div className="shadowing-transcript space-y-2 overflow-y-auto">{cues.map((cue, i) => {
               const isActive = active === i;
-              return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => isActive ? setInsightCue({ ...cue }) : jumpCue(i)} className={`w-full rounded-xl border p-3 text-left ${isActive ? 'border-blue-400 bg-blue-500/15' : selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950'}`}><span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>{mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} analysis={cache.current.get(cue.text) || null} furigana={furigana} />}{translation && (mode !== 'dictation' || revealed) && cache.current.get(cue.text)?.translation && <p className="mt-2 text-xs italic text-slate-400">{cache.current.get(cue.text)?.translation}</p>}</button>;
+              return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => isActive ? setInsightCue({ ...cue }) : jumpCue(i)} className={`w-full rounded-xl border p-3 text-left ${isActive ? 'border-blue-400 bg-blue-500/15' : selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950'}`}><span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>{mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} timings={cue.timings} analysis={cache.current.get(cue.text) || null} furigana={furigana} />}{translation && (mode !== 'dictation' || revealed) && cache.current.get(cue.text)?.translation && <p className="mt-2 text-xs italic text-slate-400">{cache.current.get(cue.text)?.translation}</p>}</button>;
             })}</div>
 {!cues.length && <p className="p-3 text-sm text-slate-400">Chưa tải được phụ đề tiếng Nhật cho video này.</p>}</section>
           </>}

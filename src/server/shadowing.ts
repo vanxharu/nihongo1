@@ -5,6 +5,7 @@ import OpenAI from 'openai';
 import { VOCABULARY_DATA } from '../data.js';
 import { KANJI_DICTIONARY } from '../data/kanjiDictionary.js';
 import type { ShadowingAnalysis, ShadowingCue } from '../utils/shadowing';
+import { parseYouTubeWordCaptions } from './shadowingNativeTiming.js';
 
 export function parseManagedCaptions(data: any): ShadowingCue[] {
   if (!/^ja(?:-|$)/.test(data?.lang || '') || !Array.isArray(data.content)) throw new Error('Japanese captions unavailable');
@@ -68,6 +69,7 @@ export async function shadowingTranscript(req: Request, res: Response) {
   if (typeof videoId !== 'string' || !/^[\w-]{11}$/.test(videoId)) return res.status(400).json({ error: 'ID video YouTube không hợp lệ.' });
   try {
     let timeScale = 1;
+    let nativeCues: ShadowingCue[] = [];
     const captions = await fetchTranscript(videoId, {
       lang: 'ja',
       fetch: async (url, init) => {
@@ -76,11 +78,12 @@ export async function shadowingTranscript(req: Request, res: Response) {
         if (String(url).includes('/timedtext')) {
           const xml = await response.clone().text();
           if (/<p\s+t="\d+"\s+d="\d+"/.test(xml)) timeScale = 0.001;
+          nativeCues = parseYouTubeWordCaptions(xml);
         }
         return response;
       },
     });
-    const cues: ShadowingCue[] = captions.filter(c => Number.isFinite(c.offset) && Number.isFinite(c.duration) && c.offset >= 0 && c.duration > 0 && typeof c.text === 'string')
+    const cues: ShadowingCue[] = nativeCues.length ? nativeCues : captions.filter(c => Number.isFinite(c.offset) && Number.isFinite(c.duration) && c.offset >= 0 && c.duration > 0 && typeof c.text === 'string')
       .slice(0, 500).map((c, i) => ({ id: `youtube-${i}`, text: c.text.replace(/<[^>]*>/g, '').slice(0, 1000), start: c.offset * timeScale, end: (c.offset + c.duration) * timeScale }));
     if (!cues.length) throw new Error('No Japanese captions');
     res.setHeader('Cache-Control', 'public, max-age=300');

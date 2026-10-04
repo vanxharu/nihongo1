@@ -3,6 +3,47 @@ export interface ShadowingCue {
   text: string;
   start: number | null;
   end: number | null;
+  timings?: ShadowingTextTiming[];
+}
+
+export interface ShadowingTextTiming {
+  text: string;
+  textStart: number;
+  textEnd: number;
+  start: number;
+  end: number;
+}
+
+/** Reject stale/mismatched alignment rather than painting a different transcript. */
+export function validShadowingTimings(cue: ShadowingCue): boolean {
+  if (!Array.isArray(cue.timings) || !cue.timings.length || cue.start === null || cue.end === null) return false;
+  let previousOffset = 0;
+  let previousTime = cue.start;
+  return cue.timings.every(t => {
+    if (!t || !Number.isInteger(t.textStart) || !Number.isInteger(t.textEnd) || t.textStart < previousOffset ||
+        t.textEnd <= t.textStart || cue.text.slice(t.textStart, t.textEnd) !== t.text ||
+        !Number.isFinite(t.start) || !Number.isFinite(t.end) || t.start < previousTime || t.end < t.start ||
+        t.end > cue.end! + 0.001) return false;
+    previousOffset = t.textEnd; previousTime = t.end;
+    return true;
+  }) && cue.text.replace(/\s/g, '') === cue.timings.map(t => t.text).join('').replace(/\s/g, '');
+}
+
+/** Character/word onsets come from audio alignment, never sentence-length estimates. */
+export function shadowingTextFill(time: number, offset: number, timings: ShadowingTextTiming[]): number {
+  const timing = timings.find(t => offset >= t.textStart && offset < t.textEnd);
+  return timing && Number.isFinite(time) && time >= timing.start ? 100 : 0;
+}
+
+export function parseShadowingAlignment(value: any, videoId: string): ShadowingCue[] {
+  if (value?.version !== 1 || value.videoId !== videoId || !Array.isArray(value.cues) || !value.cues.length || value.cues.length > 500) throw new Error('Invalid alignment');
+  if (!value.cues.every((cue: ShadowingCue) => cue && typeof cue.id === 'string' && typeof cue.text === 'string' && cue.text.length <= 1000 &&
+      Number.isFinite(cue.start) && cue.start! >= 0 && Number.isFinite(cue.end) && cue.end! > cue.start! &&
+      (cue.timings === undefined || validShadowingTimings(cue)))) throw new Error('Invalid alignment');
+  if (!value.cues.some((cue: ShadowingCue) => validShadowingTimings(cue))) throw new Error('Missing measured timestamps');
+  const cues: ShadowingCue[] = [...value.cues].sort((a, b) => a.start! - b.start!);
+  if (cues.some((cue, i) => i > 0 && cue.start! < cues[i - 1].end! - 0.001)) throw new Error('Overlapping audio alignment');
+  return cues;
 }
 
 export interface ShadowingAnalysis {
@@ -25,6 +66,7 @@ export function normalizeShadowingTimeline(cues: ShadowingCue[]): ShadowingCue[]
   const sorted = cues.map(cue => ({ ...cue })).sort((a, b) => (a.start ?? Infinity) - (b.start ?? Infinity));
   return sorted.map((cue, index) => {
     if (cue.start === null || cue.end === null) return cue;
+    if (validShadowingTimings(cue)) return cue;
     const next = sorted.slice(index + 1).find(item => item.start !== null && item.start > cue.start!);
     return { ...cue, end: next?.start !== undefined && next.start !== null ? Math.min(cue.end, next.start) : cue.end };
   });

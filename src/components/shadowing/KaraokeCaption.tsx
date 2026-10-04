@@ -1,12 +1,13 @@
 import React from 'react';
-import { ShadowingAnalysis, karaokeProgress } from '../../utils/shadowing';
+import { ShadowingAnalysis, ShadowingTextTiming, shadowingTextFill, validShadowingTimings } from '../../utils/shadowing';
 const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
 
-export default function KaraokeCaption({ text, time, start, end, analysis, furigana }: {
+export default function KaraokeCaption({ text, time, start, end, timings, analysis, furigana }: {
   text: string; time: number; start: number | null; end: number | null;
+  timings?: ShadowingTextTiming[];
   analysis: ShadowingAnalysis | null; furigana: boolean;
 }) {
-  const progress = karaokeProgress(time, start, end);
+  const measured = validShadowingTimings({ id: '', text, start, end, timings }) ? timings! : [];
   const words = [...(analysis?.vocabulary || [])].filter(v => v.word).sort((a, b) => b.word.length - a.word.length);
   const pieces: { text: string; reading?: string; offset: number }[] = [];
   for (let offset = 0; offset < text.length;) {
@@ -18,8 +19,12 @@ export default function KaraokeCaption({ text, time, start, end, analysis, furig
   }
   return <p lang="ja" aria-label={text} className="karaoke-line">
     {pieces.map(piece => {
-      const fill = Math.max(0, Math.min(1, (progress * text.length - piece.offset) / piece.text.length)) * 100;
-      return <ruby key={piece.offset}><span style={{ backgroundImage: `linear-gradient(to right, #a99aff ${fill}%, #f1f5f9 ${fill}%)`, backgroundClip: 'text', color: 'transparent' }}>{piece.text}</span>{furigana && piece.reading && piece.reading !== piece.text && <rt>{piece.reading}</rt>}</ruby>;
+      let offset = piece.offset;
+      return <ruby key={piece.offset}>{Array.from(piece.text).map(char => {
+        const charOffset = offset; offset += char.length;
+        const spoken = shadowingTextFill(time, charOffset, measured) === 100;
+        return <span key={charOffset} style={{ color: spoken ? '#a99aff' : '#f1f5f9' }}>{char}</span>;
+      })}{furigana && piece.reading && piece.reading !== piece.text && <rt>{piece.reading}</rt>}</ruby>;
     })}
   </p>;
 }

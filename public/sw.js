@@ -1,5 +1,5 @@
 // JPStudy PWA Service Worker with Background Notification & Offline Support
-const CACHE_NAME = 'jpstudy-pwa-v7-brand-spelling';
+const CACHE_NAME = 'jpstudy-pwa-v8-audio-alignment';
 const DATA_CACHE_NAME = 'jpstudy-data-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
@@ -796,6 +796,7 @@ self.addEventListener('fetch', (event) => {
     url.pathname.includes('/__/auth') ||
     url.pathname.includes('/__/firebase') ||
     url.pathname.includes('/api/') ||
+    url.pathname.startsWith('/shadowing-alignments/') ||
     url.pathname.startsWith('/@') ||
     url.pathname.startsWith('/src/') ||
     url.pathname.startsWith('/node_modules/') ||
