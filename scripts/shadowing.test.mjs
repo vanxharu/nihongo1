@@ -65,3 +65,18 @@ test('active cue follows overlaps, gaps and backwards seeks', () => {
   assert.equal(activeShadowingCue(cues, 1), 0);
   assert.equal(activeShadowingCue(cues, 12), -1);
 });
+
+test('rolling caption timing ends at the next sentence and preserves genuine gaps', () => {
+  const input = [{id:'a',text:'a',start:4.52,end:13.36},{id:'b',text:'b',start:7.72,end:18.68},{id:'c',text:'c',start:13.36,end:23.72},{id:'d',text:'d',start:27.519,end:38.16}];
+  const cues = exports.normalizeShadowingTimeline(input);
+  assert.equal(cues[0].end,7.72);
+  assert.equal(karaokeProgress(7.72,cues[0].start,cues[0].end),1);
+  assert.equal(activeShadowingCue(cues,7.72),1);
+  assert.equal(activeShadowingCue(cues,25),-1);
+  assert.equal(activeShadowingCue(cues,5),0);
+  assert.equal(input[0].end,13.36);
+});
+test('a short overlapping cue cannot revive the previous sentence after it ends', () => {
+  const cues=exports.normalizeShadowingTimeline([{id:'a',text:'a',start:0,end:10},{id:'b',text:'b',start:2,end:3}]);
+  assert.equal(activeShadowingCue(cues,4),-1);
+});

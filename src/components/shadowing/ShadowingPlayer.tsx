@@ -37,6 +37,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
   const host = useRef<HTMLDivElement>(null);
   const player = useRef<any>(null);
   const exercise = useRef<{ start: number; end: number; remaining: number; armed: boolean } | null>(null);
+  const heldTime = useRef<number | null>(null);
   const gapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onTimeRef = useRef(onTime);
   onTimeRef.current = onTime;
@@ -52,6 +53,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
 
   function stop() {
     exercise.current = null;
+    heldTime.current = null;
     if (gapTimer.current) clearTimeout(gapTimer.current);
     gapTimer.current = null;
     player.current?.pauseVideo?.();
@@ -60,7 +62,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
   }
 
   useImperativeHandle(ref, () => ({
-    seek(time) { stop(); player.current?.seekTo?.(time, true); player.current?.playVideo?.(); },
+    seek(time) { stop(); onTimeRef.current(time); player.current?.seekTo?.(time, true); player.current?.playVideo?.(); },
     pause() { stop(); },
     playSentence(from, to, autoPause) {
       if (!ready) { setMessage('Video chưa sẵn sàng. Hãy thử lại sau khi video tải xong.'); return false; }
@@ -68,7 +70,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
       if (error) { setMessage(error); return false; }
       stop();
       if (autoPause) exercise.current = { start: from!, end: to!, remaining: 1, armed: false };
-      player.current.seekTo(from, true); player.current.playVideo();
+      onTimeRef.current(from!); player.current.seekTo(from, true); player.current.playVideo();
       setRunning(autoPause); return true;
     },
   }));
@@ -98,10 +100,13 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
         if (!instance?.getCurrentTime) return;
         const time = instance.getCurrentTime();
         const segment = exercise.current;
-        onTimeRef.current(segment && time >= segment.start ? Math.min(time, segment.end - 0.001) : time);
-        if (!segment || instance.getPlayerState?.() !== 1) return;
+        const state = instance.getPlayerState?.();
+        if (state === 1) heldTime.current = null;
+        onTimeRef.current(heldTime.current ?? (segment && time >= segment.start ? Math.min(time, segment.end - 0.001) : time));
+        if (!segment || state !== 1) return;
         if (time >= segment.start - 0.25 && time < segment.end) segment.armed = true;
         if (!segment.armed || time < segment.end) return;
+        heldTime.current = segment.end - 0.001;
         instance.pauseVideo();
         segment.remaining -= 1;
         if (segment.remaining <= 0) {
@@ -116,7 +121,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
             setMessage(`Đang nghe · còn ${segment.remaining} lượt`);
           }, gapRef.current * 1000);
         }
-      }, 100);
+      }, 50);
     }).catch(error => { if (!disposed) setMessage(error.message); });
     return () => {
       disposed = true;
@@ -140,7 +145,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
     if (error) { setMessage(error); return; }
     stop();
     exercise.current = { start: start!, end: end!, remaining: repeats, armed: false };
-    player.current.seekTo(start, true); player.current.playVideo();
+    onTimeRef.current(start!); player.current.seekTo(start, true); player.current.playVideo();
     setRunning(true); setMessage(`Đang nghe · ${repeats} lượt`);
   }
 

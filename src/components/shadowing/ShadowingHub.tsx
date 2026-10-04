@@ -7,7 +7,7 @@ import { parseShadowingVideoId, parseShadowingTime, ShadowingCue, ShadowingAnaly
 import ShadowingPlayer, { ShadowingPlayerHandle } from './ShadowingPlayer';
 import KaraokeCaption from './KaraokeCaption';
 import DictationPanel from './DictationPanel';
-import { activeShadowingCue, readShadowingResponse } from '../../utils/shadowing';
+import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse } from '../../utils/shadowing';
 import './shadowing.css';
 
 const field = 'w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 focus:border-amber-400 focus:outline-none';
@@ -36,7 +36,7 @@ export default function ShadowingHub() {
   const [category, setCategory] = useState('Tất cả');
   const cache = useRef(new Map<string, ShadowingAnalysis>());
   const active = activeShadowingCue(cues, currentTime);
-  const displayed = mode === 'dictation' ? cues[selected] : active >= 0 ? cues[active] : cues[selected];
+  const displayed = mode === 'dictation' ? cues[selected] : active >= 0 ? cues[active] : null;
   const displayedAnalysis = displayed ? cache.current.get(displayed.text) || null : null;
   useEffect(() => {
     if (active >= 0 && mode !== 'dictation' && active !== selected) {
@@ -45,7 +45,7 @@ export default function ShadowingHub() {
       const container = card?.parentElement;
       if (card && container) container.scrollTo({ top: card.offsetTop - container.offsetTop, behavior: 'smooth' });
     }
-  }, [active]);
+  }, [active, mode]);
 
   function selectCue(index: number, source = cues) {
     const cue = source[index];
@@ -65,7 +65,8 @@ export default function ShadowingHub() {
       try {
         const saved = JSON.parse(localStorage.getItem(`shadowing-cues:${videoId}`) || '[]');
         if (Array.isArray(saved) && saved.length && saved.every(c => c && typeof c.text === 'string' && typeof c.id === 'string' && (c.start === null || Number.isFinite(c.start)) && (c.end === null || Number.isFinite(c.end)))) {
-          setCues(saved.slice(0, 500)); selectCue(0, saved);
+          const restoredCues = normalizeShadowingTimeline(saved.slice(0, 500));
+          setCues(restoredCues); selectCue(0, restoredCues);
           restored = true;
         }
       } catch {}
@@ -75,6 +76,7 @@ export default function ShadowingHub() {
   }, [videoId]);
 
   function applyCues(next: ShadowingCue[]) {
+    next = normalizeShadowingTimeline(next);
     setCues(next); selectCue(0, next);
     if (videoId) { try { localStorage.setItem(`shadowing-cues:${videoId}`, JSON.stringify(next)); } catch {} }
   }
@@ -143,7 +145,7 @@ export default function ShadowingHub() {
 
           {(mode === 'shadowing' || revealed) && <section className="rounded-xl border border-slate-600 bg-[#101010] p-5">
             <div className="mb-3 flex justify-end gap-3 text-xs"><label><input type="checkbox" checked={furigana} onChange={e => setFurigana(e.target.checked)} /> Furigana</label><label><input type="checkbox" checked={translation} onChange={e => setTranslation(e.target.checked)} /> Bản dịch</label></div>
-            <KaraokeCaption text={displayed?.text || sentence || 'Đang tải phụ đề…'} time={currentTime} start={displayed?.start ?? parseShadowingTime(start)} end={displayed?.end ?? parseShadowingTime(end)} analysis={displayedAnalysis} furigana={furigana} />{translation && displayedAnalysis?.translation && <p className="mt-3 text-center text-sm text-slate-300">{displayedAnalysis.translation}</p>}
+            <KaraokeCaption text={displayed?.text || (cues.length ? '' : 'Đang tải phụ đề…')} time={currentTime} start={displayed?.start ?? null} end={displayed?.end ?? null} analysis={displayedAnalysis} furigana={furigana} />{translation && displayedAnalysis?.translation && <p className="mt-3 text-center text-sm text-slate-300">{displayedAnalysis.translation}</p>}
             {mode === 'dictation' && revealed && <button className="mt-3 text-sm underline" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
           </section>}
 
@@ -153,8 +155,8 @@ export default function ShadowingHub() {
           {mode === 'dictation' && <DictationPanel key={`${videoId}:${selected}:${sentence}`} sentence={sentence} autoPause={autoPause} onAutoPause={value => { playerRef.current?.pause(); setAutoPause(value); }} onPlay={() => playerRef.current?.playSentence(parseShadowingTime(start), parseShadowingTime(end), autoPause) || false} onReveal={setRevealed} onPrevious={() => jumpCue(selected - 1)} onNext={() => jumpCue(selected + 1)} hasPrevious={selected > 0} hasNext={selected < cues.length - 1} />}
           {(mode === 'shadowing' || revealed) && <>
           <section className="rounded-xl bg-[#101010] p-3"><h2 className="mb-3 text-sm font-bold">BẢN CHÉP · {cues.length} câu</h2>            <div className="shadowing-transcript space-y-2 overflow-y-auto">{cues.map((cue, i) => {
-              const active = cue.start !== null && cue.end !== null && currentTime >= cue.start && currentTime < cue.end;
-              return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => jumpCue(i)} className={`w-full rounded-xl border p-3 text-left ${active ? 'border-blue-400 bg-blue-500/15' : selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950'}`}><span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>{mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} analysis={cache.current.get(cue.text) || null} furigana={furigana} />}{translation && (mode !== 'dictation' || revealed) && cache.current.get(cue.text)?.translation && <p className="mt-2 text-xs italic text-slate-400">{cache.current.get(cue.text)?.translation}</p>}</button>;
+              const isActive = active === i;
+              return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => jumpCue(i)} className={`w-full rounded-xl border p-3 text-left ${isActive ? 'border-blue-400 bg-blue-500/15' : selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950'}`}><span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>{mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} analysis={cache.current.get(cue.text) || null} furigana={furigana} />}{translation && (mode !== 'dictation' || revealed) && cache.current.get(cue.text)?.translation && <p className="mt-2 text-xs italic text-slate-400">{cache.current.get(cue.text)?.translation}</p>}</button>;
             })}</div>
 {!cues.length && <p className="p-3 text-sm text-slate-400">Chưa tải được phụ đề tiếng Nhật cho video này.</p>}</section>
           </>}

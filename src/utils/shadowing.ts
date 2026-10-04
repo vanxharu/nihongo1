@@ -20,6 +20,16 @@ export function karaokeProgress(time: number, start: number | null, end: number 
   return Math.max(0, Math.min(1, (time - start) / (end - start)));
 }
 
+/** Rolling YouTube captions overlap; each sentence owns time until the next starts. */
+export function normalizeShadowingTimeline(cues: ShadowingCue[]): ShadowingCue[] {
+  const sorted = cues.map(cue => ({ ...cue })).sort((a, b) => (a.start ?? Infinity) - (b.start ?? Infinity));
+  return sorted.map((cue, index) => {
+    if (cue.start === null || cue.end === null) return cue;
+    const next = sorted.slice(index + 1).find(item => item.start !== null && item.start > cue.start!);
+    return { ...cue, end: next?.start !== undefined && next.start !== null ? Math.min(cue.end, next.start) : cue.end };
+  });
+}
+
 export function activeShadowingCue(cues: ShadowingCue[], time: number): number {
   // Prefer the latest starting cue when automatic captions overlap.
   let active = -1;
