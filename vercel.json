@@ -1,6 +1,7 @@
 {
   "functions": {
-    "api/shadowing/analyze.ts": { "includeFiles": "node_modules/kuromoji/dict/**" }
+    "api/shadowing/analyze.ts": { "includeFiles": "node_modules/kuromoji/dict/**", "maxDuration": 60 },
+    "api/shadowing/prepare.ts": { "includeFiles": "node_modules/kuromoji/dict/**", "maxDuration": 60 }
   },
   "rewrites": [
     {

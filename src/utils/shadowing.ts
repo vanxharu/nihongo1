@@ -4,6 +4,8 @@ export interface ShadowingCue {
   start: number | null;
   end: number | null;
   timings?: ShadowingTextTiming[];
+  readings?: { word: string; reading: string }[];
+  translation?: string;
 }
 
 export interface ShadowingTextTiming {

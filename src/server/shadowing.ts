@@ -11,7 +11,7 @@ import type { ShadowingAnalysis, ShadowingCue } from '../utils/shadowing';
 import { parseYouTubeWordCaptions } from './shadowingNativeTiming.js';
 
 let readingAnalyzer: Promise<any> | null = null;
-async function sentenceReadings(sentence: string) {
+export async function sentenceReadings(sentence: string) {
   if (!readingAnalyzer) {
     readingAnalyzer = (async () => {
       const Analyzer = (KuromojiAnalyzer as any).default || KuromojiAnalyzer;

@@ -28,9 +28,14 @@ test('compiled Vercel entries load in native Node ESM and return timed captions'
     writeFileSync(resolve(output, 'package.json'), '{"type":"module"}');
     compile(resolve(root, 'api/shadowing/transcript.ts'));
     compile(resolve(root, 'api/shadowing/analyze.ts'));
+    compile(resolve(root, 'api/shadowing/video.ts'));
+    compile(resolve(root, 'api/shadowing/prepare.ts'));
     writeFileSync(resolve(output, 'run.mjs'), `
       import transcript from './api/shadowing/transcript.js';
       import analyze from './api/shadowing/analyze.js';
+      import video from './api/shadowing/video.js';
+      import prepare from './api/shadowing/prepare.js';
+      import {validateStoredCues} from './src/server/shadowingStore.js';
       import {parseManagedCaptions} from './src/server/shadowing.js';
       globalThis.fetch = async url => String(url).includes('/youtubei/')
         ? Response.json({captions:{playerCaptionsTracklistRenderer:{captionTracks:[{languageCode:'ja',baseUrl:'https://www.youtube.com/api/timedtext'}]}}})
@@ -52,6 +57,12 @@ test('compiled Vercel entries load in native Node ESM and return timed captions'
       let rejectedEnglish=false;
       try {parseManagedCaptions({lang:'en',content:[{text:'English',offset:0,duration:2000}]})} catch {rejectedEnglish=true}
       replies.push({rejectedEnglish});
+      await video({method:'POST',headers:{authorization:'Bearer forged-session'},body:{}},res());
+      await prepare({method:'POST',headers:{},body:{cues:[]}},res());
+      const enriched=validateStoredCues([{id:'test',text:'日本語',start:1,end:3,translation:'Tiếng Nhật',readings:[{word:'日本語',reading:'にほんご'}]}]);
+      let rejectedDuplicates=false;try {validateStoredCues([...enriched,...enriched])} catch {rejectedDuplicates=true}
+      let rejectedTime=false;try {validateStoredCues([{id:'bad',text:'日本語',start:3,end:1}])} catch {rejectedTime=true}
+      replies.push({enriched,rejectedDuplicates,rejectedTime});
       console.log(JSON.stringify(replies));
     `);
     const replies = JSON.parse(execFileSync(process.execPath, [resolve(output, 'run.mjs')], {
@@ -69,5 +80,11 @@ test('compiled Vercel entries load in native Node ESM and return timed captions'
     assert.equal(replies[3].data.cues[0].start, 1.5);
     assert.equal(replies[3].data.cues[0].end, 3.5);
     assert.equal(replies[4].rejectedEnglish, true);
+    assert.equal(replies[5].status, 401);
+    assert.equal(replies[6].status, 401);
+    assert.equal(replies[7].enriched[0].translation, 'Tiếng Nhật');
+    assert.equal(replies[7].enriched[0].readings[0].reading, 'にほんご');
+    assert.equal(replies[7].rejectedDuplicates, true);
+    assert.equal(replies[7].rejectedTime, true);
   } finally { rmSync(output, { recursive: true, force: true }); }
 });
