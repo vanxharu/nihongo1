@@ -147,6 +147,8 @@ export default function Header({
         return 'Trung tâm Luyện tập';
       case 'listening':
         return 'JLPT Listening (聴解)';
+      case 'shadowing':
+        return 'Shadowing tiếng Nhật';
       case 'kanji':
         return 'Thư viện Hán tự (Kanji)';
       case 'grammar':

@@ -16,6 +16,7 @@ import { GRAMMAR_SYSTEM_PROMPT, buildGrammarContentUserPrompt } from './src/prom
 import { lessons, vocabularies, grammars, kanjis, users } from './src/db/schema';
 import { VOCABULARY_DATA, GRAMMAR_DATA, KANJI_DATA, MINNA_N4_VOCABULARY, TANGO_N4_VOCABULARY } from './src/data';
 import { synthesizeAzureSpeech } from './src/server/azureTts';
+import { shadowingTranscript, shadowingAnalyze } from './src/server/shadowing';
 import { cleanVocabSymbols, sanitizeVocabItem, KANJI_TO_HAN_VIET } from './src/utils/japaneseUtils';
 import { deduplicateGrammars } from './src/utils/grammarDeduplicator';
 import { KANJI_DICTIONARY } from './src/data/kanjiDictionary';
@@ -63,6 +64,8 @@ const PORT = 3000;
 // Express middleware
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+app.get('/api/shadowing/transcript', shadowingTranscript);
+app.post('/api/shadowing/analyze', shadowingAnalyze);
 
 // Transparent Firebase Auth reverse proxy for localhost & custom domains
 app.all('/__/auth/*', async (req, res) => {

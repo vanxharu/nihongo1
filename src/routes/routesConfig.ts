@@ -16,6 +16,7 @@ export const APP_ROUTES = {
   KANJI: '/kanji',
   TANGO: '/tango',
   CHO: '/cho',
+  SHADOWING: '/shadowing',
   JLPT: '/jlpt',
   ROADMAP: '/lo-trinh',
   READING: '/doc-hieu',
@@ -39,6 +40,7 @@ export const TAB_TO_ROUTE_MAP: Record<string, string> = {
   kanji: APP_ROUTES.KANJI,
   vocabulary: APP_ROUTES.TANGO,
   listening: APP_ROUTES.CHO,
+  shadowing: APP_ROUTES.SHADOWING,
   exam: APP_ROUTES.JLPT,
   'daily-exam': APP_ROUTES.JLPT,
   'jlpt-exam': APP_ROUTES.JLPT,
@@ -64,6 +66,7 @@ export const ROUTE_TO_TAB_MAP: Record<string, string> = {
   '/kanji': 'kanji',
   '/tango': 'vocabulary',
   '/cho': 'listening',
+  '/shadowing': 'shadowing',
   '/jlpt': 'exam',
   '/lo-trinh': 'roadmap',
   '/roadmap': 'roadmap',
@@ -111,6 +114,7 @@ export function getTabFromPathname(pathname: string): string {
   if (cleanPath.startsWith('/kanji')) return 'kanji';
   if (cleanPath.startsWith('/tango') || cleanPath.startsWith('/vocabulary')) return 'vocabulary';
   if (cleanPath.startsWith('/cho') || cleanPath.startsWith('/listening')) return 'listening';
+  if (cleanPath.startsWith('/shadowing')) return 'shadowing';
   
   if (cleanPath.startsWith('/jlpt')) {
     if (cleanPath.includes('/listening')) return 'listening';
@@ -158,6 +162,9 @@ export function getRoutePageTitle(pathname: string): { title: string; subtitle?:
   }
   if (cleanPath.startsWith('/cho')) {
     return { title: 'JLPT Listening (聴解)', subtitle: 'Luyện nghe đề thi thật trên YouTube' };
+  }
+  if (cleanPath.startsWith('/shadowing')) {
+    return { title: 'Shadowing tiếng Nhật', subtitle: 'Luyện nhại YouTube, từ vựng, kanji và ngữ pháp' };
   }
   if (cleanPath.startsWith('/jlpt')) {
     if (cleanPath.includes('/listening')) {

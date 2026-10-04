@@ -60,6 +60,11 @@ export default function MobilePracticeHub({
       />
 
       {/* 3. Bốn thẻ học chính (Lưới 2x2) */}
+      <button type="button" onClick={() => onNavigate('shadowing')} className="flex w-full items-center gap-4 rounded-2xl border border-amber-400/30 bg-amber-500/10 p-4 text-left hover:bg-amber-500/15">
+        <Headphones className="shrink-0 text-amber-300" />
+        <div className="flex-1"><h2 className="font-bold text-amber-200">Shadowing · YouTube</h2><p className="mt-1 text-xs text-slate-300">Nghe và nhại từng câu · Từ vựng · Kanji · Ngữ pháp</p></div>
+        <ArrowRight size={18} className="text-amber-300" />
+      </button>
       <div className="grid grid-cols-2 gap-3 sm:gap-4">
         {/* Thẻ 1: Chữ – Từ vựng (Cyan Accent) -> Đến Ôn tập từ vựng */}
         <button

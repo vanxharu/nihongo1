@@ -55,6 +55,13 @@ export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, 
 
   // CHỨC NĂNG CHÍNH VỚI URL ROUTE CHUẨN
   const primaryMenuItems = [
+    {
+      id: 'shadowing', path: '/shadowing', label: 'Shadowing · YouTube', icon: Headphones,
+      iconColor: 'text-amber-400',
+      activeBg: 'bg-amber-500/15 border-amber-400/60 text-amber-100',
+      activeIconBg: 'bg-amber-400/25 border border-amber-400/50',
+      dotColor: 'bg-amber-400'
+    },
     { 
       id: 'practice', 
       path: '/',

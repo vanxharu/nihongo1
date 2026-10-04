@@ -1,0 +1,16 @@
+.shadowing-page { background-color:#1d323d; background-image:linear-gradient(#10263080 1px,transparent 1px),linear-gradient(90deg,#10263080 1px,transparent 1px);background-size:16px 16px;min-height:100vh; }
+.shadowing-banner { background:linear-gradient(110deg,#5144dc,#8756ee);position:relative;overflow:hidden; }
+.shadowing-banner:after { content:'';position:absolute;width:160px;height:160px;border-radius:50%;background:#ff922d;right:-65px;bottom:-95px;pointer-events:none; }
+.shadowing-banner form { position:relative;z-index:1; }
+.shadowing-transcript { position:relative; }
+.shadowing-video { position:relative; }
+.shadowing-video iframe { position:absolute;inset:0;width:100%;height:100%; }
+.karaoke-line { text-align:center;font-size:clamp(1.4rem,3vw,2rem);font-weight:750;line-height:2.2;overflow-wrap:anywhere; }
+.karaoke-line ruby { ruby-position:over; }
+.karaoke-line rt { color:#94a3b8;font-size:.45em;font-weight:400; }
+.shadowing-page button:focus-visible { outline:2px solid #a99aff;outline-offset:3px; }
+.shadowing-page .dictation-panel { background:#101010; }
+.shadowing-transcript { max-height:640px;scrollbar-width:thin; }
+.shadowing-transcript .karaoke-line { font-size:.9rem;text-align:left;line-height:2.4; }
+.shadowing-transcript ruby { display:inline-block;border:1px solid #45535e;border-radius:3px;padding:0 4px;margin:2px; }
+@media(max-width:1023px) { .shadowing-transcript { max-height:360px; } }
