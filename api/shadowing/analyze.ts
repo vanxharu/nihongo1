@@ -1,1 +1,1 @@
-export { shadowingAnalyze as default } from '../../src/server/shadowing';
+export { shadowingAnalyze as default } from '../../src/server/shadowing.js';

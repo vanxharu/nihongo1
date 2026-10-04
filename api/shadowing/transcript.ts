@@ -1,1 +1,1 @@
-export { shadowingTranscript as default } from '../../src/server/shadowing';
+export { shadowingTranscript as default } from '../../src/server/shadowing.js';

@@ -34,6 +34,18 @@ export function normalizeDictation(text: string): string {
   return text.normalize('NFKC').toLowerCase().replace(/[\s\p{P}\p{S}]/gu, '');
 }
 
+export async function readShadowingResponse(response: Response): Promise<any> {
+  const body = await response.text();
+  let data: any;
+  try { data = JSON.parse(body); } catch {
+    throw new Error(response.status >= 500
+      ? 'Máy chủ xử lý phụ đề hoặc phân tích câu đang gặp lỗi. Hãy thử lại sau ít phút.'
+      : 'Máy chủ chưa trả về dữ liệu hợp lệ. Hãy tải lại trang và thử lại.');
+  }
+  if (!response.ok) throw new Error(typeof data?.error === 'string' ? data.error : 'Không lấy được dữ liệu. Hãy thử lại.');
+  return data;
+}
+
 export function dictationChunks(text: string): string[] {
   const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
   const parts = segmenter ? Array.from(segmenter.segment(text), part => part.segment) : Array.from(text);

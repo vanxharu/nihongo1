@@ -1,0 +1,54 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { dirname, resolve, relative } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import ts from 'typescript';
+import { fileURLToPath } from 'node:url';
+
+test('compiled Vercel entries load in native Node ESM and return timed captions', () => {
+  const root = fileURLToPath(new URL('..', import.meta.url));
+  const output = mkdtempSync(resolve(root, '.shadowing-runtime-'));
+  const compiled = new Set();
+  function compile(file) {
+    if (compiled.has(file)) return;
+    compiled.add(file);
+    const emitted = ts.transpileModule(readFileSync(file, 'utf8'), {
+      compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 },
+    }).outputText;
+    const dest = resolve(output, relative(root, file).replace(/\.ts$/, '.js'));
+    mkdirSync(dirname(dest), { recursive: true }); writeFileSync(dest, emitted);
+    for (const dependency of ts.preProcessFile(emitted).importedFiles) {
+      if (!dependency.fileName.startsWith('.')) continue;
+      assert.ok(dependency.fileName.endsWith('.js'), `Native ESM requires an extension: ${dependency.fileName}`);
+      compile(resolve(dirname(file), dependency.fileName.replace(/\.js$/, '.ts')));
+    }
+  }
+  try {
+    writeFileSync(resolve(output, 'package.json'), '{"type":"module"}');
+    compile(resolve(root, 'api/shadowing/transcript.ts'));
+    compile(resolve(root, 'api/shadowing/analyze.ts'));
+    writeFileSync(resolve(output, 'run.mjs'), `
+      import transcript from './api/shadowing/transcript.js';
+      import analyze from './api/shadowing/analyze.js';
+      globalThis.fetch = async url => String(url).includes('/youtubei/')
+        ? Response.json({captions:{playerCaptionsTracklistRenderer:{captionTracks:[{languageCode:'ja',baseUrl:'https://www.youtube.com/api/timedtext'}]}}})
+        : new Response('<timedtext><body><p t="4520" d="8840"><s>日本語能力試験。</s></p></body></timedtext>');
+      const replies=[];
+      const res=()=>({statusCode:200,setHeader(){},status(n){this.statusCode=n;return this},json(data){replies.push({status:this.statusCode,data});return this}});
+      await transcript({method:'GET',query:{videoId:'I3kvL128MIQ'}},res());
+      await transcript({method:'GET',query:{videoId:'bad'}},res());
+      await analyze({method:'POST',body:{sentence:'日本語を勉強しています。'}},res());
+      console.log(JSON.stringify(replies));
+    `);
+    const replies = JSON.parse(execFileSync(process.execPath, [resolve(output, 'run.mjs')], {
+      encoding: 'utf8', env: { ...process.env, OPENAI_API_KEY: '', GEMINI_API_KEY: '' },
+    }));
+    assert.equal(replies[0].status, 200);
+    assert.ok(Math.abs(replies[0].data.cues[0].start - 4.52) < 0.00001);
+    assert.ok(Math.abs(replies[0].data.cues[0].end - 13.36) < 0.00001);
+    assert.equal(replies[1].status, 400);
+    assert.equal(replies[2].data.source, 'dictionary');
+    assert.ok(replies[2].data.vocabulary.length > 0);
+  } finally { rmSync(output, { recursive: true, force: true }); }
+});

@@ -9,6 +9,12 @@ const source = ts.transpileModule(readFileSync(new URL('../src/utils/shadowing.t
 const exports = {};
 vm.runInNewContext(source, { exports, URL });
 const { parseShadowingVideoId, parseShadowingTime, parseShadowingSubtitles, validateShadowingRange, karaokeProgress, activeShadowingCue } = exports;
+test('server crashes and HTML fallback become readable messages rather than JSON syntax errors', async () => {
+  await assert.rejects(exports.readShadowingResponse(new Response('A server error has occurred', { status: 500 })), /Máy chủ.*đang gặp lỗi/);
+  await assert.rejects(exports.readShadowingResponse(new Response('<html>Not found</html>')), /dữ liệu hợp lệ/);
+  await assert.rejects(exports.readShadowingResponse(Response.json({ error: 'Không có phụ đề Nhật' }, { status: 422 })), /Không có phụ đề Nhật/);
+  assert.equal((await exports.readShadowingResponse(Response.json({ cues: [] }))).cues.length, 0);
+});
 test('dictation ignores spacing, punctuation and fullwidth forms but preserves spelling', () => {
   assert.equal(exports.normalizeDictation('日本語 を勉強します。'), exports.normalizeDictation('日本語を勉強します'));
   assert.equal(exports.normalizeDictation('ＡＢＣ１２３！'), 'abc123');

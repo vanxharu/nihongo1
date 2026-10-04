@@ -7,7 +7,7 @@ import { parseShadowingVideoId, parseShadowingTime, parseShadowingSubtitles, Sha
 import ShadowingPlayer, { ShadowingPlayerHandle } from './ShadowingPlayer';
 import KaraokeCaption from './KaraokeCaption';
 import DictationPanel from './DictationPanel';
-import { activeShadowingCue } from '../../utils/shadowing';
+import { activeShadowingCue, readShadowingResponse } from '../../utils/shadowing';
 import './shadowing.css';
 
 const field = 'w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 focus:border-amber-400 focus:outline-none';
@@ -119,7 +119,7 @@ export default function ShadowingHub() {
     setLoading(true); setNotice('');
     try {
       const res = await fetch(`/api/shadowing/transcript?videoId=${videoId}`, { signal: controller.signal });
-      const data = await res.json();
+      const data = await readShadowingResponse(res);
       if (!res.ok) throw new Error(data.error || 'Không lấy được phụ đề.');
       if (!Array.isArray(data.cues) || !data.cues.length) throw new Error('Video không có phụ đề tiếng Nhật.');
       if (controller.signal.aborted) return;
@@ -151,7 +151,7 @@ export default function ShadowingHub() {
     setAnalyzing(true); setAnalysis(null); setNotice('');
     try {
       const res = await fetch('/api/shadowing/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sentence: text }), signal: controller.signal });
-      const data = await res.json();
+      const data = await readShadowingResponse(res);
       if (!res.ok) throw new Error(data.error || 'Không phân tích được câu.');
       if (!Array.isArray(data.vocabulary) || !Array.isArray(data.kanji) || !Array.isArray(data.grammar)) throw new Error('Dữ liệu phân tích không hợp lệ.');
       if (controller.signal.aborted) return;

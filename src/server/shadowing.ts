@@ -2,8 +2,8 @@ import type { Request, Response } from 'express';
 import { fetchTranscript } from 'youtube-transcript';
 import { GoogleGenAI } from '@google/genai';
 import OpenAI from 'openai';
-import { VOCABULARY_DATA } from '../data';
-import { KANJI_DICTIONARY } from '../data/kanjiDictionary';
+import { VOCABULARY_DATA } from '../data.js';
+import { KANJI_DICTIONARY } from '../data/kanjiDictionary.js';
 import type { ShadowingAnalysis, ShadowingCue } from '../utils/shadowing';
 
 export function localShadowingAnalysis(sentence: string): ShadowingAnalysis {
