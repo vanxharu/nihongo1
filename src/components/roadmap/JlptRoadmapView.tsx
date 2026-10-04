@@ -30,6 +30,8 @@ import {
   stageRange,
 } from "../../data/jlptRoadmap";
 import "./roadmap.css";
+import JourneyTrail from "./JourneyTrail";
+import { showLearningFeedback } from "../../utils/learningMotion";
 
 interface JlptRoadmapViewProps {
   userProfile: UserProfile;
@@ -54,7 +56,7 @@ export default function JlptRoadmapView({
   const saved = user ? userProfile.studyRoadmap : guestPlan;
   const activeLevel = saved?.targetLevel || userProfile.targetLevel || "N5";
   const [level, setLevel] = useState<JLPTLevel>(activeLevel);
-  const accountPlan = `${user?.uid || 'guest'}:${activeLevel}`;
+  const accountPlan = `${user?.uid || "guest"}:${activeLevel}`;
   useEffect(() => {
     setLevel(activeLevel);
     setSelectedDay(normalizedRoadmap(saved, activeLevel, today()).currentDay);
@@ -182,12 +184,19 @@ export default function JlptRoadmapView({
   };
   const finishDay = async () => {
     if (complete || !allChecked || saving || preview) return;
-    if (await persist(completeRoadmapDay(plan, selected.day), true))
+    if (await persist(completeRoadmapDay(plan, selected.day), true)) {
       setCelebrate(true);
+      showLearningFeedback("milestone");
+    }
   };
   const inspectToday = () => {
     inspectDay(plan.currentDay);
-    dailyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    dailyRef.current?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "start",
+    });
   };
 
   return (
@@ -278,6 +287,24 @@ export default function JlptRoadmapView({
             {error}
           </p>
         )}
+        <JourneyTrail
+          level={level}
+          plan={plan}
+          selectedStage={selected.index}
+          celebrate={celebrate}
+          onSelect={inspectDay}
+          onPractice={(day) => {
+            inspectDay(day);
+            dailyRef.current?.scrollIntoView({
+              behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+                .matches
+                ? "auto"
+                : "smooth",
+              block: "start",
+            });
+          }}
+        />
+
         <div className="journey-metrics">
           <div>
             <span>HÀNH TRÌNH ĐÃ ĐI</span>
@@ -467,7 +494,7 @@ export default function JlptRoadmapView({
             <div className="journey-section-heading">
               <div>
                 <span>6 CHẶNG · MỘT HÀNH TRÌNH</span>
-                <h2>Bản đồ chinh phục {level}</h2>
+                <h2>Nội dung từng chặng {level}</h2>
               </div>
               <button onClick={inspectToday}>
                 Về buổi đang học
