@@ -39,7 +39,6 @@ const DictionaryLookup = lazyWithRetry(() => import('./components/DictionaryLook
 const LessonHub = lazyWithRetry(() => import('./components/LessonHub'));
 const HandwritingPractice = lazyWithRetry(() => import('./components/HandwritingPractice'));
 const StudyBooksHub = lazyWithRetry(() => import('./components/StudyBooksHub'));
-const ListeningHub = lazyWithRetry(() => import('./components/listening/ListeningHub').then(m => ({ default: m.ListeningHub })));
 const ShadowingHub = lazyWithRetry(() => import('./components/shadowing/ShadowingHub'));
 const GrammarPractice = lazyWithRetry(() => import('./components/GrammarPractice'));
 const JlptRoadmapView = lazyWithRetry(() => import('./components/roadmap/JlptRoadmapView'));
@@ -548,39 +547,6 @@ export default function App() {
 
   const [selectedMaziiWord, setSelectedMaziiWord] = useState<any>(null);
 
-  function ListeningHubRouteWrapper() {
-    const { examId, level } = useParams();
-    const activeLevel = (level ? level.toUpperCase() : activeProfile.targetLevel || 'N4') as JLPTLevel;
-
-    const handleSelectExam = (selectedId: string | null) => {
-      if (selectedId) {
-        if (level) {
-          navigate(`/jlpt/${level.toLowerCase()}/listening/${selectedId}`);
-        } else {
-          navigate(`/cho/${selectedId}`);
-        }
-      } else {
-        if (level) {
-          navigate(`/jlpt/${level.toLowerCase()}/listening`);
-        } else {
-          navigate('/cho');
-        }
-      }
-    };
-
-    return (
-      <ListeningHub
-        userId={user?.uid || 'default_user'}
-        currentLevel={activeLevel}
-        onLevelChange={(lvl) => updateProfile({ targetLevel: lvl })}
-        onEarnXp={handleEarnXp}
-        isAdmin={activeProfile.role === 'admin'}
-        initialExamId={examId}
-        onSelectExam={handleSelectExam}
-      />
-    );
-  }
-
   function GrammarPracticeRouteWrapper() {
     const { lessonId } = useParams();
     const parsedLesson = lessonId ? parseInt(lessonId, 10) : undefined;
@@ -698,15 +664,15 @@ export default function App() {
         } 
       />
 
-      {/* 5. Luyện nghe (Choukai) & Deep link bài thi video */}
-      <Route path="/cho" element={<ListeningHubRouteWrapper />} />
-      <Route path="/cho/:examId" element={<ListeningHubRouteWrapper />} />
+      {/* 5. Compatibility redirects for retired JLPT Listening links */}
+      <Route path="/cho" element={<Navigate to="/jlpt" replace />} />
+      <Route path="/cho/:examId" element={<Navigate to="/jlpt" replace />} />
 
       {/* 6. Luyện thi JLPT & Cấp độ JLPT */}
       <Route path="/jlpt" element={<DailyExamQuizRouteWrapper />} />
       <Route path="/jlpt/:level" element={<DailyExamQuizRouteWrapper />} />
-      <Route path="/jlpt/:level/listening" element={<ListeningHubRouteWrapper />} />
-      <Route path="/jlpt/:level/listening/:examId" element={<ListeningHubRouteWrapper />} />
+      <Route path="/jlpt/:level/listening" element={<Navigate to="/jlpt" replace />} />
+      <Route path="/jlpt/:level/listening/:examId" element={<Navigate to="/jlpt" replace />} />
       <Route path="/jlpt/:level/grammar" element={<GrammarPracticeRouteWrapper />} />
       <Route 
         path="/jlpt/:level/kanji" 
@@ -853,7 +819,7 @@ export default function App() {
       <Route path="/practice" element={<Navigate to="/" replace />} />
       <Route path="/grammar" element={<Navigate to="/bunpo" replace />} />
       <Route path="/vocabulary" element={<Navigate to="/tango" replace />} />
-      <Route path="/listening" element={<Navigate to="/cho" replace />} />
+      <Route path="/listening" element={<Navigate to="/jlpt" replace />} />
       <Route path="/reading" element={<Navigate to="/doc-hieu" replace />} />
       <Route path="/study-books" element={<Navigate to="/sach" replace />} />
       <Route path="/notebook" element={<Navigate to="/so-tay" replace />} />

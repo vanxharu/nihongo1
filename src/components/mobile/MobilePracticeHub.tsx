@@ -150,33 +150,6 @@ export default function MobilePracticeHub({
           </div>
         </button>
 
-        {/* Thẻ 4: Nghe hiểu JLPT (Emerald Accent) -> Đến Nghe hiểu JLPT */}
-        <button
-          type="button"
-          id="practice-card-listening"
-          onClick={() => onNavigate('listening')}
-          className="group relative p-4 rounded-2xl bg-[#121927] border border-[#1b253b] hover:border-emerald-500/50 transition-all text-left flex flex-col justify-between h-[132px] sm:h-[140px] shadow-lg active:scale-[0.98] cursor-pointer overflow-hidden"
-        >
-          <svg className="absolute top-0 left-0 w-16 h-16 pointer-events-none" viewBox="0 0 64 64" fill="none">
-            <path d="M 0 34 C 0 15.2 15.2 0 34 0 L 52 0" stroke="#10b981" strokeWidth="3.5" strokeLinecap="round" />
-          </svg>
-
-          <div className="flex items-start justify-between w-full relative z-10">
-            <div className="w-11 h-11 rounded-xl bg-[#0e2920] border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-bold shadow-inner">
-              <Headphones className="w-5 h-5" />
-            </div>
-            <ArrowRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all mt-1" />
-          </div>
-
-          <div className="relative z-10">
-            <div className="text-[15px] font-bold text-white group-hover:text-emerald-200 transition-colors leading-tight">
-              JLPT Listening
-            </div>
-            <div className="text-xs font-semibold text-emerald-400 mt-0.5">
-              聴解 (N5-N1)
-            </div>
-          </div>
-        </button>
 
         {/* Thẻ 5: Chat AI (Pink Accent) -> Đến Chat AI Tiếng Nhật */}
         <button

@@ -113,16 +113,6 @@ export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, 
       dotColor: 'bg-indigo-400 shadow-[0_0_8px_#818CF8]'
     },
     { 
-      id: 'listening', 
-      path: '/cho',
-      label: 'JLPT Listening', 
-      icon: Headphones, 
-      iconColor: 'text-emerald-400', 
-      activeBg: 'bg-gradient-to-r from-emerald-500/25 via-teal-500/15 to-transparent border-emerald-400/60 text-emerald-100 shadow-[0_0_18px_rgba(16,185,129,0.25)]',
-      activeIconBg: 'bg-emerald-400/25 border border-emerald-400/50 shadow-[0_0_10px_rgba(16,185,129,0.4)]',
-      dotColor: 'bg-emerald-400 shadow-[0_0_8px_#10B981]'
-    },
-    { 
       id: 'study-books', 
       path: '/sach',
       label: 'Sách ôn thi', 

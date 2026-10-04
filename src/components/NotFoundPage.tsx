@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Home, BookOpen, FileText, Headphones, Award, Route, Search, ArrowRight } from 'lucide-react';
+import { Home, BookOpen, FileText, Award, Route, Search, ArrowRight } from 'lucide-react';
 import ShibaMascot from './mascot/ShibaMascot';
 import JpStudyLogo from './JpStudyLogo';
 import { BRAND_NAME } from '../constants/brand';
@@ -10,7 +10,6 @@ export default function NotFoundPage() {
     { label: 'Ngữ pháp (Bunpo)', path: '/bunpo', icon: FileText, color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30' },
     { label: 'Hán tự (Kanji)', path: '/kanji', icon: BookOpen, color: 'text-amber-400 bg-amber-500/10 border-amber-500/30' },
     { label: 'Từ vựng (Tango)', path: '/tango', icon: BookOpen, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
-    { label: 'JLPT Listening (Cho)', path: '/cho', icon: Headphones, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30' },
     { label: 'Luyện thi JLPT', path: '/jlpt', icon: Award, color: 'text-rose-400 bg-rose-500/10 border-rose-500/30' },
     { label: 'Lộ trình học', path: '/lo-trinh', icon: Route, color: 'text-purple-400 bg-purple-500/10 border-purple-500/30' },
   ];

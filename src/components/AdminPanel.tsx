@@ -4,11 +4,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { Database, Users, Settings, Activity, Server, AlertCircle, 
   Search, Shield, Trash2, Edit3, UserCheck, Award, Flame, Coins, Calendar, X, HelpCircle,
-  FileSpreadsheet, UploadCloud, Download, Headphones
+  FileSpreadsheet, UploadCloud, Download
 } from 'lucide-react';
 import AdminDataPanel from "./AdminDataPanel";
 import ConfirmModal from "./ConfirmModal";
-import { AdminListeningManager } from "./listening/AdminListeningManager";
 import UserAvatar from "./UserAvatar";
 
 interface AdminPanelProps {
@@ -17,7 +16,7 @@ interface AdminPanelProps {
 
 export default function AdminPanel({ userProfile }: AdminPanelProps) {
   const { token, user: firebaseUser } = useAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'data' | 'system' | 'listening'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'data' | 'system'>('overview');
   const [openExcelModal, setOpenExcelModal] = useState(false);
   const [usersList, setUsersList] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -273,15 +272,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
           <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
           <span>Dữ liệu (Excel / SQL)</span>
         </button>
-        <button
-          onClick={() => setActiveTab('listening')}
-          className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-            activeTab === 'listening' ? 'bg-teal-50 text-teal-700 border border-teal-200/60 font-bold' : 'text-slate-500 hover:text-slate-900'
-          }`}
-        >
-          <Headphones className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-          <span>Listening Videos</span>
-        </button>
+
         <button
           onClick={() => setActiveTab('system')}
           className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
@@ -536,11 +527,6 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
             </div>
           </div>
         </motion.div>
-      )}
-
-      {/* Tab 5: JLPT Listening Tests & Audio Manager */}
-      {activeTab === 'listening' && (
-        <AdminListeningManager />
       )}
 
       {/* Editing User Modal */}

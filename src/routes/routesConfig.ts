@@ -39,7 +39,7 @@ export const TAB_TO_ROUTE_MAP: Record<string, string> = {
   grammar: APP_ROUTES.BUNPO,
   kanji: APP_ROUTES.KANJI,
   vocabulary: APP_ROUTES.TANGO,
-  listening: APP_ROUTES.CHO,
+  listening: APP_ROUTES.JLPT,
   shadowing: APP_ROUTES.SHADOWING,
   exam: APP_ROUTES.JLPT,
   'daily-exam': APP_ROUTES.JLPT,
