@@ -59,7 +59,8 @@ export async function shadowingTranscript(req: Request, res: Response) {
     if (!cues.length) throw new Error('No Japanese captions');
     res.setHeader('Cache-Control', 'public, max-age=300');
     return res.json({ videoId, language: 'ja', cues });
-  } catch {
+  } catch (error) {
+    console.error('[Shadowing transcript]', error instanceof Error ? error.message : 'Unknown transcript error');
     return res.status(422).json({ error: 'Không lấy được phụ đề tiếng Nhật của video này. Bạn có thể dán lời thoại hoặc nhập file SRT/VTT bên dưới.' });
   }
 }
