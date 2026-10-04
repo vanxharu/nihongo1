@@ -85,6 +85,16 @@ export function activeShadowingCue(cues: ShadowingCue[], time: number): number {
   return active;
 }
 
+/** Keep the last caption visible across real gaps without inventing speech timing. */
+export function visibleShadowingCue(cues: ShadowingCue[], time: number): number {
+  let latest = -1;
+  cues.forEach((cue, index) => {
+    if (cue.start !== null && cue.start <= time &&
+        (latest < 0 || cue.start >= cues[latest].start!)) latest = index;
+  });
+  return latest >= 0 ? latest : cues.length ? 0 : -1;
+}
+
 export function normalizeDictation(text: string): string {
   return text.normalize('NFKC').toLowerCase().replace(/[\s\p{P}\p{S}]/gu, '');
 }

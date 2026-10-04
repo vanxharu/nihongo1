@@ -76,6 +76,16 @@ test('rolling caption timing ends at the next sentence and preserves genuine gap
   assert.equal(activeShadowingCue(cues,5),0);
   assert.equal(input[0].end,13.36);
 });
+
+test('visible captions persist through late gaps and reset on backwards seeks without extending speech', () => {
+  const cues = [{ start: 5, end: 8 }, { start: 600, end: 603 }, { start: 900, end: 905 }];
+  assert.equal(exports.visibleShadowingCue(cues, 604), 1);
+  assert.equal(activeShadowingCue(cues, 604), -1);
+  assert.equal(exports.visibleShadowingCue(cues, 902), 2);
+  assert.equal(exports.visibleShadowingCue(cues, 6), 0);
+  assert.equal(exports.visibleShadowingCue(cues, 0), 0);
+  assert.equal(exports.visibleShadowingCue([], 100), -1);
+});
 test('a short overlapping cue cannot revive the previous sentence after it ends', () => {
   const cues=exports.normalizeShadowingTimeline([{id:'a',text:'a',start:0,end:10},{id:'b',text:'b',start:2,end:3}]);
   assert.equal(activeShadowingCue(cues,4),-1);

@@ -10,7 +10,7 @@ import DictationPanel from './DictationPanel';
 import SentenceInsights from './SentenceInsights';
 import SubtitleEditor from './SubtitleEditor';
 import { auth } from '../../lib/firebase';
-import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings } from '../../utils/shadowing';
+import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings, visibleShadowingCue } from '../../utils/shadowing';
 import './shadowing.css';
 
 const field = 'w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 focus:border-amber-400 focus:outline-none';
@@ -65,7 +65,8 @@ export default function ShadowingHub() {
     return unsubscribe;
   }, []);
   const active = activeShadowingCue(cues, currentTime);
-  const displayed = mode === 'dictation' ? cues[selected] : active >= 0 ? cues[active] : null;
+  const displayedIndex = mode === 'dictation' ? selected : visibleShadowingCue(cues, currentTime);
+  const displayed = cues[displayedIndex] || null;
   const displayedAnalysis = displayed ? preparedAnalysis(displayed) : null;
   const wordTimings = displayed && validShadowingTimings(displayed) ? displayed.timings! : [];
   const spokenProgress = wordTimings.length ? 100 * wordTimings.filter(t => currentTime >= t.start).length / wordTimings.length : 0;
@@ -216,10 +217,10 @@ export default function ShadowingHub() {
           <ShadowingPlayer ref={playerRef} key={videoId} videoId={videoId} start={parseShadowingTime(start)} end={parseShadowingTime(end)} sentenceKey={sentence} onTime={setCurrentTime} compact={mode === 'dictation'} />
 
           {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-5 sm:p-7">
-            <div className="karaoke-meta"><span className="karaoke-mode"><span aria-hidden="true">♫</span> {wordTimings.length ? 'Karaoke theo từ' : 'Luyện theo câu'}</span><span>{displayed ? `Câu ${(mode === 'dictation' ? selected : active) + 1} / ${cues.length}` : 'Sẵn sàng nghe'}</span></div>
+            <div className="karaoke-meta"><span className="karaoke-mode"><span aria-hidden="true">♫</span> {wordTimings.length ? 'Karaoke theo từ' : 'Luyện theo câu'}</span><span>{displayed ? `Câu ${displayedIndex + 1} / ${cues.length}` : 'Sẵn sàng nghe'}</span></div>
             <div className="mb-3 flex justify-end gap-3 text-xs"><label><input type="checkbox" checked={furigana} onChange={e => setFurigana(e.target.checked)} /> Furigana</label><label><input type="checkbox" checked={translation} onChange={e => setTranslation(e.target.checked)} /> Bản dịch</label></div>
             <div role="button" tabIndex={displayed ? 0 : -1} aria-label="Xem nghĩa và phân tích câu đang phát" aria-disabled={!displayed} onClick={() => displayed && setInsightCue({ ...displayed })} onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && displayed) { e.preventDefault(); setInsightCue({ ...displayed }); } }} className="cursor-pointer rounded-lg outline-none hover:bg-violet-500/10 focus-visible:ring-2 focus-visible:ring-violet-400">
-<KaraokeCaption text={displayed?.text || (cues.length ? 'Chọn một câu để bắt đầu nghe' : 'Đang tải phụ đề…')} time={currentTime} start={displayed?.start ?? null} end={displayed?.end ?? null} timings={displayed?.timings} analysis={displayedAnalysis} furigana={furigana} /></div>
+<KaraokeCaption text={displayed?.text || ''} time={currentTime} start={displayed?.start ?? null} end={displayed?.end ?? null} timings={displayed?.timings} analysis={displayedAnalysis} furigana={furigana} /></div>
             {wordTimings.length > 0 && <div className="karaoke-progress" aria-hidden="true"><span style={{ width: `${spokenProgress}%` }} /></div>}
             {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
             {displayed && translation && !displayedAnalysis?.translation && <button className="mt-2 w-full text-center text-xs text-slate-400 underline" onClick={() => setEditing(true)}>Chuẩn bị bản dịch trong phần Soạn phụ đề</button>}
@@ -234,7 +235,7 @@ export default function ShadowingHub() {
           {(mode === 'shadowing' || revealed) && <>
           <section className="rounded-xl bg-[#101010] p-3"><h2 className="mb-3 text-sm font-bold">BẢN CHÉP · {cues.length} câu</h2>            <div className="shadowing-transcript space-y-2 overflow-y-auto">{cues.map((cue, i) => {
               const isActive = active === i;
-              return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => !editing && isActive ? setInsightCue({ ...cue }) : jumpCue(i)} className={`w-full rounded-xl border p-3 text-left ${isActive ? 'border-blue-400 bg-blue-500/15' : selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950'}`}><span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>{mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} timings={cue.timings} analysis={preparedAnalysis(cue)} furigana={furigana} />}{translation && (mode !== 'dictation' || revealed) && cue.translation && <p className="mt-2 text-xs italic text-slate-400">{cue.translation}</p>}</button>;
+              return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => !editing && isActive ? setInsightCue({ ...cue }) : jumpCue(i)} className={`w-full rounded-xl border p-3 text-left ${isActive ? 'border-blue-400 bg-blue-500/15' : selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950'}`}><span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>{mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={isActive ? currentTime : cue.start !== null && currentTime >= cue.start ? (cue.end ?? 0) : 0} start={cue.start} end={cue.end} timings={cue.timings} analysis={preparedAnalysis(cue)} furigana={furigana} />}{translation && (mode !== 'dictation' || revealed) && cue.translation && <p className="mt-2 text-xs italic text-slate-400">{cue.translation}</p>}</button>;
             })}</div>
 {!cues.length && <p className="p-3 text-sm text-slate-400">Chưa tải được phụ đề tiếng Nhật cho video này.</p>}</section>
           </>}

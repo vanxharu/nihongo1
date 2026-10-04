@@ -2,13 +2,13 @@ import React from 'react';
 import { ShadowingAnalysis, ShadowingTextTiming, shadowingTextFill, validShadowingTimings } from '../../utils/shadowing';
 const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
 
-export default function KaraokeCaption({ text, time, start, end, timings, analysis, furigana }: {
+function KaraokeCaption({ text, time, start, end, timings, analysis, furigana }: {
   text: string; time: number; start: number | null; end: number | null;
   timings?: ShadowingTextTiming[];
   analysis: ShadowingAnalysis | null; furigana: boolean;
 }) {
   const measured = validShadowingTimings({ id: '', text, start, end, timings }) ? timings! : [];
-  const current = [...measured].reverse().find(t => time >= t.start);
+  const current = [...measured].reverse().find(t => time >= t.start && time < t.end);
   const words = [...(analysis?.readings || analysis?.vocabulary || [])].filter(v => v.word).sort((a, b) => b.word.length - a.word.length);
   const pieces: { text: string; reading?: string; offset: number }[] = [];
   for (let offset = 0; offset < text.length;) {
@@ -30,3 +30,9 @@ export default function KaraokeCaption({ text, time, start, end, timings, analys
     })}
   </p>;
 }
+
+export default React.memo(KaraokeCaption, (a, b) =>
+  a.text === b.text && a.time === b.time && a.start === b.start && a.end === b.end &&
+  a.timings === b.timings && a.furigana === b.furigana &&
+  a.analysis?.readings === b.analysis?.readings &&
+  (a.analysis?.readings !== undefined || a.analysis?.vocabulary === b.analysis?.vocabulary));
