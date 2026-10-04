@@ -20,11 +20,11 @@ export default function KaraokeCaption({ text, time, start, end, timings, analys
   return <p lang="ja" aria-label={text} className="karaoke-line">
     {pieces.map(piece => {
       let offset = piece.offset;
-      return <ruby key={piece.offset}>{Array.from(piece.text).map(char => {
+      return <ruby key={piece.offset}><span className="karaoke-word">{Array.from(piece.text).map(char => {
         const charOffset = offset; offset += char.length;
         const spoken = shadowingTextFill(time, charOffset, measured) === 100;
         return <span key={charOffset} style={{ color: spoken ? '#a99aff' : '#f1f5f9' }}>{char}</span>;
-      })}{furigana && piece.reading && piece.reading !== piece.text && <rt>{piece.reading}</rt>}</ruby>;
+      })}</span>{furigana && piece.reading && piece.reading !== piece.text && <rt>{piece.reading}</rt>}</ruby>;
     })}
   </p>;
 }
