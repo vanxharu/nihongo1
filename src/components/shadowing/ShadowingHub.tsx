@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Headphones, Link2, Download, Loader2 } from 'lucide-react';
+import { Headphones, Link2 } from 'lucide-react';
 import { DEFAULT_YOUTUBE_LISTENING_VIDEOS } from '../../data/youtubeListeningSeedData';
 import { formatDuration } from '../../utils/youtubeUtils';
-import { parseShadowingVideoId, parseShadowingTime, parseShadowingSubtitles, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
+import { parseShadowingVideoId, parseShadowingTime, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
 import ShadowingPlayer, { ShadowingPlayerHandle } from './ShadowingPlayer';
 import KaraokeCaption from './KaraokeCaption';
 import DictationPanel from './DictationPanel';
@@ -23,9 +23,7 @@ export default function ShadowingHub() {
   const [start, setStart] = useState('0');
   const [end, setEnd] = useState('10');
   const [currentTime, setCurrentTime] = useState(0);
-  const [importText, setImportText] = useState('');
   const [notice, setNotice] = useState('');
-  const [loading, setLoading] = useState(false);
   const transcriptRequest = useRef<AbortController | null>(null);
   const currentVideo = useRef(videoId);
   currentVideo.current = videoId;
@@ -58,8 +56,8 @@ export default function ShadowingHub() {
 
   useEffect(() => {
     transcriptRequest.current?.abort();
-    setLoading(false); setCues([]); setSentence(''); setSelected(0);
-    setImportText(''); setNotice(''); setCurrentTime(0); setStart('0'); setEnd('10');
+    setCues([]); setSentence(''); setSelected(0);
+    setNotice(''); setCurrentTime(0); setStart('0'); setEnd('10');
     setRevealed(false);
     if (videoId) {
       setUrlInput(`https://www.youtube.com/watch?v=${videoId}`);
@@ -92,7 +90,7 @@ export default function ShadowingHub() {
     transcriptRequest.current?.abort();
     const controller = new AbortController(); transcriptRequest.current = controller;
     const timer = setTimeout(() => controller.abort('timeout'), 40000);
-    setLoading(true); setNotice('');
+    setNotice('');
     try {
       const res = await fetch(`/api/shadowing/transcript?videoId=${videoId}`, { signal: controller.signal });
       const data = await readShadowingResponse(res);
@@ -102,20 +100,10 @@ export default function ShadowingHub() {
       applyCues(data.cues);
     } catch (error) {
       if (!controller.signal.aborted) setNotice(error instanceof Error ? error.message : 'Không lấy được phụ đề.');
-      else if (controller.signal.reason === 'timeout') setNotice('Tải phụ đề quá lâu. Hãy thử lại hoặc nhập lời thoại bên dưới.');
+      else if (controller.signal.reason === 'timeout') setNotice('Tải phụ đề quá lâu. Hãy tải lại trang để thử lại.');
     } finally {
       clearTimeout(timer);
-      if (transcriptRequest.current === controller) setLoading(false);
     }
-  }
-
-  function importCaptions(text: string) {
-    transcriptRequest.current?.abort(); setLoading(false);
-    try {
-      const next = parseShadowingSubtitles(text);
-      if (!next.length) throw new Error('Chưa có lời thoại để nhập.');
-      applyCues(next); setNotice(`Đã nhập ${next.length} câu. ${next[0].start === null ? 'Lời thoại chưa có thời gian; hãy đặt mốc cho đoạn luyện.' : 'Chọn một câu để luyện theo mốc phụ đề.'}`);
-    } catch (error) { setNotice(error instanceof Error ? error.message : 'Không đọc được phụ đề.'); }
   }
 
   function jumpCue(index: number) {
@@ -155,23 +143,10 @@ export default function ShadowingHub() {
 
           {(mode === 'shadowing' || revealed) && <section className="rounded-xl border border-slate-600 bg-[#101010] p-5">
             <div className="mb-3 flex justify-end gap-3 text-xs"><label><input type="checkbox" checked={furigana} onChange={e => setFurigana(e.target.checked)} /> Furigana</label><label><input type="checkbox" checked={translation} onChange={e => setTranslation(e.target.checked)} /> Bản dịch</label></div>
-            <KaraokeCaption text={displayed?.text || sentence || 'Tải hoặc nhập phụ đề để bắt đầu'} time={currentTime} start={displayed?.start ?? parseShadowingTime(start)} end={displayed?.end ?? parseShadowingTime(end)} analysis={displayedAnalysis} furigana={furigana} />{translation && displayedAnalysis?.translation && <p className="mt-3 text-center text-sm text-slate-300">{displayedAnalysis.translation}</p>}
+            <KaraokeCaption text={displayed?.text || sentence || 'Đang tải phụ đề…'} time={currentTime} start={displayed?.start ?? parseShadowingTime(start)} end={displayed?.end ?? parseShadowingTime(end)} analysis={displayedAnalysis} furigana={furigana} />{translation && displayedAnalysis?.translation && <p className="mt-3 text-center text-sm text-slate-300">{displayedAnalysis.translation}</p>}
             {mode === 'dictation' && revealed && <button className="mt-3 text-sm underline" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
-            <p className="mt-3 text-center text-[11px] text-slate-500">Màu chữ chạy theo mốc từng câu; nhịp trong câu được ước lượng. </p>
           </section>}
-          <details className="rounded-2xl border border-slate-700 bg-slate-900 p-4"><summary className="cursor-pointer font-bold">Tải / nhập phụ đề</summary>
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2"><h2 className="font-bold">Lời thoại & phụ đề</h2><button className={button} disabled={loading} onClick={loadCaptions}>{loading ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />}Tải phụ đề Nhật</button></div>
-            <p className="mb-3 text-xs leading-relaxed text-slate-400">Chọn câu để đặt đoạn luyện. Nếu YouTube không cung cấp phụ đề, dán lời thoại (mỗi dòng một câu) hoặc nhập file SRT/VTT của video.</p>
-            <label className="sr-only" htmlFor="shadowing-import">Lời thoại hoặc phụ đề SRT/VTT</label>
-            <textarea id="shadowing-import" value={importText} onChange={e => setImportText(e.target.value)} className={field} rows={3} placeholder="Dán lời thoại hoặc nội dung SRT/VTT…" maxLength={50000} />
-            <div className="my-3 flex flex-wrap gap-2"><button className={button} onClick={() => importCaptions(importText)}>Dùng lời thoại</button><label className={`${button} cursor-pointer`}>Nhập SRT/VTT<input type="file" accept=".srt,.vtt,.txt" className="sr-only" onChange={async e => {
-              const file = e.target.files?.[0]; e.target.value = '';
-              if (!file) return;
-              if (file.size > 150000) { setNotice('File quá lớn. Hãy nhập tối đa 150 KB.'); return; }
-              const fileVideo = videoId;
-              try { const text = await file.text(); if (currentVideo.current !== fileVideo) return; setImportText(text); importCaptions(text); } catch { if (currentVideo.current === fileVideo) setNotice('Không đọc được file phụ đề.'); }
-            }} /></label></div>
-          </details>
+
 
         </div>
         <div className="space-y-4">
@@ -181,7 +156,7 @@ export default function ShadowingHub() {
               const active = cue.start !== null && cue.end !== null && currentTime >= cue.start && currentTime < cue.end;
               return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => jumpCue(i)} className={`w-full rounded-xl border p-3 text-left ${active ? 'border-blue-400 bg-blue-500/15' : selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950'}`}><span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>{mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} analysis={cache.current.get(cue.text) || null} furigana={furigana} />}{translation && (mode !== 'dictation' || revealed) && cache.current.get(cue.text)?.translation && <p className="mt-2 text-xs italic text-slate-400">{cache.current.get(cue.text)?.translation}</p>}</button>;
             })}</div>
-{!cues.length && <p className="p-3 text-sm text-slate-400">Tải phụ đề Nhật hoặc nhập SRT/VTT ở bên trái để chữ chạy theo video.</p>}</section>
+{!cues.length && <p className="p-3 text-sm text-slate-400">Chưa tải được phụ đề tiếng Nhật cho video này.</p>}</section>
           </>}
         </div>
       </div>
