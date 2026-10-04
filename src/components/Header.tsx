@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { User, LogIn, ChevronRight, ChevronDown, ChevronLeft, RefreshCw, Trophy, Settings, Menu, Volume2, VolumeX, TrendingUp, BookOpen, CheckCircle2, Bell, Monitor, Flame } from 'lucide-react';
 import { UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'motion/react';
-import { isSoundEnabled, setSoundEnabled, getPreferredVoice, setPreferredVoice, speakJapanese, AzureVoiceChoice, getVoiceDisplayName } from '../utils/audio';
+import { isSoundEnabled, setSoundEnabled, getPreferredVoice, setPreferredVoice, speakJapanese, AzureVoiceChoice, getVoiceDisplayName, PRESET_JAPANESE_VOICES, JapaneseSpeechHandle } from '../utils/audio';
 import PwaInstallPrompt from './PwaInstallPrompt';
 import JpStudyLogo from './JpStudyLogo';
 import NotificationSettingsModal from './NotificationSettingsModal';
@@ -74,6 +74,14 @@ export default function Header({
   const [soundOn, setSoundOn] = useState(isSoundEnabled());
   const [currentVoice, setCurrentVoice] = useState<AzureVoiceChoice>(getPreferredVoice());
   const [isPlayingTestVoice, setIsPlayingTestVoice] = useState(false);
+  const [voicePreviewMessage, setVoicePreviewMessage] = useState('');
+  const testSpeechRef = useRef<JapaneseSpeechHandle | null>(null);
+  const testSequence = useRef(0);
+
+  useEffect(() => () => {
+    testSequence.current += 1;
+    testSpeechRef.current?.stop();
+  }, []);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
@@ -108,27 +116,21 @@ export default function Header({
     };
   }, []);
 
-  const handleToggleVoice = () => {
-    const nextVoice: AzureVoiceChoice = currentVoice.includes('keita') ? 'ja-JP-NanamiNeural' : 'ja-JP-KeitaNeural';
-    setCurrentVoice(nextVoice);
-    setPreferredVoice(nextVoice);
-    handleTestVoice(nextVoice);
-  };
-
   const handleTestVoice = (voiceToTest: AzureVoiceChoice) => {
+    const sequence = ++testSequence.current;
+    testSpeechRef.current?.stop();
     setIsPlayingTestVoice(true);
-    let sampleSentence = 'こんにちは！七海です。日本語の発音を練習しましょう。';
-    if (voiceToTest.includes('keita')) {
-      sampleSentence = 'はじめまして！慶太です。JLPT試験に向けて一緒に頑張りましょう。';
-    } else if (voiceToTest.includes('daichi')) {
-      sampleSentence = '大地です！今日も日本語の勉強を続けましょう。';
-    } else if (voiceToTest.includes('aoi')) {
-      sampleSentence = '葵です！日本語の単語と文法を楽しく覚えましょう。';
-    }
-    
-    speakJapanese(sampleSentence, 1.0, () => {
-      setIsPlayingTestVoice(false);
-    }, { voice: voiceToTest, isSentence: true });
+    setVoicePreviewMessage('');
+    const sampleSentence = PRESET_JAPANESE_VOICES.find(v => v.id === voiceToTest)?.sampleText || 'こんにちは！日本語の発音を練習しましょう。';
+    testSpeechRef.current = speakJapanese(sampleSentence, 1.0, undefined, {
+      voice: voiceToTest,
+      isSentence: true,
+      onStatus: (status) => {
+        if (sequence !== testSequence.current) return;
+        if (status.message) setVoicePreviewMessage(status.message);
+        if (status.state !== 'playing') setIsPlayingTestVoice(false);
+      },
+    });
   };
 
   const location = useLocation();
@@ -537,7 +539,7 @@ export default function Header({
                         handleTestVoice('ja-JP-NanamiNeural');
                       }}
                       className={`p-3 rounded-xl border text-left transition-all cursor-pointer relative flex flex-col justify-between ${
-                        !currentVoice.includes('keita')
+                        currentVoice === 'ja-JP-NanamiNeural'
                           ? 'bg-pink-50 border-pink-400 text-pink-950 shadow-sm ring-1 ring-pink-400'
                           : 'bg-white border-slate-200 text-slate-600 hover:border-pink-300'
                       }`}
@@ -566,7 +568,7 @@ export default function Header({
                         handleTestVoice('ja-JP-KeitaNeural');
                       }}
                       className={`p-3 rounded-xl border text-left transition-all cursor-pointer relative flex flex-col justify-between ${
-                        currentVoice.includes('keita')
+                        currentVoice === 'ja-JP-KeitaNeural'
                           ? 'bg-blue-50 border-blue-400 text-blue-950 shadow-sm ring-1 ring-blue-400'
                           : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300'
                       }`}
@@ -594,8 +596,9 @@ export default function Header({
                     className="w-full py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                   >
                     <Volume2 className={`w-3.5 h-3.5 ${isPlayingTestVoice ? 'animate-bounce text-pink-600' : 'text-slate-600'}`} />
-                    <span>{isPlayingTestVoice ? 'Đang phát âm thanh mẫu...' : `Nghe thử giọng ${currentVoice.includes('keita') ? 'Keita (Nam)' : 'Nanami (Nữ)'}`}</span>
+                    <span>{isPlayingTestVoice ? 'Đang phát âm thanh mẫu...' : `Nghe thử giọng ${getVoiceDisplayName(currentVoice)}`}</span>
                   </button>
+                  {voicePreviewMessage && <p className="text-xs text-amber-700" role="status">{voicePreviewMessage}</p>}
                   
                   {/* More voices button */}
                   <div className="pt-2">
