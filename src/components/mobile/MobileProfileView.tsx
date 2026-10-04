@@ -28,8 +28,6 @@ import {
   isSoundEnabled, 
   setSoundEnabled, 
   getPreferredVoice, 
-  setPreferredVoice, 
-  speakJapanese, 
   AzureVoiceChoice,
   getVoiceDisplayName 
 } from '../../utils/audio';
@@ -114,18 +112,6 @@ export default function MobileProfileView({
     const nextVal = !soundOn;
     setSoundOn(nextVal);
     setSoundEnabled(nextVal);
-  };
-
-  const handleToggleVoice = () => {
-    const nextVoice: AzureVoiceChoice = currentVoice.includes('keita') ? 'ja-JP-NanamiNeural' : 'ja-JP-KeitaNeural';
-    setCurrentVoice(nextVoice);
-    setPreferredVoice(nextVoice);
-    speakJapanese(
-      nextVoice.includes('keita') ? 'はじめまして！慶太です。' : 'こんにちは！七海です。',
-      1.0,
-      undefined,
-      { voice: nextVoice, isSentence: true }
-    );
   };
 
   // Preview the first 6 achievements

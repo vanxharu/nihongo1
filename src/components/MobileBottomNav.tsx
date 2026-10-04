@@ -35,7 +35,7 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
-import { isSoundEnabled, setSoundEnabled, getPreferredVoice, setPreferredVoice, speakJapanese, AzureVoiceChoice, getVoiceDisplayName } from '../utils/audio';
+import { isSoundEnabled, setSoundEnabled, getPreferredVoice, AzureVoiceChoice, getVoiceDisplayName } from '../utils/audio';
 import { JLPT_LEVEL_INFO } from './LevelProgressBar';
 import { getPlayerLevelInfo } from '../utils/xpSystem';
 import { calculateUnlockedAchievements, TOTAL_ACHIEVEMENTS_COUNT } from '../data/achievementsData';
@@ -90,18 +90,6 @@ export default function MobileBottomNav({
     const nextVal = !soundOn;
     setSoundOn(nextVal);
     setSoundEnabled(nextVal);
-  };
-
-  const handleToggleVoice = () => {
-    const nextVoice: AzureVoiceChoice = currentVoice.includes('keita') ? 'ja-JP-NanamiNeural' : 'ja-JP-KeitaNeural';
-    setCurrentVoice(nextVoice);
-    setPreferredVoice(nextVoice);
-    speakJapanese(
-      nextVoice.includes('keita') ? 'はじめまして！慶太です。' : 'こんにちは！七海です。',
-      1.0,
-      undefined,
-      { voice: nextVoice, isSentence: true }
-    );
   };
 
   const location = useLocation();

@@ -239,9 +239,6 @@ export function playMilestoneChime() {
  */
 export const playCelebrationSound = playMilestoneChime;
 
-// Cache for Japanese voices
-let cachedJaVoice: SpeechSynthesisVoice | null = null;
-
 export type AzureVoiceChoice = 
   | 'ja-JP-NanamiNeural' 
   | 'ja-JP-KeitaNeural' 
@@ -344,7 +341,8 @@ export function getVoiceDisplayName(voiceId: string): string {
   const found = PRESET_JAPANESE_VOICES.find(v => v.id === normalized);
   if (found) return `${found.name} (${found.genderLabel})`;
   if (voiceId.startsWith('device:')) {
-    const rawName = voiceId.replace('device:', '');
+    const identity = voiceId.slice('device:'.length);
+    const rawName = getDeviceJapaneseVoices().find(v => v.voiceURI === identity || v.name === identity)?.name || identity;
     return `${rawName} (Thiết bị)`;
   }
   if (voiceId.toLowerCase().includes('keita')) return 'Keita (Nam)';
@@ -368,54 +366,71 @@ export function getDeviceJapaneseVoices(): SpeechSynthesisVoice[] {
 
 let currentPreferredVoice: AzureVoiceChoice = 'ja-JP-NanamiNeural';
 
+export function normalizeVoiceChoice(voice: string): AzureVoiceChoice {
+  const value = (voice || '').trim();
+  if (value.startsWith('device:') && value.length > 7) return value;
+  const lower = value.toLowerCase();
+  const preset = PRESET_JAPANESE_VOICES.find(v => v.id.toLowerCase() === lower || v.name.toLowerCase() === lower);
+  return preset?.id || 'ja-JP-NanamiNeural';
+}
+
+export function getDeviceVoiceId(voice: SpeechSynthesisVoice): AzureVoiceChoice {
+  return `device:${voice.voiceURI || voice.name}`;
+}
+
+export function isDeviceVoiceSelected(selected: string, voice: SpeechSynthesisVoice): boolean {
+  return selected === getDeviceVoiceId(voice) || selected === `device:${voice.name}`;
+}
+
 export function getPreferredVoice(): AzureVoiceChoice {
   if (typeof window !== 'undefined') {
-    const saved = localStorage.getItem('jlpt_preferred_voice') as AzureVoiceChoice;
-    if (saved) {
-      return saved;
-    }
+    try {
+      const saved = localStorage.getItem('jlpt_preferred_voice');
+      if (saved) return normalizeVoiceChoice(saved);
+    } catch { /* Keep the in-memory preference when storage is unavailable. */ }
   }
   return currentPreferredVoice;
 }
 
 export function setPreferredVoice(voice: AzureVoiceChoice) {
-  currentPreferredVoice = voice;
+  currentPreferredVoice = normalizeVoiceChoice(voice);
   if (typeof window !== 'undefined') {
-    localStorage.setItem('jlpt_preferred_voice', voice);
-    // Stop any existing audio so new voice takes effect immediately
-    if (activeAudioElement) {
-      try {
-        activeAudioElement.pause();
-        activeAudioElement.src = '';
-        activeAudioElement = null;
-      } catch (e) {}
-    }
-    if ('speechSynthesis' in window) {
-      try {
-        window.speechSynthesis.cancel();
-      } catch (e) {}
-    }
-    window.dispatchEvent(new CustomEvent('jlpt_voice_changed', { detail: { voice } }));
+    try { localStorage.setItem('jlpt_preferred_voice', currentPreferredVoice); } catch {}
+    stopJapaneseSpeech();
+    window.dispatchEvent(new CustomEvent('jlpt_voice_changed', { detail: { voice: currentPreferredVoice } }));
   }
+}
+
+// Reuse the same event for preferences changed by another browser tab.
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (event) => {
+    if (event.key !== 'jlpt_preferred_voice' && event.key !== null) return;
+    currentPreferredVoice = normalizeVoiceChoice(event.newValue || '');
+    stopJapaneseSpeech();
+    window.dispatchEvent(new CustomEvent('jlpt_voice_changed', { detail: { voice: getPreferredVoice() } }));
+  });
 }
 
 function findBestJapaneseVoice(preferredVoiceName?: string): SpeechSynthesisVoice | null {
   if (!('speechSynthesis' in window)) return null;
 
-  const voices = window.speechSynthesis.getVoices();
+  const voices = getDeviceJapaneseVoices();
   if (!voices || voices.length === 0) return null;
 
   // If a specific device voice is requested
   if (preferredVoiceName && preferredVoiceName.startsWith('device:')) {
     const targetName = preferredVoiceName.replace('device:', '');
-    const matched = voices.find(v => v.name === targetName || v.voiceURI === targetName);
+    const japaneseVoices = getDeviceJapaneseVoices();
+    const matched = japaneseVoices.find(v => v.voiceURI === targetName) || japaneseVoices.find(v => v.name === targetName);
     if (matched) {
-      cachedJaVoice = matched;
       return matched;
     }
   }
 
   const targetVoiceStr = (preferredVoiceName || getPreferredVoice()).toLowerCase();
+  const preset = PRESET_JAPANESE_VOICES.find(v => v.id.toLowerCase() === targetVoiceStr);
+  const exact = preset && getDeviceJapaneseVoices().find(v => v.name.toLowerCase().includes(preset.name.toLowerCase()) || v.voiceURI.toLowerCase().includes(preset.id.toLowerCase()));
+  if (exact) return exact;
   const isMalePreferred = targetVoiceStr.includes('keita') || targetVoiceStr.includes('daichi') || targetVoiceStr.includes('naoki') || targetVoiceStr.includes('male');
 
   // 1. Premium Microsoft Azure Neural voice prioritisation
@@ -462,7 +477,6 @@ function findBestJapaneseVoice(preferredVoiceName?: string): SpeechSynthesisVoic
   for (const name of priorityVoiceNames) {
     const match = voices.find(v => v.name.includes(name) || v.voiceURI.includes(name));
     if (match) {
-      cachedJaVoice = match;
       return match;
     }
   }
@@ -470,31 +484,32 @@ function findBestJapaneseVoice(preferredVoiceName?: string): SpeechSynthesisVoic
   // 2. Any voice explicitly tagged with ja-JP / ja_JP
   const exactJaVoice = voices.find(v => v.lang === 'ja-JP' || v.lang === 'ja_JP');
   if (exactJaVoice) {
-    cachedJaVoice = exactJaVoice;
     return exactJaVoice;
   }
 
   // 3. Fallback to any voice starting with ja
   const fallbackJa = voices.find(v => v.lang.toLowerCase().startsWith('ja'));
   if (fallbackJa) {
-    cachedJaVoice = fallbackJa;
     return fallbackJa;
   }
 
   return null;
 }
 
-// Preload voices
-if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-  window.speechSynthesis.onvoiceschanged = () => {
-    cachedJaVoice = null;
-    findBestJapaneseVoice();
-  };
-  findBestJapaneseVoice();
+export interface JapaneseSpeechHandle { stop: () => void }
+
+export interface JapaneseSpeechStatus {
+  state: 'playing' | 'completed' | 'cancelled' | 'failed';
+  provider: 'azure' | 'google' | 'device';
+  voice: string;
+  message?: string;
 }
 
-// Active Audio element to control playback
-let activeAudioElement: HTMLAudioElement | null = null;
+let activeSpeech: JapaneseSpeechHandle | null = null;
+
+export function stopJapaneseSpeech(): void {
+  activeSpeech?.stop();
+}
 
 export function cleanJapaneseTextForSpeech(text: string): string {
   if (!text) return '';
@@ -536,169 +551,193 @@ export function preloadJapaneseAudio(text: string, voice?: AzureVoiceChoice) {
   if (!text || typeof window === 'undefined') return;
   const clean = cleanJapaneseTextForSpeech(text);
   if (!clean) return;
-  const selectedVoice = voice || getPreferredVoice();
+  const selectedVoice = normalizeVoiceChoice(voice || getPreferredVoice());
+  if (selectedVoice.startsWith('device:')) return;
   const audio = new Audio(`/api/tts?text=${encodeURIComponent(clean)}&voice=${encodeURIComponent(selectedVoice)}&rate=%2B0%25`);
   audio.preload = 'auto';
 }
 
 export function speakJapanese(
-  text: string, 
-  rate?: number, 
+  text: string,
+  rate?: number,
   onEnd?: () => void,
-  options?: { isSentence?: boolean; pitch?: number; voice?: AzureVoiceChoice }
-) {
-  if (!text || !text.trim()) {
-    if (onEnd) onEnd();
-    return;
+  options?: {
+    isSentence?: boolean;
+    pitch?: number;
+    voice?: AzureVoiceChoice;
+    onStatus?: (status: JapaneseSpeechStatus) => void;
   }
+): JapaneseSpeechHandle {
+  stopJapaneseSpeech();
 
-  // Stop any ongoing audio playback
-  if (activeAudioElement) {
-    activeAudioElement.pause();
-    activeAudioElement.src = '';
-    activeAudioElement = null;
-  }
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
-  }
+  let finished = false;
+  let audio: HTMLAudioElement | null = null;
+  let utterance: SpeechSynthesisUtterance | null = null;
+  let clearVoiceWait: (() => void) | null = null;
+  let provider: JapaneseSpeechStatus['provider'] = 'azure';
+  let actualVoice: string = normalizeVoiceChoice(options?.voice || getPreferredVoice());
+  let message: string | undefined;
+  let googleStarted = false;
+  let webSpeechStarted = false;
 
-  // Clean text from unwanted punctuation/markup/HTML for smooth, natural reading
-  const cleanText = cleanJapaneseTextForSpeech(text);
-  if (!cleanText) {
-    if (onEnd) onEnd();
-    return;
+  const detachAudio = () => {
+    const previous = audio;
+    audio = null;
+    if (!previous) return;
+    previous.onended = null;
+    previous.onerror = null;
+    previous.onplaying = null;
+    try { previous.pause(); previous.removeAttribute('src'); previous.load(); } catch {}
+  };
+  const finish = (state: 'completed' | 'cancelled' | 'failed', errorMessage?: string) => {
+    if (finished) return;
+    finished = true;
+    clearVoiceWait?.();
+    clearVoiceWait = null;
+    detachAudio();
+    if (utterance) {
+      utterance.onend = null;
+      utterance.onerror = null;
+      utterance.onstart = null;
+      if (typeof window !== 'undefined') {
+        if ((window as any)._jlptActiveUtterance === utterance) delete (window as any)._jlptActiveUtterance;
+        if (state === 'cancelled') {
+          try { window.speechSynthesis.cancel(); } catch {}
+        }
+      }
+      utterance = null;
+    }
+    if (activeSpeech === handle) activeSpeech = null;
+    options?.onStatus?.({ state, provider, voice: actualVoice, message: errorMessage || message });
+    // Cancellation is separate: legacy onEnd callbacks may start microphones or advance lessons.
+    if (state !== 'cancelled') onEnd?.();
+  };
+  const handle: JapaneseSpeechHandle = { stop: () => finish('cancelled') };
+  activeSpeech = handle;
+
+  const cleanText = cleanJapaneseTextForSpeech(text || '');
+  if (!cleanText || typeof window === 'undefined') {
+    finish(cleanText ? 'failed' : 'completed');
+    return handle;
   }
 
   const isSentence = options?.isSentence ?? (cleanText.length > 8 || /[。！？、]/.test(cleanText));
-  
-  // Determine voice: options.voice -> Auto-detect speaker prefix in original text -> preferredVoice
-  let selectedVoice = options?.voice || getPreferredVoice();
-  if (!options?.voice) {
-    if (/^(男|A|男性|山田|佐藤|Keita|Nam)[:：]/i.test(text.trim())) {
-      selectedVoice = 'ja-JP-KeitaNeural';
-    } else if (/^(女|B|女性|田中|鈴木|Nanami|Nữ)[:：]/i.test(text.trim())) {
-      selectedVoice = 'ja-JP-NanamiNeural';
-    }
+  let selectedVoice = normalizeVoiceChoice(options?.voice || getPreferredVoice());
+  if (!options?.voice && !selectedVoice.startsWith('device:')) {
+    if (/^(男|A|男性|山田|佐藤|Keita|Nam)[:：]/i.test(text.trim())) selectedVoice = 'ja-JP-KeitaNeural';
+    else if (/^(女|B|女性|田中|鈴木|Nanami|Nữ)[:：]/i.test(text.trim())) selectedVoice = 'ja-JP-NanamiNeural';
   }
-
-  // Calculate Azure neural rate offset (JLPT N4-N2 cadence calibration)
-  let azureRate = '+0%';
-  if (rate !== undefined) {
-    const pct = Math.round((rate - 1.0) * 100);
-    azureRate = pct >= 0 ? `+${pct}%` : `${pct}%`;
-  } else if (!isSentence) {
-    azureRate = '-4%'; // clear articulation for single vocab
-  }
-
+  actualVoice = selectedVoice;
   const encodedText = encodeURIComponent(cleanText);
-  const voiceParam = encodeURIComponent(selectedVoice);
-  const azureTtsUrl = `/api/tts?text=${encodedText}&voice=${voiceParam}&rate=${encodeURIComponent(azureRate)}`;
-
-  let hasFallbackTriggered = false;
-
-  const runFallbackSynthesis = () => {
-    if (hasFallbackTriggered) return;
-    hasFallbackTriggered = true;
-
-    // Fallback 1: Try Google Translate TTS Audio
-    const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ja&q=${encodedText}`;
-    try {
-      const gAudio = new Audio(googleTtsUrl);
-      activeAudioElement = gAudio;
-      gAudio.playbackRate = rate !== undefined ? rate : (isSentence ? 1.0 : 0.95);
-      gAudio.onended = () => {
-        activeAudioElement = null;
-        if (onEnd) onEnd();
-      };
-      gAudio.onerror = () => {
-        activeAudioElement = null;
-        runWebSpeechFallback();
-      };
-      const p = gAudio.play();
-      if (p !== undefined) {
-        p.catch(() => {
-          activeAudioElement = null;
-          runWebSpeechFallback();
-        });
-      }
-    } catch {
-      runWebSpeechFallback();
-    }
+  const pct = Math.round(((rate ?? (isSentence ? 1 : 0.96)) - 1) * 100);
+  const azureRate = `${pct >= 0 ? '+' : ''}${pct}%`;
+  const reportPlaying = () => {
+    if (!finished) options?.onStatus?.({ state: 'playing', provider, voice: actualVoice, message });
   };
 
-  const runWebSpeechFallback = () => {
+  const runWebSpeech = () => {
+    if (finished || webSpeechStarted) return;
+    webSpeechStarted = true;
+    detachAudio();
+    provider = 'device';
     if (!('speechSynthesis' in window)) {
-      if (onEnd) onEnd();
+      finish('failed', 'Trình duyệt không hỗ trợ giọng đọc thiết bị.');
       return;
     }
-
-    try {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      (window as any)._jlptActiveUtterance = utterance;
-
-      utterance.lang = 'ja-JP';
-      const targetRate = rate !== undefined ? rate : (isSentence ? 0.98 : 0.92);
-      utterance.rate = targetRate;
-      utterance.pitch = options?.pitch ?? 1.0;
-
-      const voice = findBestJapaneseVoice(selectedVoice);
-      if (voice) {
+    const synthesis = window.speechSynthesis;
+    const speak = () => {
+      if (finished) return;
+      try {
+        const voice = findBestJapaneseVoice(selectedVoice);
+        if (!voice) {
+          finish('failed', 'Không tìm thấy giọng tiếng Nhật trên thiết bị.');
+          return;
+        }
+        actualVoice = getDeviceVoiceId(voice);
+        if (selectedVoice.startsWith('device:') && !isDeviceVoiceSelected(selectedVoice, voice)) {
+          message = `Giọng đã lưu không còn khả dụng. Đang dùng ${voice.name}.`;
+        } else if (!selectedVoice.startsWith('device:')) {
+          message = `Giọng AI không khả dụng. Đang dùng giọng thiết bị ${voice.name}.`;
+        }
+        utterance = new SpeechSynthesisUtterance(cleanText);
+        (window as any)._jlptActiveUtterance = utterance;
+        utterance.lang = 'ja-JP';
         utterance.voice = voice;
+        utterance.rate = rate ?? (isSentence ? 0.98 : 0.92);
+        utterance.pitch = options?.pitch ?? 1;
+        utterance.onstart = reportPlaying;
+        utterance.onend = () => finish('completed');
+        utterance.onerror = (event) => {
+          if (finished) return;
+          if (event.error === 'canceled' || event.error === 'interrupted') finish('cancelled');
+          else finish('failed', 'Không thể phát giọng đọc thiết bị.');
+        };
+        synthesis.speak(utterance);
+      } catch {
+        finish('failed', 'Không thể phát giọng đọc thiết bị.');
       }
-
-      utterance.onend = () => {
-        delete (window as any)._jlptActiveUtterance;
-        if (onEnd) onEnd();
+    };
+    // Device lists often arrive asynchronously on the first page load.
+    const requestedVoiceReady = () => {
+      const voices = getDeviceJapaneseVoices();
+      return selectedVoice.startsWith('device:')
+        ? voices.some(voice => isDeviceVoiceSelected(selectedVoice, voice))
+        : voices.length > 0;
+    };
+    if (requestedVoiceReady()) {
+      speak();
+    } else {
+      let timer: ReturnType<typeof setTimeout>;
+      const ready = () => {
+        if (!requestedVoiceReady()) return;
+        clearVoiceWait?.();
+        clearVoiceWait = null;
+        speak();
       };
-
-      utterance.onerror = (e) => {
-        delete (window as any)._jlptActiveUtterance;
-        if (onEnd) onEnd();
+      clearVoiceWait = () => {
+        clearTimeout(timer);
+        synthesis.removeEventListener('voiceschanged', ready);
       };
-
-      window.speechSynthesis.speak(utterance);
-    } catch (e) {
-      console.warn('Web Speech fallback error:', e);
-      if (onEnd) onEnd();
+      synthesis.addEventListener('voiceschanged', ready);
+      timer = setTimeout(() => {
+        clearVoiceWait?.();
+        clearVoiceWait = null;
+        speak();
+      }, 1500);
+      ready();
     }
   };
 
-  // Primary stream: If user selected a device voice specifically, use Web Speech API immediately
-  if (selectedVoice.startsWith('device:')) {
-    runWebSpeechFallback();
-    return;
-  }
-
-  // Primary stream: Microsoft Azure Neural Voices (Nanami / Keita / Aoi / etc.)
-  try {
-    const audio = new Audio(azureTtsUrl);
-    activeAudioElement = audio;
-
-    const targetPlaybackRate = rate !== undefined ? rate : (isSentence ? 1.0 : 0.96);
-    audio.playbackRate = targetPlaybackRate;
-
-    audio.onended = () => {
-      activeAudioElement = null;
-      if (onEnd) onEnd();
+  const playAudio = (url: string, next: () => void) => {
+    if (finished) return;
+    detachAudio();
+    let current: HTMLAudioElement | null = null;
+    const fail = () => {
+      if (finished || (current && audio !== current)) return;
+      detachAudio();
+      next();
     };
+    try {
+      current = new Audio(url);
+      audio = current;
+      // Azure already applies rate while synthesizing; do not multiply it again.
+      current.playbackRate = provider === 'azure' ? 1 : (rate ?? (isSentence ? 1 : 0.95));
+      current.onplaying = () => { if (audio === current) reportPlaying(); };
+      current.onended = () => { if (audio === current) finish('completed'); };
+      current.onerror = fail;
+      current.play()?.catch(fail);
+    } catch { fail(); }
+  };
+  const runGoogle = () => {
+    if (finished || googleStarted) return;
+    googleStarted = true;
+    provider = 'google';
+    actualVoice = 'Google Japanese';
+    message = 'Giọng AI không khả dụng. Đang dùng giọng tiếng Nhật thay thế của Google.';
+    playAudio(`https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ja&q=${encodedText}`, runWebSpeech);
+  };
 
-    audio.onerror = () => {
-      activeAudioElement = null;
-      runFallbackSynthesis();
-    };
-
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch((err) => {
-        console.warn('Azure Neural playback error, falling back:', err);
-        activeAudioElement = null;
-        runFallbackSynthesis();
-      });
-    }
-  } catch (err) {
-    runFallbackSynthesis();
-  }
+  if (selectedVoice.startsWith('device:')) runWebSpeech();
+  else playAudio(`/api/tts?text=${encodedText}&voice=${encodeURIComponent(selectedVoice)}&rate=${encodeURIComponent(azureRate)}`, runGoogle);
+  return handle;
 }
-
-

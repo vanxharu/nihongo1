@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Volume2, VolumeX, Check, X, Headphones, Smartphone, Play, Square } from 'lucide-react';
 import { 
   AzureVoiceChoice, 
@@ -7,7 +7,11 @@ import {
   speakJapanese, 
   PRESET_JAPANESE_VOICES, 
   getDeviceJapaneseVoices,
-  JapaneseVoiceOption 
+  JapaneseVoiceOption,
+  JapaneseSpeechHandle,
+  getDeviceVoiceId,
+  isDeviceVoiceSelected,
+  getVoiceDisplayName
 } from '../utils/audio';
 
 interface VoiceSelectorModalProps {
@@ -25,6 +29,21 @@ export default function VoiceSelectorModal({
   const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
   const [deviceVoices, setDeviceVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [activeTab, setActiveTab] = useState<'neural' | 'device'>('neural');
+  const [previewMessage, setPreviewMessage] = useState('');
+  const previewRef = useRef<JapaneseSpeechHandle | null>(null);
+  const previewSequence = useRef(0);
+
+  const stopPreview = useCallback(() => {
+    previewSequence.current += 1;
+    previewRef.current?.stop();
+    previewRef.current = null;
+    setPlayingVoiceId(null);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    stopPreview();
+    onClose();
+  }, [stopPreview, onClose]);
 
   // Load and refresh available device voices
   useEffect(() => {
@@ -46,11 +65,9 @@ export default function VoiceSelectorModal({
   // Synchronize with external voice changes
   useEffect(() => {
     const handleVoiceChanged = (e: any) => {
-      if (e.detail?.voice) {
-        setSelectedVoice(e.detail.voice);
-      } else {
-        setSelectedVoice(getPreferredVoice());
-      }
+      const voice = e.detail?.voice || getPreferredVoice();
+      setSelectedVoice(voice);
+      setActiveTab(voice.startsWith('device:') ? 'device' : 'neural');
     };
 
     window.addEventListener('jlpt_voice_changed', handleVoiceChanged);
@@ -59,60 +76,63 @@ export default function VoiceSelectorModal({
     };
   }, []);
 
-  // Update selected voice when modal opens
+  // Only stop this modal's preview; hidden modal instances must not cancel other audio.
   useEffect(() => {
     if (isOpen) {
-      setSelectedVoice(getPreferredVoice());
-      setPlayingVoiceId(null);
-    } else {
-      // Stop audio preview when closed
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
+      const voice = getPreferredVoice();
+      setSelectedVoice(voice);
+      setActiveTab(voice.startsWith('device:') ? 'device' : 'neural');
+      setPreviewMessage('');
     }
-  }, [isOpen]);
+    return stopPreview;
+  }, [isOpen, stopPreview]);
 
   const handleSelectVoice = useCallback((voiceId: AzureVoiceChoice) => {
+    stopPreview();
     setSelectedVoice(voiceId);
     setPreferredVoice(voiceId);
     if (onVoiceSelected) {
       onVoiceSelected(voiceId);
     }
-    // Close modal upon selection
-    setTimeout(() => {
-      onClose();
-    }, 200);
-  }, [onClose, onVoiceSelected]);
+    onClose();
+  }, [onClose, onVoiceSelected, stopPreview]);
 
   const handlePreviewVoice = useCallback((e: React.MouseEvent, voiceOption: JapaneseVoiceOption | { id: string; name: string; sampleText: string }) => {
     e.stopPropagation();
 
     if (playingVoiceId === voiceOption.id) {
-      // Stop playing
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
-      setPlayingVoiceId(null);
+      stopPreview();
       return;
     }
 
+    stopPreview();
+    const sequence = previewSequence.current;
     setPlayingVoiceId(voiceOption.id);
+    setPreviewMessage('');
 
     const sample = voiceOption.sampleText || 'こんにちは！日本語の勉強を一緒に頑張りましょう！';
-    speakJapanese(
+    previewRef.current = speakJapanese(
       sample,
       1.0,
-      () => setPlayingVoiceId(null),
-      { voice: voiceOption.id as AzureVoiceChoice, isSentence: true }
+      undefined,
+      {
+        voice: voiceOption.id as AzureVoiceChoice,
+        isSentence: true,
+        onStatus: (status) => {
+          if (sequence !== previewSequence.current) return;
+          if (status.message) setPreviewMessage(status.message);
+          if (status.state !== 'playing') setPlayingVoiceId(null);
+        },
+      }
     );
-  }, [playingVoiceId]);
+  }, [playingVoiceId, stopPreview]);
 
   if (!isOpen) return null;
 
   return (
     <div 
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-xs p-0 sm:p-4 transition-opacity animate-in fade-in duration-200"
-      onClick={onClose}
+      onClick={handleClose}
     >
       <div 
         className="w-full sm:max-w-md bg-[#0E1322] border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300"
@@ -138,7 +158,7 @@ export default function VoiceSelectorModal({
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             aria-label="Đóng"
             className="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
           >
@@ -147,7 +167,7 @@ export default function VoiceSelectorModal({
         </div>
 
         {/* Tab Switcher (AI Neural vs Device Voices) */}
-        {deviceVoices.length > 0 && (
+        {(deviceVoices.length > 0 || activeTab === 'device') && (
           <div className="px-5 pt-3 shrink-0">
             <div className="grid grid-cols-2 gap-1 p-1 bg-[#161D31] rounded-xl border border-slate-800">
               <button
@@ -270,13 +290,13 @@ export default function VoiceSelectorModal({
           ) : (
             // Device Voices
             deviceVoices.map((v) => {
-              const voiceId = `device:${v.name}`;
-              const isSelected = selectedVoice === voiceId;
+              const voiceId = getDeviceVoiceId(v);
+              const isSelected = isDeviceVoiceSelected(selectedVoice, v);
               const isPlaying = playingVoiceId === voiceId;
 
               return (
                 <div
-                  key={v.name}
+                  key={voiceId}
                   onClick={() => handleSelectVoice(voiceId as AzureVoiceChoice)}
                   className={`w-full text-left p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                     isSelected
@@ -339,14 +359,22 @@ export default function VoiceSelectorModal({
           )}
         </div>
 
+        {activeTab === 'device' && deviceVoices.length === 0 && (
+          <p className="px-5 pb-4 text-xs text-slate-400" role="status">
+            Chưa có giọng tiếng Nhật trên thiết bị. Bạn có thể chọn giọng AI hoặc cài giọng tiếng Nhật trong cài đặt thiết bị.
+          </p>
+        )}
+        {previewMessage && (
+          <p className="px-5 pb-3 text-xs text-amber-300" role="status">{previewMessage}</p>
+        )}
         {/* Footer / Info Banner */}
         <div className="p-4 border-t border-slate-800/80 bg-[#0B0F1B] flex items-center justify-between shrink-0">
           <span className="text-xs text-slate-400">
-            Đang chọn: <span className="font-bold text-amber-400">{selectedVoice.replace('ja-JP-', '').replace('Neural', '').replace('device:', '')}</span>
+            Đang chọn: <span className="font-bold text-amber-400">{getVoiceDisplayName(selectedVoice)}</span>
           </span>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-colors"
           >
             Đóng
