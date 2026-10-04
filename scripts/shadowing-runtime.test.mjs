@@ -65,7 +65,7 @@ test('compiled Vercel entries load in native Node ESM and return timed captions'
       replies.push({enriched,rejectedDuplicates,rejectedTime});
       console.log(JSON.stringify(replies));
     `);
-    const replies = JSON.parse(execFileSync(process.execPath, [resolve(output, 'run.mjs')], {
+    const replies = JSON.parse(execFileSync(process.execPath, ['--no-experimental-require-module', resolve(output, 'run.mjs')], {
       encoding: 'utf8', env: { ...process.env, OPENAI_API_KEY: '', GEMINI_API_KEY: '', SUPADATA_API_KEY: '' },
     }));
     assert.equal(replies[0].status, 200);

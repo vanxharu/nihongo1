@@ -65,5 +65,10 @@
   },
   "engines": {
     "node": "22.x"
+  },
+  "overrides": {
+    "firebase-admin": {
+      "jwks-rsa": "3.2.0"
+    }
   }
 }
