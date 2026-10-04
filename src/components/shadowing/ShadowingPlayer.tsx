@@ -55,6 +55,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
     gapTimer.current = null;
     player.current?.pauseVideo?.();
     setRunning(false);
+    setMessage('');
   }
 
   useImperativeHandle(ref, () => ({
