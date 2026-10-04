@@ -9,6 +9,7 @@
 .karaoke-line ruby { ruby-position:over; }
 .karaoke-line rt { color:#94a3b8;font-size:.45em;font-weight:400; }
 .shadowing-page button:focus-visible { outline:2px solid #a99aff;outline-offset:3px; }
+.shadowing-page .dictation-panel { background:#101010; }
 .shadowing-transcript { max-height:640px;scrollbar-width:thin; }
 .shadowing-transcript .karaoke-line { font-size:.9rem;text-align:left;line-height:2.4; }
 .shadowing-transcript ruby { display:inline-block;border:1px solid #45535e;border-radius:3px;padding:0 4px;margin:2px; }

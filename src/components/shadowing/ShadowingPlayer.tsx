@@ -29,10 +29,11 @@ interface Props {
   end: number | null;
   sentenceKey: string;
   onTime: (time: number) => void;
+  compact?: boolean;
 }
-export interface ShadowingPlayerHandle { seek: (time: number) => void; pause: () => void }
+export interface ShadowingPlayerHandle { seek: (time: number) => void; pause: () => void; playSentence: (start: number | null, end: number | null, autoPause: boolean) => boolean }
 
-const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function ShadowingPlayer({ videoId, start, end, onTime }, ref) {
+const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function ShadowingPlayer({ videoId, start, end, onTime, compact }, ref) {
   const host = useRef<HTMLDivElement>(null);
   const player = useRef<any>(null);
   const exercise = useRef<{ start: number; end: number; remaining: number; armed: boolean } | null>(null);
@@ -61,6 +62,15 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
   useImperativeHandle(ref, () => ({
     seek(time) { stop(); player.current?.seekTo?.(time, true); player.current?.playVideo?.(); },
     pause() { stop(); },
+    playSentence(from, to, autoPause) {
+      if (!ready) { setMessage('Video chưa sẵn sàng. Hãy thử lại sau khi video tải xong.'); return false; }
+      const error = validateShadowingRange(from, to, player.current?.getDuration?.());
+      if (error) { setMessage(error); return false; }
+      stop();
+      if (autoPause) exercise.current = { start: from!, end: to!, remaining: 1, armed: false };
+      player.current.seekTo(from, true); player.current.playVideo();
+      setRunning(autoPause); return true;
+    },
   }));
 
   useEffect(() => {
@@ -137,6 +147,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
   return <section className="overflow-hidden rounded-2xl border border-slate-700 bg-slate-950">
     <div ref={host} className="shadowing-video aspect-video w-full bg-black" />
     <div className="space-y-3 p-4">
+      {!compact && <>
       <div className="flex flex-wrap gap-3 text-xs text-slate-300">
         <label>Tốc độ <select aria-label="Tốc độ video" value={speed} onChange={e => setSpeed(Number(e.target.value))} className="ml-1 rounded-lg bg-slate-800 p-2">{[0.5, 0.75, 1, 1.25].map(n => <option key={n} value={n}>{n}×</option>)}</select></label>
         <label>Lặp <select aria-label="Số lần lặp" value={repeats} onChange={e => setRepeats(Number(e.target.value))} className="ml-1 rounded-lg bg-slate-800 p-2">{[1, 3, 5].map(n => <option key={n} value={n}>{n} lần</option>)}</select></label>
@@ -148,6 +159,8 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
         {!ready && <button aria-label="Tải lại video" onClick={() => setReload(n => n + 1)} className="rounded-xl bg-slate-800 p-3"><RotateCcw size={16} /></button>}
         <a href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 p-2 text-xs text-slate-400"><ExternalLink size={14} />YouTube</a>
       </div>
+      </>}
+      {compact && <div className="flex items-center gap-3 text-xs"><label>Tốc độ <select aria-label="Tốc độ video" value={speed} onChange={e => setSpeed(Number(e.target.value))} className="rounded bg-slate-800 p-2">{[0.5, 0.75, 1, 1.25].map(n => <option key={n} value={n}>{n}×</option>)}</select></label><button onClick={stop} className="rounded bg-slate-800 p-2">Dừng video</button>{!ready && <button onClick={() => setReload(n => n + 1)}>Tải lại video</button>}<a href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noreferrer">YouTube ↗</a></div>}
       {message && <p role="status" className="text-sm text-amber-200">{message}</p>}
     </div>
   </section>;

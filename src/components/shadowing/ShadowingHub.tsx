@@ -6,6 +6,7 @@ import { formatDuration } from '../../utils/youtubeUtils';
 import { parseShadowingVideoId, parseShadowingTime, parseShadowingSubtitles, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
 import ShadowingPlayer, { ShadowingPlayerHandle } from './ShadowingPlayer';
 import KaraokeCaption from './KaraokeCaption';
+import DictationPanel from './DictationPanel';
 import { activeShadowingCue } from '../../utils/shadowing';
 import './shadowing.css';
 
@@ -36,15 +37,15 @@ export default function ShadowingHub() {
   const [furigana, setFurigana] = useState(true);
   const [translation, setTranslation] = useState(true);
   const [mode, setMode] = useState<'shadowing' | 'dictation'>('shadowing');
-  const [answer, setAnswer] = useState('');
+  const [autoPause, setAutoPause] = useState(true);
   const [revealed, setRevealed] = useState(false);
   const [category, setCategory] = useState('Tất cả');
   const cache = useRef(new Map<string, ShadowingAnalysis>());
   const active = activeShadowingCue(cues, currentTime);
-  const displayed = active >= 0 ? cues[active] : cues[selected];
+  const displayed = mode === 'dictation' ? cues[selected] : active >= 0 ? cues[active] : cues[selected];
   const displayedAnalysis = displayed ? cache.current.get(displayed.text) || (displayed.text === sentence ? analysis : null) : analysis;
   useEffect(() => {
-    if (active >= 0) {
+    if (active >= 0 && mode !== 'dictation' && active !== selected) {
       selectCue(active);
       const card = document.getElementById(`shadowing-cue-${active}`);
       const container = card?.parentElement;
@@ -56,7 +57,7 @@ export default function ShadowingHub() {
     const cue = source[index];
     if (!cue) return;
     analysisRequest.current?.abort(); setAnalyzing(false);
-    setSelected(index); setSentence(cue.text); setAnswer(''); setRevealed(false);
+    setSelected(index); setSentence(cue.text); setRevealed(false);
     setAnalysis(cache.current.get(cue.text) || null);
     if (cue.start !== null && cue.end !== null) { setStart(String(cue.start)); setEnd(String(cue.end)); }
   }
@@ -65,7 +66,7 @@ export default function ShadowingHub() {
     transcriptRequest.current?.abort(); analysisRequest.current?.abort();
     setLoading(false); setAnalyzing(false); setCues([]); setSentence(''); setAnalysis(null); setSelected(0);
     setImportText(''); setNotice(''); setCurrentTime(0); setStart('0'); setEnd('10');
-    setAnswer(''); setRevealed(false);
+    setRevealed(false);
     if (videoId) {
       setUrlInput(`https://www.youtube.com/watch?v=${videoId}`);
       let restored = false;
@@ -165,9 +166,12 @@ export default function ShadowingHub() {
   }
 
   function jumpCue(index: number) {
+    if (!cues[index]) return;
+    playerRef.current?.pause();
     selectCue(index);
     const cue = cues[index];
-    if (cue?.start !== null && cue?.start !== undefined) playerRef.current?.seek(cue.start);
+    if (mode === 'dictation') playerRef.current?.playSentence(cue.start, cue.end, autoPause);
+    else if (cue?.start !== null && cue?.start !== undefined) playerRef.current?.seek(cue.start);
   }
   const library = DEFAULT_YOUTUBE_LISTENING_VIDEOS.filter(v => v.status === 'active');
   const sources = [...new Set(library.map(v => v.source))];
@@ -194,14 +198,14 @@ export default function ShadowingHub() {
         <div className="space-y-4">
           <div className="flex flex-wrap gap-2"><button onClick={() => setParams({})} className={button}>‹ Thư viện</button><button onClick={() => { setMode('shadowing'); setRevealed(false); }} className={`${button} ${mode === 'shadowing' ? 'bg-blue-600' : ''}`}>Bắt chước phát âm</button><button onClick={() => { setMode('dictation'); setRevealed(false); }} className={`${button} ${mode === 'dictation' ? 'bg-blue-600' : ''}`}>Nghe · Viết chính tả</button></div>
           {sourceTitle && <h2 className="text-sm font-semibold text-slate-300">{sourceTitle}</h2>}
-          <ShadowingPlayer ref={playerRef} key={videoId} videoId={videoId} start={parseShadowingTime(start)} end={parseShadowingTime(end)} sentenceKey={sentence} onTime={setCurrentTime} />
+          <ShadowingPlayer ref={playerRef} key={videoId} videoId={videoId} start={parseShadowingTime(start)} end={parseShadowingTime(end)} sentenceKey={sentence} onTime={setCurrentTime} compact={mode === 'dictation'} />
 
-          <section className="rounded-xl border border-slate-600 bg-[#101010] p-5">
+          {(mode === 'shadowing' || revealed) && <section className="rounded-xl border border-slate-600 bg-[#101010] p-5">
             <div className="mb-3 flex justify-end gap-3 text-xs"><label><input type="checkbox" checked={furigana} onChange={e => setFurigana(e.target.checked)} /> Furigana</label><label><input type="checkbox" checked={translation} onChange={e => setTranslation(e.target.checked)} /> Bản dịch</label></div>
-            {mode === 'shadowing' || revealed ? <><KaraokeCaption text={displayed?.text || sentence || 'Tải hoặc nhập phụ đề để bắt đầu'} time={currentTime} start={displayed?.start ?? parseShadowingTime(start)} end={displayed?.end ?? parseShadowingTime(end)} analysis={displayedAnalysis} furigana={furigana} />{translation && displayedAnalysis?.translation && <p className="mt-3 text-center text-sm text-slate-300">{displayedAnalysis.translation}</p>}</> : <><label htmlFor="shadowing-answer" className="mb-2 block text-sm">Nghe rồi viết lại câu tiếng Nhật</label><textarea id="shadowing-answer" className={field} value={answer} onChange={e => setAnswer(e.target.value)} /><button onClick={() => setRevealed(true)} className={button}>Xem lời thoại</button></>}
-            {mode === 'dictation' && revealed && <p className="mt-3 text-sm">Bạn viết: {answer || '(chưa nhập)'}<button className="ml-3 underline" onClick={() => setRevealed(false)}>Ẩn đáp án</button></p>}
+            <KaraokeCaption text={displayed?.text || sentence || 'Tải hoặc nhập phụ đề để bắt đầu'} time={currentTime} start={displayed?.start ?? parseShadowingTime(start)} end={displayed?.end ?? parseShadowingTime(end)} analysis={displayedAnalysis} furigana={furigana} />{translation && displayedAnalysis?.translation && <p className="mt-3 text-center text-sm text-slate-300">{displayedAnalysis.translation}</p>}
+            {mode === 'dictation' && revealed && <button className="mt-3 text-sm underline" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
             <p className="mt-3 text-center text-[11px] text-slate-500">Màu chữ chạy theo mốc từng câu; nhịp trong câu được ước lượng. Furigana và bản dịch hiện khi câu có kết quả phân tích.</p>
-          </section>
+          </section>}
           <details className="rounded-2xl border border-slate-700 bg-slate-900 p-4"><summary className="cursor-pointer font-bold">Tải / nhập phụ đề</summary>
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2"><h2 className="font-bold">Lời thoại & phụ đề</h2><button className={button} disabled={loading} onClick={loadCaptions}>{loading ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />}Tải phụ đề Nhật</button></div>
             <p className="mb-3 text-xs leading-relaxed text-slate-400">Chọn câu để đặt đoạn luyện. Nếu YouTube không cung cấp phụ đề, dán lời thoại (mỗi dòng một câu) hoặc nhập file SRT/VTT của video.</p>
@@ -218,6 +222,8 @@ export default function ShadowingHub() {
 
         </div>
         <div className="space-y-4">
+          {mode === 'dictation' && <DictationPanel key={`${videoId}:${selected}:${sentence}`} sentence={sentence} autoPause={autoPause} onAutoPause={value => { playerRef.current?.pause(); setAutoPause(value); }} onPlay={() => playerRef.current?.playSentence(parseShadowingTime(start), parseShadowingTime(end), autoPause) || false} onReveal={setRevealed} onPrevious={() => jumpCue(selected - 1)} onNext={() => jumpCue(selected + 1)} hasPrevious={selected > 0} hasNext={selected < cues.length - 1} />}
+          {(mode === 'shadowing' || revealed) && <>
           <section className="rounded-xl bg-[#101010] p-3"><h2 className="mb-3 text-sm font-bold">BẢN CHÉP · {cues.length} câu</h2>            <div className="shadowing-transcript space-y-2 overflow-y-auto">{cues.map((cue, i) => {
               const active = cue.start !== null && cue.end !== null && currentTime >= cue.start && currentTime < cue.end;
               return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => jumpCue(i)} className={`w-full rounded-xl border p-3 text-left ${active ? 'border-blue-400 bg-blue-500/15' : selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950'}`}><span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>{mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} analysis={cache.current.get(cue.text) || null} furigana={furigana} />}{translation && (mode !== 'dictation' || revealed) && cache.current.get(cue.text)?.translation && <p className="mt-2 text-xs italic text-slate-400">{cache.current.get(cue.text)?.translation}</p>}</button>;
@@ -243,6 +249,7 @@ export default function ShadowingHub() {
               </div>}
             </div>
           </section>
+          </>}
         </div>
       </div>
     </>}

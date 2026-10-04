@@ -30,6 +30,26 @@ export function activeShadowingCue(cues: ShadowingCue[], time: number): number {
   return active;
 }
 
+export function normalizeDictation(text: string): string {
+  return text.normalize('NFKC').toLowerCase().replace(/[\s\p{P}\p{S}]/gu, '');
+}
+
+export function dictationChunks(text: string): string[] {
+  const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
+  const parts = segmenter ? Array.from(segmenter.segment(text), part => part.segment) : Array.from(text);
+  return parts.filter(part => normalizeDictation(part).length > 0);
+}
+
+export function shuffledChunkIds(length: number, random: () => number = Math.random): number[] {
+  const ids = Array.from({ length }, (_, i) => i);
+  for (let i = length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [ids[i], ids[j]] = [ids[j], ids[i]];
+  }
+  if (length > 1 && ids.every((id, index) => id === index)) ids.push(ids.shift()!);
+  return ids;
+}
+
 export function parseShadowingVideoId(input: string): string | null {
   const value = input.trim();
   if (/^[\w-]{11}$/.test(value)) return value;

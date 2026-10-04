@@ -9,6 +9,20 @@ const source = ts.transpileModule(readFileSync(new URL('../src/utils/shadowing.t
 const exports = {};
 vm.runInNewContext(source, { exports, URL });
 const { parseShadowingVideoId, parseShadowingTime, parseShadowingSubtitles, validateShadowingRange, karaokeProgress, activeShadowingCue } = exports;
+test('dictation ignores spacing, punctuation and fullwidth forms but preserves spelling', () => {
+  assert.equal(exports.normalizeDictation('日本語 を勉強します。'), exports.normalizeDictation('日本語を勉強します'));
+  assert.equal(exports.normalizeDictation('ＡＢＣ１２３！'), 'abc123');
+  assert.notEqual(exports.normalizeDictation('学校に行きます'), exports.normalizeDictation('学校を行きます'));
+});
+test('sentence puzzle preserves duplicate chunks and unique selectable IDs', () => {
+  const chunks = exports.dictationChunks('はい、はい。');
+  assert.equal(chunks.filter(word => word === 'はい').length, 2);
+  const order = exports.shuffledChunkIds(chunks.length, () => .99);
+  assert.equal(new Set(order).size, chunks.length);
+  assert.equal(order.length, chunks.length);
+  assert.notEqual(order.join(','), chunks.map((_, i) => i).join(','));
+  assert.equal(order.slice().sort().join(','), chunks.map((_, i) => i).join(','));
+});
 test('YouTube IDs accept supported URLs and reject lookalike domains', () => {
   assert.equal(parseShadowingVideoId('https://youtu.be/I3kvL128MIQ?t=10'), 'I3kvL128MIQ');
   assert.equal(parseShadowingVideoId('https://www.youtube.com/shorts/I3kvL128MIQ'), 'I3kvL128MIQ');
