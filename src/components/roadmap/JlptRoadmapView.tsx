@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import RoadmapClassroom, { type ClassroomTab } from "./RoadmapClassroom";
 import {
   ArrowRight,
   BookOpen,
@@ -74,6 +74,12 @@ export default function JlptRoadmapView({
   const [celebrate, setCelebrate] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const dailyRef = useRef<HTMLElement>(null);
+  const classroomRef = useRef<HTMLDivElement>(null);
+  const [classroomTab, setClassroomTab] = useState<ClassroomTab>("words");
+  const openClassroom = (tab: ClassroomTab) => {
+    setClassroomTab(tab);
+    classroomRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  };
   const journey = JLPT_JOURNEYS[level];
   const complete = plan.completedDays.includes(selected.day);
   const checked = complete
@@ -191,7 +197,7 @@ export default function JlptRoadmapView({
   };
   const inspectToday = () => {
     inspectDay(plan.currentDay);
-    dailyRef.current?.scrollIntoView({
+    classroomRef.current?.scrollIntoView({
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ? "auto"
         : "smooth",
@@ -295,7 +301,7 @@ export default function JlptRoadmapView({
           onSelect={inspectDay}
           onPractice={(day) => {
             inspectDay(day);
-            dailyRef.current?.scrollIntoView({
+            classroomRef.current?.scrollIntoView({
               behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
                 .matches
                 ? "auto"
@@ -332,7 +338,7 @@ export default function JlptRoadmapView({
               {selected.minutes}
               <small>phút</small>
             </strong>
-            <p>5 hoạt động · học, luyện, ôn</p>
+            <p>6 mục học · luyện ngay trong từng ngày</p>
             <Clock3 className="metric-watermark" />
           </div>
           <div>
@@ -353,6 +359,7 @@ export default function JlptRoadmapView({
           </div>
         </div>
 
+        <div ref={classroomRef} style={{ scrollMarginTop: 90 }}><RoadmapClassroom key={`${level}-${plan.durationDays}-${selected.day}`} level={level} day={selected.day} tab={classroomTab} onTab={setClassroomTab} onComplete={(task) => { const id = task === "kanji" ? "words" : task; if (!preview && !complete && !saving && !checked.includes(id)) void toggleTask(id); }} /></div>
         <div className="journey-workspace">
           <aside
             className="journey-daily"
@@ -426,15 +433,15 @@ export default function JlptRoadmapView({
                     <div className="journey-task-body">
                       <p>{task.method}</p>
                       <div>
-                        <Link to={task.route}>
-                          {task.action}
+                        <button type="button" onClick={() => openClassroom(task.id as ClassroomTab)}>
+                          Học tại đây
                           <ArrowRight size={13} />
-                        </Link>
+                        </button>
                         {task.id === "words" && (
-                          <Link to={`/jlpt/${level}/kanji`}>
+                          <button type="button" onClick={() => openClassroom("kanji")}>
                             Kanji
                             <ArrowRight size={13} />
-                          </Link>
+                          </button>
                         )}
                       </div>
                       <label>
@@ -599,7 +606,7 @@ export default function JlptRoadmapView({
                               }
                               onClick={() => {
                                 inspectDay(day);
-                                dailyRef.current?.scrollIntoView({
+                                classroomRef.current?.scrollIntoView({
                                   behavior: "smooth",
                                   block: "start",
                                 });

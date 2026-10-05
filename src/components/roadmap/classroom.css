@@ -1,0 +1,54 @@
+.roadmap-classroom{margin:28px 0;border:1px solid #3a5961;border-radius:24px;background:linear-gradient(145deg,#172c36,#111b2c);overflow:hidden;scroll-margin-top:90px;color:#edf3fb}
+.roadmap-classroom header{display:flex;gap:18px;align-items:center;padding:24px}
+.roadmap-classroom header small{color:#8ce2cf;font-weight:700;letter-spacing:1px}
+.roadmap-classroom h2{font-size:25px;margin:5px 0}
+.roadmap-classroom p{line-height:1.8;color:#b8cbdc}
+.classroom-tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:0 20px 18px;border-bottom:1px solid #334354}
+.roadmap-classroom button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border:1px solid #40536a;border-radius:12px;background:#1e2e43;color:#e6effa;cursor:pointer;font-size:14px;transition:background .18s,transform .18s}
+.roadmap-classroom button:hover:not(:disabled){background:#31445c;transform:translateY(-2px)}
+.roadmap-classroom button:focus-visible{outline:3px solid #8ce2cf;outline-offset:3px}
+.roadmap-classroom button:disabled{opacity:.55;cursor:default}
+.classroom-tabs button[aria-selected=true],.roadmap-classroom .classroom-primary{background:#8ce2cf;color:#132b2c;border-color:#8ce2cf;font-weight:700}
+.classroom-panel{padding:24px}
+.classroom-panel h3{font-size:20px;margin:0 0 18px;display:flex;gap:10px;align-items:center}
+.classroom-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:20px 0}
+.classroom-cards article,.classroom-cards>button{padding:20px;background:#101d30;border:1px solid #314259;border-radius:18px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-width:0;overflow-wrap:anywhere}
+.classroom-cards strong{font-size:24px}
+.classroom-cards>button strong{font-size:18px;text-align:left}
+.classroom-cards span{color:#b8cbdc}
+.classroom-cards .classroom-glyph{font-size:72px;color:#ffcb81;line-height:1.3}
+.classroom-cards rt{font-size:10px}
+.classroom-grammar{background:#101d30;border:1px solid #314259;border-radius:18px;padding:24px;margin-bottom:18px}
+.classroom-grammar blockquote{border-left:3px solid #8ce2cf;padding:12px 16px;font-size:23px;background:#162a3b;margin:18px 0}
+.classroom-quiz fieldset{border:1px solid #344960;border-radius:16px;padding:18px;margin:20px 0}
+.classroom-quiz legend{font-weight:700;padding:0 8px}
+.classroom-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.classroom-options button{text-align:left;justify-content:space-between}
+.classroom-options .answer-selected{border-color:#8ce2cf;background:#244648}
+.classroom-options .answer-correct{background:#17483e;border-color:#8ce2cf;opacity:1}
+.classroom-options .answer-wrong{background:#542e39;border-color:#ff9fa8;opacity:1}
+.classroom-quiz [role=status]{display:flex;gap:20px;align-items:center}
+.classroom-audio,.classroom-built{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.classroom-built{min-height:60px;background:#0c1628;border:1px dashed #69819a;border-radius:12px;padding:12px}
+.classroom-builder{margin-top:22px}
+.classroom-builder>button{margin:4px}
+.classroom-passage{font-size:20px;white-space:pre-wrap;padding:24px;background:#101d30;border-radius:16px}
+.roadmap-classroom select{color:#fff;background:#1e2e43;padding:8px;border-radius:8px;margin-left:10px}
+@media(max-width:700px){.classroom-tabs{grid-template-columns:repeat(3,1fr);padding:0 12px 12px}
+.classroom-panel{padding:16px}
+.classroom-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+.classroom-cards article{padding:14px}
+.roadmap-classroom header{padding:18px}
+.roadmap-classroom h2{font-size:21px}
+}
+@media(max-width:430px){.classroom-options{grid-template-columns:1fr}
+.classroom-cards{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.roadmap-classroom button{transition:none}
+.roadmap-classroom button:hover:not(:disabled){transform:none}
+}
+
+.roadmap-classroom .classroom-tabs button[aria-selected=true]:hover{background:#a9ebdc;color:#132b2c}
+.journey-task-body button{background:none;border:0;padding:0;cursor:pointer}
+.classroom-cards small{color:#b8cbdc}
+

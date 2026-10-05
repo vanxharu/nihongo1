@@ -485,7 +485,7 @@
   gap: 12px;
   flex-wrap: wrap;
 }
-.journey-task-body a {
+.journey-task-body button {
   font-size: 11px;
   color: var(--journey-gold);
   display: inline-flex;

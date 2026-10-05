@@ -856,13 +856,13 @@ export function roadmapDay(
     },
     {
       id: "listening",
-      label: "Nghe & Shadowing",
+      label: "Nghe",
       text: pick(chapter.listening),
       action: "Mở Shadowing",
       route: "/shadowing",
       minutes: minutes[3],
       method:
-        "Chọn nội dung phù hợp trình độ: nghe không phụ đề → đối chiếu bản chép → nhại 3 câu ở tốc độ gốc. Thư viện hiện có đề luyện N4.",
+        "Nghe các câu ví dụ ngay trong lớp học, chọn nghĩa phù hợp rồi đối chiếu bản chép khi kiểm tra đáp án. Phát lại và đọc nhại những câu chưa nghe rõ.",
     },
     {
       id: "review",
