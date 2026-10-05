@@ -9,14 +9,14 @@
 .karaoke-line ruby { display:ruby;ruby-position:over;line-height:inherit;vertical-align:baseline;margin:0; }
 .karaoke-line ruby > rt { display:ruby-text;margin:0; }
 .karaoke-line rt { color:#94a3b8;font-size:.45em;font-weight:400; }
-.karaoke-stage { position:relative;overflow:hidden;border:1px solid #8b5cf647;background:radial-gradient(ellipse at 50% 0%,#46306d55,transparent 70%),linear-gradient(145deg,#141929,#0c1120);box-shadow:0 12px 36px #03071230; }
+.karaoke-stage { position:relative;overflow:hidden;border:1px solid #8b5cf647;background:#101728;box-shadow:0 12px 36px #03071230; }
 .karaoke-meta { display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;color:#94a3b8;font-size:12px; }
 .karaoke-mode { display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid #a78bfa40;border-radius:999px;background:#8b5cf615;color:#c4b5fd;font-weight:650; }
 .karaoke-stage .karaoke-line { margin:12px auto;max-width:32em;min-height:72px;font-size:clamp(1.45rem,3.1vw,2.35rem);line-height:2.25;letter-spacing:.025em; }
 .karaoke-stage .karaoke-line rt { color:#b7a9d6;font-weight:500;letter-spacing:.04em; }
 @property --karaoke-fill { syntax:'<percentage>';inherits:false;initial-value:0%; }
-.karaoke-char { color:transparent;background:linear-gradient(90deg,#fcd581 0%,#ffe6a3 var(--karaoke-fill),#f1f5f9 var(--karaoke-fill),#f1f5f9 100%);background-clip:text;-webkit-background-clip:text;transition:--karaoke-fill .12s linear,text-shadow .3s ease; }
-.karaoke-char.is-current { text-shadow:0 0 12px #fbbf2445; }
+.karaoke-char { color:transparent;background:linear-gradient(90deg,#fcd581 0%,#ffe6a3 var(--karaoke-fill),#f1f5f9 var(--karaoke-fill),#f1f5f9 100%);background-clip:text;-webkit-background-clip:text;transition:--karaoke-fill .12s linear; }
+.karaoke-char.is-current { text-shadow:none; }
 .karaoke-sentence-active .karaoke-char { color:#e0d6ff; }
 .karaoke-progress { height:3px;margin:14px auto 20px;max-width:280px;overflow:hidden;border-radius:999px;background:#ffffff12; }
 .karaoke-progress span { display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#a78bfa,#fcd581);transition:width .12s linear; }
@@ -28,4 +28,4 @@
 .shadowing-transcript .karaoke-line { font-size:.9rem;text-align:left;line-height:2.4; }
 .shadowing-transcript ruby { display:inline-block;border:1px solid #45535e;border-radius:3px;padding:0 4px;margin:2px; }
 @media(max-width:1023px) { .shadowing-transcript { max-height:360px; } }
-.karaoke-meta{justify-content:flex-end}.karaoke-stage .karaoke-line .karaoke-token{display:inline-block;transform-origin:center 75%;transition:transform .18s cubic-bezier(.2,.8,.2,1),filter .3s;margin:0 .025em;vertical-align:baseline}.karaoke-stage .karaoke-line .karaoke-token-active{transform:translateY(-.13em) scale(1.1);filter:drop-shadow(0 3px 8px #fbbf2428)}.shadowing-transcript .karaoke-line{line-height:2.8;letter-spacing:.025em}.shadowing-transcript ruby{border:0;border-radius:0;padding:0;margin:0 .02em;display:ruby}.shadowing-transcript .karaoke-char{background:none;color:#e2e8f0;text-shadow:none}.shadowing-transcript .karaoke-token-active .karaoke-char{color:#fcd581}.shadowing-transcript rt{font-size:.52em;line-height:1;color:#a9b9d1}.karaoke-progress,.karaoke-mode{display:none}@media(prefers-reduced-motion:reduce){.karaoke-stage .karaoke-line .karaoke-token{transition:none;transform:none!important;filter:none!important}}
+.karaoke-meta{justify-content:flex-end}.karaoke-stage .karaoke-line .karaoke-token{display:inline-block;transform-origin:center 75%;transition:transform .18s cubic-bezier(.2,.8,.2,1);margin:0 .025em;vertical-align:baseline}.karaoke-stage .karaoke-line .karaoke-token-active{transform:translateY(-.13em) scale(1.1);filter:none}.shadowing-transcript .karaoke-line{line-height:2.8;letter-spacing:.025em}.shadowing-transcript ruby{border:0;border-radius:0;padding:0;margin:0 .02em;display:ruby}.shadowing-transcript .karaoke-char{background:none;color:#e2e8f0;text-shadow:none}.shadowing-transcript .karaoke-token-active .karaoke-char{color:#fcd581}.shadowing-transcript rt{font-size:.52em;line-height:1;color:#a9b9d1}.karaoke-progress,.karaoke-mode{display:none}@media(prefers-reduced-motion:reduce){.karaoke-stage .karaoke-line .karaoke-token{transition:none;transform:none!important;filter:none!important}}
