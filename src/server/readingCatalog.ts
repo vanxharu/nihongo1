@@ -26,7 +26,7 @@ export async function sourceArticles(source: ReadingSource, page = 1, force = fa
 }
 export async function sourceArticle(source: ReadingSource, id?: unknown, url?: unknown, force = false): Promise<SourceArticle> {
   const location = sourceLocation(source, id, url); const ref = shadowingDatabase().collection('reading_articles').doc(articleKey(location)); const stored = (await ref.get()).data();
-  if (!force && stored?.article?.text && Date.now() - stored.fetchedAt < 6 * 60 * 60_000) return stored.article;
+  if (!force && stored?.article?.text && stored.article.titleJp && Date.now() - stored.fetchedAt < 6 * 60 * 60_000) return stored.article;
   const article = await fetchSourceArticle(source, location.id, location.url);
   await ref.set(json({ article, summary: { ...article, text: undefined, furiganaText: undefined, rawTokens: undefined, audioMarks: undefined }, fetchedAt: Date.now() }), { merge: true });
   return article;
@@ -38,7 +38,7 @@ export async function preparedReading(article: SourceArticle, level: string = ar
     if (data?.leaseUntil > Date.now()) throw new Error('READING_IN_PROGRESS');
     tx.set(ref, { lease, leaseUntil: Date.now() + 90_000, sourceUrl: article.url, level, count }, { merge: true }); return null;
   });
-  if (existing) return existing;
+  if (existing) return { ...existing, title: article.titleJp || existing.title };
   try {
     if (!article.text || article.text.length > 20000) throw new Error('INVALID_PASSAGE');
     const lesson = await analyzeReading(article.text, level, count, article.originalQuestions || [], article.originalQuestionText || '');
