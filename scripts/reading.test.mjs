@@ -33,3 +33,16 @@ test('ruby extraction retains numbers, base words and line breaks exactly once',
   assert.equal(sources.plainHtml(html),'駅から10分です。\n\n毎朝7時。');
   assert.equal(sources.rubyHtml(html),'[駅](えき)から10[分](ふん)です。\n\n毎朝7時。');
 });
+
+test('source reading accepts a URL without duplicated article text; custom input still requires text', async () => {
+  const source = ts.transpileModule(readFileSync(new URL('../api/reading/generate.ts', import.meta.url), 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
+  const exports = {};
+  vm.runInNewContext(source, { exports, require: key => key.includes('readingCatalog') ? { sourceReadingFromUrl: async url => ({ title: 'source', sourceUrl: url }) } : { analyzeReading: async () => { throw new Error('Should not analyze client text'); } } });
+  const response = () => ({ statusCode: 200, setHeader() {}, status(code) { this.statusCode=code; return this; }, json(data) { this.data=data; return this; } });
+  const res=response(); await exports.default({method:'POST',body:{sourceUrl:'https://example.test/source',level:'N5'}},res);
+  assert.equal(res.statusCode,200); assert.equal(res.data.title,'source');
+  const invalid=response(); await exports.default({method:'POST',body:{customPassage:'short'}},invalid);
+  assert.equal(invalid.statusCode,400);
+  const malformed=response(); await exports.default({method:'POST',body:{sourceUrl:{url:'unsafe'}}},malformed);
+  assert.equal(malformed.statusCode,400);
+});
