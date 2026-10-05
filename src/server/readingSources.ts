@@ -87,7 +87,7 @@ export async function fetchSourceArticle(source: ReadingSource, id?: unknown, va
   article.find('script,style,iframe,.sharedaddy,form,nav').remove(); article.find('br').replaceWith('\n');
   article.find('p,div').append('\n'); const text = normalize(article.text());
   if (text.length < 20) throw new Error('SOURCE_UNAVAILABLE');
-  const title = $('h1').first().text().trim();
+  const title = $('h1.entry-title,.single-title,h1').first().text().trim() || $('meta[property="og:title"]').attr('content') || $('title').text().split('|')[0].trim();
   return { ...location, source, titleJp: title.split('...')[0].replace(/\(n[1-5]\)/ig, '').trim(), titleVi: '', date: ($('time').attr('datetime') || '').slice(0,10),
     image: ($('meta[property="og:image"]').attr('content') || '').replace(/^http:/,'https:'), audio: article.find('audio source').attr('src') || article.find('audio').attr('src') || '',
     level: sourceLevel(title), snippet: text.slice(0,160), text,
