@@ -1180,7 +1180,7 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
           </div>
 
           {/* Kanji Matrix Grid - Compact, denser grid */}
-          <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-10 gap-1.5 max-h-[160px] sm:max-h-[180px] overflow-y-auto p-1 bg-slate-50/50 rounded-xl border border-slate-100">
+          <div className="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-10 gap-1.5 max-h-[160px] sm:max-h-[180px] overflow-y-auto p-1 bg-slate-50/50 rounded-xl border border-slate-100">
             {filteredKanji.map((k, idx) => {
               const isCompleted = typeof userProfile.kanjiStatus[k.id] === 'object' ? (userProfile.kanjiStatus[k.id] as any).repetitions >= 1 : userProfile.kanjiStatus[k.id];
               const isSelected = selectedKanjiIndex === idx;

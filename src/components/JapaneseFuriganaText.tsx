@@ -52,13 +52,8 @@ function SelectiveFuriganaWordComponent({
 
     if (seg === '、' || seg === ',' || seg === '/' || seg === '／') {
       renderedSegments.push(
-        <span key={`delim-${s}`} className="inline-flex flex-col items-center justify-end leading-none text-center">
-          <span className="text-[0.55em] sm:text-[0.58em] leading-none opacity-0 select-none pb-[0.2em] tracking-normal whitespace-nowrap text-center block pointer-events-none">
-            &nbsp;
-          </span>
-          <span className={`leading-none ${sizeClassName} ${textColorClassName}`}>
-            {seg}
-          </span>
+        <span key={`delim-${s}`} className={`${sizeClassName} ${textColorClassName}`}>
+          {seg}
         </span>
       );
       continue;
@@ -78,36 +73,29 @@ function SelectiveFuriganaWordComponent({
     const alignedParts = alignWordFurigana(seg, segReading);
 
     renderedSegments.push(
-      <span key={`seg-${s}`} className="inline-flex items-end justify-center flex-nowrap">
+      <span key={`seg-${s}`} className={`inline-block max-w-full ${sizeClassName} ${textColorClassName}`}>
         {(alignedParts || []).map((part, pIdx) => {
           if (!part || !part.text) return null;
           if (part.furigana) {
             return (
-              <span
+              <ruby
                 key={pIdx}
-                className="inline-flex flex-col items-center justify-end leading-none text-center"
+                className="font-bold"
               >
-                <span className={`text-[0.55em] sm:text-[0.58em] leading-none ${furiganaColorClassName} font-jp font-bold select-none pb-[0.2em] tracking-normal whitespace-nowrap text-center block`}>
+                {part.text || ''}
+                <rt className={`${furiganaColorClassName} font-bold select-none tracking-normal`}>
                   {part.furigana}
-                </span>
-                <span className={`leading-none ${sizeClassName} ${textColorClassName}`}>
-                  {part.text || ''}
-                </span>
-              </span>
+                </rt>
+              </ruby>
             );
           }
 
           return (
             <span
               key={pIdx}
-              className="inline-flex flex-col items-center justify-end leading-none text-center"
+              className="font-bold"
             >
-              <span className="text-[0.55em] sm:text-[0.58em] leading-none opacity-0 select-none pb-[0.2em] tracking-normal whitespace-nowrap text-center block pointer-events-none">
-                &nbsp;
-              </span>
-              <span className={`leading-none ${sizeClassName} ${textColorClassName}`}>
-                {part.text || ''}
-              </span>
+              {part.text || ''}
             </span>
           );
         })}
@@ -116,7 +104,7 @@ function SelectiveFuriganaWordComponent({
   }
 
   return (
-    <span className={`inline-flex items-end justify-center flex-nowrap max-w-full font-bold ${textColorClassName} tracking-wide ${className}`}>
+    <span className={`selective-furigana-word inline-flex flex-wrap items-baseline justify-center max-w-full font-bold ${textColorClassName} tracking-wide ${className}`}>
       {renderedSegments}
     </span>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 import { AlertTriangle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -23,6 +24,7 @@ export default function ConfirmModal({
   onClose,
   isDanger = true
 }: ConfirmModalProps) {
+  const dialogRef = useDialogFocus(isOpen, onClose);
   if (!isOpen) return null;
 
   return (
@@ -32,12 +34,12 @@ export default function ConfirmModal({
         className="fixed inset-0 bg-slate-950/45 backdrop-blur-xs z-[100] flex items-center justify-center p-4"
         onClick={onClose}
       >
-        <motion.div
+        <motion.div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Xác nhận hành động"
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ duration: 0.15 }}
-          className="w-full max-w-sm bg-white border border-slate-100 rounded-3xl shadow-2xl p-6 relative overflow-hidden"
+          className="w-full max-w-sm bg-white border border-slate-100 rounded-3xl shadow-2xl p-6 relative overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Top warning line decoration */}
@@ -46,6 +48,7 @@ export default function ConfirmModal({
           {/* Close button */}
           <button
             onClick={onClose}
+            aria-label="Đóng xác nhận"
             className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />

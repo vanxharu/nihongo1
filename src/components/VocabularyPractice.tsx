@@ -3278,7 +3278,7 @@ if (loading) {
                     setShowFlashcardAnswer(prev => !prev);
                   }
                 }}
-                className="w-full bg-[#1e243b]/90 border border-[#343d5f] hover:border-[#4a5682] focus:border-emerald-500/70 focus:outline-none rounded-xl sm:rounded-2xl h-[240px] xs:h-[260px] sm:h-[290px] md:h-[320px] cursor-pointer transition-all shadow-md relative overflow-hidden flex flex-col"
+                className="responsive-flashcard w-full bg-[#1e243b]/90 border border-[#343d5f] hover:border-[#4a5682] focus:border-emerald-500/70 focus:outline-none rounded-xl sm:rounded-2xl h-[240px] xs:h-[260px] sm:h-[290px] md:h-[320px] cursor-pointer transition-all shadow-md relative overflow-hidden flex flex-col"
               >
                 <div className="absolute top-2 right-2.5 z-20 text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase bg-[#141828]/80 px-2 py-0.5 rounded-md border border-[#343d5f]/60 tracking-wider">
                   {showFlashcardAnswer ? 'Mặt sau' : (
@@ -4319,7 +4319,7 @@ if (loading) {
         <div className="flex items-center justify-between px-1">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Chế độ học:</span>
         </div>
-        <div className="grid grid-cols-5 gap-1 p-1 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-1 p-1 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
           <button 
             type="button"
             onClick={() => handleSwitchMode('flashcard')} 

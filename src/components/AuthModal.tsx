@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { LogIn, UserPlus, Mail, Lock, AlertCircle, User, X, Copy, Check, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import JpStudyLogo from './JpStudyLogo';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -57,6 +58,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     }
   }, [lastAuthError, currentHostname]);
 
+  const dialogRef = useDialogFocus(isOpen, () => { clearAuthError(); onClose(); });
   if (!isOpen) return null;
 
   const handleCopyHostname = () => {
@@ -136,11 +138,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   return (
     <div id="auth-modal-overlay" className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-      <motion.div
+      <motion.div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Đăng nhập"
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="w-full max-w-md bg-white border border-slate-100 rounded-3xl shadow-2xl p-6 relative overflow-hidden"
+        className="w-full max-w-md bg-white border border-slate-100 rounded-3xl shadow-2xl p-6 relative overflow-y-auto"
       >
         {/* Top Decoration */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-slate-500 via-purple-500 to-pink-500" />
@@ -278,13 +280,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           {isLogin ? (
             /* Login Mode: Username or Email */
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+              <label htmlFor="auth-identifier" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                 Tên đăng nhập hoặc Email
               </label>
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Nhập username hoặc email..."
+                  id="auth-identifier"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
@@ -305,13 +308,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             /* Register Mode: Username, Display Name, Email */
             <>
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label htmlFor="auth-username" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                   Tên đăng nhập (Username)
                 </label>
                 <div className="relative">
                   <input
                     type="text"
                     placeholder="Ví dụ: neko_chan, minhn4..."
+                    id="auth-username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                     className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50 font-mono"
@@ -326,13 +330,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label htmlFor="auth-display-name" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                   Tên hiển thị (Nickname)
                 </label>
                 <div className="relative">
                   <input
                     type="text"
                     placeholder="Ví dụ: Học viên Chăm chỉ"
+                    id="auth-display-name"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
@@ -342,13 +347,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label htmlFor="auth-email" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                   Địa chỉ Email
                 </label>
                 <div className="relative">
                   <input
                     type="email"
                     placeholder="email@example.com"
+                    id="auth-email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
@@ -362,10 +368,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           )}
 
           <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Mật khẩu</label>
+            <label htmlFor="auth-password" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Mật khẩu</label>
             <div className="relative">
               <input
                 type="password"
+                id="auth-password"
                 placeholder="••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

@@ -542,7 +542,7 @@ export default function Kaiwa() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 md:py-4 lg:py-6 flex flex-col md:flex-row gap-4 md:gap-6 md:h-[calc(100vh-150px)] xl:h-[calc(100vh-80px)] md:overflow-hidden text-slate-950 select-none">
+    <div className="w-full min-w-0 max-w-7xl mx-auto px-1 sm:px-4 py-3 md:py-4 lg:py-6 flex flex-col md:flex-row gap-4 md:gap-6 md:h-[calc(100dvh-150px)] xl:h-[calc(100dvh-80px)] md:overflow-hidden text-slate-950 select-none">
       
       {/* Mobile Configuration Overlay / Bottom Drawer (< md) */}
       {isConfigDrawerOpen && (
@@ -675,10 +675,10 @@ export default function Kaiwa() {
       )}
 
       {/* Left/Main: Chat Interface Panel */}
-      <div className="flex-1 flex flex-col min-h-[480px] lg:h-full bg-white rounded-[2rem] overflow-hidden shadow-lg border border-slate-100">
+      <div className="min-w-0 flex-1 flex flex-col min-h-[400px] lg:h-full bg-white rounded-[2rem] overflow-hidden shadow-lg border border-slate-100">
         
         {/* Chat Header */}
-        <div className="p-4 bg-slate-50 flex items-center justify-between border-b border-slate-200/80">
+        <div className="p-3 sm:p-4 bg-slate-50 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/80">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-xl shadow-inner border border-slate-200 shrink-0 overflow-hidden">
               {activeCharacter.avatar === '🐕' ? (
@@ -744,7 +744,7 @@ export default function Kaiwa() {
             const showTrans = toggles.translation || revealedTranslations[msg.id];
             
             return (
-              <div key={msg.id} className={`flex gap-3 max-w-[85%] ${!isBot ? 'ml-auto flex-row-reverse' : ''}`}>
+              <div key={msg.id} className={`flex gap-2 sm:gap-3 max-w-full sm:max-w-[85%] ${!isBot ? 'ml-auto flex-row-reverse' : ''}`}>
                 <div className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center text-sm shadow-inner border border-slate-200 mt-1 overflow-hidden ${
                   isBot ? (activeCharacter.avatar === '🐕' ? 'bg-amber-100' : 'bg-slate-600') : 'bg-emerald-600'
                 }`}>
@@ -763,7 +763,7 @@ export default function Kaiwa() {
                       : 'bg-slate-600 text-white rounded-tr-sm shadow-md'
                   }`}>
                     {/* Audio read button on Japanese text */}
-                    <div className="flex items-start justify-between gap-2">
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-2">
                       <div className="text-base sm:text-lg font-bold tracking-wide font-display py-0.5">
                         <JapaneseFuriganaText sentence={msg.text || ''} showFurigana={toggles.furigana} forceDark={!isBot} size="base" />
                       </div>
@@ -822,7 +822,7 @@ export default function Kaiwa() {
           
           {/* Snappy Typing Loading indicator */}
           {isLoading && (
-            <div className="flex gap-3 max-w-[85%]">
+            <div className="flex gap-2 sm:gap-3 max-w-full sm:max-w-[85%]">
               <div className="w-8 h-8 shrink-0 rounded-full bg-slate-600 flex items-center justify-center text-sm shadow-inner border border-slate-200 mt-1">
                 {activeCharacter.avatar}
               </div>

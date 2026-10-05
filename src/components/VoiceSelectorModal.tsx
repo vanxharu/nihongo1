@@ -1,3 +1,4 @@
+import { useDialogFocus } from '../hooks/useDialogFocus';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Volume2, VolumeX, Check, X, Headphones, Smartphone, Play, Square } from 'lucide-react';
 import { 
@@ -127,6 +128,7 @@ export default function VoiceSelectorModal({
     );
   }, [playingVoiceId, stopPreview]);
 
+  const dialogRef = useDialogFocus(isOpen, handleClose);
   if (!isOpen) return null;
 
   return (
@@ -135,7 +137,7 @@ export default function VoiceSelectorModal({
       onClick={handleClose}
     >
       <div 
-        className="w-full sm:max-w-md bg-[#0E1322] border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300"
+        ref={dialogRef} role="dialog" aria-modal="true" aria-label="Chọn giọng đọc" className="w-full sm:max-w-md bg-[#0E1322] border-t sm:border border-slate-800 rounded-t-3xl sm:rounded-2xl max-h-[85dvh] flex flex-col shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Mobile Pull Handle */}
@@ -199,7 +201,7 @@ export default function VoiceSelectorModal({
         )}
 
         {/* Voice List */}
-        <div className="p-4 space-y-2.5 overflow-y-auto max-h-[60vh] scrollbar-thin">
+        <div className="p-4 space-y-2.5 overflow-y-auto max-h-[60dvh] scrollbar-thin">
           {activeTab === 'neural' ? (
             PRESET_JAPANESE_VOICES.map((v) => {
               const isSelected = selectedVoice === v.id || 

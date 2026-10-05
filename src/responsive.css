@@ -1,0 +1,85 @@
+/* Shared layout contract: children shrink, pages scroll vertically, media keeps its ratio. */
+:root{--app-bottom-space:calc(6rem + env(safe-area-inset-bottom,0px))}
+#app-root-container{height:100dvh;position:relative}
+#app-content-panel,#app-main-view{min-width:0;min-height:0}
+#app-main-view{padding:.75rem .75rem var(--app-bottom-space)!important}
+#app-main-view>.w-full,#app-main-view>.w-full>div{min-width:0;max-width:100%}
+#app-main-view :where(.flex,.grid)>*{min-width:0}
+#app-main-view :where(img,video,iframe,canvas){max-width:100%}
+#app-sidebar{height:100dvh}
+#app-main-view :is(.study-exam,.study-reading,.jlpt-journey,.progress-studio,.achievement-studio){width:100%;min-width:0}
+#app-main-view :is(.study-hero,.study-exam-grid,.study-nav,.classroom-options,.journey-shell,.trail-layout){min-width:0}
+.classroom-options{position:relative}
+#app-root-container :is(.font-japanese,.font-jp,.font-jlpt-exam){line-height:1.9;word-break:normal;overflow-wrap:anywhere}
+#app-root-container :is(button,a,[role=button]):focus-visible{outline:3px solid var(--ui-primary);outline-offset:3px}
+/* Keep dialog sheets above navigation; the sheet itself owns vertical scrolling. */
+#app-root-container .fixed.inset-0:has(> :is(.w-full,[class*="max-w-"])){z-index:200;overflow-y:auto;overscroll-behavior:contain}
+#app-root-container .fixed.inset-0.flex> :is(.w-full,[class*="max-w-"]){min-width:0;max-width:100%;max-height:calc(100dvh - 1.5rem)}
+#app-root-container .fixed.inset-0.flex> :is(.w-full,[class*="max-w-"]):not(.overflow-hidden){overflow-y:auto}
+#app-root-container .fixed.inset-0.flex> :is(.w-full,[class*="max-w-"])>.overflow-y-auto{min-height:0;overscroll-behavior:contain}
+#mobile-tablet-header{min-height:56px;height:auto;padding-top:env(safe-area-inset-top,0px)}
+#mobile-tablet-header a{min-width:44px;min-height:44px;justify-content:center}
+#mobile-bottom-navigation{padding-bottom:max(.5rem,env(safe-area-inset-bottom,0px));box-sizing:border-box}
+#mobile-bottom-navigation>div{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));max-width:600px}
+#mobile-bottom-navigation a{min-width:0;min-height:56px;padding:.25rem 0}
+#mobile-bottom-navigation a>div{width:min(3.5rem,100%)}
+#mobile-bottom-navigation a>span{font-size:.75rem;white-space:nowrap}
+.responsive-flashcard{height:auto!important;min-height:clamp(250px,45dvh,360px)}
+.responsive-flashcard>div:not(.absolute){height:auto;min-height:inherit;overflow:visible}
+.selective-furigana-word{line-height:1.9;row-gap:.25em;overflow-wrap:anywhere}
+.notebook-flashcard{display:grid;grid-template-areas:'face';min-height:300px;height:auto!important}
+.notebook-flashcard>div{position:relative!important;inset:auto!important;grid-area:face;padding:1.5rem!important;min-width:0}
+.notebook-flashcard>div[aria-hidden=true]{visibility:hidden}
+.shiba-companion-panel{max-width:calc(100vw - 24px);max-height:calc(100dvh - 110px);overflow-y:auto!important;overscroll-behavior:contain}
+@media(max-width:1279px){
+ #app-sidebar.-translate-x-full{visibility:hidden}
+ #app-sidebar.translate-x-0{z-index:210}
+ #app-main-view:has(>div.h-full){padding:0!important}
+ #app-main-view :where(.overflow-x-auto){max-width:100%;overscroll-behavior-x:contain}
+}
+@media(max-width:639px){
+ #app-root-container:has(.responsive-flashcard,.classroom-panel,.exam-question-surface,.karaoke-stage) .pwa-install-banner{display:none}
+ .pwa-install-banner{padding:10px;left:12px;right:12px}
+ .pwa-install-banner>div:first-child>div>div:first-child{display:none}
+ .pwa-install-banner h3{font-size:13px}
+ .pwa-install-banner p,.pwa-install-banner .space-y-0\.5>div{display:none}
+ .pwa-install-banner>div:last-child{margin-top:4px;padding-top:4px}
+ #app-main-view :is(.jlpt-journey,.progress-studio){padding:12px 0 28px}
+ #app-main-view .study-hero{padding:22px 18px;grid-template-columns:minmax(0,1fr)}
+ #app-main-view .study-hero h1{font-size:clamp(1.5rem,7vw,2rem)}
+ #app-main-view .study-hero-stats{gap:8px}
+ #app-main-view .study-nav{grid-template-columns:minmax(0,1fr)}
+ #app-main-view .study-exam-grid{grid-template-columns:minmax(0,1fr)}
+ #app-main-view .study-exam-actions{flex-wrap:wrap}
+ #app-main-view .study-exam-actions button{flex:1 1 130px}
+ #app-main-view .classroom-panel,#app-main-view .roadmap-classroom header{padding:18px 14px}
+ #app-main-view .exercise-question,#app-main-view .classroom-passage{padding:16px;font-size:1.125rem;line-height:2}
+ #app-main-view .classroom-options{grid-template-columns:minmax(0,1fr)}
+ #app-main-view .classroom-options button{min-height:56px;font-size:1rem;text-align:left}
+ #app-main-view .exercise-overview,#app-main-view .exercise-numbers{padding-inline:14px}
+ #app-main-view .exercise-listening{flex-direction:column;padding:14px}
+ #app-root-container :is(input:not([type=checkbox]):not([type=radio]),textarea,select){font-size:16px!important;min-height:44px;max-width:100%}
+ #app-root-container .fixed.inset-0.flex> :is(.w-full,[class*="max-w-"]){max-height:calc(100dvh - 1rem)}
+ #flashcard-flip-container{margin-inline:auto}
+ #notebook-manager-container .notebook-review-controls{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:8px}
+ #notebook-manager-container .notebook-review-controls>div{display:grid;grid-template-columns:1fr;gap:8px}
+ #notebook-manager-container .notebook-review-controls button{padding:12px 8px;min-height:44px}
+ #app-main-view [aria-label="Lật thẻ Hán tự (Space)"]{min-height:360px}
+}
+@media(pointer:coarse),(max-width:1023px){
+ #app-root-container button:not(.karaoke-token){min-height:44px;touch-action:manipulation}
+ #app-root-container button:has(>svg:only-child){min-width:44px;min-height:44px;flex-shrink:0}
+ #app-root-container .brand-theme-toggle{width:44px;height:44px}
+ #sidebar-nav a{min-height:44px}
+}
+@media(min-width:640px){#app-main-view{padding:1.25rem 1.25rem var(--app-bottom-space)!important}}
+@media(min-width:768px){#app-main-view{padding:1.5rem 1.5rem var(--app-bottom-space)!important}}
+@media(min-width:1280px){:root{--app-bottom-space:1.5rem}.shiba-companion-panel{max-height:calc(100dvh - 48px)}}
+@media(max-width:639px){
+ #mobile-tablet-header{padding-right:64px}
+ .shiba-floating-anchor:not(:has(.shiba-companion-panel)){top:6px;bottom:auto;right:10px;transform:none!important}
+ .shiba-floating-anchor:not(:has(.shiba-companion-panel))>button{display:none}
+ .shiba-floating-anchor:not(:has(.shiba-companion-panel)) [role=button]>div:last-child{width:44px;height:44px}
+ .shiba-floating-anchor:has(.shiba-companion-panel){z-index:220;transform:none!important;inset:12px}
+ .shiba-companion-panel{width:100%!important;max-height:calc(100dvh - 24px);overflow-y:auto!important}
+}

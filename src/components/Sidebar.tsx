@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 import { Link, useLocation } from 'react-router-dom';
 import { 
 
@@ -47,6 +48,7 @@ interface SidebarProps {
 
 export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, onClose, userProfile }: SidebarProps) {
   const location = useLocation();
+  const drawerRef = useDialogFocus<HTMLElement>(isOpen, onClose);
 
   // Collapsible toggle for secondary options
   const isSecondaryActive = ['notebook', 'achievements', 'progress', 'admin'].includes(currentTab);
@@ -180,6 +182,10 @@ export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, 
       )}
 
       <aside 
+        ref={drawerRef}
+        role={isOpen ? 'dialog' : 'complementary'}
+        aria-modal={isOpen || undefined}
+        aria-label="Menu điều hướng"
         id="app-sidebar" 
         className={`fixed inset-y-0 left-0 z-50 xl:static xl:flex flex-col w-[280px] xl:w-64 max-w-[85vw] bg-gradient-to-b from-[#0F172A] via-[#16192E] to-[#0D111E] border-r border-rose-900/30 shadow-2xl h-screen shrink-0 select-none transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'

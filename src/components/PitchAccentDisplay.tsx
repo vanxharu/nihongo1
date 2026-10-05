@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
+import { createPortal } from 'react-dom';
+import { useDialogFocus } from '../hooks/useDialogFocus';
 import { getPitchAccent, calculateMoraPitches } from '../utils/pitchAccent';
-import { Volume2 } from 'lucide-react';
+import { Volume2, X } from 'lucide-react';
 import { speakJapanese } from '../utils/audio';
 
 interface PitchAccentDisplayProps {
@@ -19,6 +21,7 @@ function PitchAccentDisplayComponent({
   variant = 'badge'
 }: PitchAccentDisplayProps) {
   const [showTooltip, setShowTooltip] = useState(false);
+  const dialogRef = useDialogFocus(showTooltip, () => setShowTooltip(false));
   const accent = useMemo(() => getPitchAccent(kanji, reading), [kanji, reading]);
   const pitches = useMemo(() => calculateMoraPitches(reading, accent.type), [reading, accent.type]);
 
@@ -74,7 +77,9 @@ function PitchAccentDisplayComponent({
     <div className={`relative inline-flex flex-col items-center ${className}`}>
       {/* Mini Interactive Badge */}
       <div 
-        onClick={() => setShowTooltip(!showTooltip)}
+        role="button" tabIndex={0} aria-expanded={showTooltip} aria-label="Xem cao độ phát âm"
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); setShowTooltip(!showTooltip); } if (e.key === "Escape") setShowTooltip(false); }}
+        onClick={(e) => { e.stopPropagation(); setShowTooltip(!showTooltip); }}
         className={`group relative inline-flex items-center gap-2 ${variant === 'badge' ? 'px-2 py-1 bg-white dark:bg-slate-900 border border-slate-250 dark:border-slate-800 hover:border-slate-350 dark:hover:border-slate-700 rounded-lg shadow-3xs hover:shadow-2xs' : 'px-1 py-0.5'} transition-all cursor-pointer select-none`}
       >
         {/* Simplified Overline Pitch Notation */}
@@ -111,19 +116,14 @@ function PitchAccentDisplayComponent({
       </div>
 
       {/* Tooltip detail card */}
-      {showTooltip && (
-        <>
-          {/* Backdrop shield for easy clicking away on mobile */}
-          <div 
-            className="fixed inset-0 z-40 bg-transparent" 
-            onClick={() => setShowTooltip(false)} 
-          />
-          
-          <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 p-3 rounded-xl shadow-xl max-w-[260px] w-56 border border-slate-200/90 dark:border-slate-800/80 animate-in fade-in slide-in-from-top-2 duration-150 z-50 space-y-2">
+      {showTooltip && createPortal(
+        <div className="fixed inset-0 z-[230] flex items-center justify-center p-4 bg-black/30" onClick={(e) => { e.stopPropagation(); setShowTooltip(false); }}>
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Cao độ phát âm" onClick={(e) => e.stopPropagation()} className="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 p-4 rounded-xl shadow-xl max-w-full w-72 border border-slate-200/90 dark:border-slate-800/80 space-y-3 overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-1.5">
               <span className="font-extrabold text-xs text-slate-900 dark:text-slate-50">
                 {accent.vietnameseName}
               </span>
+              <button type="button" aria-label="Đóng cao độ" onClick={() => setShowTooltip(false)} className="p-2 rounded-lg"><X className="w-4 h-4" /></button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -136,16 +136,16 @@ function PitchAccentDisplayComponent({
               </button>
             </div>
 
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
               {accent.explanation}
             </p>
 
-            <div className="p-1.5 bg-slate-50 dark:bg-slate-900/60 rounded-lg border border-slate-100 dark:border-slate-800 text-[9px] leading-snug text-slate-400 dark:text-slate-500 font-semibold">
+            <div className="p-2 bg-slate-50 dark:bg-slate-900/60 rounded-lg border border-slate-100 dark:border-slate-800 text-xs leading-relaxed text-slate-400 dark:text-slate-500 font-semibold">
               <span className="text-slate-600 dark:text-slate-300 block mb-0.5">Trợ từ đi kèm (が):</span>
               {details.particleText}
             </div>
           </div>
-        </>
+        </div>, document.getElementById('app-root-container') || document.body
       )}
 
       {/* Static inline description if requested */}

@@ -94,7 +94,7 @@ export default function MobileBottomNav({
 
   const location = useLocation();
 
-  // 5 Main Navigation Items for Mobile Bottom Bar: Luyện tập, Lý thuyết, Lộ trình, Tiến độ, Cá nhân
+  // Five primary destinations; theory and other features remain in the navigation drawer
   const mainNavItems = [
     {
       id: 'shadowing', path: '/shadowing', label: 'Shadowing', icon: Volume2,
@@ -106,13 +106,6 @@ export default function MobileBottomNav({
       label: 'Luyện tập',
       icon: GraduationCap,
       checkActive: (tab: string, pathname: string) => pathname === '/' || tab === 'practice',
-    },
-    {
-      id: 'grammar',
-      path: '/bunpo',
-      label: 'Lý thuyết',
-      icon: FileText,
-      checkActive: (tab: string, pathname: string) => ['grammar', 'lessons'].includes(tab) || pathname.startsWith('/bunpo') || pathname.startsWith('/kanji') || pathname.startsWith('/tango'),
     },
     {
       id: 'roadmap',

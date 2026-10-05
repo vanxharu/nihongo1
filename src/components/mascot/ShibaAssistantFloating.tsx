@@ -16,6 +16,7 @@ import {
 import ShibaMascot, { ShibaPose } from './ShibaMascot';
 import { speakJapanese } from '../../utils/audio';
 import { UserProfile } from '../../types';
+import { useDialogFocus } from '../../hooks/useDialogFocus';
 
 interface ShibaAssistantFloatingProps {
   userProfile?: UserProfile;
@@ -37,6 +38,7 @@ export default function ShibaAssistantFloating({
   onNavigate
 }: ShibaAssistantFloatingProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const dialogRef = useDialogFocus(isOpen, () => setIsOpen(false));
   const [isDismissed, setIsDismissed] = useState(false);
   const [bubbleText, setBubbleText] = useState<string>('Kon\'nichiwa! Cùng học nhé 🐕');
   const [currentPose, setCurrentPose] = useState<ShibaPose>('welcome');
@@ -124,7 +126,8 @@ export default function ShibaAssistantFloating({
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0, opacity: 0, y: 10 }}
               transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-              className="relative flex items-center group cursor-pointer"
+              className="relative flex items-center group cursor-pointer" role="button" tabIndex={0} aria-label="Mở trợ lý Nihon Shiba"
+              onKeyDown={(e) => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); setIsOpen(true); } }}
               onClick={() => setIsOpen(true)}
             >
               {/* Tooltip / Speech bubble (on hover or initial) */}
@@ -173,7 +176,7 @@ export default function ShibaAssistantFloating({
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.85, opacity: 0, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="w-80 sm:w-96 bg-[#12172A] border-2 border-[#E89A3C]/60 rounded-3xl p-4 shadow-2xl shadow-black/80 backdrop-blur-xl text-white overflow-hidden relative"
+              ref={dialogRef} role="dialog" aria-modal="true" aria-label="Trợ lý Nihon Shiba" className="shiba-companion-panel w-80 sm:w-96 bg-[#12172A] border-2 border-[#E89A3C]/60 rounded-3xl p-4 shadow-2xl shadow-black/80 backdrop-blur-xl text-white overflow-hidden relative"
             >
               {/* Top Bar */}
               <div className="flex items-center justify-between pb-3 border-b border-[#1B223C]">

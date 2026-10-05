@@ -18,19 +18,6 @@
     word-break: break-word;
   }
 
-  ruby {
-    display: inline;
-    ruby-position: over;
-    white-space: nowrap;
-  }
-
-  rt {
-    font-size: 0.58em;
-    line-height: 1.1;
-    text-align: center;
-    user-select: none;
-    font-weight: 500;
-  }
 }
 
 @layer utilities {
@@ -247,13 +234,22 @@ body {
 
 /* Japanese Ruby Typography */
 ruby {
+  display: ruby;
   ruby-align: center;
   ruby-position: over;
+  vertical-align: baseline;
+  line-height: inherit;
+  white-space: normal;
+  margin: 0 .025em;
 }
-rt {
+ruby > rt {
+  display: ruby-text;
   font-size: 0.52em;
-  line-height: 1;
+  line-height: 1.2;
   text-align: center;
+  font-weight: 700;
+  color: var(--ui-accent);
+  margin: 0;
   user-select: none;
   font-feature-settings: "palt" 1;
   letter-spacing: normal;
@@ -311,25 +307,6 @@ rt {
 
 #app-main-view {
   background-color: transparent !important;
-  padding: 0.5rem 0.5rem calc(5.5rem + env(safe-area-inset-bottom, 0px)) 0.5rem !important;
-}
-
-@media (min-width: 640px) {
-  #app-main-view {
-    padding: 1.25rem 1.25rem calc(5.5rem + env(safe-area-inset-bottom, 0px)) 1.25rem !important;
-  }
-}
-
-@media (min-width: 768px) {
-  #app-main-view {
-    padding: 1.5rem 1.5rem calc(6rem + env(safe-area-inset-bottom, 0px)) 1.5rem !important;
-  }
-}
-
-@media (min-width: 1280px) {
-  #app-main-view {
-    padding: 1.5rem !important;
-  }
 }
 
 /* Main Cards */
@@ -478,28 +455,6 @@ rt {
 #app-main-view .text-rose-500,
 #app-main-view .text-red-500 {
   color: var(--ui-error) !important;
-}
-
-/* Furigana Ruby Typography */
-ruby {
-  display: inline-flex;
-  flex-direction: column-reverse;
-  vertical-align: bottom;
-  align-items: center;
-  line-height: 1;
-  margin: 0 1px;
-}
-
-ruby > rt {
-  display: block;
-  font-size: 0.55em;
-  line-height: 1;
-  font-weight: 700;
-  text-align: center;
-  color: var(--ui-accent); /* amber-300 furigana matching vocabulary practice */
-  user-select: none;
-  margin-bottom: 2px;
-  letter-spacing: 0.02em;
 }
 
 .chat-bubble-ai ruby > rt {

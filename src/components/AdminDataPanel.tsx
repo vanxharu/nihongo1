@@ -901,7 +901,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
                       />
                     </div>
 
-                    <div className="max-h-56 overflow-y-auto">
+                    <div className="max-h-56 overflow-auto min-w-0">
                       <table className="w-full text-left border-collapse text-xs">
                         <thead className="bg-slate-100 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 font-bold sticky top-0 border-b border-slate-200 dark:border-slate-700 text-[10.5px]">
                           <tr>

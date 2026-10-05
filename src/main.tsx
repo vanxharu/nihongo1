@@ -5,6 +5,7 @@ import App from './App';
 import './index.css';
 import './brandTheme.css';
 import './brandUtilities.css';
+import './responsive.css';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { getDefaultReminderSettings, syncRemindersWithServiceWorker } from './utils/notifications';

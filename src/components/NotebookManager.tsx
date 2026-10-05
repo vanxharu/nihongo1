@@ -274,15 +274,15 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
   };
 
   return (
-    <div id="notebook-manager-container" className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 space-y-3">
+    <div id="notebook-manager-container" className="w-full min-w-0 max-w-7xl mx-auto px-1 sm:px-4 py-3 sm:py-4 space-y-3">
       {/* Compact Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-950 text-white px-4 py-3 rounded-xl border border-indigo-800/40 shadow-sm">
-        <div className="flex items-center gap-2.5">
+        <div className="flex min-w-0 items-center gap-2.5">
           <span className="p-1.5 rounded-lg bg-indigo-500/20 text-amber-300 border border-indigo-500/30">
             <Bookmark className="w-4 h-4" />
           </span>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-base sm:text-lg font-bold tracking-tight text-white">
                 Sổ tay học tiếng Nhật
               </h1>
@@ -297,7 +297,7 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex flex-wrap items-center gap-1.5 shrink-0">
           <button
             id="open-add-word-modal-btn"
             type="button"
@@ -720,11 +720,15 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
               {/* 3D Flip Card */}
               <div
                 id="flashcard-flip-container"
+                role="group"
+                tabIndex={0}
+                aria-label="Lật thẻ từ vựng"
+                onKeyDown={(e) => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); setIsFlipped(!isFlipped); } }}
                 onClick={() => setIsFlipped(!isFlipped)}
-                className="relative h-80 w-full cursor-pointer perspective-1000 select-none group"
+                className="relative w-full cursor-pointer perspective-1000 select-none group"
               >
                 <div
-                  className={`relative w-full h-full rounded-3xl p-8 shadow-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-transform duration-500 transform-style-3d flex flex-col justify-between ${
+                  className={`notebook-flashcard relative w-full rounded-3xl shadow-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-transform duration-500 transform-style-3d flex flex-col justify-between ${
                     isFlipped ? 'rotate-y-180' : ''
                   }`}
                   style={{
@@ -734,9 +738,10 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
                 >
                   {/* FRONT SIDE (Mặt trước: Chữ Hán, Kana, Audio) */}
                   <div
-                    className={`absolute inset-0 p-8 flex flex-col items-center justify-between backface-hidden ${
+                    className={`notebook-flashcard-face flex flex-col items-center justify-between backface-hidden ${
                       isFlipped ? 'pointer-events-none' : ''
                     }`}
+                    aria-hidden={isFlipped}
                     style={{ backfaceVisibility: 'hidden' }}
                   >
                     <div className="w-full flex items-center justify-between">
@@ -782,9 +787,10 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
 
                   {/* BACK SIDE (Mặt sau: Nghĩa, Ví dụ) */}
                   <div
-                    className={`absolute inset-0 p-8 flex flex-col items-center justify-between backface-hidden ${
+                    className={`notebook-flashcard-face flex flex-col items-center justify-between backface-hidden ${
                       !isFlipped ? 'pointer-events-none' : ''
                     }`}
+                    aria-hidden={!isFlipped}
                     style={{
                       backfaceVisibility: 'hidden',
                       transform: 'rotateY(180deg)'
@@ -838,9 +844,9 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
               </div>
 
               {/* Flashcard Bottom Controls */}
-              <div className="flex items-center justify-between gap-3 pt-2">
+              <div className="notebook-review-controls flex items-center justify-between gap-3 pt-2">
                 <button
-                  id="flashcard-prev-btn"
+                  id="flashcard-prev-btn" aria-label="Thẻ trước"
                   type="button"
                   disabled={currentCardIndex === 0}
                   onClick={handlePrevCard}
@@ -885,7 +891,7 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
                 </div>
 
                 <button
-                  id="flashcard-next-btn"
+                  id="flashcard-next-btn" aria-label="Thẻ tiếp theo"
                   type="button"
                   disabled={currentCardIndex === filteredWords.length - 1}
                   onClick={handleNextCard}

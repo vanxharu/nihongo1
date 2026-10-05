@@ -162,7 +162,7 @@ export default function PwaInstallPrompt({ onDismiss, initialTab }: PwaInstallPr
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-20 xl:bottom-6 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md bg-[#121624]/95 text-white p-4 rounded-2xl shadow-2xl border border-sky-500/40 z-50 backdrop-blur-lg"
+            className="pwa-install-banner fixed bottom-20 xl:bottom-6 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md bg-[#121624]/95 text-white p-4 rounded-2xl shadow-2xl border border-sky-500/40 z-50 backdrop-blur-lg"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">

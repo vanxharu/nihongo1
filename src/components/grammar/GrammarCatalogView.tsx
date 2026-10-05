@@ -241,7 +241,7 @@ export const GrammarCatalogView: React.FC<GrammarCatalogViewProps> = ({
           </div>
 
           {/* Search Box */}
-          <div className="relative min-w-[240px] sm:w-72">
+          <div className="relative w-full min-w-0 sm:w-72">
             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               id="input-search-grammar"

@@ -205,32 +205,32 @@ export default function Header({
 
   return (
     <>
-      {/* Sleek, Dark Minimalist Status Bar for Mobile & Tablet (< xl) - Hidden on Practice, Profile & Japanese AI Chat to provide full Messenger chat canvas */}
-      {!['practice', 'profile', 'japanese-chat'].includes(currentTab) && (
+      {/* Mobile & tablet navigation; chat retains its own full-height toolbar */}
+      {currentTab !== 'japanese-chat' && (
         <header 
           id="mobile-tablet-header"
           className="xl:hidden flex items-center justify-between h-11 px-3 sm:px-4 bg-[#0F1424]/95 backdrop-blur-md border-b border-[#1B223C] sticky top-0 z-40 select-none shrink-0 pt-[env(safe-area-inset-top,0px)]"
         >
-          {/* Left: Logo Emblem & Tab Title / Back button */}
-          <div className="flex items-center gap-2 min-w-0">
+          {/* Left: Brand, navigation drawer and page title */}
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             <Link to="/" className="flex items-center shrink-0 hover:scale-105 transition-transform" title={BRAND_NAME}>
               <JpStudyLogo size="xs" dark={true} showText={false} />
             </Link>
-            {setCurrentTab && (
+            {onToggleSidebar && (
               <button
                 type="button"
-                onClick={() => setCurrentTab('practice')}
+                onClick={onToggleSidebar}
+                aria-label="Mở menu điều hướng"
                 className="flex items-center gap-1 text-[#E89A3C] hover:text-white text-xs font-bold transition-colors cursor-pointer shrink-0"
               >
-                <ChevronLeft className="w-4 h-4" />
-                <span className="hidden sm:inline">Luyện tập</span>
+                <Menu className="w-5 h-5" />
               </button>
             )}
             <span className="text-slate-600">•</span>
             <span className="text-xs sm:text-sm font-bold text-white tracking-tight truncate">
               {getTabTitle()}
             </span>
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[#1B223C] border border-[#E89A3C]/40 text-amber-300 shrink-0">
+            <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[#1B223C] border border-[#E89A3C]/40 text-amber-300 shrink-0">
               {userProfile.targetLevel}
             </span>
           </div>
@@ -249,7 +249,7 @@ export default function Header({
                   setIsProfileOpen(true);
                 }
               }}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#1B223C] hover:bg-[#242E52] border border-[#E89A3C]/40 text-[11px] font-bold text-amber-300 active:scale-95 transition-all cursor-pointer shadow-xs"
+              className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-[#1B223C] hover:bg-[#242E52] border border-[#E89A3C]/40 text-[11px] font-bold text-amber-300 active:scale-95 transition-all cursor-pointer shadow-xs"
               title="Xem hồ sơ & Tiến độ"
             >
               <span>🔥 {userProfile.streak || 0}</span>
@@ -262,7 +262,7 @@ export default function Header({
             <button
               type="button"
               onClick={handleToggleSound}
-              className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+              className={`hidden sm:flex p-1.5 rounded-lg border transition-all cursor-pointer ${
                 soundOn 
                   ? 'text-[#E89A3C] bg-[#1B223C] border-[#E89A3C]/50' 
                   : 'text-slate-500 bg-[#12172A] border-slate-800'
