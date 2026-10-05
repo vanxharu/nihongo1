@@ -52,7 +52,7 @@ export async function fetchSourceList(source: ReadingSource, page = 1, tag = 'al
   }
   const categories: Record<string,string> = { meal:'japan-fun/meal', sightseeing:'japan-fun/sightseeing', event:'japan-fun/event', culture:'japan-fun/culture', 'japan-news':'japan-news', simplejapanese:'simplejapanese', specialtopic:'specialtopic' };
   const path = categories[category] ? `category/${categories[category]}/` : /^(n[1-5]|listening)$/.test(tag) ? `tag/${tag}/` : '';
-  const response = await http.get(`https://watanoc.com/${path}feed/`, { params: page > 1 ? { paged: page } : {} });
+  const response = await http.get(`https://watanoc.com/${path}feed`, { params: page > 1 ? { paged: page } : {} });
   const $ = cheerio.load(response.data, { xmlMode: true }); const items: SourceArticle[] = [];
   $('item').each((_, el) => {
     const item = $(el); const title = item.find('title').text().trim();
