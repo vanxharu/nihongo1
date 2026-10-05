@@ -32,6 +32,11 @@
 .notebook-flashcard>div[aria-hidden=true]{visibility:hidden}
 .shiba-companion-panel{max-width:calc(100vw - 24px);max-height:calc(100dvh - 110px);overflow-y:auto!important;overscroll-behavior:contain}
 @media(max-width:1279px){
+ #mobile-tablet-header{padding-right:64px}
+ .shiba-floating-anchor:not(:has(.shiba-companion-panel)){top:6px;bottom:auto;right:10px;transform:none!important}
+ .shiba-floating-anchor:not(:has(.shiba-companion-panel))>button{display:none}
+ .shiba-floating-anchor:not(:has(.shiba-companion-panel)) [role=button]>div:not(:last-child){display:none}
+ .shiba-floating-anchor:not(:has(.shiba-companion-panel)) [role=button]>div:last-child{width:44px;height:44px}
  #app-sidebar.-translate-x-full{visibility:hidden}
  #app-sidebar.translate-x-0{z-index:210}
  #app-main-view:has(>div.h-full){padding:0!important}
@@ -76,10 +81,6 @@
 @media(min-width:768px){#app-main-view{padding:1.5rem 1.5rem var(--app-bottom-space)!important}}
 @media(min-width:1280px){:root{--app-bottom-space:1.5rem}.shiba-companion-panel{max-height:calc(100dvh - 48px)}}
 @media(max-width:639px){
- #mobile-tablet-header{padding-right:64px}
- .shiba-floating-anchor:not(:has(.shiba-companion-panel)){top:6px;bottom:auto;right:10px;transform:none!important}
- .shiba-floating-anchor:not(:has(.shiba-companion-panel))>button{display:none}
- .shiba-floating-anchor:not(:has(.shiba-companion-panel)) [role=button]>div:last-child{width:44px;height:44px}
  .shiba-floating-anchor:has(.shiba-companion-panel){z-index:220;transform:none!important;inset:12px}
  .shiba-companion-panel{width:100%!important;max-height:calc(100dvh - 24px);overflow-y:auto!important}
 }

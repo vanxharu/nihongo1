@@ -11,7 +11,7 @@ Stack: React 19, React Router 7, Tailwind 4, Vite 6 and existing component CSS.
 - Native ruby rendering for Furigana; alternative word spellings can wrap without crushing kana.
 - Bounded scrollable dialogs above navigation, focus containment, Escape and focus restoration.
 - Pitch explanation rendered outside transformed cards, bounded to the viewport.
-- Mobile mascot shortcut in the header; compact installation prompt suppressed during focused exercises.
+- Mobile/tablet mascot shortcut in the header; compact installation prompt suppressed during focused exercises.
 - Preview tables scroll inside their container.
 - Positioned hidden exercise legends no longer cause outer-page scrolling and hide the header.
 - Consolidated conflicting ruby and main-spacing rules.
