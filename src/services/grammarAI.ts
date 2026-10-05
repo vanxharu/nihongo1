@@ -7,6 +7,7 @@
  */
 
 import { GrammarAiContent, GrammarExample, GrammarExercise, JLPTLevel, GrammarFormationRule, SimilarGrammarComparison, UserGrammarProgress } from '../types';
+import { authHeaders } from '../utils/authHeaders';
 
 export interface GenerateGrammarParams {
   grammarId: string;
@@ -110,9 +111,7 @@ export async function generateGrammarAiContent(params: GenerateGrammarParams): P
   try {
     const res = await fetch('/api/grammar/ai-generate', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: await authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(params)
     });
 
@@ -145,9 +144,7 @@ export async function saveGrammarContentToWebsite(payload: SaveGrammarPayload): 
   try {
     const res = await fetch('/api/grammar/save-content', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: await authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(payload)
     });
 
@@ -220,9 +217,7 @@ export async function rollbackGrammarAiContent(grammarId: string): Promise<{
   try {
     const res = await fetch('/api/grammar/rollback-content', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: await authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ grammarId })
     });
 
@@ -260,7 +255,7 @@ export async function recordGrammarAttempt(params: {
   try {
     const res = await fetch('/api/grammar/progress/record', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: await authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(params)
     });
 
@@ -326,7 +321,7 @@ export async function fetchUserGrammarProgress(userUid: string): Promise<Record<
   if (!userUid) return {};
 
   try {
-    const res = await fetch(`/api/grammar/progress/user/${encodeURIComponent(userUid)}`);
+    const res = await fetch(`/api/grammar/progress/user/${encodeURIComponent(userUid)}`, { headers: await authHeaders() });
     if (res.ok) {
       const json = await res.json();
       if (json.success && json.progressMap) {

@@ -47,7 +47,6 @@ interface AuthContextType {
   login: (identifier: string, pass: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
   register: (email: string, pass: string, displayName?: string, username?: string) => Promise<void>;
-  quickLogin: (identifier?: string, name?: string) => Promise<void>;
   logout: () => Promise<void>;
   syncProfile: () => Promise<void>;
   updateDbProfile: (updatedFields: Partial<UserProfile>) => Promise<UserProfile | null>;
@@ -482,73 +481,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return defaultProfile;
   };
 
-  const quickLogin = async (identifierInput?: string, nameInput?: string) => {
-    setLoading(true);
-    setAuthStatus('AUTHENTICATING');
-    clearAuthError();
-    try {
-      const identifier = (identifierInput || '').trim();
-      if (!identifier) {
-        throw new Error('Vui lòng cung cấp email hoặc tên đăng nhập để tiếp tục.');
-      }
-      const response = await fetch('/api/auth/quick-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier, email: identifier, name: nameInput })
-      });
-
-      if (!response.ok) {
-        throw new Error('Đăng nhập nhanh thất bại');
-      }
-
-      const data = await response.json();
-      if (data.success && data.user) {
-        const sessionToken = data.token;
-        const fbUser = data.firebaseUser;
-
-        const syntheticUser: any = {
-          uid: fbUser.uid,
-          email: fbUser.email,
-          displayName: fbUser.displayName,
-          photoURL: fbUser.photoURL,
-          emailVerified: true,
-          getIdToken: async () => sessionToken
-        };
-
-        setUser(syntheticUser);
-        setToken(sessionToken);
-
-        const parsed = parseDbUser(data.user);
-        setDbUser(parsed);
-
-        // Store session for persistence across page refreshes
-        try {
-          localStorage.setItem('jpstudy_app_session_v1', JSON.stringify({
-            token: sessionToken,
-            firebaseUser: fbUser
-          }));
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-        } catch (e) {
-          console.warn('Could not save session to localStorage:', e);
-        }
-
-        setAuthStatus('AUTHENTICATED');
-        setLastAuthError(null);
-        checkAndApplyRedirect(parsed.role);
-      }
-    } catch (err: any) {
-      console.error('Quick login error:', err);
-      setAuthStatus('ERROR');
-      setLastAuthError({
-        code: 'quick-login-failed',
-        message: err?.message || 'Không thể đăng nhập. Vui lòng thử lại.'
-      });
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const logout = async () => {
     setLoading(true);
     try {
@@ -597,30 +529,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         }
       } else {
-        // Check if there is an active local app session
+        // Drop any legacy unsigned app session left by the removed quick-login.
         try {
-          const rawSession = localStorage.getItem('jpstudy_app_session_v1');
-          if (rawSession) {
-            const { token: sessionToken, firebaseUser: fbUser } = JSON.parse(rawSession);
-            if (sessionToken && fbUser) {
-              const syntheticUser: any = {
-                uid: fbUser.uid,
-                email: fbUser.email,
-                displayName: fbUser.displayName,
-                photoURL: fbUser.photoURL,
-                emailVerified: true,
-                getIdToken: async () => sessionToken
-              };
-              setUser(syntheticUser);
-              setToken(sessionToken);
-              setAuthStatus('AUTHENTICATED');
-              setLoading(false);
-              console.log('[AUTH] Authentication: COMPLETE (session restored)');
-              return;
-            }
-          }
-        } catch (sessionErr) {
-          console.warn('[AUTH] Could not restore app session:', sessionErr);
+          localStorage.removeItem('jpstudy_app_session_v1');
+        } catch {
+          // ignore
         }
 
         setDbUser(null);
@@ -706,7 +619,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       loginWithGoogle,
       register,
-      quickLogin,
       logout,
       syncProfile,
       updateDbProfile

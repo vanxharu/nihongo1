@@ -1,6 +1,7 @@
 import { ListeningExamData, ListeningQuestion } from '../types/listeningExamTypes';
 import { buildExamWithMappings, getLinkedExamIdForVideo, saveTimestampMapping } from './timestampMappingManager';
 import { getAllOriginalExams } from '../data/originalListeningExams';
+import { authHeaders } from './authHeaders';
 
 const LOCAL_STORAGE_EXAMS_KEY = 'jlpt_verified_listening_questions_v2';
 
@@ -128,7 +129,7 @@ export async function saveExamForVideo(videoId: string, examData: ListeningExamD
   try {
     const res = await fetch('/api/listening/questions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: await authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ videoId, examData })
     });
     return res.ok;
@@ -174,7 +175,7 @@ export async function updateQuestionTimestamp(
   try {
     const res = await fetch('/api/listening/questions/update-timestamp', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: await authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ videoId, questionId, startTime, endTime })
     });
     return res.ok;

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { authHeaders } from '../../utils/authHeaders';
 
 export type MascotState = 
   | 'default'
@@ -109,7 +110,7 @@ export const Mascot: React.FC<MascotProps> = ({
         const base64 = reader.result as string;
         const res = await fetch('/api/mascot/upload', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: await authHeaders({ 'Content-Type': 'application/json' }),
           body: JSON.stringify({ imageBase64: base64, filename: 'custom_mascot.png' })
         });
         if (res.ok) {

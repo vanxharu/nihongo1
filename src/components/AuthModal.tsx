@@ -11,7 +11,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const { login, loginWithGoogle, register, quickLogin, lastAuthError, clearAuthError } = useAuth();
+  const { login, loginWithGoogle, register, lastAuthError, clearAuthError } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [identifier, setIdentifier] = useState('');
   const [email, setEmail] = useState('');
@@ -25,27 +25,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   const currentHostname = typeof window !== 'undefined' ? window.location.hostname : '';
   const isInIframe = typeof window !== 'undefined' && window.self !== window.top;
-
-  const handleQuickLogin = async (loginIdentifier?: string) => {
-    setError('');
-    setErrorCode('');
-    clearAuthError();
-    setLoading(true);
-    try {
-      const targetIdentifier = (loginIdentifier || identifier || email || '').trim();
-      if (!targetIdentifier) {
-        setError('Vui lòng nhập tên đăng nhập hoặc email của bạn ở ô trên để đăng nhập.');
-        return;
-      }
-      const displayNameVal = displayName || username || targetIdentifier.split('@')[0];
-      await quickLogin(targetIdentifier, displayNameVal);
-      handleClose();
-    } catch (err: any) {
-      setError(err?.message || 'Đăng nhập thất bại.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     if (lastAuthError) {
@@ -109,14 +88,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       handleClose();
     } catch (err: any) {
       console.error(err);
-      if (err.code === 'auth/unauthorized-domain') {
-        try {
-          await handleQuickLogin(identifier || email);
-          return;
-        } catch {
-          // continue to regular error messaging if fallback fails
-        }
-      }
       let vietnameseMsg = 'Đã xảy ra lỗi. Vui lòng thử lại.';
       if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
         vietnameseMsg = 'Sai thông tin đăng nhập hoặc mật khẩu. Vui lòng kiểm tra lại.';
@@ -250,18 +221,6 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   Mở tab mới
                 </button>
               )}
-            </div>
-
-            <div className="pt-2.5 border-t border-amber-200/80">
-              <button
-                type="button"
-                onClick={() => handleQuickLogin(identifier || email)}
-                disabled={loading}
-                className="w-full py-2.5 px-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer active:scale-98"
-              >
-                <LogIn className="w-4 h-4 text-slate-950" />
-                <span>Đăng nhập trực tiếp (Bỏ qua giới hạn tên miền)</span>
-              </button>
             </div>
           </div>
         ) : error ? (

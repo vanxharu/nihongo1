@@ -34,46 +34,31 @@ export const requireAuth = async (
 
   const token = authHeader.split('Bearer ')[1];
   try {
-    let decodedToken: any = null;
-
-    // 1. Try Firebase Admin token verification if available
-    if (adminAuth) {
-      try {
-        decodedToken = await adminAuth.verifyIdToken(token);
-      } catch (fbErr: any) {
-        // Fallback to internal session token below
-      }
+    // Only cryptographically verified Firebase ID tokens are accepted.
+    // Unsigned/self-issued session tokens must never be trusted.
+    if (!adminAuth) {
+      console.error('Firebase Admin is not initialized; rejecting authenticated request.');
+      return res.status(503).json({ error: 'Authentication service unavailable' });
     }
 
-    // 2. Try App Session token verification
-    if (!decodedToken && token.startsWith('app-session-')) {
-      try {
-        const rawJson = Buffer.from(token.replace('app-session-', ''), 'base64').toString('utf-8');
-        const sessionData = JSON.parse(rawJson);
-        if (sessionData && sessionData.uid && sessionData.email) {
-          decodedToken = {
-            uid: sessionData.uid,
-            email: sessionData.email,
-            name: sessionData.name || sessionData.email.split('@')[0],
-            role: sessionData.role === 'admin' ? 'admin' : 'user',
-            email_verified: true,
-            auth_time: Math.floor((sessionData.timestamp || Date.now()) / 1000)
-          };
-        }
-      } catch (tokenErr) {
-        console.warn('Failed to parse app session token:', tokenErr);
-      }
-    }
-
-    if (!decodedToken) {
+    let decodedToken: DecodedIdToken;
+    try {
+      decodedToken = await adminAuth.verifyIdToken(token);
+    } catch {
       return res.status(401).json({ error: 'Unauthorized: Invalid token' });
     }
 
     req.user = decodedToken;
-    
-    // Upsert user into database to ensure relations work
+
+    // Upsert user into database to ensure relations work.
+    // Bootstrap-admin promotion only applies when the email is verified,
+    // so nobody can claim an admin email by registering it unverified.
     try {
-      const userFromDb = await getOrCreateUser(decodedToken.uid, decodedToken.email || '');
+      const userFromDb = await getOrCreateUser(
+        decodedToken.uid,
+        decodedToken.email || '',
+        decodedToken.email_verified === true
+      );
       req.dbUser = {
         ...userFromDb,
         role: (userFromDb.role === 'admin' ? 'admin' : 'user') as UserRole
@@ -96,7 +81,7 @@ export const requireAuth = async (
         grammarStatus: '{}',
         kanjiStatus: '{}',
         dailyTestResults: '[]',
-        role: (decodedToken.role === 'admin' ? 'admin' : 'user') as UserRole
+        role: 'user' as UserRole
       };
     }
 

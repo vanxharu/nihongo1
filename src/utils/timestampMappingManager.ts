@@ -1,5 +1,6 @@
 import { YouTubeTimestampMapping, ListeningExamData, ListeningQuestion } from '../types/listeningExamTypes';
 import { getOriginalExamById, getAllOriginalExams } from '../data/originalListeningExams';
+import { authHeaders } from './authHeaders';
 
 const LOCAL_STORAGE_MAPPINGS_KEY = 'nihongo_listening_timestamp_mappings_v2';
 const LOCAL_STORAGE_VIDEO_EXAM_LINK_KEY = 'nihongo_listening_video_exam_links_v2';
@@ -175,7 +176,7 @@ export async function saveTimestampMapping(mapping: YouTubeTimestampMapping): Pr
   try {
     const res = await fetch('/api/listening/mappings', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: await authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ mapping: enriched })
     });
     return res.ok;
@@ -206,7 +207,7 @@ export async function saveMappingsBatch(mappings: YouTubeTimestampMapping[]): Pr
   try {
     const res = await fetch('/api/listening/mappings/batch', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: await authHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ mappings })
     });
     return res.ok;

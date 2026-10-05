@@ -67,6 +67,44 @@ const PORT = 3000;
 // Express middleware
 app.use(express.json({ limit: '25mb' }));
 app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+
+// Best-effort per-IP rate limit for endpoints that spend AI / TTS quota.
+// In-memory, so on serverless hosts it is per instance; it still blunts casual abuse.
+const COST_BEARING_PATHS = [
+  '/api/shadowing/analyze', '/api/shadowing/prepare',
+  '/api/listening/extract-frame-ocr', '/api/tts', '/api/furigana',
+  '/api/grammar/evaluate-translation', '/api/grammar/grade', '/api/grammar/analyze',
+  '/api/grammar/practice-questions', '/api/grammar/personalized-review',
+  '/api/grammar/ai-tutor', '/api/grammar/similar-question',
+  '/api/reading/generate', '/api/reading/lookup-word',
+  '/api/exam/generate-ai', '/api/exam/ai-grade-and-explain', '/api/exam/review-user-notes',
+  '/api/kaiwa/chat', '/api/japanese-chat', '/api/chat-gpt', '/api/transcribe-audio',
+  '/api/handwriting/grade', '/api/handwriting/generate-exercise', '/api/kanji/ai-mnemonic',
+  '/api/sentence/analyze',
+];
+const RATE_WINDOW_MS = 60_000;
+const RATE_MAX_REQUESTS = 40;
+const rateBuckets = new Map<string, { count: number; resetAt: number }>();
+app.use(COST_BEARING_PATHS, (req, res, next) => {
+  const forwarded = (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim();
+  const key = forwarded || req.ip || 'unknown';
+  const now = Date.now();
+  if (rateBuckets.size > 5000) {
+    for (const [k, v] of rateBuckets) if (v.resetAt <= now) rateBuckets.delete(k);
+  }
+  const bucket = rateBuckets.get(key);
+  if (!bucket || bucket.resetAt <= now) {
+    rateBuckets.set(key, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return next();
+  }
+  bucket.count += 1;
+  if (bucket.count > RATE_MAX_REQUESTS) {
+    res.setHeader('Retry-After', String(Math.ceil((bucket.resetAt - now) / 1000)));
+    return res.status(429).json({ success: false, error: 'Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút.' });
+  }
+  return next();
+});
+
 app.get('/api/shadowing/transcript', shadowingTranscript);
 app.post('/api/shadowing/analyze', shadowingAnalyze);
 app.get('/api/shadowing/video', shadowingVideo);
@@ -112,7 +150,7 @@ app.get('/api/mascot/status', (req, res) => {
   });
 });
 
-app.post('/api/mascot/upload', (req, res) => {
+app.post('/api/mascot/upload', requireAuth, requireAdmin, (req, res) => {
   try {
     const { imageBase64, filename } = req.body;
     if (!imageBase64) {
@@ -209,7 +247,7 @@ app.get('/api/listening/videos', (req, res) => {
 });
 
 // 2. Add or update YouTube listening video (Admin)
-app.post('/api/listening/videos', express.json({ limit: '2mb' }), (req, res) => {
+app.post('/api/listening/videos', requireAuth, requireAdmin, express.json({ limit: '2mb' }), (req, res) => {
   try {
     const videoData = req.body;
     if (!videoData) {
@@ -257,7 +295,7 @@ app.post('/api/listening/videos', express.json({ limit: '2mb' }), (req, res) => 
 });
 
 // 3. Delete YouTube listening video (Admin)
-app.delete('/api/listening/videos/:id', (req, res) => {
+app.delete('/api/listening/videos/:id', requireAuth, requireAdmin, (req, res) => {
   try {
     const videoId = req.params.id;
     if (fs.existsSync(LISTENING_VIDEOS_FILE)) {
@@ -578,7 +616,7 @@ app.get('/api/listening/questions', (req, res) => {
 });
 
 // 13. Save or Update Verified JLPT Listening Questions & Timestamp mapping (Admin Tool)
-app.post('/api/listening/questions', express.json({ limit: '5mb' }), (req, res) => {
+app.post('/api/listening/questions', requireAuth, requireAdmin, express.json({ limit: '5mb' }), (req, res) => {
   try {
     const { videoId, examData } = req.body;
     if (!videoId || !examData) {
@@ -618,7 +656,7 @@ app.post('/api/listening/questions', express.json({ limit: '5mb' }), (req, res) 
 });
 
 // 14. Quick update question timestamp (Admin Timestamp Editor)
-app.post('/api/listening/questions/update-timestamp', express.json(), (req, res) => {
+app.post('/api/listening/questions/update-timestamp', requireAuth, requireAdmin, express.json(), (req, res) => {
   try {
     const { videoId, questionId, startTime, endTime } = req.body;
     if (!videoId || !questionId) {
@@ -683,7 +721,7 @@ app.get('/api/listening/mappings', (req, res) => {
 });
 
 // 16. Save single Timestamp Mapping (Admin)
-app.post('/api/listening/mappings', express.json(), (req, res) => {
+app.post('/api/listening/mappings', requireAuth, requireAdmin, express.json(), (req, res) => {
   try {
     const { mapping } = req.body;
     if (!mapping || !mapping.questionId || !mapping.youtubeVideoId) {
@@ -726,7 +764,7 @@ app.post('/api/listening/mappings', express.json(), (req, res) => {
 });
 
 // 17. Batch save Timestamp Mappings (Admin)
-app.post('/api/listening/mappings/batch', express.json({ limit: '2mb' }), (req, res) => {
+app.post('/api/listening/mappings/batch', requireAuth, requireAdmin, express.json({ limit: '2mb' }), (req, res) => {
   try {
     const { mappings: incoming = [] } = req.body;
     if (!Array.isArray(incoming)) {
@@ -4163,68 +4201,6 @@ app.post('/api/auth/resolve-identifier', async (req: any, res) => {
   }
 });
 
-// 5.5 Quick Auth & Direct Login (Supports username or email, derives role purely from DB)
-app.post('/api/auth/quick-login', async (req: any, res) => {
-  try {
-    const input = (req.body?.identifier || req.body?.email || '').toString().trim();
-    if (!input) {
-      return res.status(400).json({ error: 'Email hoặc tên đăng nhập là bắt buộc' });
-    }
-
-    let rawEmail = input.toLowerCase();
-    let name = req.body?.name || '';
-    let dbUser: any = null;
-
-    if (!rawEmail.includes('@')) {
-      // Input is a username
-      const foundUser = await findUserByIdentifier(input);
-      if (foundUser) {
-        dbUser = foundUser;
-        rawEmail = foundUser.email;
-        name = foundUser.name || name || input;
-      } else {
-        // Fallback email for username
-        const cleanUser = input.toLowerCase().replace(/[^a-z0-9_]/g, '');
-        rawEmail = `${cleanUser}@nihongo.edu.vn`;
-        name = name || input;
-      }
-    } else {
-      name = name || rawEmail.split('@')[0];
-    }
-
-    if (!dbUser) {
-      const uid = 'usr_' + Buffer.from(rawEmail).toString('hex').slice(0, 24);
-      dbUser = await getOrCreateUser(uid, rawEmail);
-    }
-
-    const tokenPayload = {
-      uid: dbUser.uid,
-      email: dbUser.email,
-      name: dbUser.name || name,
-      username: dbUser.username || dbUser.name || name,
-      role: dbUser.role || 'user',
-      timestamp: Date.now()
-    };
-    const sessionToken = 'app-session-' + Buffer.from(JSON.stringify(tokenPayload)).toString('base64');
-
-    return res.json({
-      success: true,
-      user: dbUser,
-      token: sessionToken,
-      firebaseUser: {
-        uid: dbUser.uid,
-        email: dbUser.email,
-        displayName: dbUser.name || name,
-        photoURL: dbUser.avatar || '🦊',
-        emailVerified: true
-      }
-    });
-  } catch (error: any) {
-    console.error('Error in /api/auth/quick-login:', error);
-    return res.status(500).json({ error: error.message || 'Quick login failed' });
-  }
-});
-
 // 6. User Auth, Profile Sync, and Streak routes
 app.post('/api/user/sync', requireAuth, async (req: any, res) => {
   try {
@@ -4533,7 +4509,7 @@ app.get('/api/vocabularies', async (req, res) => {
   }
 });
 
-app.post('/api/vocabularies/add-custom', async (req, res) => {
+app.post('/api/vocabularies/add-custom', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { kanji, reading, meaning, level } = req.body;
     if (!reading || !meaning) {
@@ -5037,7 +5013,7 @@ app.post('/api/admin/grammars/delete', requireAuth, requireAdmin, async (req: an
   }
 });
 
-app.post('/api/vocabularies/ensure-examples', async (req, res) => {
+app.post('/api/vocabularies/ensure-examples', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { lessonId, vocabIds } = req.body;
     
@@ -6372,7 +6348,7 @@ app.get('/api/ai/provider-status', (req, res) => {
 });
 
 // Central AI Configuration API: GET
-app.get('/api/ai/config', (req, res) => {
+app.get('/api/ai/config', requireAuth, requireAdmin, (req, res) => {
   const key = getActiveOpenAIApiKey();
   const maskedKey = key
     ? (key.length > 10 ? `${key.substring(0, 7)}...${key.substring(key.length - 4)}` : "********")
@@ -6396,7 +6372,7 @@ app.get('/api/ai/config', (req, res) => {
 });
 
 // Central AI Configuration API: POST (Save dynamic changes immediately)
-app.post('/api/ai/config', (req, res) => {
+app.post('/api/ai/config', requireAuth, requireAdmin, (req, res) => {
   try {
     const { openaiApiKey, openaiModel, provider } = req.body;
 
@@ -6444,7 +6420,7 @@ app.post('/api/ai/config', (req, res) => {
 });
 
 // Central AI Test Endpoint: POST (Live verification of API Key and quota)
-app.post('/api/ai/test', async (req, res) => {
+app.post('/api/ai/test', requireAuth, requireAdmin, async (req, res) => {
   try {
     const testKey = (req.body.openaiApiKey || getActiveOpenAIApiKey() || "").trim();
     const testModel = (req.body.openaiModel || getActiveOpenAIModel() || "gpt-4o-mini").trim();
@@ -6606,7 +6582,7 @@ async function initGrammarAiTable() {
 }
 
 // 1. AI Content Generation for Grammar (Full Lesson Suite: Overview, Formation, Usage, Notes, Memory Tip, Similar, Examples & Exercises)
-app.post('/api/grammar/ai-generate', async (req, res) => {
+app.post('/api/grammar/ai-generate', requireAuth, requireAdmin, async (req, res) => {
   try {
     const {
       grammarId,
@@ -6765,7 +6741,7 @@ app.post('/api/grammar/ai-generate', async (req, res) => {
 });
 
 // 2. Save confirmed AI content directly to the website system (Postgres DB + Local JSON File)
-app.post('/api/grammar/save-content', async (req, res) => {
+app.post('/api/grammar/save-content', requireAuth, requireAdmin, async (req, res) => {
   try {
     const {
       grammarId,
@@ -6964,7 +6940,7 @@ app.get('/api/grammar/ai-content/:grammarId', async (req, res) => {
 });
 
 // 5. Rollback to previously backed up version
-app.post('/api/grammar/rollback-content', async (req, res) => {
+app.post('/api/grammar/rollback-content', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { grammarId } = req.body;
     if (!grammarId) {
@@ -7024,10 +7000,11 @@ app.post('/api/grammar/rollback-content', async (req, res) => {
 });
 
 // 6. User Grammar Progress Tracking & Spaced Repetition (SM-2 Algorithm)
-app.post('/api/grammar/progress/record', async (req, res) => {
+app.post('/api/grammar/progress/record', requireAuth, async (req: any, res) => {
   try {
+    // Never trust a client-supplied uid: progress is always recorded for the verified caller.
+    const userUid: string = req.dbUser.uid;
     const {
-      userUid,
       grammarId,
       isCorrect,
       score,
@@ -7191,11 +7168,14 @@ app.post('/api/grammar/progress/record', async (req, res) => {
 });
 
 // 7. Get user's grammar progress map
-app.get('/api/grammar/progress/user/:userUid', async (req, res) => {
+app.get('/api/grammar/progress/user/:userUid', requireAuth, async (req: any, res) => {
   try {
     const { userUid } = req.params;
     if (!userUid) {
       return res.status(400).json({ success: false, error: "userUid is required" });
+    }
+    if (userUid !== req.dbUser.uid && req.dbUser.role !== 'admin') {
+      return res.status(403).json({ success: false, error: "Forbidden" });
     }
 
     const map: Record<string, any> = {};

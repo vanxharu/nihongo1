@@ -19,6 +19,7 @@ import { YouTubeListeningVideo, JLPTLevel, YouTubeListeningCategory } from '../.
 import { extractYouTubeVideoId } from '../../utils/youtubeUtils';
 import { DEFAULT_YOUTUBE_LISTENING_VIDEOS } from '../../data/youtubeListeningSeedData';
 import { AdminTimestampMappingModal } from './AdminTimestampMappingModal';
+import { authHeaders } from '../../utils/authHeaders';
 
 export const AdminListeningManager: React.FC = () => {
   const [videos, setVideos] = useState<YouTubeListeningVideo[]>(DEFAULT_YOUTUBE_LISTENING_VIDEOS);
@@ -196,7 +197,7 @@ export const AdminListeningManager: React.FC = () => {
     try {
       const res = await fetch('/api/listening/videos', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: await authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify(videoPayload)
       });
       const data = await res.json();
@@ -214,7 +215,7 @@ export const AdminListeningManager: React.FC = () => {
   const handleDeleteVideo = async (videoId: string) => {
     if (!confirm('Bạn có chắc chắn muốn xóa video này khỏi danh sách luyện nghe?')) return;
     try {
-      const res = await fetch(`/api/listening/videos/${videoId}`, { method: 'DELETE' });
+      const res = await fetch(`/api/listening/videos/${videoId}`, { method: 'DELETE', headers: await authHeaders() });
       const data = await res.json();
       if (data && data.success) {
         setVideos(prev => prev.filter(v => v.id !== videoId));

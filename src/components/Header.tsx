@@ -45,7 +45,7 @@ export default function Header({
   onTriggerCelebration,
   setCurrentTab
 }: HeaderProps) {
-  const { user, logout, quickLogin, authStatus, loading } = useAuth();
+  const { user, logout, authStatus, loading } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isAiConfigModalOpen, setIsAiConfigModalOpen] = useState(false);

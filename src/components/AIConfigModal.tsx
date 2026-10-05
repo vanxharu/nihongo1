@@ -19,6 +19,7 @@ import {
   Sliders
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { authHeaders } from '../utils/authHeaders';
 
 interface AIConfigModalProps {
   isOpen: boolean;
@@ -75,7 +76,7 @@ export default function AIConfigModal({ isOpen, onClose, onConfigSaved }: AIConf
   const fetchConfig = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/ai/config');
+      const res = await fetch('/api/ai/config', { headers: await authHeaders() });
       if (res.ok) {
         const data: ServerConfigResponse = await res.json();
         setConfig(data);
@@ -95,7 +96,7 @@ export default function AIConfigModal({ isOpen, onClose, onConfigSaved }: AIConf
     try {
       const res = await fetch('/api/ai/test', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: await authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           openaiApiKey: apiKeyInput.trim() || undefined,
           openaiModel: selectedModel,
@@ -140,7 +141,7 @@ export default function AIConfigModal({ isOpen, onClose, onConfigSaved }: AIConf
 
       const res = await fetch('/api/ai/config', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: await authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify(payload),
       });
 

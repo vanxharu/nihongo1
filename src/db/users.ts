@@ -16,11 +16,13 @@ export function getBootstrapAdminEmails(): Set<string> {
 
 export const ADMIN_EMAILS = getBootstrapAdminEmails();
 
-export async function getOrCreateUser(uid: string, email: string) {
+export async function getOrCreateUser(uid: string, email: string, emailVerified: boolean = false) {
   return await withDbRetry(async () => {
     const normalizedEmail = (email || '').toLowerCase().trim();
     const bootstrapAdmins = getBootstrapAdminEmails();
-    const isBootstrapAdmin = normalizedEmail ? bootstrapAdmins.has(normalizedEmail) : false;
+    // Only a verified email may be promoted to admin; otherwise anyone could
+    // register an admin address without owning it.
+    const isBootstrapAdmin = normalizedEmail && emailVerified ? bootstrapAdmins.has(normalizedEmail) : false;
 
     // 1. Check if user already exists by UID
     const existingByUid = await db.select().from(users).where(eq(users.uid, uid)).execute();
