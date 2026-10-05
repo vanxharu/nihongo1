@@ -273,6 +273,10 @@ export default function App() {
     } else if (user) {
       const newProfile = { ...userProfile, ...updatedFields };
       saveProfile(newProfile);
+    } else {
+      // Unauthenticated guest: persist to localStorage only
+      const newProfile = { ...userProfile, ...updatedFields };
+      saveProfile(newProfile);
     }
   };
 
