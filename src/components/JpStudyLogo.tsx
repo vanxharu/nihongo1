@@ -28,7 +28,7 @@ export function JapaneseHankoSeal({
 }) {
   return (
     <span 
-      className={`inline-flex items-center justify-center px-1.5 py-0.5 rounded-[5px] bg-[#DC2626] border border-red-400/80 shadow-xs select-none ${className}`}
+      className={`brand-hanko inline-flex items-center justify-center px-1.5 py-0.5 rounded-[5px] bg-[#DC2626] border border-red-400/80 shadow-xs select-none ${className}`}
       title="Con dấu chuẩn Nhật Bản"
     >
       <span className="text-[10px] font-black text-amber-100 font-jp tracking-wider leading-none">

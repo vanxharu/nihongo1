@@ -21,7 +21,7 @@
   left: 50%;
   top: 55%;
   font-style: normal;
-  color: #f9d084;
+  color: var(--ui-accent);
   font-size: 18px;
   animation: feedbackSpark 0.8s cubic-bezier(0.1, 0.7, 0.2, 1) both;
   transform: rotate(var(--angle)) translateY(-15px);
@@ -33,10 +33,10 @@
   width: 22px;
   height: 18px;
   border-radius: 5px;
-  background: #222b42;
+  background: var(--ui-surface);
   border: 1px solid #f4c57840;
   font-size: 14px;
-  color: #ddb279;
+  color: var(--ui-accent);
   cursor: grab;
   touch-action: none;
 }

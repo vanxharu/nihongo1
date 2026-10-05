@@ -3,6 +3,9 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
+import './brandTheme.css';
+import './brandUtilities.css';
+import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { getDefaultReminderSettings, syncRemindersWithServiceWorker } from './utils/notifications';
 import { BRAND_NAME } from './constants/brand';
@@ -17,10 +20,10 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AppErrorBoundary fallbackTitle="Trang học chưa tải được">
     <BrowserRouter>
-      <AuthProvider>
+      <ThemeProvider><AuthProvider>
         <App />
         <StartupReady />
-      </AuthProvider>
+      </AuthProvider></ThemeProvider>
     </BrowserRouter>
     </AppErrorBoundary>
   </StrictMode>,

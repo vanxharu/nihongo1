@@ -20,6 +20,7 @@ import UserAvatar from './UserAvatar';
 import VoiceSelectorModal from './VoiceSelectorModal';
 import { getPlayerLevelInfo } from '../utils/xpSystem';
 import { BRAND_NAME } from '../constants/brand';
+import ThemeToggle from './ThemeToggle';
 
 interface HeaderProps {
   currentTab: string;
@@ -256,6 +257,7 @@ export default function Header({
               <span className="text-amber-200 font-mono">Lv.{getPlayerLevelInfo(userProfile.xp || 0).level}</span>
             </button>
 
+            <ThemeToggle />
             {/* Sound FX Toggle */}
             <button
               type="button"
@@ -295,6 +297,7 @@ export default function Header({
 
       {/* Right side: Clean Stats, Audio Toggle, and User Profile Menu */}
       <div id="header-actions" className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <ThemeToggle />
         {/* Level & Streak Stats Pill */}
         <LevelProgressBar
           userProfile={userProfile}

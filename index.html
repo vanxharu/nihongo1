@@ -2,6 +2,16 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      // Apply the saved palette before first paint, including on offline launches.
+      (function () {
+        var theme;
+        try { theme = localStorage.getItem('nihongo-theme'); } catch (_) {}
+        if (theme !== 'light' && theme !== 'dark') theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>NihonGo! | Học tiếng Nhật</title>
     <meta name="description" content="Nền tảng học tiếng Nhật & Luyện thi JLPT thông minh theo chuẩn bản xứ, hỗ trợ làm bài tập viết tay bằng bút cảm ứng và chấm điểm nét chữ bằng AI, ôn tập từ vựng, ngữ pháp, Hán tự Kanji, thi thử và Chat AI." />

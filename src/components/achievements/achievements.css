@@ -1,7 +1,7 @@
 .shiba-collection {
   background:
-    radial-gradient(ellipse at 70% 0%, #57304b30, transparent 40%), #0b1020;
-  color: #f4eee6;
+    radial-gradient(ellipse at 70% 0%, color-mix(in srgb,var(--ui-soft) 19%,transparent), transparent 40%), var(--ui-canvas);
+  color: var(--ui-ink);
   padding: 28px 24px 100px;
   min-height: 100vh;
 }
@@ -21,19 +21,19 @@
   gap: 6px;
   align-items: center;
   font-size: 12px;
-  color: #b9aec7;
+  color: var(--ui-muted);
 }
 .collection-top > span {
   font-size: 9px;
   letter-spacing: 1.5px;
-  color: #a49cb2;
+  color: var(--ui-muted);
 }
 .collection-hero {
   display: flex;
   justify-content: space-between;
   gap: 25px;
   align-items: center;
-  background: linear-gradient(135deg, #262036, #171e30);
+  background: linear-gradient(135deg, var(--ui-surface), var(--ui-surface));
   border: 1px solid #edc08030;
   border-radius: 25px;
   padding: 32px;
@@ -42,7 +42,7 @@
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 1.5px;
-  color: #edc080;
+  color: var(--ui-accent);
 }
 .collection-hero h1 {
   font-size: clamp(26px, 4vw, 39px);
@@ -53,11 +53,11 @@
 }
 .collection-hero em {
   font-style: normal;
-  color: #f5c789;
+  color: var(--ui-accent);
 }
 .collection-hero p {
   font-size: 12px;
-  color: #b4acc3;
+  color: var(--ui-muted);
   line-height: 1.8;
   max-width: 440px;
 }
@@ -67,17 +67,17 @@
 }
 .collection-total strong {
   font-size: 30px;
-  color: #f5c789;
+  color: var(--ui-accent);
 }
 .collection-total small {
   font-size: 11px;
   margin-left: 8px;
-  color: #b4acc3;
+  color: var(--ui-muted);
   font-weight: 500;
 }
 .collection-meter {
   height: 5px;
-  background: #ffffff0c;
+  background: color-mix(in srgb,var(--ui-surface) 5%,transparent);
   border-radius: 6px;
   overflow: hidden;
   margin-top: 9px;
@@ -95,7 +95,7 @@
   text-align: left;
   align-items: center;
   gap: 20px;
-  background: #181f31;
+  background: var(--ui-surface);
   border: 1px solid #edc08025;
   padding: 16px 20px;
   border-radius: 17px;
@@ -108,7 +108,7 @@
 .collection-next small {
   font-size: 9px;
   letter-spacing: 1px;
-  color: #bca2df;
+  color: var(--ui-primary);
 }
 .collection-next b {
   display: block;
@@ -117,11 +117,11 @@
 }
 .collection-next p {
   font-size: 11px;
-  color: #a5a6bb;
+  color: var(--ui-muted);
   line-height: 1.7;
 }
 .collection-next > svg {
-  color: #eac082;
+  color: var(--ui-accent);
 }
 .collection-tools {
   display: flex;
@@ -134,37 +134,37 @@
   display: flex;
   gap: 9px;
   align-items: center;
-  border: 1px solid #ffffff14;
-  background: #141a2b;
+  border: 1px solid color-mix(in srgb,var(--ui-line) 8%,transparent);
+  background: var(--ui-surface);
   border-radius: 12px;
   padding: 11px 14px;
   flex: 1;
   max-width: 450px;
-  color: #a3a0b8;
+  color: var(--ui-muted);
 }
 .collection-tools input {
   outline: none;
   background: none;
   font-size: 12px;
   width: 100%;
-  color: #eee;
+  color: var(--ui-ink);
 }
 .collection-tools > div {
   display: flex;
   gap: 3px;
   padding: 4px;
-  background: #141a2b;
+  background: var(--ui-surface);
   border-radius: 10px;
 }
 .collection-tools button {
   font-size: 10px;
   padding: 8px 10px;
   border-radius: 7px;
-  color: #a5a2b6;
+  color: var(--ui-muted);
 }
 .collection-tools button[aria-pressed="true"] {
   background: #edc08020;
-  color: #f3ca91;
+  color: var(--ui-accent);
 }
 .collection-categories {
   display: flex;
@@ -176,28 +176,28 @@
 .collection-categories button {
   white-space: nowrap;
   font-size: 11px;
-  border: 1px solid #ffffff12;
+  border: 1px solid color-mix(in srgb,var(--ui-line) 7%,transparent);
   border-radius: 10px;
   padding: 10px 12px;
-  color: #acabbc;
+  color: var(--ui-muted);
   display: flex;
   gap: 8px;
   align-items: center;
 }
 .collection-categories small {
   font-size: 8px;
-  color: #8c8da3;
+  color: var(--ui-muted);
 }
 .collection-categories button[aria-pressed="true"] {
   border-color: #edc08070;
-  color: #f3ca91;
+  color: var(--ui-accent);
   background: #edc08008;
 }
 .collection-results {
   display: flex;
   justify-content: space-between;
   font-size: 10px;
-  color: #8e91a8;
+  color: var(--ui-muted);
   margin: 16px 0;
 }
 .collection-grid {
@@ -212,8 +212,8 @@
   gap: 17px;
   padding: 16px 10px;
   text-align: center;
-  border: 1px solid #ffffff0c;
-  background: linear-gradient(140deg, #1e2034, #121b2b);
+  border: 1px solid color-mix(in srgb,var(--ui-line) 5%,transparent);
+  background: linear-gradient(140deg, var(--ui-surface), var(--ui-surface));
   border-radius: 16px;
   min-height: 210px;
   transition:
@@ -226,12 +226,12 @@
 }
 .badge-earned {
   border-color: #edc08035;
-  background: linear-gradient(140deg, #2b2534, #151e30);
+  background: linear-gradient(140deg, var(--ui-surface), var(--ui-surface));
 }
 .badge-category {
   font-size: 8px;
   letter-spacing: 0.5px;
-  color: #a29bb7;
+  color: var(--ui-muted);
 }
 .mascot-achievement-card h2 {
   font-size: 11px;
@@ -245,14 +245,14 @@
   align-items: center;
   gap: 5px;
   font-size: 9px;
-  color: #9b9db2;
+  color: var(--ui-muted);
 }
 .badge-earned .badge-status {
-  color: #c2d9ac;
+  color: var(--ui-ink);
 }
 .collection-note {
   font-size: 11px;
-  color: #878da3;
+  color: var(--ui-muted);
   line-height: 1.8;
   margin: 28px 0;
 }
@@ -261,14 +261,14 @@
   flex-direction: column;
   align-items: center;
   padding: 40px;
-  color: #a6a2b5;
+  color: var(--ui-muted);
   font-size: 12px;
 }
 .badge-modal-backdrop {
   position: fixed;
   inset: 0;
   z-index: 110;
-  background: #050717ce;
+  background: color-mix(in srgb,var(--ui-canvas) 81%,transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -284,7 +284,7 @@
   text-align: center;
   border: 1px solid #edc08045;
   background:
-    radial-gradient(ellipse at 50% 30%, #50394b70, transparent 60%), #191f32;
+    radial-gradient(ellipse at 50% 30%, color-mix(in srgb,var(--ui-soft) 44%,transparent), transparent 60%), var(--ui-surface);
   max-width: 450px;
   width: 100%;
   padding: 35px 28px;
@@ -296,16 +296,16 @@
   position: absolute;
   right: 14px;
   top: 14px;
-  color: #b4aec3;
+  color: var(--ui-muted);
 }
 .badge-modal h2 {
   font-size: 21px;
   font-weight: 800;
-  color: #f1d4a8;
+  color: var(--ui-accent);
 }
 .badge-modal p {
   font-size: 12px;
-  color: #b5aec4;
+  color: var(--ui-muted);
   line-height: 1.8;
 }
 .badge-modal .collection-meter {
@@ -316,7 +316,7 @@
   padding: 12px;
   border-radius: 12px;
   background: #efc488;
-  color: #261e2d;
+  color: var(--ui-ink);
   font-size: 12px;
   font-weight: 800;
 }

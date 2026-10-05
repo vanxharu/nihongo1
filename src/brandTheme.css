@@ -1,0 +1,53 @@
+/* Sakura Cream (light) / Shiba Night (dark): shared semantic palette. */
+:root,[data-theme=light]{
+ --ui-canvas:#faf5ed;--ui-surface:#fffdf9;--ui-soft:#f2e9dc;--ui-raised:#fff5ee;
+ --ui-ink:#283149;--ui-muted:#726c67;--ui-line:#e9ddcc;
+ --ui-primary:#c94553;--ui-on-primary:#fffaf4;--ui-accent:#a46923;--ui-tint:#fae9e8;--ui-info:#44769a;
+ --ui-success:#367558;--ui-success-soft:#e5f1e8;--ui-error:#b0394b;--ui-error-soft:#fbe7ea;
+ --ui-hero:linear-gradient(115deg,#f9ead8,#fff5ee 65%,#f8e3e5);
+ --ui-shadow:0 8px 30px #62421f0a;
+}
+[data-theme=dark]{
+ --ui-canvas:#171d2d;--ui-surface:#222a3e;--ui-soft:#2b354a;--ui-raised:#30394f;
+ --ui-ink:#fff1df;--ui-muted:#b5b7c4;--ui-line:#384156;
+ --ui-primary:#f2b35e;--ui-on-primary:#292334;--ui-accent:#f2b35e;--ui-tint:#423342;--ui-info:#97c0df;
+ --ui-success:#9bceac;--ui-success-soft:#253d35;--ui-error:#f4a0ac;--ui-error-soft:#492e3b;
+ --ui-hero:linear-gradient(115deg,#303447,#292e43 65%,#46303f);
+ --ui-shadow:0 8px 30px #00000012;
+}
+html,body,#app-root-container{background:var(--ui-canvas)!important;color:var(--ui-ink)!important}
+html{accent-color:var(--ui-primary)}
+#app-root-container>aside,#app-header,#mobile-tablet-header,#mobile-bottom-navigation{background:var(--ui-surface)!important;background-image:none!important;border-color:var(--ui-line)!important;color:var(--ui-ink)!important;box-shadow:var(--ui-shadow)!important}
+#app-root-container input:not([type=checkbox]):not([type=radio]),#app-root-container textarea,#app-root-container select{background:var(--ui-surface)!important;color:var(--ui-ink)!important;border-color:var(--ui-line)!important}
+#app-root-container input::placeholder,#app-root-container textarea::placeholder{color:var(--ui-muted)!important}
+.brand-theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;flex-shrink:0;border:1px solid var(--ui-line);border-radius:10px;background:var(--ui-soft);color:var(--ui-accent);cursor:pointer}
+.brand-theme-toggle:hover{background:var(--ui-tint);color:var(--ui-primary)}
+.brand-theme-toggle:focus-visible{outline:3px solid var(--ui-primary);outline-offset:3px}
+#sidebar-nav :is(button,a).font-extrabold{background:var(--ui-tint)!important;border-color:var(--ui-line)!important;color:var(--ui-primary)!important;box-shadow:none!important}
+html[data-theme] #sidebar-nav :is(button,a).font-extrabold :is(span,svg){color:var(--ui-primary)!important;filter:none!important;text-shadow:none!important}
+#sidebar-nav button:not(.font-extrabold):hover{background:var(--ui-soft)!important}
+#app-root-container :focus-visible{outline-color:var(--ui-primary)}
+#app-main-view .jlpt-journey{--journey-ink:var(--ui-ink);--journey-muted:var(--ui-muted);--journey-gold:var(--ui-primary);--journey-border:var(--ui-line);background:var(--ui-canvas)}
+#app-main-view :is(.journey-hero,.study-hero,.shadowing-banner){background:var(--ui-hero);color:var(--ui-ink);border-color:var(--ui-line)}
+#app-main-view :is(.journey-primary,.trail-start-button,.classroom-primary,.exercise-submit,.exercise-day-actions>button:first-child){background:var(--ui-primary)!important;color:var(--ui-on-primary)!important;border-color:var(--ui-primary)!important}
+#app-main-view .roadmap-classroom{background:var(--ui-surface);border-color:var(--ui-line);color:var(--ui-ink)}
+#app-main-view .answer-selected{background:var(--ui-tint);border-color:var(--ui-primary)}
+#app-main-view .answer-correct{background:var(--ui-success-soft);color:var(--ui-success);border-color:var(--ui-success)}
+#app-main-view .answer-wrong{background:var(--ui-error-soft);color:var(--ui-error);border-color:var(--ui-error)}
+#app-main-view .shadowing-page{background-color:var(--ui-canvas);background-image:none}
+#app-main-view .karaoke-stage{background:var(--ui-surface);border-color:var(--ui-line)}
+#app-main-view .karaoke-char{background-image:linear-gradient(90deg,var(--ui-primary) 0%,var(--ui-primary) var(--karaoke-fill),var(--ui-ink) var(--karaoke-fill),var(--ui-ink) 100%)}
+#app-main-view .karaoke-sentence-active .karaoke-char{color:var(--ui-primary)}
+#app-main-view .shadowing-transcript .karaoke-char{background:none;color:var(--ui-ink)}
+#app-main-view .shadowing-transcript .karaoke-token-active .karaoke-char{color:var(--ui-primary)}
+html[data-theme] #app-root-container #shiba-banner-btn-chat{background:var(--ui-primary)!important;color:var(--ui-on-primary)!important;box-shadow:none}
+html[data-theme] #app-root-container #shiba-banner-btn-chat :is(span,svg){color:var(--ui-on-primary)!important}
+html[data-theme] #app-root-container #header-login-btn{color:var(--ui-on-primary)!important}
+html[data-theme] #app-root-container #header-level-progress-bar{background:var(--ui-soft)!important;border-color:var(--ui-line)!important}
+html[data-theme] #app-root-container .brand-hanko span{color:#fffaf4!important}
+#app-main-view :is(.study-exam,.study-reading){--study-accent:var(--ui-primary);--study-line:var(--ui-line);--study-muted:var(--ui-muted)}
+/* Exam paper has its own existing reading-mode switch; preserve that choice. */
+.jlpt-real-paper.theme-light{--ui-surface:#fffdf9;--ui-soft:#f2e9dc;--ui-ink:#283149;--ui-muted:#726c67;--ui-line:#e9ddcc}
+.jlpt-real-paper.theme-dark{--ui-surface:#222a3e;--ui-soft:#2b354a;--ui-ink:#fff1df;--ui-muted:#b5b7c4;--ui-line:#384156}
+::-webkit-scrollbar-track{background:var(--ui-canvas)}::-webkit-scrollbar-thumb{background:var(--ui-line)}
+@media(prefers-reduced-motion:reduce){#app-main-view .karaoke-char{background:none;color:var(--ui-ink)}#app-main-view .karaoke-char.is-spoken{color:var(--ui-primary)}}

@@ -172,25 +172,25 @@
 }
 
 .jlpt-real-paper.theme-light {
-  background-color: #ffffff !important;
-  color: #090d16 !important;
+  background-color: var(--ui-surface) !important;
+  color: var(--ui-ink) !important;
 }
 
 .jlpt-real-paper.theme-dark {
-  background-color: #1a222e !important;
-  color: #f8fafc !important;
+  background-color: var(--ui-surface) !important;
+  color: var(--ui-ink) !important;
 }
 
 .jlpt-real-paper.theme-light input, 
 .jlpt-real-paper.theme-light select, 
 .jlpt-real-paper.theme-light textarea {
-  color: #090d16 !important;
+  color: var(--ui-ink) !important;
 }
 
 .jlpt-real-paper.theme-dark input, 
 .jlpt-real-paper.theme-dark select, 
 .jlpt-real-paper.theme-dark textarea {
-  color: #f8fafc !important;
+  color: var(--ui-ink) !important;
 }
 
 html,
@@ -215,14 +215,14 @@ p, span, h1, h2, h3, h4, h5, h6, rt, ruby {
 }
 
 body {
-  background-color: #0b1120; /* Deep navy background matching native screenshots */
-  color: #e2e8f0;
+  background-color: var(--ui-canvas); /* Deep navy background matching native screenshots */
+  color: var(--ui-ink);
   font-family: var(--font-sans);
 }
 
 /* Custom dark grid background pattern */
 .grid-bg {
-  background-color: #1a1d24 !important;
+  background-color: var(--ui-surface) !important;
   background-size: 32px 32px;
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
@@ -235,14 +235,14 @@ body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #1a1d24;
+  background: var(--ui-surface);
 }
 ::-webkit-scrollbar-thumb {
-  background: #3a4454;
+  background: var(--ui-soft);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #4b5563;
+  background: var(--ui-soft);
 }
 
 /* Japanese Ruby Typography */
@@ -335,9 +335,9 @@ rt {
 /* Main Cards */
 #app-main-view .bg-white,
 #app-main-view .bg-brand-card {
-  background-color: #2b3440 !important;
-  border: 1px solid #3f4b5b !important;
-  color: #f3f4f6 !important;
+  background-color: var(--ui-surface) !important;
+  border: 1px solid var(--ui-line) !important;
+  color: var(--ui-ink) !important;
   border-radius: 12px !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
 }
@@ -346,35 +346,35 @@ rt {
 #app-main-view .bg-slate-50,
 #app-main-view .bg-slate-50\/50,
 #app-main-view .bg-slate-100 {
-  background-color: #1f2937 !important;
-  border: 1px solid #374151 !important;
-  color: #f3f4f6 !important;
+  background-color: var(--ui-surface) !important;
+  border: 1px solid var(--ui-line) !important;
+  color: var(--ui-ink) !important;
 }
 
 #app-main-view .hover\:bg-slate-50:hover,
 #app-main-view .hover\:bg-slate-100:hover,
 #app-main-view .hover\:bg-slate-50\/50:hover {
-  background-color: #374151 !important;
+  background-color: var(--ui-soft) !important;
 }
 
 /* Borders */
 #app-main-view .border-slate-100,
 #app-main-view .border-slate-200,
 #app-main-view .border-slate-300 {
-  border-color: #3f4b5b !important;
+  border-color: var(--ui-line) !important;
 }
 
 /* Text colors */
 #app-main-view .text-slate-950,
 #app-main-view .text-slate-900,
 #app-main-view .text-slate-800 {
-  color: #f8fafc !important;
+  color: var(--ui-ink) !important;
 }
 
 #app-main-view .text-slate-700,
 #app-main-view .text-slate-600,
 #app-main-view .text-slate-500 {
-  color: #94a3b8 !important;
+  color: var(--ui-muted) !important;
 }
 
 /* Inputs / Textareas */
@@ -383,15 +383,15 @@ rt {
 #app-main-view input[type="number"],
 #app-main-view select,
 #app-main-view textarea {
-  background-color: #1e293b !important;
-  border: 1px solid #475569 !important;
-  color: #f8fafc !important;
+  background-color: var(--ui-surface) !important;
+  border: 1px solid var(--ui-line) !important;
+  color: var(--ui-ink) !important;
   border-radius: 8px !important;
 }
 #app-main-view input:focus,
 #app-main-view select:focus,
 #app-main-view textarea:focus {
-  border-color: #6366f1 !important;
+  border-color: var(--ui-line) !important;
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
   outline: none !important;
 }
@@ -399,20 +399,20 @@ rt {
 /* Buttons */
 #app-main-view .bg-slate-900,
 #app-main-view .bg-slate-600 {
-  background-color: #334155 !important;
-  color: #ffffff !important;
-  border: 1px solid #475569 !important;
+  background-color: var(--ui-soft) !important;
+  color: var(--ui-ink) !important;
+  border: 1px solid var(--ui-line) !important;
 }
 #app-main-view .bg-slate-900:hover,
 #app-main-view .bg-slate-600:hover {
-  background-color: #475569 !important;
+  background-color: var(--ui-soft) !important;
 }
 
 /* Modals */
 #app-content-panel .fixed .bg-white {
-  background-color: #2b3440 !important;
-  border: 1px solid #3f4b5b !important;
-  color: #f3f4f6 !important;
+  background-color: var(--ui-surface) !important;
+  border: 1px solid var(--ui-line) !important;
+  color: var(--ui-ink) !important;
   border-radius: 16px !important;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
 }
@@ -421,21 +421,21 @@ rt {
 #app-main-view .bg-amber-50,
 #app-main-view .bg-amber-100,
 #app-main-view .bg-yellow-50 {
-  background-color: #452b0d !important;
+  background-color: var(--ui-surface) !important;
   border-color: #78350f !important;
-  color: #fcd34d !important;
+  color: var(--ui-accent) !important;
 }
 
 #app-main-view .text-amber-700,
 #app-main-view .text-amber-600 {
-  color: #fcd34d !important;
+  color: var(--ui-accent) !important;
 }
 
 /* Specific styling for study-explanation-card to be sleek and compact */
 #app-main-view .study-explanation-card {
-  background-color: #161d2a !important;
-  border: 1px solid #334155 !important;
-  color: #f1f5f9 !important;
+  background-color: var(--ui-surface) !important;
+  border: 1px solid var(--ui-line) !important;
+  color: var(--ui-ink) !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25) !important;
 }
 #app-main-view .study-explanation-card * {
@@ -445,20 +445,20 @@ rt {
 /* Primary/Blue buttons */
 #app-main-view .bg-blue-600,
 #app-main-view .bg-indigo-600 {
-  background-color: #3b82f6 !important;
-  color: #ffffff !important;
+  background-color: var(--ui-soft) !important;
+  color: var(--ui-ink) !important;
   border: none !important;
 }
 #app-main-view .bg-blue-600:hover,
 #app-main-view .bg-indigo-600:hover {
-  background-color: #2563eb !important;
+  background-color: var(--ui-soft) !important;
 }
 
 /* Green buttons */
 #app-main-view .bg-emerald-600,
 #app-main-view .bg-emerald-500 {
   background-color: #10b981 !important;
-  color: #ffffff !important;
+  color: var(--ui-ink) !important;
   border: none !important;
 }
 #app-main-view .bg-emerald-600:hover,
@@ -469,15 +469,15 @@ rt {
 /* Red / Error */
 #app-main-view .bg-rose-50,
 #app-main-view .bg-red-50 {
-  background-color: #4c1d95 !important; /* using a dark purplish red */
+  background-color: var(--ui-surface) !important; /* using a dark purplish red */
   background-color: #4c0519 !important;
   border-color: #881337 !important;
-  color: #fecdd3 !important;
+  color: var(--ui-ink) !important;
 }
 #app-main-view .text-rose-600,
 #app-main-view .text-rose-500,
 #app-main-view .text-red-500 {
-  color: #fda4af !important;
+  color: var(--ui-error) !important;
 }
 
 /* Furigana Ruby Typography */
@@ -496,18 +496,18 @@ ruby > rt {
   line-height: 1;
   font-weight: 700;
   text-align: center;
-  color: #fcd34d; /* amber-300 furigana matching vocabulary practice */
+  color: var(--ui-accent); /* amber-300 furigana matching vocabulary practice */
   user-select: none;
   margin-bottom: 2px;
   letter-spacing: 0.02em;
 }
 
 .chat-bubble-ai ruby > rt {
-  color: #fbbf24; /* amber-400 furigana */
+  color: var(--ui-accent); /* amber-400 furigana */
 }
 
 .dark .chat-bubble-ai ruby > rt,
 .chat-bubble-user ruby > rt {
-  color: #fcd34d; /* bright amber yellow on dark/gradient bubbles */
+  color: var(--ui-accent); /* bright amber yellow on dark/gradient bubbles */
 }
 

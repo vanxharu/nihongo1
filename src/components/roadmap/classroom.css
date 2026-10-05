@@ -1,31 +1,31 @@
-.roadmap-classroom{margin:28px 0;border:1px solid #3a5961;border-radius:24px;background:linear-gradient(145deg,#172c36,#111b2c);overflow:hidden;scroll-margin-top:90px;color:#edf3fb}
+.roadmap-classroom{margin:28px 0;border:1px solid var(--ui-line);border-radius:24px;background:linear-gradient(145deg,var(--ui-surface),var(--ui-surface));overflow:hidden;scroll-margin-top:90px;color:var(--ui-ink)}
 .roadmap-classroom header{display:flex;gap:18px;align-items:center;padding:24px}
-.roadmap-classroom header small{color:#8ce2cf;font-weight:700;letter-spacing:1px}
+.roadmap-classroom header small{color:var(--ui-success);font-weight:700;letter-spacing:1px}
 .roadmap-classroom h2{font-size:25px;margin:5px 0}
-.roadmap-classroom p{line-height:1.8;color:#b8cbdc}
-.roadmap-classroom button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border:1px solid #40536a;border-radius:12px;background:#1e2e43;color:#e6effa;cursor:pointer;font-size:14px;transition:background .18s,transform .18s}
-.roadmap-classroom button:hover:not(:disabled){background:#31445c;transform:translateY(-2px)}
+.roadmap-classroom p{line-height:1.8;color:var(--ui-ink)}
+.roadmap-classroom button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border:1px solid var(--ui-line);border-radius:12px;background:var(--ui-surface);color:var(--ui-ink);cursor:pointer;font-size:14px;transition:background .18s,transform .18s}
+.roadmap-classroom button:hover:not(:disabled){background:var(--ui-soft);transform:translateY(-2px)}
 .roadmap-classroom button:focus-visible{outline:3px solid #8ce2cf;outline-offset:3px}
 .roadmap-classroom button:disabled{opacity:.55;cursor:default}
-.roadmap-classroom .classroom-primary{background:#8ce2cf;color:#132b2c;border-color:#8ce2cf;font-weight:700}
+.roadmap-classroom .classroom-primary{background:#8ce2cf;color:var(--ui-ink);border-color:#8ce2cf;font-weight:700}
 .classroom-panel{padding:24px}
 .classroom-panel h3{font-size:22px;margin:14px 0 10px}
 .classroom-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border:0;padding:0;margin:20px 0}
 .classroom-options button{text-align:left;justify-content:space-between;min-height:62px;font-size:18px}
-.exercise-classroom .answer-selected{border-color:#8ce2cf;background:#244648}
-.exercise-classroom .answer-correct{background:#17483e;border-color:#8ce2cf;opacity:1}
-.exercise-classroom .answer-wrong{background:#542e39;border-color:#ff9fa8;opacity:1}
-.classroom-passage,.exercise-question{font-size:21px;white-space:pre-wrap;line-height:2;padding:24px;background:#101d30;border-radius:16px;overflow-wrap:anywhere}
-.exercise-question{color:#f0f5ff!important}
+.exercise-classroom .answer-selected{border-color:#8ce2cf;background:var(--ui-soft)}
+.exercise-classroom .answer-correct{background:var(--ui-soft);border-color:#8ce2cf;opacity:1}
+.exercise-classroom .answer-wrong{background:var(--ui-soft);border-color:#ff9fa8;opacity:1}
+.classroom-passage,.exercise-question{font-size:21px;white-space:pre-wrap;line-height:2;padding:24px;background:var(--ui-surface);border-radius:16px;overflow-wrap:anywhere}
+.exercise-question{color:var(--ui-ink)!important}
 .exercise-overview{padding:0 24px 18px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.exercise-overview progress{height:9px;width:200px;accent-color:#8ce2cf}
-.exercise-overview small{display:block;width:100%;color:#93aabc}
-.exercise-numbers{display:flex;flex-wrap:wrap;gap:8px;padding:18px 24px;border-block:1px solid #334354}
+.exercise-overview progress{height:9px;width:200px;accent-color:var(--ui-success)}
+.exercise-overview small{display:block;width:100%;color:var(--ui-muted)}
+.exercise-numbers{display:flex;flex-wrap:wrap;gap:8px;padding:18px 24px;border-block:1px solid var(--ui-line)}
 .exercise-numbers button{min-width:40px;padding:8px}
 .exercise-numbers button[aria-current=step]{outline:2px solid #ffcb81;outline-offset:2px}
-.exercise-heading{display:flex;justify-content:space-between;gap:12px;color:#8ce2cf;font-size:13px}
+.exercise-heading{display:flex;justify-content:space-between;gap:12px;color:var(--ui-success);font-size:13px}
 .exercise-instruction{font-size:14px}
-.exercise-listening{display:flex;gap:16px;padding:20px;border:1px solid #40536a;border-radius:16px;margin:16px 0}
+.exercise-listening{display:flex;gap:16px;padding:20px;border:1px solid var(--ui-line);border-radius:16px;margin:16px 0}
 .exercise-listening>div{min-width:0;flex:1}
 .exercise-listening audio{display:block;width:100%;margin-top:14px}
 .exercise-listening button{margin:10px 8px 0 0}
@@ -34,13 +34,13 @@
 .exercise-submit{width:100%;padding:16px!important}
 .exercise-explanation{padding:20px;border:1px solid;border-radius:16px;margin:16px 0}
 .exercise-explanation p{white-space:pre-wrap}
-.exercise-results{padding:22px;background:#101d30;border-radius:16px}
+.exercise-results{padding:22px;background:var(--ui-surface);border-radius:16px}
 .exercise-results>button{margin:8px 10px 0 0}
 .exercise-section-results{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.exercise-section-results p{display:flex;justify-content:space-between;gap:10px;padding:12px;background:#1b2b3e;border-radius:10px}
-.exercise-day-actions{padding:18px;background:#142436;border:1px solid #334354;border-radius:18px;margin-bottom:25px}
-.exercise-day-actions p{font-size:13px;color:#b8cbdc;margin-top:14px}
-.exercise-day-actions p button{display:inline-flex;align-items:center;gap:8px;color:#8ce2cf}
+.exercise-section-results p{display:flex;justify-content:space-between;gap:10px;padding:12px;background:var(--ui-surface);border-radius:10px}
+.exercise-day-actions{padding:18px;background:var(--ui-surface);border:1px solid var(--ui-line);border-radius:18px;margin-bottom:25px}
+.exercise-day-actions p{font-size:13px;color:var(--ui-ink);margin-top:14px}
+.exercise-day-actions p button{display:inline-flex;align-items:center;gap:8px;color:var(--ui-success)}
 .exercise-day-actions .journey-primary:disabled{opacity:.45;cursor:default}
 @media(max-width:700px){.classroom-panel{padding:16px}
 .roadmap-classroom header{padding:18px}
