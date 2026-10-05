@@ -178,7 +178,9 @@ export const JlptUnderlineArticle: React.FC<JlptUnderlineArticleProps> = ({
   // Grammar points list
   const grammarPoints = useMemo(() => {
     if (!usedGrammar || !Array.isArray(usedGrammar)) return [];
-    return usedGrammar.map(g => g.replace(/^[Nn][1-5]\s*[-–:]\s*/, '').trim()).filter(Boolean);
+    return usedGrammar.map(g => typeof g === 'string' ? g : g?.structure || g?.point || '')
+      .filter((g): g is string => typeof g === 'string')
+      .map(g => g.replace(/^[Nn][1-5]\s*[-–:]\s*/, '').trim()).filter(Boolean);
   }, [usedGrammar]);
 
   // Font size calculation matching responsive Japanese reading design
