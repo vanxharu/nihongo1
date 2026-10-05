@@ -3,35 +3,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useDialogFocus } from '../hooks/useDialogFocus';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-
-  BarChart3, 
-  Puzzle, 
-  MessagesSquare, 
-  BookOpen, 
-  ShieldCheck, 
-  X, 
-  Coins, 
-  Bookmark, 
-  Search, 
-  Radio, 
-  Sliders, 
-  ChevronDown, 
-  ChevronUp, 
+import {
+  BarChart3,
+  MessagesSquare,
+  BookOpen,
+  ShieldCheck,
+  X,
+  Coins,
+  Bookmark,
   Award,
-  PenTool,
   Route,
-  TrendingUp,
   Trophy,
   GraduationCap,
-  Headphones
+  Headphones,
+  Flame,
 } from 'lucide-react';
 import JpStudyLogo from './JpStudyLogo';
 import ShibaMascot from './mascot/ShibaMascot';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion } from 'motion/react';
 import { UserProfile } from '../types';
 import { SidebarWindowsInstallCard } from './PwaInstallPrompt';
 import { calculateUnlockedAchievements, TOTAL_ACHIEVEMENTS_COUNT } from '../data/achievementsData';
@@ -46,329 +38,205 @@ interface SidebarProps {
   userProfile?: UserProfile;
 }
 
+// ── Nav item definition ──────────────────────────────────────────────────────
+interface NavItem {
+  id: string;
+  path: string;
+  label: string;
+  icon: React.ElementType;
+  color: string;        // tailwind text color class
+  dot: string;          // active dot hex
+}
+
+const PRIMARY_NAV: NavItem[] = [
+  { id: 'shadowing',     path: '/shadowing',  label: 'Shadowing',          icon: Headphones,    color: 'text-amber-400',  dot: '#FBBF24' },
+  { id: 'practice',      path: '/',           label: 'Luyện tập',          icon: GraduationCap, color: 'text-sky-400',    dot: '#38BDF8' },
+  { id: 'exam',          path: '/jlpt',       label: 'Luyện thi JLPT',     icon: Award,         color: 'text-rose-400',   dot: '#FB7185' },
+  { id: 'roadmap',       path: '/lo-trinh',   label: 'Lộ trình',           icon: Route,         color: 'text-violet-400', dot: '#A78BFA' },
+  { id: 'grammar',       path: '/bunpo',      label: 'Lý thuyết',          icon: BookOpen,      color: 'text-teal-400',   dot: '#2DD4BF' },
+  { id: 'reading',       path: '/doc-hieu',   label: 'Đọc hiểu & Tin tức', icon: BookOpen,      color: 'text-indigo-400', dot: '#818CF8' },
+  { id: 'japanese-chat', path: '/chat-ai',    label: 'Kaiwa · Hội thoại',  icon: MessagesSquare,color: 'text-orange-400', dot: '#FB923C' },
+];
+
+const SECONDARY_NAV = (unlockedCount: number, isAdmin: boolean): NavItem[] => [
+  { id: 'notebook',     path: '/so-tay',     label: 'Sổ tay từ vựng',                             icon: Bookmark,   color: 'text-amber-400',  dot: '#FBBF24' },
+  { id: 'achievements', path: '/thanh-tich', label: `Thành tựu · ${unlockedCount}/${TOTAL_ACHIEVEMENTS_COUNT}`, icon: Trophy,     color: 'text-amber-400',  dot: '#FBBF24' },
+  { id: 'progress',     path: '/xep-hang',   label: 'Tiến độ & Thống kê',                         icon: BarChart3,  color: 'text-teal-400',   dot: '#2DD4BF' },
+  ...(isAdmin ? [{ id: 'admin', path: '/admin', label: 'Quản trị', icon: ShieldCheck, color: 'text-orange-400', dot: '#FB923C' }] : []),
+];
+
+// ── Single nav link ──────────────────────────────────────────────────────────
+function NavLink({ item, isActive, onClick }: { item: NavItem; isActive: boolean; onClick: () => void }) {
+  const Icon = item.icon;
+  return (
+    <Link
+      to={item.path}
+      onClick={onClick}
+      className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group ${
+        isActive
+          ? 'bg-white/[0.07] text-white'
+          : 'text-slate-500 hover:text-slate-200 hover:bg-white/[0.04]'
+      }`}
+    >
+      {/* coloured dot indicator on active */}
+      {isActive && (
+        <motion.span
+          layoutId="sidebar-dot"
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
+          style={{ background: item.dot }}
+          transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+        />
+      )}
+
+      <Icon
+        size={17}
+        className={`shrink-0 transition-colors ${isActive ? item.color : 'text-slate-600 group-hover:text-slate-400'}`}
+      />
+      <span className={`text-[13px] leading-none font-semibold truncate flex-1 ${isActive ? 'text-white' : ''}`}>
+        {item.label}
+      </span>
+    </Link>
+  );
+}
+
+// ── Sidebar ──────────────────────────────────────────────────────────────────
 export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, onClose, userProfile }: SidebarProps) {
   const location = useLocation();
   const drawerRef = useDialogFocus<HTMLElement>(isOpen, onClose);
 
-  // Collapsible toggle for secondary options
-  const isSecondaryActive = ['notebook', 'achievements', 'progress', 'admin'].includes(currentTab);
-  const [showMoreOptions, setShowMoreOptions] = useState<boolean>(isSecondaryActive);
+  const unlockedCount = calculateUnlockedAchievements(
+    userProfile?.uid ? userProfile : { ...userProfile, studyRoadmap: readGuestRoadmap() || undefined }
+  ).size;
 
-  const unlockedCount = calculateUnlockedAchievements(userProfile.uid ? userProfile : { ...userProfile, studyRoadmap: readGuestRoadmap() || undefined }).size;
+  const secondaryNav = SECONDARY_NAV(unlockedCount, userProfile?.role === 'admin');
 
-  // CHỨC NĂNG CHÍNH VỚI URL ROUTE CHUẨN
-  const primaryMenuItems = [
-    {
-      id: 'shadowing', path: '/shadowing', label: 'Shadowing · YouTube', icon: Headphones,
-      iconColor: 'text-amber-400',
-      activeBg: 'bg-amber-500/15 border-amber-400/60 text-amber-100',
-      activeIconBg: 'bg-amber-400/25 border border-amber-400/50',
-      dotColor: 'bg-amber-400'
-    },
-    { 
-      id: 'practice', 
-      path: '/',
-      label: 'Trung tâm Luyện tập', 
-      icon: GraduationCap, 
-      iconColor: 'text-cyan-400', 
-      activeBg: 'bg-gradient-to-r from-cyan-500/25 via-blue-500/15 to-transparent border-cyan-400/60 text-cyan-100 shadow-[0_0_18px_rgba(6,182,212,0.25)]',
-      activeIconBg: 'bg-cyan-400/25 border border-cyan-400/50 shadow-[0_0_10px_rgba(6,182,212,0.4)]',
-      dotColor: 'bg-cyan-400 shadow-[0_0_8px_#22D3EE]'
-    },
-    { 
-      id: 'exam', 
-      path: '/jlpt',
-      label: 'Luyện thi JLPT', 
-      icon: Award, 
-      iconColor: 'text-rose-400', 
-      activeBg: 'bg-gradient-to-r from-rose-500/25 via-pink-500/15 to-transparent border-rose-400/60 text-rose-100 shadow-[0_0_18px_rgba(244,63,94,0.25)]',
-      activeIconBg: 'bg-rose-400/25 border border-rose-400/50 shadow-[0_0_10px_rgba(244,63,94,0.4)]',
-      dotColor: 'bg-rose-400 shadow-[0_0_8px_#F43F5E]'
-    },
-    { 
-      id: 'roadmap', 
-      path: '/lo-trinh',
-      label: 'Lộ trình JLPT', 
-      icon: Route, 
-      iconColor: 'text-purple-400', 
-      activeBg: 'bg-gradient-to-r from-purple-500/25 via-indigo-500/15 to-transparent border-purple-400/60 text-purple-100 shadow-[0_0_18px_rgba(168,85,247,0.25)]',
-      activeIconBg: 'bg-purple-400/25 border border-purple-400/50 shadow-[0_0_10px_rgba(168,85,247,0.4)]',
-      dotColor: 'bg-purple-400 shadow-[0_0_8px_#C084FC]'
-    },
-    { 
-      id: 'grammar', 
-      path: '/bunpo',
-      label: 'Lý thuyết (Ngữ pháp, Từ vựng, Hán tự)', 
-      icon: BookOpen, 
-      iconColor: 'text-cyan-400', 
-      activeBg: 'bg-gradient-to-r from-cyan-500/25 via-teal-500/15 to-transparent border-cyan-400/60 text-cyan-100 shadow-[0_0_18px_rgba(6,182,212,0.25)]',
-      activeIconBg: 'bg-cyan-400/25 border border-cyan-400/50 shadow-[0_0_10px_rgba(6,182,212,0.4)]',
-      dotColor: 'bg-cyan-400 shadow-[0_0_8px_#22D3EE]'
-    },
-    { 
-      id: 'reading', 
-      path: '/doc-hieu',
-      label: 'Đọc hiểu & Tin tức', 
-      icon: BookOpen, 
-      iconColor: 'text-indigo-400', 
-      activeBg: 'bg-gradient-to-r from-indigo-500/25 via-purple-500/15 to-transparent border-indigo-400/60 text-indigo-100 shadow-[0_0_18px_rgba(99,102,241,0.25)]',
-      activeIconBg: 'bg-indigo-400/25 border border-indigo-400/50 shadow-[0_0_10px_rgba(99,102,241,0.4)]',
-      dotColor: 'bg-indigo-400 shadow-[0_0_8px_#818CF8]'
-    },
-    { 
-      id: 'japanese-chat', 
-      path: '/chat-ai',
-      label: 'Luyện thoại Kaiwa', 
-      icon: MessagesSquare, 
-      iconColor: 'text-amber-400', 
-      activeBg: 'bg-gradient-to-r from-amber-500/25 via-orange-500/15 to-transparent border-amber-400/60 text-amber-100 shadow-[0_0_18px_rgba(245,158,11,0.25)]',
-      activeIconBg: 'bg-amber-400/25 border border-amber-400/50 shadow-[0_0_10px_rgba(245,158,11,0.4)]',
-      dotColor: 'bg-amber-400 shadow-[0_0_8px_#F59E0B]'
-    }
-  ];
+  const isItemActive = (item: NavItem) =>
+    currentTab === item.id ||
+    (item.path === '/' ? location.pathname === '/' : location.pathname.startsWith(item.path));
 
-  // GÔM VÀO NÚT TÙY CHỌN & MỞ RỘNG (Sổ tay từ vựng, Tiến độ, Quản trị Admin)
-  const secondaryMenuItems = [
-    { 
-      id: 'notebook', 
-      path: '/so-tay',
-      label: 'Sổ tay từ vựng', 
-      icon: Bookmark, 
-      iconColor: 'text-amber-400', 
-      activeBg: 'bg-gradient-to-r from-amber-500/25 to-transparent border-amber-400/50 text-amber-100',
-      activeIconBg: 'bg-amber-400/20 border border-amber-400/40',
-      dotColor: 'bg-amber-400'
-    },
-    { 
-      id: 'achievements', 
-      path: '/thanh-tich',
-      label: `Thành tựu (${unlockedCount}/${TOTAL_ACHIEVEMENTS_COUNT})`, 
-      icon: Trophy, 
-      iconColor: 'text-amber-400', 
-      activeBg: 'bg-gradient-to-r from-amber-500/25 to-transparent border-amber-400/50 text-amber-100',
-      activeIconBg: 'bg-amber-400/20 border border-amber-400/40',
-      dotColor: 'bg-amber-400'
-    },
-    { 
-      id: 'progress', 
-      path: '/xep-hang',
-      label: 'Tiến độ & Thống kê', 
-      icon: BarChart3, 
-      iconColor: 'text-cyan-400', 
-      activeBg: 'bg-gradient-to-r from-cyan-500/25 to-transparent border-cyan-400/50 text-cyan-100',
-      activeIconBg: 'bg-cyan-400/20 border border-cyan-400/40',
-      dotColor: 'bg-cyan-400'
-    },
-    ...(userProfile?.role === 'admin' ? [{ 
-      id: 'admin', 
-      path: '/admin',
-      label: 'Quản trị Admin', 
-      icon: ShieldCheck, 
-      iconColor: 'text-orange-400',
-      activeBg: 'bg-gradient-to-r from-orange-500/25 to-transparent border-orange-400/50 text-orange-100',
-      activeIconBg: 'bg-orange-400/20 border border-orange-400/40',
-      dotColor: 'bg-orange-400'
-    }] : []),
-  ];
+  const streak = userProfile?.streak || 0;
 
   return (
     <>
-      {/* Mobile & Tablet Backdrop Overlay */}
+      {/* Backdrop */}
       {isOpen && (
-        <div 
-          className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 xl:hidden"
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-[2px] z-50 xl:hidden"
           onClick={onClose}
         />
       )}
 
-      <aside 
+      <aside
         ref={drawerRef}
         role={isOpen ? 'dialog' : 'complementary'}
         aria-modal={isOpen || undefined}
         aria-label="Menu điều hướng"
-        id="app-sidebar" 
-        className={`fixed inset-y-0 left-0 z-50 xl:static xl:flex flex-col w-[280px] xl:w-64 max-w-[85vw] bg-gradient-to-b from-[#0F172A] via-[#16192E] to-[#0D111E] border-r border-rose-900/30 shadow-2xl h-screen shrink-0 select-none transition-transform duration-300 ${
+        id="app-sidebar"
+        className={`fixed inset-y-0 left-0 z-50 xl:static xl:flex flex-col w-64 max-w-[85vw] h-screen shrink-0 select-none transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'
         }`}
+        style={{ background: '#0C0E14', borderRight: '1px solid rgba(255,255,255,0.06)' }}
       >
-        {/* Brand Logo & Close Action */}
-        <div 
-          id="sidebar-brand" 
-          className="h-16 flex items-center justify-between px-3.5 sm:px-4 gap-2 bg-[#13172E]/90 backdrop-blur-md border-b border-rose-500/20"
-        >
-          <Link
-            to="/"
-            onClick={onClose}
-            className="flex items-center gap-2 cursor-pointer outline-hidden"
-            title="Về Trang chủ NihonGo!"
-          >
+
+        {/* ── Brand header ── */}
+        <div className="flex items-center justify-between px-4 h-14 shrink-0"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+          <Link to="/" onClick={onClose} className="outline-none">
             <JpStudyLogo size="md" dark={true} showSubtitle={true} />
           </Link>
-
-          {/* Close button for mobile & tablet view */}
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              onClose();
-            }}
-            className="p-1.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl xl:hidden transition-colors cursor-pointer border border-rose-500/30 shrink-0"
-            title="Đóng menu"
+          <button
+            onClick={onClose}
+            className="xl:hidden p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/08 transition-colors cursor-pointer"
           >
-            <X className="w-4 h-4" />
+            <X size={16} />
           </button>
         </div>
 
-        {/* Navigation Menu */}
-        <nav id="sidebar-nav" className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">
-          {/* 9 Chức năng chính */}
-          {primaryMenuItems.map((item) => {
-            const IconComponent = item.icon;
-            const isActive = currentTab === item.id || (item.path === '/' ? location.pathname === '/' : location.pathname.startsWith(item.path));
+        {/* ── Nav ── */}
+        <nav className="flex-1 overflow-y-auto px-2.5 py-3 space-y-0.5">
 
-            return (
-              <Link
-                key={item.id}
-                id={`sidebar-tab-${item.id}`}
-                to={item.path}
-                onClick={() => {
-                  setCurrentTab(item.id);
-                  onClose();
-                }}
-                className={`w-full flex items-center px-3 py-2 rounded-2xl transition-all duration-200 group text-left relative border ${
-                  isActive 
-                    ? item.activeBg + ' font-extrabold' 
-                    : 'text-slate-400 border-transparent hover:bg-slate-800/50 hover:text-slate-200 hover:border-slate-800/60 font-semibold'
-                }`}
-              >
-                <div className={`p-1.5 rounded-xl mr-2.5 transition-all duration-200 group-hover:scale-105 ${
-                  isActive 
-                    ? item.activeIconBg 
-                    : 'bg-slate-800/60 group-hover:bg-slate-800 border border-slate-700/40'
-                }`}>
-                  <IconComponent 
-                    className={`w-4 h-4 ${isActive ? item.iconColor : 'text-slate-400 group-hover:' + item.iconColor}`} 
-                  />
-                </div>
-                <span className={`text-xs tracking-tight flex-1 ${isActive ? 'text-white font-bold drop-shadow-[0_0_4px_rgba(255,255,255,0.4)]' : ''}`}>
-                  {item.label}
-                </span>
+          {PRIMARY_NAV.map(item => (
+            <NavLink
+              key={item.id}
+              item={item}
+              isActive={isItemActive(item)}
+              onClick={() => { setCurrentTab(item.id); onClose(); }}
+            />
+          ))}
 
-                {isActive && (
-                  <motion.div
-                    layoutId="activeIndicator"
-                    className={`absolute right-3 w-2 h-2 rounded-full ${item.dotColor}`}
-                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                  />
-                )}
-              </Link>
-            );
-          })}
+          {/* Divider */}
+          <div className="my-2 mx-1" style={{ height: 1, background: 'rgba(255,255,255,0.06)' }} />
 
-          {/* Grouped "Nút Tùy chọn & Mở rộng" */}
-          <div className="pt-2 border-t border-slate-800/60 mt-2">
-            <button
-              id="sidebar-toggle-more-options"
-              type="button"
-              onClick={() => setShowMoreOptions(!showMoreOptions)}
-              className="w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 text-xs font-bold transition-all"
-            >
-              <span className="flex items-center gap-1.5">
-                <Sliders className="w-3.5 h-3.5 text-slate-400" />
-                <span>Tùy chọn & Mở rộng</span>
-              </span>
-              {showMoreOptions ? (
-                <ChevronUp className="w-3.5 h-3.5 text-slate-500" />
-              ) : (
-                <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
-              )}
-            </button>
-
-            {/* Collapsed Secondary Options List */}
-            <AnimatePresence>
-              {showMoreOptions && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="space-y-1 pt-1 overflow-hidden"
-                >
-                  {secondaryMenuItems.map((item) => {
-                    const IconComponent = item.icon;
-                    const isActive = currentTab === item.id || (item.path === '/' ? location.pathname === '/' : location.pathname.startsWith(item.path));
-                    return (
-                      <Link
-                        key={item.id}
-                        id={`sidebar-subtab-${item.id}`}
-                        to={item.path}
-                        onClick={() => {
-                          setCurrentTab(item.id);
-                          onClose();
-                        }}
-                        className={`w-full flex items-center px-3 py-1.5 rounded-xl transition-all text-left text-xs ${
-                          isActive
-                            ? 'bg-slate-800 text-white font-bold border border-slate-700'
-                            : 'text-slate-400 hover:text-slate-300 hover:bg-slate-800/30'
-                        }`}
-                      >
-                        <IconComponent className={`w-3.5 h-3.5 mr-2 ${item.iconColor}`} />
-                        <span className="truncate">{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          {secondaryNav.map(item => (
+            <NavLink
+              key={item.id}
+              item={item}
+              isActive={isItemActive(item)}
+              onClick={() => { setCurrentTab(item.id); onClose(); }}
+            />
+          ))}
         </nav>
 
-        {/* Mascot Nihon Shiba Companion Card */}
-        <div className="px-3 pb-2">
-          <Link 
+        {/* ── Shiba chat card ── */}
+        <div className="px-2.5 pb-2">
+          <Link
             to="/chat-ai"
-            onClick={() => {
-              setCurrentTab('japanese-chat');
-              onClose();
-            }}
-            className="block group relative p-3 rounded-2xl bg-gradient-to-br from-[#1b223c] via-[#14192b] to-[#0f1424] border border-amber-500/30 hover:border-amber-500/70 transition-all cursor-pointer shadow-lg active:scale-[0.98]"
-            title="Nhấn để trò chuyện cùng Nihon Shiba!"
+            onClick={() => { setCurrentTab('japanese-chat'); onClose(); }}
+            className="flex items-center gap-3 p-3 rounded-xl transition-all cursor-pointer group"
+            style={{ background: 'rgba(251,191,36,0.07)', border: '1px solid rgba(251,191,36,0.15)' }}
           >
-            <div className="flex items-center gap-2.5">
-              <div className="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/40 flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition-transform">
-                <ShibaMascot pose="waving" size={38} animated={false} />
+            <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 flex items-center justify-center"
+              style={{ background: 'rgba(251,191,36,0.12)' }}>
+              <ShibaMascot pose="waving" size={32} animated={false} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[12px] font-bold text-white">Nihon Shiba</span>
+                <span className="text-[9px] font-bold text-amber-400 px-1 py-px rounded"
+                  style={{ background: 'rgba(251,191,36,0.15)' }}>AI</span>
               </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-1">
-                  <span className="text-xs font-black text-white group-hover:text-amber-300 transition-colors">
-                    Nihon Shiba
-                  </span>
-                  <span className="text-[9px] font-bold text-amber-400 bg-amber-500/15 border border-amber-500/30 px-1 py-0.2 rounded-full">
-                    AI
-                  </span>
-                </div>
-                <p className="text-[10px] text-slate-300 truncate mt-0.5">
-                  "Hôm nay cùng học tiếng Nhật nhé! 🌸"
-                </p>
-              </div>
+              <p className="text-[11px] text-slate-400 truncate mt-px group-hover:text-slate-300">
+                Hôm nay cùng học tiếng Nhật nhé!
+              </p>
             </div>
           </Link>
         </div>
 
-        {/* Windows App Install card */}
+        {/* Windows install card */}
         <SidebarWindowsInstallCard />
 
-        {/* Sidebar Footer with coin and level progress */}
-        <div id="sidebar-footer" className="p-3 bg-[#13172E]/90 backdrop-blur-md border-t border-rose-500/20">
-          <div className="flex items-center justify-between text-xs bg-[#0F172A] border border-amber-500/30 p-2 rounded-2xl">
+        {/* ── Footer ── */}
+        <div className="px-2.5 pb-3 pt-2 shrink-0"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex items-center justify-between px-3 py-2 rounded-xl"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+
+            {/* Coin */}
             <div className="flex items-center gap-1.5">
-              <Coins className="w-4 h-4 text-amber-400" />
-              <span className="font-mono font-black text-amber-300">{userCoins.toLocaleString()}</span>
-              <span className="text-slate-400 font-bold text-[11px]">Yên</span>
+              <Coins size={14} className="text-amber-400" />
+              <span className="text-[13px] font-bold text-amber-300">{userCoins.toLocaleString()}</span>
+              <span className="text-[11px] text-slate-500">Yên</span>
             </div>
-            <div className="text-[10px] text-rose-300 bg-rose-500/20 px-2 py-0.5 rounded-xl border border-rose-400/40 font-mono font-black">
-              JLPT {userProfile?.targetLevel || 'N4'}
+
+            <div className="flex items-center gap-2">
+              {/* Streak */}
+              {streak > 0 && (
+                <div className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold text-amber-300"
+                  style={{ background: 'rgba(251,191,36,0.12)' }}>
+                  <Flame size={11} className="text-amber-400" />
+                  {streak}
+                </div>
+              )}
+
+              {/* Level */}
+              <div className="px-2 py-0.5 rounded-full text-[11px] font-bold text-violet-300"
+                style={{ background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.25)' }}>
+                {userProfile?.targetLevel || 'N4'}
+              </div>
             </div>
           </div>
         </div>
+
       </aside>
     </>
   );
