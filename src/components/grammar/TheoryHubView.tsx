@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { JLPTLevel, UserProfile, GrammarItem } from '../../types';
-import { Search, ChevronDown, ChevronRight, Play, BookOpen, PenTool, Layers, Check, X } from 'lucide-react';
+import { Search, ChevronRight, Play, BookOpen, PenTool, Layers, X, Flame, Zap } from 'lucide-react';
 import ShibaStudyMascot from './ShibaStudyMascot';
 
 interface TheoryHubViewProps {
@@ -18,7 +18,6 @@ interface TheoryHubViewProps {
 
 const JLPT_LEVELS: JLPTLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
 
-// Standard curriculum totals for JLPT levels
 const BENCHMARK_TOTALS: Record<string, { vocab: number; grammar: number; kanji: number }> = {
   N5: { vocab: 511, grammar: 120, kanji: 103 },
   N4: { vocab: 511, grammar: 539, kanji: 167 },
@@ -26,6 +25,40 @@ const BENCHMARK_TOTALS: Record<string, { vocab: number; grammar: number; kanji: 
   N2: { vocab: 1200, grammar: 150, kanji: 367 },
   N1: { vocab: 2000, grammar: 180, kanji: 1130 },
 };
+
+// Subject card config
+const SUBJECTS = [
+  {
+    key: 'vocab',
+    label: 'Từ vựng',
+    sub: 'Flashcard & ôn theo ngữ cảnh',
+    Icon: Layers,
+    accent: '#3B82F6',      // blue
+    bg: 'rgba(59,130,246,0.10)',
+    border: 'rgba(59,130,246,0.22)',
+    glow: 'rgba(59,130,246,0.18)',
+  },
+  {
+    key: 'grammar',
+    label: 'Ngữ pháp',
+    sub: 'Cấu trúc câu & ví dụ thực tế',
+    Icon: BookOpen,
+    accent: '#A855F7',      // purple
+    bg: 'rgba(168,85,247,0.10)',
+    border: 'rgba(168,85,247,0.22)',
+    glow: 'rgba(168,85,247,0.18)',
+  },
+  {
+    key: 'kanji',
+    label: 'Hán tự',
+    sub: 'Nhận diện & tra nghĩa nhanh',
+    Icon: PenTool,
+    accent: '#14B8A6',      // teal
+    bg: 'rgba(20,184,166,0.10)',
+    border: 'rgba(20,184,166,0.22)',
+    glow: 'rgba(20,184,166,0.18)',
+  },
+] as const;
 
 export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
   userProfile,
@@ -36,20 +69,14 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
   onOpenKanji,
   onContinueStudy,
   grammars,
-  onSelectGrammarItem
+  onSelectGrammarItem,
 }) => {
-  const [isLevelMenuOpen, setIsLevelMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setIsLevelMenuOpen(false);
-      }
       if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
         setIsSearchFocused(false);
       }
@@ -58,10 +85,8 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, []);
 
-  // Compute completed counts for selectedLevel
   const benchmarks = BENCHMARK_TOTALS[selectedLevel] || BENCHMARK_TOTALS.N4;
 
-  // Completed Vocab for selected level
   const vocabCompleted = useMemo(() => {
     const statusMap = userProfile.vocabStatus || {};
     let count = 0;
@@ -75,13 +100,11 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
     return count;
   }, [userProfile.vocabStatus, selectedLevel]);
 
-  // Completed Grammar for selected level
   const grammarCompleted = useMemo(() => {
     const statusMap = userProfile.grammarStatus || {};
     let count = 0;
     const levelGrammars = grammars.filter(g => g.level === selectedLevel);
     const ids = new Set(levelGrammars.map(g => g.id));
-    
     Object.entries(statusMap).forEach(([id, st]) => {
       if (ids.has(id) || (ids.size === 0 && id.includes(selectedLevel))) {
         if (st && (st === true || (typeof st === 'object' && ((st as any).correctCount > 0 || (st as any).state === 'learned' || (st as any).state === 'mastered')))) {
@@ -92,7 +115,6 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
     return count;
   }, [userProfile.grammarStatus, grammars, selectedLevel]);
 
-  // Completed Kanji for selected level
   const kanjiCompleted = useMemo(() => {
     const statusMap = userProfile.kanjiStatus || {};
     let count = 0;
@@ -106,13 +128,34 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
     return count;
   }, [userProfile.kanjiStatus, selectedLevel]);
 
-  // Filtered search results
+  const completedMap: Record<string, number> = {
+    vocab: vocabCompleted,
+    grammar: grammarCompleted,
+    kanji: kanjiCompleted,
+  };
+  const totalMap: Record<string, number> = {
+    vocab: benchmarks.vocab,
+    grammar: benchmarks.grammar,
+    kanji: benchmarks.kanji,
+  };
+
+  const subjectHandlers: Record<string, () => void> = {
+    vocab: onOpenVocab,
+    grammar: onOpenGrammar,
+    kanji: onOpenKanji,
+  };
+
+  const continueLabel = useMemo(() => {
+    if (selectedLevel === 'N4') return `${selectedLevel} · Bài 1 · Từ vựng`;
+    if (selectedLevel === 'N5') return `${selectedLevel} · Bài 1 · Từ vựng`;
+    return `${selectedLevel} · Bài 1 · Lý thuyết`;
+  }, [selectedLevel]);
+
   const searchResults = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     if (!q) return [];
-
     return grammars
-      .filter(g => 
+      .filter(g =>
         g.structure.toLowerCase().includes(q) ||
         g.meaning.toLowerCase().includes(q) ||
         (g.lessonName && g.lessonName.toLowerCase().includes(q))
@@ -120,114 +163,116 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
       .slice(0, 8);
   }, [searchQuery, grammars]);
 
-  // Next unit for "HỌC TIẾP" card
-  const continueLabel = useMemo(() => {
-    if (selectedLevel === 'N4') return 'N4 · Bài 1 · Từ vựng';
-    if (selectedLevel === 'N5') return 'N5 · Bài 1 · Từ vựng';
-    return `${selectedLevel} · Bài 1 · Lý thuyết`;
-  }, [selectedLevel]);
+  const streak = userProfile.streak || 0;
+  const totalDone = vocabCompleted + grammarCompleted + kanjiCompleted;
+  const totalAll = benchmarks.vocab + benchmarks.grammar + benchmarks.kanji;
+  const overallPct = totalAll ? Math.round((totalDone / totalAll) * 100) : 0;
 
   return (
-    <div className="w-full max-w-xl mx-auto px-4 sm:px-6 pt-3 pb-24 font-sans text-slate-100 select-none animate-fadeIn">
-      {/* Top Header: Title + Level Selector */}
-      <div className="flex items-center justify-between gap-4 mb-4">
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-          Lý thuyết
-        </h1>
+    <div style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
+      className="w-full max-w-xl mx-auto px-4 pt-4 pb-28 text-slate-100 select-none">
 
-        {/* Purple JLPT Level Dropdown Pill */}
-        <div className="relative" ref={dropdownRef}>
-          <button
-            type="button"
-            id="theory-jlpt-level-btn"
-            onClick={() => setIsLevelMenuOpen(prev => !prev)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#7C4DFF] hover:bg-[#6D3DF5] active:scale-95 text-white font-bold text-xs sm:text-sm rounded-full shadow-[0_2px_8px_rgba(124,77,255,0.4)] transition-all cursor-pointer"
-          >
-            <span>JLPT {selectedLevel}</span>
-            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isLevelMenuOpen ? 'rotate-180' : ''}`} />
-          </button>
+      {/* ── Level pills ── */}
+      <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-0.5 no-scrollbar">
+        {JLPT_LEVELS.map(lvl => {
+          const active = lvl === selectedLevel;
+          return (
+            <button
+              key={lvl}
+              type="button"
+              onClick={() => onChangeLevel(lvl)}
+              style={active ? {
+                background: 'linear-gradient(135deg,#6366F1,#8B5CF6)',
+                boxShadow: '0 2px 12px rgba(99,102,241,0.45)',
+              } : {
+                background: 'rgba(255,255,255,0.05)',
+                border: '1px solid rgba(255,255,255,0.09)',
+              }}
+              className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                active ? 'text-white' : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              {lvl}
+            </button>
+          );
+        })}
 
-          {/* Level Dropdown Menu */}
-          {isLevelMenuOpen && (
-            <div className="absolute right-0 mt-2 w-40 bg-[#162032] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden z-50 py-1 animate-in fade-in zoom-in-95 duration-150">
-              <div className="px-3 py-1.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-700/50">
-                Chọn cấp độ JLPT
-              </div>
-              {JLPT_LEVELS.map(lvl => (
-                <button
-                  key={lvl}
-                  type="button"
-                  onClick={() => {
-                    onChangeLevel(lvl);
-                    setIsLevelMenuOpen(false);
-                  }}
-                  className={`w-full flex items-center justify-between px-3.5 py-2 text-sm font-bold text-left transition-colors cursor-pointer ${
-                    selectedLevel === lvl
-                      ? 'bg-[#7C4DFF]/20 text-[#A78BFA]'
-                      : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
-                  }`}
-                >
-                  <span>JLPT {lvl}</span>
-                  {selectedLevel === lvl && <Check className="w-4 h-4 text-[#A78BFA]" />}
-                </button>
-              ))}
-            </div>
-          )}
+        {/* streak chip — right side */}
+        {streak > 0 && (
+          <div className="ml-auto shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-amber-300"
+            style={{ background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.2)' }}>
+            <Flame size={12} className="text-amber-400" />
+            {streak}
+          </div>
+        )}
+      </div>
+
+      {/* ── Overall progress bar ── */}
+      <div className="mb-5">
+        <div className="flex items-end justify-between mb-1.5">
+          <span className="text-[11px] text-slate-400 font-medium">Tổng tiến độ {selectedLevel}</span>
+          <span className="text-[11px] font-bold text-slate-300">{overallPct}%</span>
+        </div>
+        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
+          <div
+            className="h-full rounded-full transition-all duration-700"
+            style={{
+              width: `${overallPct}%`,
+              background: 'linear-gradient(90deg,#6366F1,#A855F7,#14B8A6)',
+            }}
+          />
         </div>
       </div>
 
-      {/* Search Bar */}
+      {/* ── Search bar ── */}
       <div className="relative mb-5" ref={searchContainerRef}>
-        <div className="flex items-center gap-2.5 px-3.5 py-3 bg-[#131b2a] border border-slate-800 rounded-2xl shadow-inner focus-within:border-sky-500/60 focus-within:ring-1 focus-within:ring-sky-500/40 transition-all">
-          <Search className="w-5 h-5 text-slate-400 shrink-0" />
+        <div
+          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl transition-all"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            border: isSearchFocused
+              ? '1px solid rgba(99,102,241,0.55)'
+              : '1px solid rgba(255,255,255,0.08)',
+            boxShadow: isSearchFocused ? '0 0 0 3px rgba(99,102,241,0.12)' : 'none',
+          }}
+        >
+          <Search size={16} className="text-slate-400 shrink-0" />
           <input
             type="text"
-            id="theory-search-input"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={e => setSearchQuery(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
-            placeholder="Tìm kanji, từ vựng hoặc ngữ pháp..."
-            className="w-full bg-transparent text-sm sm:text-base text-white placeholder-slate-400 focus:outline-none"
+            placeholder="Tìm ngữ pháp, từ vựng, kanji…"
+            className="w-full bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none"
           />
           {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="text-slate-400 hover:text-slate-200 p-1 rounded-full cursor-pointer"
-            >
-              <X className="w-4 h-4" />
+            <button type="button" onClick={() => setSearchQuery('')}
+              className="text-slate-500 hover:text-slate-300 transition-colors cursor-pointer">
+              <X size={14} />
             </button>
           )}
         </div>
 
-        {/* Quick Search Popover */}
+        {/* Search dropdown */}
         {isSearchFocused && searchQuery.trim().length > 0 && (
-          <div className="absolute left-0 right-0 top-full mt-2 bg-[#162032] border border-slate-700/80 rounded-2xl shadow-2xl max-h-72 overflow-y-auto z-50 p-2 animate-fadeIn">
+          <div className="absolute left-0 right-0 top-full mt-2 rounded-2xl shadow-2xl max-h-64 overflow-y-auto z-50 p-2"
+            style={{ background: '#141e30', border: '1px solid rgba(255,255,255,0.1)' }}>
             {searchResults.length === 0 ? (
-              <div className="py-4 text-center text-xs text-slate-400">
-                Không tìm thấy cấu trúc ngữ pháp phù hợp với &quot;{searchQuery}&quot;
-              </div>
+              <p className="py-5 text-center text-xs text-slate-500">
+                Không tìm thấy kết quả cho &quot;{searchQuery}&quot;
+              </p>
             ) : (
-              <div className="space-y-1">
-                <div className="px-2 py-1 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  Kết quả ngữ pháp ({searchResults.length})
-                </div>
-                {searchResults.map((g) => (
-                  <button
-                    key={g.id}
-                    type="button"
-                    onClick={() => {
-                      if (onSelectGrammarItem) onSelectGrammarItem(g);
-                      setIsSearchFocused(false);
-                      setSearchQuery('');
-                    }}
-                    className="w-full text-left p-2.5 hover:bg-slate-800/80 rounded-xl transition-colors cursor-pointer flex items-center justify-between"
-                  >
-                    <div>
-                      <div className="text-sm font-bold text-sky-400">{g.structure}</div>
-                      <div className="text-xs text-slate-300 line-clamp-1">{g.meaning}</div>
+              <div className="space-y-0.5">
+                {searchResults.map(g => (
+                  <button key={g.id} type="button"
+                    onClick={() => { onSelectGrammarItem?.(g); setIsSearchFocused(false); setSearchQuery(''); }}
+                    className="w-full text-left px-3 py-2.5 hover:bg-white/5 rounded-xl transition-colors cursor-pointer flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-sm font-semibold text-violet-400 truncate">{g.structure}</div>
+                      <div className="text-xs text-slate-400 truncate">{g.meaning}</div>
                     </div>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md shrink-0"
+                      style={{ background: 'rgba(168,85,247,0.15)', color: '#C084FC' }}>
                       {g.level}
                     </span>
                   </button>
@@ -238,170 +283,100 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
         )}
       </div>
 
-      {/* Card "HỌC TIẾP" */}
-      <div 
-        id="theory-continue-card"
+      {/* ── Continue card ── */}
+      <button
+        type="button"
         onClick={onContinueStudy}
-        className="relative bg-[#131d2e] hover:bg-[#182438] active:scale-[0.99] border border-slate-800/90 rounded-2xl p-4 mb-5 flex items-center justify-between shadow-lg cursor-pointer transition-all group"
+        className="w-full mb-5 cursor-pointer group"
       >
-        <div className="flex items-center gap-3.5">
-          {/* Shiba Study Mascot */}
-          <div className="relative shrink-0 group-hover:scale-105 transition-transform">
-            <ShibaStudyMascot size={54} />
+        <div
+          className="relative rounded-2xl p-4 flex items-center gap-4 overflow-hidden transition-all"
+          style={{
+            background: 'linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.12) 100%)',
+            border: '1px solid rgba(99,102,241,0.30)',
+          }}
+        >
+          {/* glow blob */}
+          <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full pointer-events-none"
+            style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%)' }} />
+
+          <div className="shrink-0 group-hover:scale-105 transition-transform">
+            <ShibaStudyMascot size={52} />
           </div>
 
-          {/* Texts */}
-          <div className="text-left">
-            <div className="text-[11px] font-black text-sky-400 tracking-wider uppercase mb-0.5">
-              HỌC TIẾP
+          <div className="flex-1 text-left min-w-0">
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <Zap size={11} className="text-violet-400" />
+              <span className="text-[10px] font-black text-violet-400 tracking-widest uppercase">Tiếp tục học</span>
             </div>
-            <div className="text-base sm:text-lg font-bold text-white group-hover:text-sky-200 transition-colors">
-              {continueLabel}
-            </div>
+            <div className="text-[15px] font-bold text-white truncate">{continueLabel}</div>
+          </div>
+
+          <div
+            className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform"
+            style={{ background: '#6366F1', boxShadow: '0 4px 14px rgba(99,102,241,0.45)' }}
+          >
+            <Play size={16} className="fill-white text-white ml-0.5" />
           </div>
         </div>
+      </button>
 
-        {/* Circular Blue Play Button */}
-        <button
-          type="button"
-          aria-label="Tiếp tục học"
-          className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#0091EA] hover:bg-[#0284C7] active:scale-95 flex items-center justify-center text-white shadow-[0_4px_14px_rgba(0,145,234,0.45)] shrink-0 transition-transform cursor-pointer"
-        >
-          <Play className="w-5 h-5 ml-0.5 fill-white text-white" />
-        </button>
-      </div>
-
-      {/* 3 Stat Counters Row */}
-      <div className="grid grid-cols-3 gap-2.5 sm:gap-3 mb-6">
-        {/* Stat 1: Từ vựng */}
-        <div 
-          onClick={onOpenVocab}
-          className="bg-[#131d2e] hover:bg-[#182438] border border-slate-800/90 rounded-2xl py-3 px-2 flex flex-col items-center justify-center text-center shadow-md cursor-pointer transition-all group"
-        >
-          <div className="flex items-center gap-1 font-black text-white text-base sm:text-lg tracking-tight">
-            <Layers className="w-4 h-4 text-sky-400 inline-block shrink-0" />
-            <span>{vocabCompleted}/{benchmarks.vocab}</span>
-          </div>
-          <div className="text-xs text-slate-400 font-medium mt-0.5 group-hover:text-slate-300">
-            Từ vựng
-          </div>
-        </div>
-
-        {/* Stat 2: Ngữ pháp */}
-        <div 
-          onClick={onOpenGrammar}
-          className="bg-[#131d2e] hover:bg-[#182438] border border-slate-800/90 rounded-2xl py-3 px-2 flex flex-col items-center justify-center text-center shadow-md cursor-pointer transition-all group"
-        >
-          <div className="flex items-center gap-1 font-black text-white text-base sm:text-lg tracking-tight">
-            <BookOpen className="w-4 h-4 text-purple-400 inline-block shrink-0" />
-            <span>{grammarCompleted}/{benchmarks.grammar}</span>
-          </div>
-          <div className="text-xs text-slate-400 font-medium mt-0.5 group-hover:text-slate-300">
-            Ngữ pháp
-          </div>
-        </div>
-
-        {/* Stat 3: Kanji */}
-        <div 
-          onClick={onOpenKanji}
-          className="bg-[#131d2e] hover:bg-[#182438] border border-slate-800/90 rounded-2xl py-3 px-2 flex flex-col items-center justify-center text-center shadow-md cursor-pointer transition-all group"
-        >
-          <div className="flex items-center gap-1 font-black text-white text-base sm:text-lg tracking-tight">
-            <PenTool className="w-4 h-4 text-teal-400 inline-block shrink-0" />
-            <span>{kanjiCompleted}/{benchmarks.kanji}</span>
-          </div>
-          <div className="text-xs text-slate-400 font-medium mt-0.5 group-hover:text-slate-300">
-            Kanji
-          </div>
-        </div>
-      </div>
-
-      {/* Section Title: Học lý thuyết */}
-      <div className="mb-3">
-        <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
-          Học lý thuyết
-        </h2>
-      </div>
-
-      {/* 3 Main Action Cards (Stacked vertically) */}
+      {/* ── 3 Subject cards ── */}
       <div className="space-y-3">
-        {/* Card 1: Từ vựng */}
-        <div
-          id="card-theory-vocab"
-          onClick={onOpenVocab}
-          className="group bg-[#131d2e] hover:bg-[#182438] active:scale-[0.99] border border-slate-800/90 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all shadow-md"
-        >
-          <div className="flex items-center gap-4">
-            {/* Icon Box: Purple/Violet Cards */}
-            <div className="w-14 h-14 rounded-2xl bg-[#1e2348] border border-indigo-500/20 flex items-center justify-center text-indigo-400 shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-              <Layers className="w-7 h-7 text-indigo-400" />
-            </div>
+        {SUBJECTS.map(({ key, label, sub, Icon, accent, bg, border, glow }) => {
+          const done = completedMap[key] ?? 0;
+          const total = totalMap[key] ?? 1;
+          const pct = Math.round((done / total) * 100);
+          const handler = subjectHandlers[key];
 
-            {/* Text Info */}
-            <div className="text-left">
-              <div className="text-lg font-bold text-white group-hover:text-indigo-300 transition-colors">
-                Từ vựng
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={handler}
+              className="w-full text-left cursor-pointer group"
+            >
+              <div
+                className="relative rounded-2xl p-4 flex items-center gap-4 overflow-hidden transition-all duration-200"
+                style={{
+                  background: bg,
+                  border: `1px solid ${border}`,
+                }}
+              >
+                {/* ambient glow */}
+                <div className="absolute -right-4 -bottom-4 w-24 h-24 rounded-full pointer-events-none"
+                  style={{ background: `radial-gradient(circle, ${glow} 0%, transparent 70%)` }} />
+
+                {/* icon */}
+                <div
+                  className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform"
+                  style={{ background: `rgba(${accent.slice(1).match(/.{2}/g)!.map(x => parseInt(x,16)).join(',')},0.18)` }}
+                >
+                  <Icon size={22} style={{ color: accent }} />
+                </div>
+
+                {/* text + progress */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[15px] font-bold text-white">{label}</span>
+                    <span className="text-xs font-semibold" style={{ color: accent }}>{pct}%</span>
+                  </div>
+                  <div className="text-xs text-slate-400 mb-2 truncate">{sub}</div>
+                  {/* thin progress bar */}
+                  <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                    <div
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{ width: `${pct}%`, background: accent }}
+                    />
+                  </div>
+                  <div className="mt-1 text-[10px] text-slate-500">{done} / {total}</div>
+                </div>
+
+                <ChevronRight size={16} className="shrink-0 text-slate-600 group-hover:text-slate-300 group-hover:translate-x-0.5 transition-all" />
               </div>
-              <div className="text-sm text-slate-400 font-medium mt-0.5">
-                {selectedLevel}
-              </div>
-            </div>
-          </div>
-
-          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
-        </div>
-
-        {/* Card 2: Ngữ pháp */}
-        <div
-          id="card-theory-grammar"
-          onClick={onOpenGrammar}
-          className="group bg-[#131d2e] hover:bg-[#182438] active:scale-[0.99] border border-slate-800/90 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all shadow-md"
-        >
-          <div className="flex items-center gap-4">
-            {/* Icon Box: Indigo/Blue Open Book */}
-            <div className="w-14 h-14 rounded-2xl bg-[#1c2242] border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-              <BookOpen className="w-7 h-7 text-blue-400" />
-            </div>
-
-            {/* Text Info */}
-            <div className="text-left">
-              <div className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors">
-                Ngữ pháp
-              </div>
-              <div className="text-sm text-slate-400 font-medium mt-0.5">
-                {selectedLevel}
-              </div>
-            </div>
-          </div>
-
-          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
-        </div>
-
-        {/* Card 3: Kanji */}
-        <div
-          id="card-theory-kanji"
-          onClick={onOpenKanji}
-          className="group bg-[#131d2e] hover:bg-[#182438] active:scale-[0.99] border border-slate-800/90 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all shadow-md"
-        >
-          <div className="flex items-center gap-4">
-            {/* Icon Box: Dark Teal/Cyan Calligraphy Pen */}
-            <div className="w-14 h-14 rounded-2xl bg-[#132c38] border border-teal-500/20 flex items-center justify-center text-teal-400 shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-              <PenTool className="w-7 h-7 text-teal-400" />
-            </div>
-
-            {/* Text Info */}
-            <div className="text-left">
-              <div className="text-lg font-bold text-white group-hover:text-teal-300 transition-colors">
-                Kanji
-              </div>
-              <div className="text-sm text-slate-400 font-medium mt-0.5">
-                Chinh phục kanji theo từng cấp
-              </div>
-            </div>
-          </div>
-
-          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
-        </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
