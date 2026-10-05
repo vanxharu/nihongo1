@@ -86,7 +86,6 @@ var import_genai3 = require("@google/genai");
 var import_openai2 = __toESM(require("openai"), 1);
 var import_kuroshiro = __toESM(require("kuroshiro"), 1);
 var import_kuroshiro_analyzer_kuromoji2 = __toESM(require("kuroshiro-analyzer-kuromoji"), 1);
-var import_hanviet_pinyin_words = require("hanviet-pinyin-words");
 var import_drizzle_orm3 = require("drizzle-orm");
 
 // src/db/index.ts
@@ -67965,6 +67964,15 @@ async function saveLearningProfile(uid, roadmap) {
 }
 
 // server.ts
+var _getAllHanvietsOfChar = null;
+(async () => {
+  try {
+    const m = await import("hanviet-pinyin-words");
+    _getAllHanvietsOfChar = m.getAllHanvietsOfChar ?? m.default?.getAllHanvietsOfChar ?? null;
+  } catch (e) {
+    console.warn("[hanviet] Could not load hanviet-pinyin-words:", e);
+  }
+})();
 var KuroshiroClass = import_kuroshiro.default.default || import_kuroshiro.default;
 var KuromojiAnalyzerClass = import_kuroshiro_analyzer_kuromoji2.default.default || import_kuroshiro_analyzer_kuromoji2.default;
 var kuroshiroPromise = null;
@@ -67983,9 +67991,11 @@ function getHanVietChar(c) {
   if (KANJI_TO_HAN_VIET[c])
     return KANJI_TO_HAN_VIET[c];
   try {
-    const vals = import_hanviet_pinyin_words.getAllHanvietsOfChar(c);
-    if (vals && vals.length > 0)
-      return vals[0].toUpperCase();
+    if (_getAllHanvietsOfChar) {
+      const vals = _getAllHanvietsOfChar(c);
+      if (vals && vals.length > 0)
+        return vals[0].toUpperCase();
+    }
   } catch (e) {}
   return null;
 }

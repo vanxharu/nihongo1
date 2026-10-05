@@ -8,7 +8,16 @@ import { GoogleGenAI, Type } from "@google/genai";
 import OpenAI from "openai";
 import Kuroshiro from 'kuroshiro';
 import KuromojiAnalyzer from 'kuroshiro-analyzer-kuromoji';
-import { getAllHanvietsOfChar } from 'hanviet-pinyin-words';
+// hanviet-pinyin-words is ESM-only; use dynamic import so CJS bundling doesn't break
+let _getAllHanvietsOfChar: ((c: string) => string[]) | null = null;
+void (async () => {
+  try {
+    const m = await import('hanviet-pinyin-words');
+    _getAllHanvietsOfChar = (m as any).getAllHanvietsOfChar ?? (m as any).default?.getAllHanvietsOfChar ?? null;
+  } catch (e) {
+    console.warn('[hanviet] Could not load hanviet-pinyin-words:', e);
+  }
+})();
 import { eq, inArray, and, like, ne, asc } from 'drizzle-orm';
 import { db, pool, withDbRetry } from './src/db/index';
 import { GRAMMAR_SYSTEM_PROMPT, buildGrammarContentUserPrompt } from './src/prompts/grammarContentPrompt';
@@ -44,8 +53,10 @@ function getKuroshiro() {
 function getHanVietChar(c: string) {
   if (KANJI_TO_HAN_VIET[c]) return KANJI_TO_HAN_VIET[c];
   try {
-    const vals = getAllHanvietsOfChar(c);
-    if (vals && vals.length > 0) return vals[0].toUpperCase();
+    if (_getAllHanvietsOfChar) {
+      const vals = _getAllHanvietsOfChar(c);
+      if (vals && vals.length > 0) return vals[0].toUpperCase();
+    }
   } catch(e) {}
   return null;
 }
