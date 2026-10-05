@@ -2867,7 +2867,7 @@ export default function AiReadingPractice({
               }`}
             >
               <HelpCircle className="w-4 h-4" />
-              <span>Câu hỏi & Giải thích ({readingData.quizzes?.length || 0})</span>
+              <span>Câu hỏi ({readingData.quizzes?.length || 0})</span>
             </button>
 
             <button

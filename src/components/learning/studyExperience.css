@@ -51,8 +51,8 @@
 .study-reading .reading-article-layout> :not(:first-child){grid-column:2;margin-top:0!important;min-width:0;}
 .study-reading .reading-article-layout> :first-child{padding:28px;background:#15262e!important;border-color:#34545b!important;box-shadow:none!important;}
 .study-reading [id^=quiz-question-card-]{border-radius:20px!important;background:#16212f!important;box-shadow:none!important;}
-.study-reading .reading-analysis-tabs{display:flex;flex-wrap:wrap;gap:6px;}
-.study-reading .reading-analysis-tabs button{flex:1;min-width:90px;}
+.study-reading .reading-analysis-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
+.study-reading .reading-analysis-tabs button{min-width:0;justify-content:center;white-space:normal;font-size:12px;padding:10px 8px;}
 .study-reading .reading-article-layout .font-jp{line-height:2;}
 .study-reading .reading-source-content>div{border-radius:22px;}
 .study-exam #jlpt-modern-exam-container{background:#101a2b;color:#eef4fd;border:1px solid #344056;border-radius:24px;overflow:hidden;min-height:75vh;}
