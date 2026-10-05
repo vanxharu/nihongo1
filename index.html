@@ -12,6 +12,11 @@
         document.documentElement.style.colorScheme = theme;
       })();
     </script>
+    <style>
+      :root{--ui-canvas:#faf5ed;--ui-ink:#283149;--ui-primary:#c94553;--ui-on-primary:#fffaf4}
+      :root[data-theme="dark"]{--ui-canvas:#171d2d;--ui-ink:#fff1df;--ui-primary:#f2b35e;--ui-on-primary:#292334}
+      body{background:var(--ui-canvas);color:var(--ui-ink)}
+    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>NihonGo! | Học tiếng Nhật</title>
     <meta name="description" content="Nền tảng học tiếng Nhật & Luyện thi JLPT thông minh theo chuẩn bản xứ, hỗ trợ làm bài tập viết tay bằng bút cảm ứng và chấm điểm nét chữ bằng AI, ôn tập từ vựng, ngữ pháp, Hán tự Kanji, thi thử và Chat AI." />
@@ -37,10 +42,10 @@
     <link href="https://fonts.googleapis.com/css2?family=BIZ+UDMincho:wght@400;700&family=Itim&family=Klee+One:wght@400;600&family=Mali:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;600;700;900&family=Pangolin&family=Patrick+Hand&family=Shippori+Mincho:wght@400;500;600;700;800&family=Yomogi&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <div id="boot-status" role="status" style="position:fixed;inset:0;z-index:99999;display:grid;place-content:center;text-align:center;padding:24px;background:#0c1120;color:#f1f5f9;font:16px system-ui">
+    <div id="boot-status" role="status" style="position:fixed;inset:0;z-index:99999;display:grid;place-content:center;text-align:center;padding:24px;background:var(--ui-canvas);color:var(--ui-ink);font:16px system-ui">
       <h1 style="font-size:24px">NihonGo!</h1>
       <p id="boot-message">Đang mở trang học…</p>
-      <button id="boot-retry" style="padding:12px 20px;border:0;border-radius:12px;background:#fbbf24;color:#111827;font:inherit;cursor:pointer">Tải lại trang</button>
+      <button id="boot-retry" style="padding:12px 20px;border:0;border-radius:12px;background:var(--ui-primary);color:var(--ui-on-primary);font:inherit;cursor:pointer">Tải lại trang</button>
       <noscript>Vui lòng bật JavaScript để sử dụng trang học.</noscript>
     </div>
     <div id="root"></div>
