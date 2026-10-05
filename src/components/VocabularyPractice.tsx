@@ -2874,7 +2874,7 @@ if (loading) {
           <div className="bg-[#242b45] text-white border border-[#343d5f] shadow-2xl shadow-slate-950/40 rounded-2xl sm:rounded-3xl p-3 sm:p-5 md:p-6 relative overflow-hidden min-h-[220px] sm:min-h-[280px] md:min-h-[340px] flex flex-col justify-between transition-all duration-300 w-full">
         
         {/* Top Header Inside Card Frame: Integrated Lesson Navigator & Study Controls */}
-        <div className="flex flex-row items-center justify-between gap-1 sm:gap-2 mb-2.5 sm:mb-3.5 pb-2 sm:pb-2.5 border-b border-[#343d5f]/80 relative z-10 w-full flex-nowrap">
+        <div className="vocab-study-toolbar flex flex-row items-center justify-between gap-1 sm:gap-2 mb-2.5 sm:mb-3.5 pb-2 sm:pb-2.5 border-b border-[#343d5f]/80 relative z-10 w-full flex-nowrap">
           {/* Left Controls */}
           <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
             {selectedMode === 'dokkai' ? (

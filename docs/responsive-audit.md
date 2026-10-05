@@ -8,6 +8,7 @@ Stack: React 19, React Router 7, Tailwind 4, Vite 6 and existing component CSS.
 - Five mobile navigation destinations, accessible off-canvas menu and persistent header.
 - Safe-area spacing, 44px touch controls and 16px mobile form inputs.
 - Natural-height vocabulary/notebook flashcards, mobile review controls and larger Kanji grid cells.
+- Vocabulary toolbar uses two mobile rows so the lesson selector remains visible with 44px controls.
 - Native ruby rendering for Furigana; alternative word spellings can wrap without crushing kana.
 - Bounded scrollable dialogs above navigation, focus containment, Escape and focus restoration.
 - Flashcard shortcut listeners respect focused native controls/dialogs and Japanese IME composition.

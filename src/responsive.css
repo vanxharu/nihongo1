@@ -43,6 +43,10 @@
  #app-main-view :where(.overflow-x-auto){max-width:100%;overscroll-behavior-x:contain}
 }
 @media(max-width:639px){
+ .vocab-study-toolbar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .vocab-study-toolbar>div:nth-child(2){grid-column:1/-1;grid-row:2;max-width:none;margin:0;width:100%}
+ .vocab-study-toolbar>div:nth-child(2) button>span:first-child{font-size:.875rem}
+ .vocab-study-toolbar>div:last-child{grid-column:2;grid-row:1;justify-content:flex-end;justify-self:end;flex-wrap:wrap;max-width:100%}
  #app-root-container:has(.responsive-flashcard,.classroom-panel,.exam-question-surface,.karaoke-stage) .pwa-install-banner{display:none}
  .pwa-install-banner{padding:10px;left:12px;right:12px}
  .pwa-install-banner>div:first-child>div>div:first-child{display:none}
