@@ -392,6 +392,15 @@ export default function AiReadingPractice({
   }, [refreshNotification]);
 
   // Fetch Todaii Japanese News List
+  useEffect(() => {
+    const check = () => {
+      if (document.visibilityState !== 'visible' || readingData || isAnalyzing) return;
+      if (readingSourceMode === 'todai') void fetchTodaiNews('refresh');
+      if (readingSourceMode === 'watanoc') void fetchWatanocArticles('refresh');
+    };
+    const timer = window.setInterval(check, 15 * 60_000);
+    return () => window.clearInterval(timer);
+  }, [readingSourceMode, readingData, isAnalyzing]);
   // mode: 'initial' | 'refresh' | 'more'
   const fetchTodaiNews = async (mode: 'initial' | 'refresh' | 'more' = 'initial') => {
     if (mode === 'more') {
@@ -1696,7 +1705,8 @@ export default function AiReadingPractice({
                             <div className="flex items-center gap-2">
                               <span className="text-[11px] text-slate-500 flex items-center gap-1">
                                 <Clock className="w-3 h-3 text-slate-500" />
-                                <span>{article.date || 'Hôm nay'}</span>
+                                <span>{article.date || 'Todaii'}</span>
+                                {article.prepared && <span className="text-emerald-300">Câu hỏi sẵn có</span>}
                               </span>
 
                               {/* Toggle Read status button */}
@@ -2129,6 +2139,7 @@ export default function AiReadingPractice({
                               <span className="text-[11px] text-slate-500 flex items-center gap-1">
                                 <Clock className="w-3 h-3 text-slate-500" />
                                 <span>{article.date || 'Watanoc.com'}</span>
+                                {article.prepared && <span className="text-emerald-300">Câu hỏi sẵn có</span>}
                               </span>
 
                               {/* Toggle Read status button */}
@@ -2856,6 +2867,9 @@ export default function AiReadingPractice({
 
           {/* Navigation Tabs Bar for Analysis */}
           <div className="reading-analysis-tabs border-b border-slate-800 pb-2">
+            <p className="col-span-2 text-xs text-slate-400 pb-2">
+              {readingData.questionOrigin === 'source' ? 'Câu hỏi gốc từ trang nguồn. Đáp án chưa được nguồn cung cấp sẽ được AI suy luận từ bài.' : 'Nguồn không có câu hỏi; câu hỏi luyện đọc được AI soạn theo bài viết.'}
+            </p>
             <button
               id="tab-reading-quiz"
               type="button"

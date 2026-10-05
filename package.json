@@ -11,6 +11,7 @@
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit",
     "test:audio": "node --test scripts/audio.test.mjs",
+    "test:reading": "node --test scripts/reading.test.mjs",
     "test:shadowing": "node --test scripts/shadowing.test.mjs scripts/shadowing-runtime.test.mjs scripts/shadowing-alignment.test.mjs",
     "align:shadowing": "tsx scripts/align-shadowing.ts",
     "prepare:shadowing": "tsx scripts/prepare-shadowing.ts",

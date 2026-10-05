@@ -5,10 +5,14 @@
   ],
   "functions": {
     "api/reading/generate.ts": { "maxDuration": 60 },
+    "api/reading/sync.ts": { "maxDuration": 60 },
+    "api/reading/todai/*.ts": { "maxDuration": 60 },
+    "api/reading/watanoc/*.ts": { "maxDuration": 60 },
     "api/shadowing/video.ts": { "includeFiles": "public/shadowing-prepared/*.json", "maxDuration": 60 },
     "api/shadowing/analyze.ts": { "includeFiles": "node_modules/kuromoji/dict/**", "maxDuration": 60 },
     "api/shadowing/prepare.ts": { "includeFiles": "node_modules/kuromoji/dict/**", "maxDuration": 60 }
   },
+  "crons": [{ "path": "/api/reading/sync", "schedule": "0 23 * * *" }],
   "rewrites": [
     {
       "source": "/__/auth/(.*)",

@@ -344,6 +344,8 @@ export interface LessonReadingGrammar {
 }
 
 export interface LessonReadingQuiz {
+  questionOrigin?: 'source' | 'ai';
+  answerOrigin?: 'source' | 'ai-inferred';
   question: string;
   questionType?: string; // '内容理解' | '情報検索' | '指示語' | '理由' | '心情理解' | '要旨' | '筆者の意見' | '文章構成' | '比較理解'
   questionTypeVn?: string; // 'Nội dung chính' | 'Tìm kiếm thông tin' | 'Từ chỉ thị' | 'Hỏi lý do' | 'Tâm trạng nhân vật' | 'Tóm tắt bài văn' | 'Quan điểm tác giả' | 'Cấu trúc bài' | 'So sánh văn bản'
@@ -359,6 +361,7 @@ export interface AudioMark {
 }
 
 export interface LessonReadingData {
+  questionOrigin?: 'source' | 'ai';
   title: string;
   level: JLPTLevel;
   lessonNumber?: number;
@@ -410,6 +413,8 @@ export interface ReadingToken {
 }
 
 export interface TodaiNewsItem {
+  prepared?: boolean;
+  questionOrigin?: 'source' | 'ai';
   id: string;
   titleJp: string;
   titleVi: string;
@@ -424,6 +429,8 @@ export interface TodaiNewsItem {
 }
 
 export interface WatanocArticleItem {
+  prepared?: boolean;
+  questionOrigin?: 'source' | 'ai';
   id: string;
   titleJp: string;
   titleSub?: string;
