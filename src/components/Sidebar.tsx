@@ -6,7 +6,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  BookMarked, 
+
   BarChart3, 
   Puzzle, 
   MessagesSquare, 
@@ -114,16 +114,6 @@ export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, 
       dotColor: 'bg-indigo-400 shadow-[0_0_8px_#818CF8]'
     },
     { 
-      id: 'study-books', 
-      path: '/sach',
-      label: 'Sách ôn thi', 
-      icon: BookMarked, 
-      iconColor: 'text-amber-400', 
-      activeBg: 'bg-gradient-to-r from-amber-500/25 via-orange-500/15 to-transparent border-amber-400/60 text-amber-100 shadow-[0_0_18px_rgba(245,158,11,0.25)]',
-      activeIconBg: 'bg-amber-400/25 border border-amber-400/50 shadow-[0_0_10px_rgba(245,158,11,0.4)]',
-      dotColor: 'bg-amber-400 shadow-[0_0_8px_#F59E0B]'
-    },
-    { 
       id: 'japanese-chat', 
       path: '/chat-ai',
       label: 'Luyện thoại Kaiwa', 
@@ -228,7 +218,7 @@ export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, 
           {primaryMenuItems.map((item) => {
             const IconComponent = item.icon;
             const isActive = currentTab === item.id || (item.path === '/' ? location.pathname === '/' : location.pathname.startsWith(item.path));
-            
+
             return (
               <Link
                 key={item.id}

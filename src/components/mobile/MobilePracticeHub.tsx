@@ -9,7 +9,7 @@ import {
   Trophy, 
   TrendingUp, 
   Bookmark, 
-  BookMarked,
+
   Dice5, 
   HelpCircle, 
   ChevronRight,
@@ -185,7 +185,7 @@ export default function MobilePracticeHub({
         <h2 className="text-base sm:text-lg font-bold text-white">
           Luyện thi
         </h2>
-        <div className="grid grid-cols-5 gap-y-3.5 gap-x-1 sm:gap-x-2">
+        <div className="grid grid-cols-4 gap-y-3.5 gap-x-1 sm:gap-x-2">
           {/* 1. Luyện thi JLPT */}
           <button
             type="button"
@@ -198,21 +198,6 @@ export default function MobilePracticeHub({
             </div>
             <span className="text-[10px] sm:text-[11px] text-center text-slate-300 font-medium leading-tight max-w-[64px] sm:max-w-[70px]">
               Luyện thi JLPT
-            </span>
-          </button>
-
-          {/* 2. Sách ôn thi JLPT -> Mở Tủ sách ôn thi JLPT (StudyBooksHub) */}
-          <button
-            type="button"
-            id="btn-jlpt-study-books"
-            onClick={() => onNavigate('study-books')}
-            className="flex flex-col items-center gap-1.5 cursor-pointer group active:scale-95 transition-all"
-          >
-            <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-2xl bg-[#261d12] border border-amber-500/25 text-[#fbbf24] flex items-center justify-center shadow-md group-hover:border-amber-500/40 group-hover:bg-amber-500/10 transition-colors">
-              <BookMarked className="w-5 h-5 sm:w-6 sm:h-6" />
-            </div>
-            <span className="text-[10px] sm:text-[11px] text-center text-slate-300 font-medium leading-tight max-w-[64px] sm:max-w-[70px]">
-              Sách ôn thi JLPT
             </span>
           </button>
 

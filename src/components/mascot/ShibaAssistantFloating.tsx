@@ -79,7 +79,6 @@ export default function ShibaAssistantFloating({
         setBubbleText('Nhìn lại hành trình tự hào nào!');
         break;
       case 'reading':
-      case 'study-books':
       case 'lessons':
         setCurrentPose('study');
         setBubbleText('Đọc kỹ ngữ cảnh và từ mới nhé!');

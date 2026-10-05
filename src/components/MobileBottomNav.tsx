@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  BookMarked, 
+
   Puzzle, 
   MessagesSquare, 
   Menu, 
@@ -112,7 +112,7 @@ export default function MobileBottomNav({
       path: '/bunpo',
       label: 'Lý thuyết',
       icon: FileText,
-      checkActive: (tab: string, pathname: string) => ['grammar', 'lessons', 'study-books'].includes(tab) || pathname.startsWith('/bunpo') || pathname.startsWith('/kanji') || pathname.startsWith('/tango'),
+      checkActive: (tab: string, pathname: string) => ['grammar', 'lessons'].includes(tab) || pathname.startsWith('/bunpo') || pathname.startsWith('/kanji') || pathname.startsWith('/tango'),
     },
     {
       id: 'roadmap',
@@ -294,7 +294,6 @@ export default function MobileBottomNav({
               <div className="grid grid-cols-2 gap-2.5">
                 {[
                   { id: 'reading', path: '/doc-hieu', label: 'Đọc hiểu & Tin tức', icon: BookOpen, color: 'text-indigo-400', desc: 'Báo chí & Hội thoại' },
-                  { id: 'study-books', path: '/sach', label: 'Sách ôn thi', icon: BookMarked, color: 'text-amber-400', desc: '3 Sách N4 chuẩn' },
                   { id: 'japanese-chat', path: '/chat-ai', label: 'Luyện Kaiwa', icon: MessagesSquare, color: 'text-amber-400', desc: 'Hội thoại giao tiếp' },
                   { id: 'notebook', path: '/so-tay', label: 'Sổ tay từ vựng', icon: Bookmark, color: 'text-amber-400', desc: 'Flashcard & Quiz' },
                   { id: 'achievements', path: '/thanh-tich', label: 'Thành tựu', icon: Trophy, color: 'text-amber-400', desc: `Mở khóa ${unlockedCount}/${TOTAL_ACHIEVEMENTS_COUNT}` },

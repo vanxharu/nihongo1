@@ -39,7 +39,6 @@ const NotebookManager = lazyWithRetry(() => import('./components/NotebookManager
 const DictionaryLookup = lazyWithRetry(() => import('./components/DictionaryLookup'));
 const LessonHub = lazyWithRetry(() => import('./components/LessonHub'));
 const HandwritingPractice = lazyWithRetry(() => import('./components/HandwritingPractice'));
-const StudyBooksHub = lazyWithRetry(() => import('./components/StudyBooksHub'));
 const ShadowingHub = lazyWithRetry(() => import('./components/shadowing/ShadowingHub'));
 const GrammarPractice = lazyWithRetry(() => import('./components/GrammarPractice'));
 const JlptRoadmapView = lazyWithRetry(() => import('./components/roadmap/JlptRoadmapView'));
@@ -713,18 +712,7 @@ export default function App() {
       {/* 8. Đọc hiểu & Tin tức */}
       <Route path="/doc-hieu" element={<AiReadingPracticeRouteWrapper />} />
 
-      {/* 9. Sách ôn thi */}
-      <Route 
-        path="/sach" 
-        element={
-          <StudyBooksHub
-            userProfile={activeProfile}
-            updateProfile={updateProfile}
-            onEarnXp={handleEarnXp}
-            onBack={() => handleTabChange('practice')}
-          />
-        } 
-      />
+      <Route path="/sach" element={<Navigate to="/" replace />} />
 
       {/* 10. AI Kaiwa Chat */}
       <Route 
@@ -833,7 +821,7 @@ export default function App() {
       <Route path="/vocabulary" element={<Navigate to="/tango" replace />} />
       <Route path="/listening" element={<Navigate to="/jlpt" replace />} />
       <Route path="/reading" element={<Navigate to="/doc-hieu" replace />} />
-      <Route path="/study-books" element={<Navigate to="/sach" replace />} />
+      <Route path="/study-books" element={<Navigate to="/" replace />} />
       <Route path="/notebook" element={<Navigate to="/so-tay" replace />} />
       <Route path="/dictionary" element={<Navigate to="/tu-dien" replace />} />
       <Route path="/roadmap" element={<Navigate to="/lo-trinh" replace />} />

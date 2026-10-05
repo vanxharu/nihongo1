@@ -165,8 +165,6 @@ export default function Header({
         return 'Luyện thi JLPT';
       case 'roadmap':
         return 'Lộ trình JLPT';
-      case 'study-books':
-        return 'Sách ôn thi JLPT';
       case 'notebook':
         return 'Sổ tay từ vựng';
       case 'japanese-chat':
