@@ -2450,6 +2450,10 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   // Keyboard Event Handlers with full compatibility
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target instanceof Element ? e.target : null;
+      // Native controls and dialogs own their keys; card shortcuts still work on the card/canvas.
+      if (e.defaultPrevented || e.isComposing || target?.closest('[role="dialog"]') ||
+        (target?.closest('button,a[href],select,[role="button"]') && !target.matches('.responsive-flashcard'))) return;
       const { 
         selectedMode: mode, 
         currentItem: item, 
@@ -2535,11 +2539,6 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       // If user is typing in another input (like search, modal), don't trigger global shortcuts
       if (isTyping) {
         return;
-      }
-
-      // Blur focused button or interactive element so pressing Space/Enter doesn't trigger unexpected browser click
-      if (activeEl && (activeEl.tagName === 'BUTTON' || activeEl.tagName === 'A' || activeEl.getAttribute('role') === 'button')) {
-        activeEl.blur();
       }
 
       // Global: Quick Direction Toggle with 'D' (when not modifying)

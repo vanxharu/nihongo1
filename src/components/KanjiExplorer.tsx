@@ -451,6 +451,10 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
   // Keyboard shortcut listener for Kanji flashcards
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target instanceof Element ? e.target : null;
+      if (e.defaultPrevented || e.isComposing || target?.closest('[role="dialog"]') ||
+        (target?.closest('button,a[href],select,[role="button"]') &&
+          !target.matches('[aria-label="Lật thẻ Hán tự (Space)"]'))) return;
       const { currentKanji: kItem } = kanjiStateRef.current;
 
       const activeEl = document.activeElement as HTMLElement | null;
@@ -492,11 +496,6 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
           e.preventDefault();
         }
         return;
-      }
-
-      // Blur focused button or interactive element
-      if (activeEl && (activeEl.tagName === 'BUTTON' || activeEl.tagName === 'A' || activeEl.getAttribute('role') === 'button')) {
-        activeEl.blur();
       }
 
       // Space / F / Up / Down: Toggle flip front <-> back

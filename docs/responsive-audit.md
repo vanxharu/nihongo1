@@ -10,6 +10,7 @@ Stack: React 19, React Router 7, Tailwind 4, Vite 6 and existing component CSS.
 - Natural-height vocabulary/notebook flashcards, mobile review controls and larger Kanji grid cells.
 - Native ruby rendering for Furigana; alternative word spellings can wrap without crushing kana.
 - Bounded scrollable dialogs above navigation, focus containment, Escape and focus restoration.
+- Flashcard shortcut listeners respect focused native controls/dialogs and Japanese IME composition.
 - Pitch explanation rendered outside transformed cards, bounded to the viewport.
 - Mobile/tablet mascot shortcut in the header; compact installation prompt suppressed during focused exercises.
 - Preview tables scroll inside their container.
