@@ -27,10 +27,10 @@ export default function GrammarPractice({
   updateProfile, 
   onEarnXp, 
   onNavigateTab,
-  initialViewMode = 'lesson-list',
+  initialViewMode = 'overview',
   initialLessonNumber
 }: GrammarPracticeProps) {
-  // Navigation state - Jump straight into Grammar lesson-list by default
+  // Navigation state - Show TheoryHubView (overview) by default
   const [viewMode, setViewMode] = useState<GrammarViewMode>(initialViewMode);
   const [selectedLevel, setSelectedLevel] = useState<JLPTLevel>((userProfile.targetLevel as JLPTLevel) || 'N4');
   const [selectedLessonNumber, setSelectedLessonNumber] = useState<number>(

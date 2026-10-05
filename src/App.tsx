@@ -280,7 +280,7 @@ export default function App() {
     }
   };
 
-  const [grammarInitialView, setGrammarInitialView] = useState<'overview' | 'lesson-list' | 'lesson-detail' | 'grammar-detail' | 'practice'>('lesson-list');
+  const [grammarInitialView, setGrammarInitialView] = useState<'overview' | 'lesson-list' | 'lesson-detail' | 'grammar-detail' | 'practice'>('overview');
   const [grammarInitialLesson, setGrammarInitialLesson] = useState<number | undefined>(undefined);
 
   const handleTabChange = (newTab: string, extra?: any) => {
@@ -288,7 +288,7 @@ export default function App() {
       if (extra?.viewMode) {
         setGrammarInitialView(extra.viewMode);
       } else {
-        setGrammarInitialView('lesson-list');
+        setGrammarInitialView('overview');
       }
       if (extra?.lessonNumber) {
         setGrammarInitialLesson(extra.lessonNumber);
