@@ -4,7 +4,6 @@ import path from 'path';
 import fs from 'fs';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import OpenAI from "openai";
 import Kuroshiro from 'kuroshiro';
@@ -7422,6 +7421,7 @@ Trả về JSON đúng cấu trúc:
 async function startServer() {
   await initGrammarAiTable();
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -7466,4 +7466,12 @@ process.on("uncaughtException", (err) => {
   console.error("Uncaught Exception thrown:", err);
 });
 
-startServer();
+// On Vercel the app runs as a serverless function (see api/server.ts):
+// Vercel handles listening and static files, so only prepare the DB table.
+if (process.env.VERCEL) {
+  initGrammarAiTable().catch((err) => console.error("[initGrammarAiTable]", err));
+} else {
+  startServer();
+}
+
+export default app;
