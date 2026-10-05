@@ -629,7 +629,7 @@ export interface VocabModeSettings {
   studyDirection: 'JP_VI' | 'VI_JP';
 }
 
-export const VOCAB_MODE_DEFAULTS: Record<'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing', VocabModeSettings> = {
+export const VOCAB_MODE_DEFAULTS: Record<'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing' | 'dautri' | 'kanjidance', VocabModeSettings> = {
   flashcard: {
     showFurigana: true,
     showExampleFurigana: true,
@@ -670,9 +670,25 @@ export const VOCAB_MODE_DEFAULTS: Record<'flashcard' | 'quiz' | 'cram' | 'dokkai
     autoAdvance: false,
     studyDirection: 'JP_VI',
   },
+  dautri: {
+    showFurigana: false,
+    showExampleFurigana: true,
+    showPitchAccent: false,
+    showRomaji: false,
+    autoAdvance: true,
+    studyDirection: 'VI_JP',
+  },
+  kanjidance: {
+    showFurigana: false,
+    showExampleFurigana: false,
+    showPitchAccent: false,
+    showRomaji: false,
+    autoAdvance: true,
+    studyDirection: 'JP_VI',
+  },
 };
 
-export const getVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing'): VocabModeSettings => {
+export const getVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing' | 'dautri' | 'kanjidance'): VocabModeSettings => {
   try {
     const saved = localStorage.getItem(`jlpt_vocab_mode_settings_${mode}`);
     if (saved) {
@@ -682,7 +698,7 @@ export const getVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dokk
   return VOCAB_MODE_DEFAULTS[mode];
 };
 
-export const saveVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing', settings: Partial<VocabModeSettings>) => {
+export const saveVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing' | 'dautri' | 'kanjidance', settings: Partial<VocabModeSettings>) => {
   try {
     const current = getVocabModeSettings(mode);
     const updated = { ...current, ...settings };
@@ -755,7 +771,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
 
   // App States
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedMode, setSelectedMode] = useState<'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing'>(() => {
+  const [selectedMode, setSelectedMode] = useState<'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing' | 'dautri' | 'kanjidance'>(() => {
     if (!user) return 'flashcard';
     const pos = userProfile?.lastPosition;
     if (pos?.tab === 'vocabulary' && pos.mode) {
@@ -1121,7 +1137,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
 
   // Switch mode with smart defaults
-  const handleSwitchMode = useCallback((newMode: 'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing') => {
+  const handleSwitchMode = useCallback((newMode: 'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing' | 'dautri' | 'kanjidance') => {
     setSelectedMode(newMode);
     const cfg = getVocabModeSettings(newMode);
     setShowFurigana(cfg.showFurigana);
@@ -1198,6 +1214,20 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const [shadowingSelectedIndices, setShadowingSelectedIndices] = useState<number[]>([]);
   const [shadowingIsCorrect, setShadowingIsCorrect] = useState<boolean | null>(null);
   const [isPlayingWave, setIsPlayingWave] = useState(false);
+
+  // Đầu trí mode state
+  const [dauTriInput, setDauTriInput] = useState('');
+  const [dauTriResult, setDauTriResult] = useState<'correct' | 'wrong' | null>(null);
+  const [dauTriScore, setDauTriScore] = useState(0);
+  const dauTriInputRef = useRef<HTMLInputElement>(null);
+
+  // Kanji Dance mode state
+  const [kdInput, setKdInput] = useState('');
+  const [kdResult, setKdResult] = useState<'correct' | 'wrong' | null>(null);
+  const [kdScore, setKdScore] = useState(0);
+  const [kdCombo, setKdCombo] = useState(0);
+  const [kdDancing, setKdDancing] = useState(false);
+  const kdInputRef = useRef<HTMLInputElement>(null);
 
   const [reactionState, setReactionState] = useState<'neutral' | 'correct' | 'wrong' | 'surrender'>('neutral');
   const [showMascotBubble, setShowMascotBubble] = useState(false);
@@ -3146,7 +3176,7 @@ if (loading) {
               <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-[#343d5f]/70 text-xs">
                 <div className="flex items-center gap-2 text-slate-300 font-medium">
                   <span className="px-2.5 py-0.5 rounded-lg bg-indigo-950/90 text-indigo-300 border border-indigo-500/40 font-bold uppercase text-[11px]">
-                    Chế độ {selectedMode === 'flashcard' ? 'Lật thẻ' : selectedMode === 'quiz' ? 'Trắc nghiệm' : selectedMode === 'cram' ? 'Luyện gõ' : selectedMode === 'dokkai' ? 'Đọc hiểu' : 'Ghép câu'}
+                    Chế độ {selectedMode === 'flashcard' ? 'Lật thẻ' : selectedMode === 'quiz' ? 'Trắc nghiệm' : selectedMode === 'cram' ? 'Luyện gõ' : selectedMode === 'dokkai' ? 'Đọc hiểu' : selectedMode === 'shadowing' ? 'Nghe đuôi' : selectedMode === 'dautri' ? 'Đầu trí' : 'Kanji Dance'}
                   </span>
                   <span className="text-slate-400 text-[11px] leading-tight">
                     {selectedMode === 'flashcard' && '💡 Bật Furigana & Dấu nhấn âm điệu để ghi nhớ chữ Nhật và âm đọc chuẩn xác nhất.'}
@@ -4368,6 +4398,206 @@ if (loading) {
             </div>
           )}
 
+          {/* ===== ĐẦU TRÍ MODE ===== */}
+          {selectedMode === 'dautri' && currentItem && (() => {
+            const correctReading = currentItem.reading || currentItem.word;
+            const handleDauTriSubmit = () => {
+              if (dauTriResult !== null) { handleNext(); setDauTriInput(''); setDauTriResult(null); return; }
+              const normalized = dauTriInput.trim().toLowerCase();
+              const isOk = normalized === correctReading || normalized === currentItem.word;
+              setDauTriResult(isOk ? 'correct' : 'wrong');
+              if (isOk) setDauTriScore(s => s + 10);
+            };
+            return (
+              <div className="space-y-5 w-full max-w-2xl mx-auto">
+                <div className="text-center space-y-1">
+                  <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Đầu Trí — Nhớ từ vựng từ gợi ý</span>
+                  <div className="text-right text-xs text-slate-500 font-mono">Điểm: {dauTriScore}</div>
+                </div>
+
+                {/* Show meaning, user types the Japanese */}
+                <div className="bg-[#1a2236] border border-[#2b3353] rounded-2xl p-6 text-center space-y-3">
+                  <div className="text-sm text-slate-400 font-medium">Nghĩa tiếng Việt</div>
+                  <div className="text-2xl font-bold text-white">{currentItem.meaning}</div>
+                  {currentItem.wordType && (
+                    <span className="inline-block text-[10px] bg-blue-900/40 text-blue-300 px-2 py-0.5 rounded-full border border-blue-700/40">{currentItem.wordType}</span>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <input
+                    ref={dauTriInputRef}
+                    type="text"
+                    value={dauTriInput}
+                    onChange={e => { if (dauTriResult === null) setDauTriInput(e.target.value); }}
+                    onKeyDown={e => { if (e.key === 'Enter') handleDauTriSubmit(); }}
+                    placeholder="Nhập từ tiếng Nhật (hiragana / kanji)..."
+                    className={`w-full px-4 py-3 rounded-xl border text-base font-medium outline-none transition-all bg-[#151a2e] text-white ${
+                      dauTriResult === 'correct' ? 'border-emerald-500 ring-2 ring-emerald-400/30' :
+                      dauTriResult === 'wrong' ? 'border-rose-500 ring-2 ring-rose-400/30' :
+                      'border-[#2b3353] focus:border-blue-500'
+                    }`}
+                    autoFocus
+                  />
+                  {dauTriResult === 'wrong' && (
+                    <div className="text-sm text-rose-400 font-medium text-center">Đáp án: <span className="text-white font-bold">{currentItem.word}</span> ({correctReading})</div>
+                  )}
+                  {dauTriResult === 'correct' && (
+                    <div className="text-sm text-emerald-400 font-bold text-center">⚡ Chính xác! +10 điểm</div>
+                  )}
+                </div>
+
+                <div className="flex justify-center gap-3">
+                  <button
+                    onClick={handleDauTriSubmit}
+                    className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm rounded-xl shadow-md active:scale-95 transition-all cursor-pointer"
+                  >
+                    {dauTriResult !== null ? 'Tiếp theo →' : 'Trả lời'}
+                  </button>
+                  {dauTriResult === null && (
+                    <button
+                      onClick={() => { setDauTriResult('wrong'); }}
+                      className="px-4 py-2.5 border border-[#2b3353] text-slate-400 hover:text-white text-sm rounded-xl transition-all cursor-pointer"
+                    >
+                      Bỏ qua
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* ===== KANJI DANCE MODE ===== */}
+          {selectedMode === 'kanjidance' && currentItem && (() => {
+            const correctReading = (currentItem.reading || currentItem.word).replace(/[ぁ-ん]/g, c => c);
+            const handleKdSubmit = () => {
+              if (kdResult !== null) { handleNext(); setKdInput(''); setKdResult(null); return; }
+              // Convert romaji input to hiragana for comparison
+              const input = kdInput.trim().toLowerCase();
+              const readingHira = currentItem.reading || currentItem.word;
+              // Simple check: either exact match or romaji converts to reading
+              const isOk = input === readingHira || input === currentItem.word;
+              setKdResult(isOk ? 'correct' : 'wrong');
+              if (isOk) { setKdScore(s => s + 167); setKdCombo(c => c + 1); setKdDancing(true); setTimeout(() => setKdDancing(false), 800); }
+              else setKdCombo(0);
+            };
+            return (
+              <div className="space-y-4 w-full max-w-2xl mx-auto">
+                {/* Header bar */}
+                <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2 text-xs text-slate-400 font-medium">
+                    <span>🎵</span>
+                    <span className="font-bold text-slate-300">Kanji Dance</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs font-mono">
+                    <span className="text-slate-300">Điểm <span className="text-yellow-400 font-bold">{kdScore}</span></span>
+                    <span className="text-slate-300">Combo <span className="text-orange-400 font-bold">{kdCombo}</span></span>
+                  </div>
+                </div>
+
+                {/* Stage with stick figures */}
+                <div className="bg-white rounded-2xl border border-slate-200 p-4 relative overflow-hidden" style={{minHeight: 200}}>
+                  <div className="flex items-end justify-around h-32">
+                    {/* Stick figure 1 */}
+                    <div className={`flex flex-col items-center transition-all ${kdDancing ? 'translate-y-[-8px]' : ''}`}>
+                      <svg width="44" height="80" viewBox="0 0 44 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="22" cy="10" r="8" stroke="#222" strokeWidth="2"/>
+                        <line x1="22" y1="18" x2="22" y2="50" stroke="#222" strokeWidth="2"/>
+                        <line x1="22" y1="28" x2="8" y2="38" stroke="#222" strokeWidth="2"/>
+                        <line x1="22" y1="28" x2="36" y2={kdDancing ? "30" : "38"} stroke="#222" strokeWidth="2"/>
+                        <line x1="22" y1="50" x2="10" y2="70" stroke="#222" strokeWidth="2"/>
+                        <line x1="22" y1="50" x2="34" y2="70" stroke="#222" strokeWidth="2"/>
+                        <circle cx="10" cy="8" r="5" fill="none" stroke="#555" strokeWidth="1.5"/>
+                      </svg>
+                    </div>
+                    {/* Center figure (you) */}
+                    <div className={`flex flex-col items-center transition-all duration-200 ${kdDancing ? 'translate-y-[-16px] rotate-6' : ''}`}>
+                      <svg width="52" height="90" viewBox="0 0 52 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="26" cy="11" r="9" stroke="#1a56db" strokeWidth="2.5" fill="#dbeafe"/>
+                        <line x1="26" y1="20" x2="26" y2="58" stroke="#1a56db" strokeWidth="2.5"/>
+                        <line x1="26" y1="32" x2="8" y2={kdDancing ? "22" : "42"} stroke="#1a56db" strokeWidth="2.5"/>
+                        <line x1="26" y1="32" x2="44" y2={kdDancing ? "22" : "42"} stroke="#1a56db" strokeWidth="2.5"/>
+                        <line x1="26" y1="58" x2="12" y2="80" stroke="#1a56db" strokeWidth="2.5"/>
+                        <line x1="26" y1="58" x2="40" y2="80" stroke="#1a56db" strokeWidth="2.5"/>
+                      </svg>
+                      <span className="text-[10px] text-blue-600 font-bold">Bạn</span>
+                    </div>
+                    {/* Stick figure 3 */}
+                    <div className={`flex flex-col items-center transition-all ${kdDancing ? 'translate-y-[-6px]' : ''}`}>
+                      <svg width="44" height="80" viewBox="0 0 44 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="22" cy="10" r="8" stroke="#222" strokeWidth="2"/>
+                        <line x1="22" y1="18" x2="22" y2="50" stroke="#222" strokeWidth="2"/>
+                        <line x1="22" y1="28" x2="36" y2="38" stroke="#222" strokeWidth="2"/>
+                        <line x1="22" y1="28" x2="8" y2={kdDancing ? "30" : "38"} stroke="#222" strokeWidth="2"/>
+                        <line x1="22" y1="50" x2="10" y2="70" stroke="#222" strokeWidth="2"/>
+                        <line x1="22" y1="50" x2="34" y2="70" stroke="#222" strokeWidth="2"/>
+                        <rect x="13" y="3" width="18" height="10" rx="2" fill="none" stroke="#555" strokeWidth="1.5"/>
+                      </svg>
+                    </div>
+                  </div>
+                  {kdResult === 'correct' && (
+                    <div className="absolute top-2 left-1/2 -translate-x-1/2 text-yellow-500 font-bold text-lg animate-bounce">⚡ +{167}</div>
+                  )}
+
+                  {/* Leaderboard mini */}
+                  <div className="absolute right-3 top-3 bg-black/80 text-white text-[10px] rounded-lg p-2 space-y-0.5">
+                    <div className="text-yellow-400 font-bold text-[10px]">🏆 BXH</div>
+                    <div>🥇 Luffy <span className="text-yellow-400">2,799</span></div>
+                    <div>🥈 Nobita <span className="text-slate-300">2,079</span></div>
+                    <div>🥉 Bạn <span className="text-blue-400">{kdScore}</span></div>
+                  </div>
+                </div>
+
+                {/* Word + input overlay */}
+                <div className="bg-[#1a1a2e] rounded-2xl border border-[#2b3353] p-5 space-y-3">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="text-3xl font-bold text-white">{currentItem.word}</span>
+                    <span className="text-slate-400 text-sm">{currentItem.meaning}</span>
+                  </div>
+                  {kdResult === 'wrong' && (
+                    <div className="text-rose-400 text-sm">✗ Chưa đúng — Đáp án: <span className="text-white font-bold">{currentItem.reading || currentItem.word}</span></div>
+                  )}
+                  {kdResult === 'correct' && (
+                    <div className="text-emerald-400 text-sm font-bold">✓ {currentItem.reading} — nhấy tiếp!</div>
+                  )}
+                  <div className="flex gap-2">
+                    <input
+                      ref={kdInputRef}
+                      type="text"
+                      value={kdInput}
+                      onChange={e => { if (kdResult === null) setKdInput(e.target.value); }}
+                      onKeyDown={e => { if (e.key === 'Enter') handleKdSubmit(); }}
+                      placeholder="Gõ hiragana rồi Enter (vd: toshokan → としょかん)"
+                      className={`flex-1 px-4 py-2.5 rounded-xl border text-sm outline-none bg-[#0d1117] text-white transition-all ${
+                        kdResult === 'correct' ? 'border-emerald-500' : kdResult === 'wrong' ? 'border-rose-500' : 'border-[#2b3353] focus:border-blue-500'
+                      }`}
+                      autoFocus
+                    />
+                    <button
+                      onClick={handleKdSubmit}
+                      className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl transition-all cursor-pointer whitespace-nowrap"
+                    >
+                      {kdResult !== null ? 'Tiếp →' : 'Trả lời'}
+                    </button>
+                  </div>
+                  {kdResult === null && (
+                    <div className="text-[10px] text-slate-500">Nhấn Enter để trả lời</div>
+                  )}
+                </div>
+
+                {/* Stop button */}
+                <div className="flex justify-start">
+                  <button
+                    onClick={() => handleSwitchMode('flashcard')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-[#2b3353] text-slate-400 hover:text-white text-xs rounded-lg transition-all cursor-pointer"
+                  >
+                    ⏸ Dừng
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+
           </div>
         </div>
       </div>
@@ -4400,7 +4630,7 @@ if (loading) {
         <div className="flex items-center justify-between px-1">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Chế độ học:</span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-1 p-1 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
+        <div className="grid grid-cols-3 sm:grid-cols-7 gap-1 p-1 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
           <button 
             type="button"
             onClick={() => handleSwitchMode('flashcard')} 
@@ -4453,17 +4683,43 @@ if (loading) {
             <span className="truncate">Đọc hiểu</span>
           </button>
 
-          <button 
+          <button
             type="button"
-            onClick={() => handleSwitchMode('shadowing')} 
+            onClick={() => handleSwitchMode('shadowing')}
             className={`py-2 px-1 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 transition-all text-[11px] sm:text-xs font-bold cursor-pointer ${
-              selectedMode === 'shadowing' 
-                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30 ring-1 ring-rose-400/50' 
+              selectedMode === 'shadowing'
+                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30 ring-1 ring-rose-400/50'
                 : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
             }`}
           >
             <Music className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">Ghép câu</span>
+            <span className="truncate">Nghe đuôi</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSwitchMode('dautri')}
+            className={`py-2 px-1 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 transition-all text-[11px] sm:text-xs font-bold cursor-pointer ${
+              selectedMode === 'dautri'
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 ring-1 ring-indigo-400/50'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
+            }`}
+          >
+            <span className="text-sm">🧠</span>
+            <span className="truncate">Đầu trí</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSwitchMode('kanjidance')}
+            className={`py-2 px-1 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 transition-all text-[11px] sm:text-xs font-bold cursor-pointer ${
+              selectedMode === 'kanjidance'
+                ? 'bg-pink-600 text-white shadow-md shadow-pink-600/30 ring-1 ring-pink-400/50'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
+            }`}
+          >
+            <span className="text-sm">🎵</span>
+            <span className="truncate">Kanji Dance</span>
           </button>
         </div>
       </div>
