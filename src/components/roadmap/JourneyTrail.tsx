@@ -176,7 +176,7 @@ export default function JourneyTrail({
                   <small>
                     {day.checkpoint
                       ? "Mốc kiểm tra"
-                      : `${day.minutes} phút · 5 hoạt động`}
+                      : `Bài tập JLPT tổng hợp`}
                   </small>
                   <span>
                     {done
@@ -221,7 +221,7 @@ export default function JourneyTrail({
             <ShibaMascot pose={poses[selected.index]} size={110} animated />
           </div>
           <span className="trail-kicker">
-            CHẶNG {selected.index + 1} · {selected.minutes} PHÚT
+            CHẶNG {selected.index + 1} · LUYỆN DẠNG ĐỀ
           </span>
           <h3>Ngày {selectedDay}</h3>
           <p>{selected.chapter.name}</p>
@@ -234,19 +234,16 @@ export default function JourneyTrail({
             </p>
           </div>
           <ol className="trail-day-tasks">
-            {selected.tasks.map((task) => (
-              <li key={task.id}>
-                <b>{task.label}</b>
-                <span>{task.text}</span>
-                <small>{task.minutes} phút</small>
-              </li>
-            ))}
+            <li><b>文字・語彙</b><span>Cách đọc, từ vựng và ngữ cảnh</span></li>
+            <li><b>文法</b><span>Chọn mẫu câu, sắp xếp ★ và đoạn văn</span></li>
+            <li><b>読解</b><span>Đọc nội dung và tìm thông tin</span></li>
+            <li><b>聴解</b><span>Nghe hội thoại và chọn phản hồi</span></li>
           </ol>
           <button
             className="journey-primary"
             onClick={() => onPractice(selectedDay)}
           >
-            {plan.completedDays.includes(selectedDay) ? "Ôn lại" : "Học"} ngày{" "}
+            {plan.completedDays.includes(selectedDay) ? "Ôn lại" : "Làm bài"} ngày{" "}
             {selectedDay}
             <ArrowRight size={16} />
           </button>

@@ -1,28 +1,37 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { roadmapLesson, dailySlice, quizChoices } from '../src/data/roadmapLessons.ts';
+import { existsSync } from 'node:fs';
+import { dailyExercises, EXERCISE_TYPES, exerciseText } from '../src/data/roadmapExercises.ts';
 
-test('daily lesson is stable, changes by day and never mixes JLPT levels', () => {
-  for (const level of ['N5','N4','N3','N2','N1']) {
-    const lesson = roadmapLesson(level, 1);
-    assert.ok(lesson.words.length > 0 && lesson.grammar.length > 0 && lesson.kanji.length > 0);
-    assert.deepEqual(lesson, roadmapLesson(level, 1));
-    for (const category of ['words','grammar','kanji']) {
-      assert.ok(lesson[category].every(item => item.level === level));
-      assert.equal(new Set(lesson[category].map(item => item.id)).size, lesson[category].length);
+test('all levels get distinct question types and all four JLPT sections',()=>{
+  for(const level of ['N5','N4','N3','N2','N1']) {
+    const items=dailyExercises(level,1);
+    assert.ok(new Set(items.map(q=>q.type)).size>=9);
+    assert.deepEqual([...new Set(items.map(q=>q.section))],['moji-goi','bunpou','dokkai','choukai']);
+    assert.equal(new Set(items.map(q=>q.id)).size,items.length);
+    if(level==='N1')assert.ok(items.every(q=>q.type!=='spelling'));
+    if(level==='N5')assert.ok(items.every(q=>q.type!=='usage'));
+  }
+});
+test('all 90 days have answerable questions, full context and existing local assets',()=>{
+  for(const level of ['N5','N4','N3','N2','N1']) for(let day=1;day<=90;day++) {
+    for(const q of dailyExercises(level,day)) {
+      assert.ok(EXERCISE_TYPES[q.type]);
+      assert.ok(q.options.length>=3 && q.correctIndex>=0 && q.correctIndex<q.options.length);
+      assert.equal(new Set(q.options).size,q.options.length);
+      assert.ok(!q.question.includes('...')||q.contextPassage);
+      if(q.section==='choukai')assert.ok(q.audioUrl||q.audioScript||q.audioTrack);
+      for(const asset of [q.imageUrl,q.audioUrl])if(asset?.startsWith('/'))assert.ok(existsSync(new URL('../public'+asset,import.meta.url)),asset);
     }
   }
-  assert.notDeepEqual(roadmapLesson('N5',1).words, roadmapLesson('N5',2).words);
 });
-test('short and empty datasets cannot produce undefined or duplicate items', () => {
-  assert.deepEqual(dailySlice([], 60, 8), []);
-  assert.deepEqual(dailySlice(['a','b'], 60, 8).sort(), ['a','b']);
-});
-test('answer appears exactly once and distractors are distinct', () => {
-  for (let day=1; day<=90; day++) {
-    const options=quizChoices('correct',['correct','wrong','wrong','','other','third'],day);
-    assert.equal(options.filter(x=>x==='correct').length,1);
-    assert.equal(new Set(options).size,options.length);
-    assert.equal(options.length,4);
+test('daily selection is repeatable, rotates questions and preserves answers after option rotation',()=>{
+  assert.deepEqual(dailyExercises('N4',10),dailyExercises('N4',10));
+  assert.notDeepEqual(dailyExercises('N4',1).map(q=>q.id),dailyExercises('N4',2).map(q=>q.id));
+  const first=dailyExercises('N1',1).find(q=>q.id==='practice-N1-text');
+  for(let day=2;day<=90;day++) {
+    const q=dailyExercises('N1',day).find(q=>q.id===first.id);
+    assert.equal(q.options[q.correctIndex],first.options[first.correctIndex]);
   }
+  assert.equal(exerciseText('A\\nB\\\\nC'),'A\nB\nC');
 });

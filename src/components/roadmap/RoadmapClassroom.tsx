@@ -1,116 +1,77 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { BookOpen, Check, Headphones, RotateCcw, Volume2 } from 'lucide-react';
-import type { JLPTLevel, LessonReadingData, LessonReadingQuiz, TodaiNewsItem } from '../../types';
-import { roadmapLesson, quizChoices } from '../../data/roadmapLessons';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Check, ChevronLeft, ChevronRight, Headphones, RotateCcw, Send, Volume2 } from 'lucide-react';
+import type { JLPTLevel } from '../../types';
+import { dailyExercises, EXERCISE_TYPES, exerciseText } from '../../data/roadmapExercises';
 import { speakJapanese, stopJapaneseSpeech } from '../../utils/audio';
-import { safeFetchJson } from '../../utils/safeApi';
 import { showLearningFeedback } from '../../utils/learningMotion';
 import ShibaMascot from '../mascot/ShibaMascot';
-import JapaneseFuriganaText from '../JapaneseFuriganaText';
 import './classroom.css';
-export type ClassroomTab = 'words' | 'grammar' | 'kanji' | 'reading' | 'listening' | 'review';
-const tabs: [
-    ClassroomTab,
-    string
-][] = [['words', 'Từ vựng'], ['grammar', 'Ngữ pháp'], ['kanji', 'Kanji'], ['reading', 'Đọc hiểu'], ['listening', 'Nghe'], ['review', 'Bài tập']];
-function Quiz({ questions, onComplete }: {
-    questions: LessonReadingQuiz[];
-    onComplete?: () => void;
-}) {
-    const [answers, setAnswers] = useState<Record<number, number>>({});
-    const [graded, setGraded] = useState(false);
-    if (!questions.length)
-        return <p>Chưa có câu hỏi cho nội dung này.</p>;
-    const score = questions.filter((q, i) => answers[i] === q.correctIndex).length;
-    return <div className="classroom-quiz">
-    {questions.map((q, i) => <fieldset key={i}><legend>{i + 1}. {q.question}</legend><div className="classroom-options">{q.options.map((option, j) => <button type="button" key={j} aria-pressed={answers[i] === j} disabled={graded} className={graded ? j === q.correctIndex ? 'answer-correct' : answers[i] === j ? 'answer-wrong' : '' : answers[i] === j ? 'answer-selected' : ''} onClick={() => setAnswers(a => ({ ...a, [i]: j }))}>{option}{graded && j === q.correctIndex && <Check size={16}/>}</button>)}</div>{graded && <p>{answers[i] === q.correctIndex ? 'Đúng' : 'Cần ôn lại'} · {q.explanation}</p>}</fieldset>)}
-    {!graded ? <button className="classroom-primary" disabled={Object.keys(answers).length !== questions.length} onClick={() => { setGraded(true); showLearningFeedback(score === questions.length ? 'correct' : 'incorrect'); if (score === questions.length)
-        onComplete?.(); }}>Kiểm tra đáp án</button> : <div role="status"><strong>{score}/{questions.length} câu đúng</strong><button onClick={() => { setAnswers({}); setGraded(false); }}><RotateCcw size={16}/>Làm lại</button></div>}
-  </div>;
-}
-function ReadingLesson({ level, day, onComplete }: {
+const sections = { 'moji-goi': '文字・語彙 · Từ vựng', bunpou: '文法 · Ngữ pháp', dokkai: '読解 · Đọc hiểu', choukai: '聴解 · Nghe hiểu' };
+export default function RoadmapClassroom({ level, day, storageKey, onComplete }: {
     level: JLPTLevel;
     day: number;
+    storageKey: string;
     onComplete: () => void;
 }) {
-    const [articles, setArticles] = useState<TodaiNewsItem[]>([]);
-    const [lesson, setLesson] = useState<LessonReadingData | null>(null);
-    const [busy, setBusy] = useState(true);
-    const [error, setError] = useState('');
-    const [translation, setTranslation] = useState(false);
-    const [furigana, setFurigana] = useState(true);
-    useEffect(() => { let alive = true; safeFetchJson<{
-        articles: TodaiNewsItem[];
-    }>('/api/reading/todai/news-list').then(r => { if (!alive)
-        return; if (!r.ok)
-        throw new Error(r.error || 'Không tải được bài đọc'); const all = r.data?.articles || []; const matched = all.filter(a => a.jlptLevel === level); setArticles(matched.length ? matched : all); }).catch(e => { if (alive)
-        setError(e.message); }).finally(() => { if (alive)
-        setBusy(false); }); return () => { alive = false; }; }, [level]);
-    const load = async (article: TodaiNewsItem) => { setBusy(true); setError(''); try {
-        const r = await safeFetchJson<LessonReadingData>('/api/reading/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sourceUrl: article.url, level, questionCount: 3 }) });
-        if (!r.ok || !r.data?.japanesePassage)
-            throw new Error(r.error || 'Không tải được bài đọc');
-        setLesson(r.data);
+    const questions = useMemo(() => dailyExercises(level, day), [level, day]);
+    const fingerprint = JSON.stringify(questions.map(q => [q.id, q.question, q.options, q.correctIndex]));
+    const key = `roadmap-exercises-v1:${storageKey}:${level}:${day}`;
+    const [restored] = useState(() => { try {
+        const value = JSON.parse(localStorage.getItem(key) || 'null');
+        if (value?.fingerprint === fingerprint)
+            return value;
     }
-    catch (e) {
-        setError(e instanceof Error ? e.message : 'Không tải được bài đọc');
+    catch { } return null; });
+    const [answers, setAnswers] = useState<Record<string, number>>(() => { const safe: Record<string, number> = {}; for (const q of questions) {
+        const a = restored?.answers?.[q.id];
+        if (Number.isInteger(a) && a >= 0 && a < q.options.length)
+            safe[q.id] = a;
+    } return safe; });
+    const [graded, setGraded] = useState(!!restored?.graded && questions.length > 0 && questions.every(q => Number.isInteger(restored?.answers?.[q.id]) && restored.answers[q.id] >= 0 && restored.answers[q.id] < q.options.length));
+    const [index, setIndex] = useState(0);
+    const [playing, setPlaying] = useState(false);
+    const [audioFailed, setAudioFailed] = useState(false);
+    const [audioMessage, setAudioMessage] = useState('');
+    const [saveMessage, setSaveMessage] = useState('');
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const notified = useRef(false);
+    const headingRef = useRef<HTMLHeadingElement>(null);
+    const q = questions[index];
+    const count = Object.keys(answers).length;
+    const correct = questions.filter(item => answers[item.id] === item.correctIndex).length;
+    useEffect(() => { try {
+        localStorage.setItem(key, JSON.stringify({ fingerprint, answers, graded }));
+        setSaveMessage('');
     }
-    finally {
-        setBusy(false);
-    } };
-    return <div>{error && <p role="alert">{error}</p>}{busy && <p role="status">Đang tải bài và câu hỏi…</p>}{!lesson ? <><p>Chọn bài để đọc và trả lời ngay tại ngày {day}. Mức của bài gốc được ghi trên từng thẻ.</p><div className="classroom-cards">{articles.slice(((day - 1) % Math.max(1, Math.ceil(articles.length / 6))) * 6).slice(0, 6).map(a => <button disabled={busy} key={a.id} onClick={() => load(a)}><BookOpen size={20}/><strong>{a.titleJp}</strong><span>{a.titleVi}</span><small>{a.jlptLevel || 'Chưa phân loại'} · {a.prepared ? 'Đã chuẩn bị' : 'Chuẩn bị khi mở'}</small></button>)}</div>{!busy && !articles.length && !error && <p>Chưa có bài nguồn. Hãy thử lại sau.</p>}</> : <><button onClick={() => setLesson(null)}>Chọn bài khác</button><h3>{lesson.title}</h3><button aria-pressed={furigana} onClick={() => setFurigana(!furigana)}>{furigana ? 'Ẩn' : 'Xem'} furigana</button><p className="classroom-passage" lang="ja"><JapaneseFuriganaText key={String(furigana)} sentence={lesson.furiganaPassage || lesson.japanesePassage} showFurigana={furigana} forceDark size="lg"/></p><button aria-pressed={translation} onClick={() => setTranslation(!translation)}>{translation ? 'Ẩn' : 'Xem'} bản dịch</button>{translation && <p className="classroom-passage">{lesson.vietnamesePassage}</p>}<p>{lesson.questionOrigin === 'source' ? 'Câu hỏi gốc từ nguồn' : 'Câu hỏi luyện tập do AI soạn'}</p><Quiz key={lesson.sourceUrl || lesson.title} questions={lesson.quizzes} onComplete={onComplete}/>{lesson.sourceUrl && <a href={lesson.sourceUrl} target="_blank" rel="noreferrer">Bài gốc</a>}</>}</div>;
-}
-export default function RoadmapClassroom({ level, day, tab, onTab, onComplete }: {
-    level: JLPTLevel;
-    day: number;
-    tab: ClassroomTab;
-    onTab: (tab: ClassroomTab) => void;
-    onComplete: (task: ClassroomTab) => void;
-}) {
-    const lesson = useMemo(() => roadmapLesson(level, day), [level, day]);
-    const [finished, setFinished] = useState<ClassroomTab[]>([]);
-    const finish = (id: ClassroomTab) => { const next = [...new Set([...finished, id])]; setFinished(next); if (id === 'words' || id === 'kanji') {
-        if (next.includes('words') && next.includes('kanji'))
-            onComplete('words');
-    }
-    else
-        onComplete(id); };
-    const [reveal, setReveal] = useState<Record<string, boolean>>({});
-    const [playing, setPlaying] = useState('');
-    const [rate, setRate] = useState(0.9);
-    useEffect(() => () => stopJapaneseSpeech(), [tab, day, level]);
-    useEffect(() => { setPlaying(''); }, [tab]);
-    const play = (text: string) => { setPlaying(text); speakJapanese(text, rate, () => setPlaying(''), { isSentence: true }); };
-    const wordQuiz = lesson.words.map((w, i) => { const options = quizChoices(w.meaning, lesson.wordPool.map(v => v.meaning), day + i); return { question: `${w.kanji}（${w.hiragana}） có nghĩa là gì?`, options, correctIndex: options.indexOf(w.meaning), explanation: `${w.exampleSentence} — ${w.exampleTranslation}` }; }).filter(q => q.options.length > 1);
-    const listenQuiz = lesson.words.filter(w => w.exampleSentence && w.exampleTranslation).slice(0, 3).map((w, i) => { const options = quizChoices(w.exampleTranslation, lesson.wordPool.map(v => v.exampleTranslation), day + i); return { question: `Đoạn nghe ${i + 1}: chọn nghĩa phù hợp.`, options, correctIndex: options.indexOf(w.exampleTranslation), explanation: `${w.exampleSentence} — ${w.exampleTranslation}` }; }).filter(q => q.options.length > 1);
-    return <section className="roadmap-classroom" aria-label={`Lớp học ngày ${day}`}>
-    <header><ShibaMascot pose="studying" size={72} animated={false}/><div><small>LỚP HỌC CỦA BẠN · {level}</small><h2>Học cùng Shiba · Ngày {day}</h2><p>Khám phá kiến thức, nghe và làm bài ngay tại đây.</p></div></header>
-    <div className="classroom-tabs" role="tablist" aria-label="Nội dung ngày học">{tabs.map(([id, label]) => <button id={`classroom-tab-${id}`} role="tab" aria-selected={tab === id} aria-controls={`classroom-panel-${id}`} key={id} onKeyDown={e => { const index = tabs.findIndex(([value]) => value === id); const direction = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (direction) {
-        e.preventDefault();
-        const next = tabs[(index + direction + tabs.length) % tabs.length][0];
-        onTab(next);
-        document.getElementById(`classroom-tab-${next}`)?.focus();
-    } }} tabIndex={tab === id ? 0 : -1} onClick={() => onTab(id)}>{label}</button>)}</div>
-    <div key={tab} className="classroom-panel" id={`classroom-panel-${tab}`} role="tabpanel" aria-labelledby={`classroom-tab-${tab}`}>
-      {tab === 'words' && <><h3>{lesson.words.length} từ hôm nay · nghe, nhớ, dùng trong câu</h3>{!lesson.words.length && <p>Chưa có dữ liệu từ vựng cho cấp độ này.</p>}<div className="classroom-cards">{lesson.words.map(w => <article key={w.id}><strong lang="ja">{w.kanji}</strong><span lang="ja">{w.hiragana}</span><button aria-label={`Nghe ${w.kanji}`} onClick={() => play(w.kanji)}><Volume2 size={17}/>Nghe từ</button><button aria-expanded={!!reveal[w.id]} onClick={() => setReveal(r => ({ ...r, [w.id]: !r[w.id] }))}>{reveal[w.id] ? 'Ẩn' : 'Xem'} nghĩa và ví dụ</button>{reveal[w.id] && <><b>{w.meaning}</b><p lang="ja">{w.exampleSentence}</p><p>{w.exampleTranslation}</p></>}</article>)}</div><Quiz questions={wordQuiz} onComplete={() => finish('words')}/></>}
-      {tab === 'grammar' && <>{!lesson.grammar.length && <p>Chưa có bài ngữ pháp cho cấp độ này.</p>}{lesson.grammar.map(g => <article className="classroom-grammar" key={g.id}><small>MẪU CÂU</small><h3>{g.structure}</h3><b>{g.meaning}</b><p>{g.explanation}</p><blockquote lang="ja">{g.exampleSentence}</blockquote><p>{g.exampleTranslation}</p><button onClick={() => play(g.exampleSentence)}><Volume2 size={17}/>Nghe ví dụ</button>{g.wordsToReorder?.length > 1 && <SentenceBuilder key={g.id} words={g.wordsToReorder} answer={g.correctSentence}/>}</article>)}{!!lesson.grammar.length && <button className="classroom-primary" onClick={() => finish('grammar')}>Đã học các mẫu câu hôm nay</button>}</>}
-      {tab === 'kanji' && <><div className="classroom-cards">{lesson.kanji.map(k => <article key={k.id}><strong className="classroom-glyph" lang="ja">{k.character}</strong><b>{k.meaning}</b><p>Âm On: {k.onyomi || '—'}<br />Âm Kun: {k.kunyomi || '—'}<br />{k.strokesCount} nét</p>{k.exampleWords.map((w, i) => <p key={i}><ruby>{w.word}<rt>{w.hiragana}</rt></ruby> — {w.meaning}</p>)}{k.mnemonic && <p>{k.mnemonic}</p>}</article>)}</div>{lesson.kanji.length ? <button className="classroom-primary" onClick={() => finish('kanji')}>Đã ôn kanji hôm nay</button> : <p>Chưa có kanji cho cấp độ này.</p>}</>}
-      {tab === 'reading' && <ReadingLesson level={level} day={day} onComplete={() => finish('reading')}/>}
-      {tab === 'listening' && <><h3><Headphones size={22}/>Nghe câu và chọn nghĩa</h3><p>Audio luyện tập đọc từ câu ví dụ. Nghe trước, kiểm tra bản chép sau khi làm bài.</p><label>Tốc độ <select value={rate} onChange={e => setRate(Number(e.target.value))}><option value={0.7}>Chậm</option><option value={0.9}>Vừa</option><option value={1}>Bình thường</option></select></label><div className="classroom-audio">{lesson.words.filter(w => w.exampleSentence && w.exampleTranslation).slice(0, 3).map((w, i) => <button key={w.id} onClick={() => play(w.exampleSentence)}><Volume2 size={18}/>{playing === w.exampleSentence ? 'Đang phát' : 'Nghe đoạn'} {i + 1}</button>)}<button onClick={() => { stopJapaneseSpeech(); setPlaying(''); }}>Dừng</button></div><Quiz questions={listenQuiz} onComplete={() => finish('listening')}/></>}
-      {tab === 'review' && <><h3>Kiểm tra kiến thức ngày {day}</h3><p>Ôn nghĩa từ, cách đọc kanji và mẫu câu đã học.</p><Quiz questions={[...wordQuiz.slice(0, 4), ...lesson.kanji.map((k, i) => { const options = quizChoices(k.meaning, lesson.kanji.map(x => x.meaning), day + i); return { question: `Kanji ${k.character} mang nghĩa gì?`, options, correctIndex: options.indexOf(k.meaning), explanation: `On: ${k.onyomi} · Kun: ${k.kunyomi}` }; }).filter(q => q.options.length > 1)]} onComplete={() => finish('review')}/>{lesson.grammar.map(g => <SentenceBuilder key={g.id} words={g.wordsToReorder || []} answer={g.correctSentence}/>)}</>}
-    </div>
-  </section>;
-}
-function SentenceBuilder({ words, answer }: {
-    words: string[];
-    answer: string;
-}) {
-    const shuffled = useMemo(() => words.map((text, id) => ({ text, id })).reverse(), [words]);
-    const [chosen, setChosen] = useState<number[]>([]);
-    const [checked, setChecked] = useState(false);
-    if (words.length < 2 || !answer)
-        return null;
-    const sentence = chosen.map(id => words[id]).join('');
-    const normalize = (s: string) => s.replace(/[\s。！？!?]/g, '');
-    return <div className="classroom-builder"><h4>Sắp xếp thành câu đúng</h4><div className="classroom-built" aria-live="polite">{chosen.map((id, i) => <button key={i} disabled={checked} onClick={() => setChosen(c => c.filter((_, j) => j !== i))}>{words[id]}</button>)}</div><div className="classroom-audio">{shuffled.map(w => <button key={w.id} disabled={checked || chosen.includes(w.id)} onClick={() => setChosen(c => [...c, w.id])}>{w.text}</button>)}</div><button disabled={chosen.length !== words.length || checked} onClick={() => setChecked(true)}>Kiểm tra câu</button><button onClick={() => { setChosen([]); setChecked(false); }}>Làm lại</button>{checked && <p role="status">{normalize(sentence) === normalize(answer) ? 'Đúng rồi!' : 'Câu đúng:'} {answer}</p>}</div>;
+    catch {
+        setSaveMessage('Trình duyệt không lưu được bài làm. Hãy hoàn thành trước khi đóng trang.');
+    } }, [answers, graded, key, fingerprint]);
+    useEffect(() => { if (graded && !notified.current) {
+        notified.current = true;
+        onComplete();
+    } if (!graded)
+        notified.current = false; }, [graded, onComplete]);
+    useEffect(() => { const audio = audioRef.current; setPlaying(false); setAudioFailed(false); setAudioMessage(''); return () => { audio?.pause(); stopJapaneseSpeech(); }; }, [index]);
+    const move = (next: number) => { setIndex(next); headingRef.current?.focus(); };
+    const replay = () => { setAudioMessage(''); speakJapanese(exerciseText(q.audioScript || ''), 1, () => setPlaying(false), { isSentence: true, onStatus: s => { setPlaying(s.state === 'playing'); if (s.state === 'failed')
+            setAudioMessage('Chưa phát được giọng đọc. Hãy thử lại hoặc chọn giọng khác trong cài đặt.'); } }); };
+    if (!q)
+        return <section className="roadmap-classroom"><p>Chưa có bộ bài tập cho cấp độ này.</p></section>;
+    const audioUrl = q.audioUrl || (q.audioTrack ? `/audio/${q.audioTrack.replace(/\.mp3$/, '')}.mp3` : '');
+    return <section className="roadmap-classroom exercise-classroom" aria-label={`Bài tập JLPT ngày ${day}`}>
+    <header><ShibaMascot pose={graded ? 'celebration' : 'studying'} size={72} animated={false}/><div><small>LUYỆN DẠNG ĐỀ JLPT · {level}</small><h2>Bài tập ngày {day}</h2><p>{questions.length} câu · {new Set(questions.map(item => item.type)).size} dạng bài · làm và chữa lỗi ngay tại đây.</p></div></header>
+    <div className="exercise-overview"><span>{graded ? `${correct}/${questions.length} câu đúng` : `Đã làm ${count}/${questions.length} câu`}</span><progress aria-label="Số câu đã trả lời" value={count} max={questions.length}/><small>Đề luyện theo dạng JLPT; kết quả là số câu đúng, không quy đổi thành điểm thi chính thức.</small></div>
+    <nav className="exercise-numbers" aria-label="Chọn câu hỏi">{questions.map((item, i) => <button key={item.id} aria-label={`Câu ${i + 1}: ${EXERCISE_TYPES[item.type].name}`} aria-current={i === index ? 'step' : undefined} className={graded ? answers[item.id] === item.correctIndex ? 'answer-correct' : 'answer-wrong' : answers[item.id] !== undefined ? 'answer-selected' : ''} onClick={() => move(i)}>{i + 1}</button>)}</nav>
+    <div className="classroom-panel"><div className="exercise-heading"><span>{sections[q.section]}</span><span>Câu {index + 1}/{questions.length}</span></div><h3 ref={headingRef} tabIndex={-1}>{EXERCISE_TYPES[q.type].name}</h3><p className="exercise-instruction">{EXERCISE_TYPES[q.type].instruction}</p>
+      {q.contextPassage && q.contextPassage !== q.question && <div className="classroom-passage" lang="ja">{q.contextPassage}</div>}
+      {q.readingPassage && q.readingPassage !== q.contextPassage && <div className="classroom-passage" lang="ja">{exerciseText(q.readingPassage)}</div>}
+      {q.section === 'choukai' && <div className="exercise-listening"><Headphones size={22}/><div><b>Nghe trước khi chọn đáp án</b>{audioUrl && !audioFailed ? <audio key={q.id} ref={audioRef} controls preload="none" src={audioUrl} onError={() => setAudioFailed(true)}/> : q.audioScript ? <><p>Giọng đọc hệ thống từ bản chép của câu hỏi.</p><button onClick={replay}><Volume2 size={18}/>{playing ? 'Phát lại' : 'Nghe câu hỏi'}</button><button onClick={() => { stopJapaneseSpeech(); setPlaying(false); }}>Dừng</button></> : <p role="alert">Chưa tải được audio cho câu này.</p>}{audioMessage && <p role="alert">{audioMessage}</p>}</div></div>}
+      {q.imageUrl && <img className="exercise-image" src={q.imageUrl} alt="Hình minh họa câu hỏi"/>}
+      {q.imageSvg && !q.imageUrl && <img className="exercise-image" src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(q.imageSvg)}`} alt="Hình minh họa câu hỏi"/>}
+      <p className="exercise-question" lang="ja">{q.question}</p><fieldset className="classroom-options"><legend className="sr-only">Chọn đáp án cho câu {index + 1}</legend>{q.options.map((option, i) => <button key={i} disabled={graded} aria-pressed={answers[q.id] === i} className={graded ? i === q.correctIndex ? 'answer-correct' : answers[q.id] === i ? 'answer-wrong' : '' : answers[q.id] === i ? 'answer-selected' : ''} onClick={() => setAnswers(old => ({ ...old, [q.id]: i }))}><span><b>{i + 1}.</b> {exerciseText(option)}</span>{graded && i === q.correctIndex && <Check size={18}/>}</button>)}</fieldset>
+      {graded && <div className={`exercise-explanation ${answers[q.id] === q.correctIndex ? 'answer-correct' : 'answer-wrong'}`} role="status"><b>{answers[q.id] === q.correctIndex ? 'Đúng rồi!' : 'Cần ôn lại'} · Đáp án {q.correctIndex + 1}</b><p>{q.explanation || q.hint || `Đáp án đúng: ${q.options[q.correctIndex]}`}</p>{q.audioScript && <details><summary>Xem bản chép đoạn nghe</summary><p lang="ja">{exerciseText(q.audioScript)}</p></details>}</div>}
+      <div className="exercise-navigation"><button disabled={index === 0} onClick={() => move(index - 1)}><ChevronLeft size={17}/>Câu trước</button><button disabled={index === questions.length - 1} onClick={() => move(index + 1)}>Câu tiếp<ChevronRight size={17}/></button></div>
+      {!graded ? <button className="classroom-primary exercise-submit" disabled={count !== questions.length} onClick={() => { audioRef.current?.pause(); stopJapaneseSpeech(); setGraded(true); showLearningFeedback(correct === questions.length ? 'correct' : 'incorrect'); }}><Send size={18}/>Nộp bài · {count}/{questions.length}</button> : <div className="exercise-results"><h3>Kết quả ngày {day}: {correct}/{questions.length}</h3><div className="exercise-section-results">{Object.entries(sections).map(([section, label]) => { const items = questions.filter(item => item.section === section); return items.length ? <p key={section}>{label}<b>{items.filter(item => answers[item.id] === item.correctIndex).length}/{items.length}</b></p> : null; })}</div><button onClick={() => { const wrong = questions.findIndex(item => answers[item.id] !== item.correctIndex); move(wrong >= 0 ? wrong : 0); }}>Xem lại câu sai</button><button onClick={() => { setAnswers({}); setGraded(false); move(0); }}><RotateCcw size={16}/>Làm lại cả bài</button></div>}
+      {saveMessage && <p role="alert">{saveMessage}</p>}
+    </div></section>;
 }
