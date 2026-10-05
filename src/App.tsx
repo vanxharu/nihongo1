@@ -69,6 +69,17 @@ const DEFAULT_PROFILE: UserProfile = {
   lastPosition: undefined
 };
 
+function ExamRouteScreen(props: React.ComponentProps<typeof DailyExamQuiz>) {
+  const { level } = useParams();
+  const routeLevel = level && /^n[1-5]$/i.test(level) ? level.toUpperCase() as JLPTLevel : undefined;
+  return <DailyExamQuiz {...props} userProfile={routeLevel ? { ...props.userProfile, targetLevel: routeLevel } : props.userProfile} />;
+}
+
+function ReadingRouteScreen(props: React.ComponentProps<typeof AiReadingPractice>) {
+  const { level } = useParams();
+  const routeLevel = level && /^n[1-5]$/i.test(level) ? level.toUpperCase() as JLPTLevel : undefined;
+  return <AiReadingPractice {...props} initialLevel={routeLevel || props.initialLevel} />;
+}
 export default function App() {
   const reducedMotion = useReducedMotion();
   const location = useLocation();
@@ -582,44 +593,6 @@ export default function App() {
     );
   }
 
-  function DailyExamQuizRouteWrapper() {
-    const { level } = useParams();
-
-    useEffect(() => {
-      if (level && ['n5', 'n4', 'n3', 'n2', 'n1'].includes(level.toLowerCase())) {
-        const upper = level.toUpperCase() as JLPTLevel;
-        if (activeProfile.targetLevel !== upper) {
-          updateProfile({ targetLevel: upper });
-        }
-      }
-    }, [level]);
-
-    return (
-      <DailyExamQuiz 
-        userProfile={validRouteLevel(level) ? { ...activeProfile, targetLevel:validRouteLevel(level)! } : activeProfile} 
-        updateProfile={updateProfile} 
-        onEarnXp={handleEarnXp} 
-      />
-    );
-  }
-
-  function AiReadingPracticeRouteWrapper() {
-    const { level } = useParams();
-    const activeLevel = level ? (level.toUpperCase() as JLPTLevel) : readingLessonState.level;
-
-    return (
-      <AiReadingPractice 
-        userProfile={activeProfile} 
-        updateProfile={updateProfile} 
-        onEarnXp={handleEarnXp} 
-        initialLevel={activeLevel}
-        initialLessonNumber={readingLessonState.lessonNumber}
-        initialCurriculum={readingLessonState.curriculum}
-        initialLessonId={readingLessonState.lessonId}
-      />
-    );
-  }
-
   const renderRoutes = () => (
     <Routes location={location}>
       {/* 1. Trang chủ / Trung tâm Luyện tập */}
@@ -688,14 +661,14 @@ export default function App() {
       <Route path="/cho/:examId" element={<Navigate to="/jlpt" replace />} />
 
       {/* 6. Luyện thi JLPT & Cấp độ JLPT */}
-      <Route path="/jlpt" element={<DailyExamQuizRouteWrapper />} />
-      <Route path="/jlpt/:level" element={<DailyExamQuizRouteWrapper />} />
+      <Route path="/jlpt" element={<ExamRouteScreen userProfile={activeProfile} updateProfile={updateProfile} onEarnXp={handleEarnXp} />} />
+      <Route path="/jlpt/:level" element={<ExamRouteScreen userProfile={activeProfile} updateProfile={updateProfile} onEarnXp={handleEarnXp} />} />
       <Route path="/jlpt/:level/listening" element={<Navigate to="/jlpt" replace />} />
       <Route path="/jlpt/:level/listening/:examId" element={<Navigate to="/jlpt" replace />} />
       <Route path="/jlpt/:level/vocabulary" element={<RoadmapVocabularyWrapper />} />
       <Route path="/jlpt/:level/grammar" element={<GrammarPracticeRouteWrapper />} />
       <Route path="/jlpt/:level/kanji" element={<RoadmapKanjiWrapper />} />
-      <Route path="/jlpt/:level/reading" element={<AiReadingPracticeRouteWrapper />} />
+      <Route path="/jlpt/:level/reading" element={<ReadingRouteScreen userProfile={activeProfile} updateProfile={updateProfile} onEarnXp={handleEarnXp} initialLevel={readingLessonState.level} initialLessonNumber={readingLessonState.lessonNumber} initialCurriculum={readingLessonState.curriculum} initialLessonId={readingLessonState.lessonId} />} />
 
       {/* 7. Lộ trình học tập */}
       <Route 
@@ -710,7 +683,7 @@ export default function App() {
       />
 
       {/* 8. Đọc hiểu & Tin tức */}
-      <Route path="/doc-hieu" element={<AiReadingPracticeRouteWrapper />} />
+      <Route path="/doc-hieu" element={<ReadingRouteScreen userProfile={activeProfile} updateProfile={updateProfile} onEarnXp={handleEarnXp} initialLevel={readingLessonState.level} initialLessonNumber={readingLessonState.lessonNumber} initialCurriculum={readingLessonState.curriculum} initialLessonId={readingLessonState.lessonId} />} />
 
       <Route path="/sach" element={<Navigate to="/" replace />} />
 

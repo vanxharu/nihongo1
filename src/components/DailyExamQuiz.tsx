@@ -48,6 +48,7 @@ import { ExamHistoryModal } from './ExamHistoryModal';
 import { PrintableExamBooklet } from './PrintableExamBooklet';
 import { showLearningFeedback } from '../utils/learningMotion';
 import { PdfExamBookletViewer } from './PdfExamBookletViewer';
+import StudyExperienceHero from './learning/StudyExperienceHero';
 
 const EXAM_PRAISES = [
   'Đỉnh nóc kịch trần! Bạn chọn chuẩn không cần chỉnh! 🎉',
@@ -510,11 +511,11 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
   const allExams: DailyExam[] = rawAllExams.map(ensureFullExamQuestions);
 
   // Filtering & Tab Navigation state
-  const [mainTab, setMainTab] = useState<'ai_builder' | 'pdf_practice' | 'library'>('ai_builder');
+  const [mainTab, setMainTab] = useState<'ai_builder' | 'pdf_practice' | 'library'>('library');
   const [examMainTab, setExamMainTab] = useState<'standard' | 'todaii' | 'ai_builder'>('standard');
   const [selectedLevel, setSelectedLevel] = useState<string>(userProfile.targetLevel || 'ALL');
   const [selectedYear, setSelectedYear] = useState<string>('ALL');
-  const [selectedCategory, setSelectedCategory] = useState<'ALL' | 'official_past' | 'mock_daily' | 'ai_generated'>('ai_generated');
+  const [selectedCategory, setSelectedCategory] = useState<'ALL' | 'official_past' | 'mock_daily' | 'ai_generated'>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showStructureInfo, setShowStructureInfo] = useState<boolean>(false);
 
@@ -966,226 +967,31 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     : null;
   const isPartTimeUp = currentQuestionPart ? (partTimes[currentQuestionPart] ?? 0) <= 0 : false;
 
-  // Top Navigation Tabs Bar for JLPT Module
-  const renderMainTabsHeader = () => (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-2 shadow-lg flex items-center justify-between gap-2 flex-wrap">
-      <div className="flex items-center gap-1.5 w-full sm:w-auto">
-        <button
-          onClick={() => {
-            setMainTab('ai_builder');
-            setShowPdfPractice(false);
-            setSelectedCategory('ai_generated');
-          }}
-          className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl font-black text-xs transition-all cursor-pointer flex items-center justify-center gap-2 ${
-            mainTab === 'ai_builder' && !showPdfPractice
-              ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md ring-1 ring-indigo-400/50'
-              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white'
-          }`}
-        >
-          <PenTool className="w-4 h-4 text-amber-300" />
-          <span>Soạn Đề Mới</span>
-        </button>
+  const renderMainTabsHeader = () => <>
+    <StudyExperienceHero kind="exam" level={userProfile.targetLevel || 'N4'} count={allExams.length} completed={userProfile.dailyTestResults?.length || 0} onHistory={() => setShowHistoryModal(true)} />
+    <nav className="study-nav" aria-label="Cách luyện thi">
+      {[
+        { id: 'library', title: 'Kho đề luyện', note: 'Chọn đề có sẵn và bắt đầu', icon: BookOpen },
+        { id: 'ai_builder', title: 'Tạo đề với AI', note: 'Soạn đề theo cấp độ của bạn', icon: PenTool },
+        { id: 'pdf_practice', title: 'Đề PDF của bạn', note: 'Tải đề và luyện trên trang giấy', icon: FileText }
+      ].map(item => <button key={item.id} type="button" aria-pressed={mainTab === item.id} onClick={() => { setMainTab(item.id as typeof mainTab); setShowPdfPractice(item.id === 'pdf_practice'); setSelectedCategory(item.id === 'ai_builder' ? 'ai_generated' : 'ALL'); }}><span className="study-nav-icon"><item.icon size={20} /></span><span><strong>{item.title}</strong><small>{item.note}</small></span></button>)}
+    </nav>
+    {!showPdfPractice && <div className="study-skill-strip" aria-label="Kỹ năng muốn luyện"><span>Luyện theo:</span>{(['ALL', 'moji-goi', 'bunpou', 'dokkai', 'choukai'] as ExamSectionMode[]).map(mode => <button key={mode} aria-pressed={lobbyPracticeMode === mode} onClick={() => setLobbyPracticeMode(mode)}>{mode === 'ALL' ? 'Toàn bộ đề' : JLPT_SECTION_METAS[mode].shortName}</button>)}</div>}
+  </>;
 
-        <button
-          onClick={() => {
-            setMainTab('pdf_practice');
-            setShowPdfPractice(true);
-          }}
-          className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl font-black text-xs transition-all cursor-pointer flex items-center justify-center gap-2 ${
-            mainTab === 'pdf_practice' || showPdfPractice
-              ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md ring-1 ring-indigo-400/50'
-              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white'
-          }`}
-        >
-          <FileText className="w-4 h-4 text-sky-300" />
-          <span>📄 Import PDF & Làm Bài</span>
-        </button>
-
-        <button
-          onClick={() => {
-            setMainTab('library');
-            setShowPdfPractice(false);
-            setSelectedCategory('ALL');
-          }}
-          className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl font-black text-xs transition-all cursor-pointer flex items-center justify-center gap-2 ${
-            mainTab === 'library' && !showPdfPractice
-              ? 'bg-gradient-to-r from-indigo-600 to-indigo-500 text-white shadow-md ring-1 ring-indigo-400/50'
-              : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800 hover:text-white'
-          }`}
-        >
-          <BookOpen className="w-4 h-4 text-emerald-300" />
-          <span>📚 Kho Đề Thi ({allExams.length})</span>
-        </button>
-      </div>
-
-      <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 ml-auto hidden sm:flex">
-        <span className="text-[11px] text-slate-500">Mục tiêu:</span>
-        <span className="px-2.5 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-lg font-mono font-bold">
-          JLPT {userProfile.targetLevel || 'N4'}
-        </span>
-      </div>
-    </div>
-  );
-
-  // Helper function to render exam card
   const renderExamCard = (exam: DailyExam) => {
-    const levelColor = 
-      exam.level === 'N1' ? 'bg-rose-500 text-white' :
-      exam.level === 'N2' ? 'bg-amber-500 text-white' :
-      exam.level === 'N3' ? 'bg-emerald-600 text-white' :
-      exam.level === 'N4' ? 'bg-sky-600 text-white' :
-      'bg-indigo-600 text-white';
-
-    const mojiGoiCount = exam.questions.filter(q => q.section === 'moji-goi').length;
-    const bunpouCount = exam.questions.filter(q => q.section === 'bunpou').length;
-    const dokkaiCount = exam.questions.filter(q => q.section === 'dokkai').length;
-    const choukaiCount = exam.questions.filter(q => q.section === 'choukai').length;
-
-    const isSingleSectionMode = lobbyPracticeMode !== 'ALL';
-    const currentSelectedMeta = JLPT_SECTION_METAS[lobbyPracticeMode];
-    const activeSectionQuestionCount = isSingleSectionMode
-      ? exam.questions.filter(q => q.section === lobbyPracticeMode).length
-      : exam.questions.length;
-    const activeSectionStandardMinutes = isSingleSectionMode
-      ? Math.round(getSectionStandardDuration(lobbyPracticeMode, exam.level) / 60)
-      : exam.durationMinutes;
-
-    return (
-      <div
-        key={exam.id}
-        className="bg-slate-900 border border-slate-800 hover:border-indigo-500/60 rounded-2xl p-4 shadow-md transition-all flex flex-col justify-between space-y-3 group"
-      >
-        <div className="space-y-3">
-          {/* Top Badges */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <span className={`px-2 py-0.5 rounded-md text-[11px] font-black tracking-wide ${levelColor}`}>
-                {exam.level}
-              </span>
-              <span className="px-2 py-0.5 rounded-md bg-slate-800/80 text-slate-300 text-[10px] font-semibold font-mono border border-slate-700/50">
-                {exam.session || (exam.year ? `Năm ${exam.year}` : 'Luyện tập')}
-              </span>
-            </div>
-            <div className="flex items-center gap-1 text-[11px] text-slate-400 font-medium">
-              <span>{activeSectionQuestionCount} câu</span>
-              <span>•</span>
-              <span>{activeSectionStandardMinutes}p</span>
-            </div>
-          </div>
-
-          {/* Title */}
-          <h3 className="font-bold text-slate-100 group-hover:text-indigo-400 text-sm leading-snug line-clamp-2 transition-colors">
-            {exam.title}
-          </h3>
-
-          {/* Compact Skill Distribution Bar */}
-          <div className="pt-2 border-t border-slate-800 space-y-1.5">
-            <div className="flex items-center justify-between text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
-              <span>Kỹ năng & số câu:</span>
-              {isSingleSectionMode && (
-                <span className="text-indigo-400 font-bold normal-case">
-                  Lọc: {currentSelectedMeta.shortName}
-                </span>
-              )}
-            </div>
-
-            <div className="grid grid-cols-4 gap-1 text-[11px]">
-              {/* Moji-goi chip */}
-              <button
-                type="button"
-                onClick={() => handleStartExam(exam, 'moji-goi')}
-                disabled={mojiGoiCount === 0}
-                title={`Thi lẻ Từ vựng (${mojiGoiCount} câu)`}
-                className={`py-1 px-1 rounded-lg text-center transition-all cursor-pointer border ${
-                  lobbyPracticeMode === 'moji-goi'
-                    ? 'bg-indigo-600/30 text-indigo-300 border-indigo-500 font-bold shadow-2xs'
-                    : 'bg-slate-800/60 hover:bg-slate-700/80 text-slate-300 border-slate-700/60 hover:border-slate-600'
-                } ${mojiGoiCount === 0 ? 'opacity-30 cursor-not-allowed' : ''}`}
-              >
-                <span className="block text-[10px] text-slate-400 truncate">Từ vựng</span>
-                <span className="font-bold font-mono text-xs">{mojiGoiCount}</span>
-              </button>
-
-              {/* Bunpou chip */}
-              <button
-                type="button"
-                onClick={() => handleStartExam(exam, 'bunpou')}
-                disabled={bunpouCount === 0}
-                title={`Thi lẻ Ngữ pháp (${bunpouCount} câu)`}
-                className={`py-1 px-1 rounded-lg text-center transition-all cursor-pointer border ${
-                  lobbyPracticeMode === 'bunpou'
-                    ? 'bg-indigo-600/30 text-indigo-300 border-indigo-500 font-bold shadow-2xs'
-                    : 'bg-slate-800/60 hover:bg-slate-700/80 text-slate-300 border-slate-700/60 hover:border-slate-600'
-                } ${bunpouCount === 0 ? 'opacity-30 cursor-not-allowed' : ''}`}
-              >
-                <span className="block text-[10px] text-slate-400 truncate">Ngữ pháp</span>
-                <span className="font-bold font-mono text-xs">{bunpouCount}</span>
-              </button>
-
-              {/* Dokkai chip */}
-              <button
-                type="button"
-                onClick={() => handleStartExam(exam, 'dokkai')}
-                disabled={dokkaiCount === 0}
-                title={`Thi lẻ Đọc hiểu (${dokkaiCount} câu)`}
-                className={`py-1 px-1 rounded-lg text-center transition-all cursor-pointer border ${
-                  lobbyPracticeMode === 'dokkai'
-                    ? 'bg-indigo-600/30 text-indigo-300 border-indigo-500 font-bold shadow-2xs'
-                    : 'bg-slate-800/60 hover:bg-slate-700/80 text-slate-300 border-slate-700/60 hover:border-slate-600'
-                } ${dokkaiCount === 0 ? 'opacity-30 cursor-not-allowed' : ''}`}
-              >
-                <span className="block text-[10px] text-slate-400 truncate">Đọc hiểu</span>
-                <span className="font-bold font-mono text-xs">{dokkaiCount}</span>
-              </button>
-
-              {/* Choukai chip */}
-              <button
-                type="button"
-                onClick={() => handleStartExam(exam, 'choukai')}
-                disabled={choukaiCount === 0}
-                title={`Thi lẻ Nghe hiểu (${choukaiCount} câu)`}
-                className={`py-1 px-1 rounded-lg text-center transition-all cursor-pointer border ${
-                  lobbyPracticeMode === 'choukai'
-                    ? 'bg-indigo-600/30 text-indigo-300 border-indigo-500 font-bold shadow-2xs'
-                    : 'bg-slate-800/60 hover:bg-slate-700/80 text-slate-300 border-slate-700/60 hover:border-slate-600'
-                } ${choukaiCount === 0 ? 'opacity-30 cursor-not-allowed' : ''}`}
-              >
-                <span className="block text-[10px] text-slate-400 truncate">Nghe hiểu</span>
-                <span className="font-bold font-mono text-xs">{choukaiCount}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Start Buttons */}
-        <div className="flex items-center gap-2 pt-1">
-          <button
-            onClick={() => handleStartExam(exam, lobbyPracticeMode, 'booklet_pdf')}
-            className="flex-1 py-2 px-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
-            title="Vào làm trên Đề Giấy Thi Thật chuẩn JLPT (vẽ bút, highlight, ghi chú, khoanh đáp án)"
-          >
-            <span>📜</span>
-            <span className="truncate">
-              {isSingleSectionMode ? `Thi ${currentSelectedMeta.shortName} (Đề giấy)` : 'Làm Đề Giấy (PDF & Bút)'}
-            </span>
-            <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-          </button>
-
-          <button
-            onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}
-            className="py-2 px-3 bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700/80 font-semibold text-xs rounded-xl transition cursor-pointer flex items-center justify-center gap-1 shrink-0"
-            title="Làm dạng trắc nghiệm từng câu"
-          >
-            <span>📱</span>
-            <span className="hidden sm:inline">Trắc nghiệm</span>
-          </button>
-        </div>
-      </div>
-    );
+    const questions = lobbyPracticeMode === 'ALL' ? exam.questions : exam.questions.filter(q => q.section === lobbyPracticeMode);
+    const minutes = lobbyPracticeMode === 'ALL' ? exam.durationMinutes : Math.round(getSectionStandardDuration(lobbyPracticeMode, exam.level) / 60);
+    return <article key={exam.id} className="study-exam-card">
+      <div className="study-exam-card-top"><span className="study-level">JLPT {exam.level}</span><small>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</small></div>
+      <h3>{exam.title}</h3>
+      <div className="study-exam-spec"><span><FileText size={15} />{questions.length} câu</span><span><Clock size={15} />{minutes} phút</span></div>
+      <div className="study-exam-skills">{(['moji-goi','bunpou','dokkai','choukai'] as const).map(section => { const n = exam.questions.filter(q => q.section === section).length; return n > 0 && <span key={section}>{JLPT_SECTION_METAS[section].shortName} · {n}</span>; })}</div>
+      <div className="study-exam-actions"><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}>Bắt đầu luyện <span aria-hidden="true">↗</span></button><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'booklet_pdf')}>Đề giấy</button></div>
+    </article>;
   };
-
   return (
-    <div className="max-w-6xl mx-auto px-2 sm:px-4 py-2 sm:py-3 select-none space-y-3">
+    <div className="study-exam select-none space-y-5">
       
       {!isPlaying ? (
         <div className="space-y-4">
@@ -1223,7 +1029,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                       </span>
                     </div>
                     <h2 className="text-base sm:text-lg font-black text-white">
-                      Tự Động Soạn Đề Thi JLPT Chuẩn Cấu Trúc
+                      Tạo một đề luyện dành cho bạn
                     </h2>
                     <p className="text-xs text-slate-300">
                       Hệ thống tự động tổng hợp Từ vựng, Ngữ pháp, Đọc hiểu &amp; Nghe hiểu chuẩn khung thi thực tế.
@@ -1319,7 +1125,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                   </h3>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <div className="study-exam-grid">
                   {aiGeneratedExams.length === 0 ? (
                     <div className="col-span-full py-12 text-center bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
                       <BookOpen className="w-10 h-10 text-indigo-400/60 mx-auto mb-2" />
@@ -1337,7 +1143,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
           ) : (
             /* TAB 3: EXAM LIBRARY (KHO ĐỀ THI JLPT) */
             <div className="space-y-3 animate-fade-in">
-              <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3 shadow-md space-y-3">
+              <div className="study-filter-panel space-y-4">
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
                   <div className="relative flex-1">
                     <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -1399,7 +1205,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
               </div>
 
               {/* Exam Grid Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="study-exam-grid">
                 {filteredExams.length === 0 ? (
                   <div className="col-span-full py-10 text-center bg-slate-900 border border-slate-800 rounded-2xl p-6">
                     <BookOpen className="w-8 h-8 text-indigo-400/60 mx-auto mb-1" />
@@ -1500,7 +1306,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${submittedViewTab === 'certificate' ? 'bg-[#1F2639] text-[#FDF1E2] shadow-xs' : 'text-[#1F2639] hover:bg-[#F4EDE2]'}`}
                 >
                   <ShieldCheck className="w-4 h-4 text-[#F4A643]" />
-                  📜 Bảng điểm JLPT chính thức (合否結果通知書)
+                  📜 Kết quả bài luyện JLPT
                 </button>
                 <button
                   onClick={() => setSubmittedViewTab('review')}
@@ -1536,7 +1342,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
               userAnswers={userAnswers}
               userProfile={userProfile}
               selectedSectionMode={selectedSectionMode}
-              onRetry={() => handleStartExam(selectedExam, selectedSectionMode)}
+              onRetry={() => handleStartExam(selectedExam, selectedSectionMode, 'interactive')}
               onBackToLobby={() => setIsPlaying(false)}
               onSwitchSection={(sec) => handleStartExam(selectedExam, sec)}
             />

@@ -641,7 +641,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
     if (!currentQuestion) return null;
 
     return (
-      <div className="bg-white rounded-2xl p-5 sm:p-7 border border-[#EADFCF] shadow-sm space-y-6">
+      <div className="exam-question-surface bg-white rounded-2xl p-5 sm:p-7 border border-[#EADFCF] shadow-sm space-y-6">
         
         {/* Question Header & Meta */}
         <div className="flex items-center justify-between pb-3 border-b border-[#F4EDE2]">
@@ -756,7 +756,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
 
         {/* Question Text Body */}
         <div className="space-y-3">
-          <p className={`font-bold text-[#1F2639] whitespace-pre-line tracking-wide font-sans ${questionFontClass}`}>
+          <p className={`exam-prompt font-bold text-[#1F2639] whitespace-pre-line tracking-wide font-sans ${questionFontClass}`}>
             {renderFormattedQuestion(currentQuestion.question)}
           </p>
 
@@ -784,23 +784,24 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
             const isSelected = userAnswers[currentQuestion.id] === optIdx;
             const isCorrect = currentQuestion.correctIndex === optIdx;
 
-            let cardStyle = 'bg-white border-[#EADFCF] text-[#1F2639] hover:bg-[#FDF1E2]/40 hover:border-[#F4A643]';
+            let cardStyle = 'exam-answer';
             if (isSubmitted) {
               if (isCorrect) {
-                cardStyle = 'bg-[#ECFDF5] border-[#10B981] text-[#065F46] font-bold';
+                cardStyle = 'exam-answer exam-answer-correct';
               } else if (isSelected) {
-                cardStyle = 'bg-[#FEF2F2] border-[#D82B3A] text-[#991B1B] font-bold';
+                cardStyle = 'exam-answer exam-answer-wrong';
               } else {
-                cardStyle = 'bg-[#FDFBF7] border-[#EADFCF] text-[#786D5E] opacity-50';
+                cardStyle = 'exam-answer opacity-50';
               }
             } else if (isSelected) {
-              cardStyle = 'bg-[#FFF8EE] border-[#F4A643] ring-2 ring-[#F4A643] text-[#1F2639] font-bold shadow-xs';
+              cardStyle = 'exam-answer exam-answer-selected';
             }
 
             return (
               <button
                 key={optIdx}
                 disabled={isSubmitted}
+                aria-pressed={isSelected}
                 onClick={() => onSelectOption(currentQuestion.id, optIdx)}
                 className={`w-full min-h-[56px] p-3.5 sm:p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer disabled:cursor-default ${cardStyle}`}
               >

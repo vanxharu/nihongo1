@@ -1,3 +1,4 @@
+import StudyExperienceHero from './learning/StudyExperienceHero';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -1308,127 +1309,19 @@ export default function AiReadingPractice({
   };
 
   return (
-    <div id="ai-reading-container" className={`w-full max-w-5xl mx-auto px-2 sm:px-4 py-2.5 sm:py-3.5 space-y-2.5 ${readingData ? 'pb-20 sm:pb-24' : ''}`}>
+    <div id="ai-reading-container" className={`study-reading w-full space-y-5 ${readingData ? 'pb-20 sm:pb-24' : ''}`}>
       {/* Top Navigation & Controls Bar: Unified, sleek & zero wasted whitespace */}
       {!readingData ? (
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 p-1.5 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-md">
-          {/* Left: Compact Title */}
-          <div className="flex items-center justify-between md:justify-start gap-2 px-1">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-sm shrink-0">
-                <BookOpen className="w-4 h-4" />
-              </div>
-              <h1 className="text-sm sm:text-base font-bold text-white tracking-tight shrink-0">
-                Luyện Đọc Hiểu
-              </h1>
-            </div>
-
-            {/* Mobile History button */}
-            {savedHistory.length > 0 && (
-              <button
-                type="button"
-                onClick={() => setShowHistoryModal(true)}
-                className="md:hidden flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition"
-              >
-                <History className="w-3 h-3 text-indigo-400" />
-                <span>Lịch sử ({savedHistory.length})</span>
-              </button>
-            )}
-          </div>
-
-          {/* Center: Source Switcher Tabs */}
-          <div className="flex items-center p-0.5 rounded-xl bg-slate-950/80 border border-slate-800/90 gap-1 flex-1 max-w-md mx-auto md:mx-0">
-            <button
-              id="btn-mode-todai"
-              type="button"
-              onClick={() => setReadingSourceMode('todai')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg font-bold text-xs transition cursor-pointer ${
-                readingSourceMode === 'todai'
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <Newspaper className="w-3.5 h-3.5 text-cyan-300 shrink-0" />
-              <span>Báo Todaii</span>
-            </button>
-
-            <button
-              id="btn-mode-watanoc"
-              type="button"
-              onClick={() => setReadingSourceMode('watanoc')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg font-bold text-xs transition cursor-pointer ${
-                readingSourceMode === 'watanoc'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <BookOpen className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
-              <span>Tạp chí Watanoc</span>
-            </button>
-
-            <button
-              id="btn-mode-custom"
-              type="button"
-              onClick={() => setReadingSourceMode('custom')}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg font-bold text-xs transition cursor-pointer ${
-                readingSourceMode === 'custom'
-                  ? 'bg-purple-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              <PenTool className="w-3.5 h-3.5 text-purple-300 shrink-0" />
-              <span>Tự nhập</span>
-            </button>
-          </div>
-
-          {/* Right: Quick Link & History on desktop */}
-          <div className="hidden md:flex items-center gap-1.5 px-1 shrink-0">
-            {readingSourceMode === 'todai' && (
-              <button
-                type="button"
-                onClick={() => setShowTodaiLinkInput(prev => !prev)}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-                  showTodaiLinkInput
-                    ? 'bg-indigo-950/80 text-indigo-300 border-indigo-500/50'
-                    : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border-slate-700'
-                }`}
-                title="Dán link bài viết từ Todaii"
-              >
-                <Globe className="w-3 h-3 text-indigo-400" />
-                <span>{showTodaiLinkInput ? 'Đóng link' : '+ Dán link'}</span>
-              </button>
-            )}
-
-            {readingSourceMode === 'watanoc' && (
-              <button
-                type="button"
-                onClick={() => setShowWatanocLinkInput(prev => !prev)}
-                className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition cursor-pointer ${
-                  showWatanocLinkInput
-                    ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/50'
-                    : 'bg-slate-800/80 hover:bg-slate-800 text-slate-300 border-slate-700'
-                }`}
-                title="Dán link bài viết từ Watanoc"
-              >
-                <Globe className="w-3 h-3 text-emerald-400" />
-                <span>{showWatanocLinkInput ? 'Đóng link' : '+ Dán link'}</span>
-              </button>
-            )}
-
-            {savedHistory.length > 0 && (
-              <button
-                id="btn-open-history"
-                type="button"
-                onClick={() => setShowHistoryModal(true)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-semibold transition cursor-pointer shadow-sm"
-              >
-                <History className="w-3.5 h-3.5 text-indigo-400" />
-                <span>Lịch sử ({savedHistory.length})</span>
-              </button>
-            )}
-          </div>
-        </div>
-      ) : (
+        <>
+          <StudyExperienceHero kind="reading" level={userProfile?.targetLevel || 'N4'} count={savedHistory.length} completed={savedHistory.length} onHistory={() => setShowHistoryModal(true)} />
+          <div className="study-reading-toolbar"><h2>Hôm nay bạn muốn đọc gì?</h2><button className="study-history-button" onClick={() => setShowHistoryModal(true)}><History size={15} /> Lịch sử</button></div>
+          <nav className="study-nav" aria-label="Nguồn bài đọc">{[
+            { id: 'todai', title: 'Tin tức Todaii', note: 'Luyện đọc qua tin tức mỗi ngày', icon: Newspaper },
+            { id: 'watanoc', title: 'Văn hóa Watanoc', note: 'Khám phá cuộc sống tại Nhật', icon: Globe },
+            { id: 'custom', title: 'Bài đọc của bạn', note: 'Nhập văn bản hoặc chọn bài mẫu', icon: PenTool }
+          ].map(item => <button key={item.id} id={`btn-mode-${item.id}`} aria-pressed={readingSourceMode === item.id} onClick={() => setReadingSourceMode(item.id as typeof readingSourceMode)}><span className="study-nav-icon"><item.icon size={20} /></span><span><strong>{item.title}</strong><small>{item.note}</small></span></button>)}</nav>
+          {readingSourceMode !== 'custom' && <div className="study-reading-toolbar"><span className="text-xs text-slate-400">Chọn bài bên dưới để bắt đầu đọc và làm câu hỏi.</span><button className="study-history-button" onClick={() => readingSourceMode === 'todai' ? setShowTodaiLinkInput(v => !v) : setShowWatanocLinkInput(v => !v)}><Plus size={15} />Thêm link bài viết</button></div>}
+        </>      ) : (
         <div className="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-2xl bg-slate-900/95 border border-slate-800/90 shadow-md backdrop-blur-md">
           {/* Left: Change article back button */}
           <button
@@ -1494,33 +1387,8 @@ export default function AiReadingPractice({
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="space-y-3"
+          className="reading-source-content"
         >
-          {/* Mascot Reading Companion Banner */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-[#1F2639] via-[#1A2035] to-[#121624] border border-[#F4A643]/30 shadow-md flex items-center gap-4">
-            <div className="shrink-0">
-              <ShibaMascot
-                pose="reading"
-                size="md"
-                animated={false}
-              />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-[#F4A643]/20 text-[#F4A643] border border-[#F4A643]/40">
-                  読解 Dokkai
-                </span>
-                <span className="text-xs text-slate-400">Đọc hiểu tiếng Nhật</span>
-              </div>
-              <h3 className="text-sm sm:text-base font-bold text-white mt-1">
-                Luyện đọc hiểu cùng Nihon Shiba 📖
-              </h3>
-              <p className="text-xs text-slate-300 mt-0.5 line-clamp-2">
-                Khám phá các bài báo Todaii thời sự hoặc văn hóa Nhật Bản từ Watanoc với furigana thông minh, phân tích từ vựng JLPT và trắc nghiệm kiểm tra.
-              </p>
-            </div>
-          </div>
-
           {/* SUB-VIEW A: TODAII NEWS INTEGRATION */}
           {readingSourceMode === 'todai' && (
             <div className="space-y-3">
@@ -2525,7 +2393,7 @@ export default function AiReadingPractice({
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="space-y-6"
+          className="reading-article-layout"
         >
           {/* Passage Overview Card */}
           <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xl space-y-5">
@@ -2987,7 +2855,7 @@ export default function AiReadingPractice({
           </div>
 
           {/* Navigation Tabs Bar for Analysis */}
-          <div className="flex items-center justify-start border-b border-slate-800 pb-1 gap-2 overflow-x-auto no-scrollbar">
+          <div className="reading-analysis-tabs border-b border-slate-800 pb-2">
             <button
               id="tab-reading-quiz"
               type="button"
@@ -3013,7 +2881,7 @@ export default function AiReadingPractice({
               }`}
             >
               <Bookmark className="w-4 h-4" />
-              <span>Phân tích Từ vựng ({readingData.vocabularyList?.length || 0})</span>
+              <span>Từ vựng ({readingData.vocabularyList?.length || 0})</span>
             </button>
 
             <button
@@ -3027,7 +2895,7 @@ export default function AiReadingPractice({
               }`}
             >
               <Layers className="w-4 h-4" />
-              <span>Phân tích Ngữ pháp ({readingData.usedGrammar?.length || 0})</span>
+              <span>Ngữ pháp ({readingData.usedGrammar?.length || 0})</span>
             </button>
 
             <button
@@ -3041,7 +2909,7 @@ export default function AiReadingPractice({
               }`}
             >
               <MessageSquareQuote className="w-4 h-4" />
-              <span>Dịch từng câu ({readingData.sentenceBreakdown?.length || 0})</span>
+              <span>Từng câu ({readingData.sentenceBreakdown?.length || 0})</span>
             </button>
           </div>
 
