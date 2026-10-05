@@ -2864,7 +2864,89 @@ if (loading) {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-2 sm:px-4 pt-1 sm:pt-2 pb-6 space-y-2.5 sm:space-y-3.5 select-none flex flex-col items-center">
+    <div className="flex h-screen bg-[#0d1117] overflow-hidden select-none">
+
+      {/* Left Sidebar */}
+      <div className="w-20 bg-[#13171f] border-r border-[#1e2840] flex flex-col shrink-0">
+        {/* Logo */}
+        <div className="flex flex-col items-center py-4 px-1 border-b border-[#1e2840]">
+          <span className="bg-red-600 text-white text-xs font-black px-1.5 py-0.5 rounded mb-1">漢字</span>
+          <span className="text-[9px] text-slate-400 font-bold text-center leading-tight">Nhai Kanji</span>
+        </div>
+        {/* Nav items */}
+        <nav className="flex-1 flex flex-col items-center py-3 gap-1 overflow-y-auto">
+          {[
+            { label: 'Nhai Kanji', icon: '字' },
+            { label: 'Nhai Tango', icon: '📖', active: true },
+            { label: 'Nhai Bunpo', icon: '文' },
+            { label: 'Cá nhân hoá', icon: '👤' },
+            { label: 'Trạng âm', icon: '🎵' },
+            { label: 'Xếp hạng', icon: '🏆' },
+            { label: 'Cộng đồng', icon: '👥' },
+            { label: 'Trận đấu', icon: '⚔️' },
+            { label: 'Nhai JLPT', icon: '📝' },
+            { label: 'Nâng cấp', icon: '⭐' },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className={`flex flex-col items-center gap-1 w-full px-1 py-2 rounded-lg cursor-pointer transition-all ${
+                item.active ? 'bg-[#1e3a6e] text-blue-300' : 'text-slate-500 hover:text-slate-300 hover:bg-[#1a1f2e]'
+              }`}
+            >
+              <span className="text-base leading-none">{item.icon}</span>
+              <span className="text-[8px] font-medium text-center leading-tight">{item.label}</span>
+            </div>
+          ))}
+        </nav>
+        {/* Settings at bottom */}
+        <div className="flex flex-col items-center py-3 border-t border-[#1e2840]">
+          <button
+            onClick={() => setShowOptions(prev => !prev)}
+            className="flex flex-col items-center gap-1 px-2 py-2 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-[#1a1f2e] transition-all"
+          >
+            <Settings className="w-4 h-4" />
+            <span className="text-[8px] font-medium">Cài đặt</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top bar */}
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-[#1e2840] bg-[#0d1117] shrink-0">
+          <button
+            onClick={() => window.history.back()}
+            className="flex items-center gap-1.5 text-slate-400 hover:text-white text-sm font-medium transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            <span>Quay lại</span>
+          </button>
+          <h1 className="text-base font-bold text-white">{currentLesson.name}</h1>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => toggleSetting('showFurigana', !showFurigana)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${
+                showFurigana
+                  ? 'bg-emerald-900/60 border-emerald-500/60 text-emerald-300'
+                  : 'bg-[#1a1f2e] border-[#2e3750] text-slate-400 hover:text-white'
+              }`}
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span>Furigana</span>
+            </button>
+            <button
+              onClick={() => setIsExpanded(prev => !prev)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border bg-[#1a1f2e] border-[#2e3750] text-slate-400 hover:text-white transition-all"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span>Phóng to</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Scrollable main area */}
+        <div className="flex-1 overflow-y-auto">
+      <div className="w-full max-w-5xl mx-auto px-4 pt-4 pb-6 space-y-2.5 sm:space-y-3.5 flex flex-col items-center">
       <div className="w-full space-y-2.5 sm:space-y-3 animate-fade-in flex flex-col items-center">
 
       {/* Container Thẻ học chính */}
@@ -4630,5 +4712,54 @@ if (loading) {
         allVocabData={vocabData}
       />
     </div>
+        </div>{/* end scrollable main area */}
+      </div>{/* end flex-1 flex flex-col (main content) */}
+
+      {/* Right Sidebar */}
+      <div className="w-60 bg-[#13171f] border-l border-[#1e2840] flex flex-col shrink-0 overflow-hidden">
+        <div className="px-3 py-3 border-b border-[#1e2840]">
+          <h2 className="text-xs font-bold text-slate-200 flex items-center gap-1">
+            <span>≡</span> Mục lục
+          </h2>
+          <div className="flex items-center justify-between mt-1.5">
+            <span className="text-[11px] text-slate-400 font-medium">
+              {selectedCurriculum === 'minna' ? 'Mina N4' : 'Tango N4'}
+            </span>
+            <span className="text-[10px] bg-emerald-900/60 text-emerald-300 border border-emerald-600/40 px-2 py-0.5 rounded-full font-bold">
+              0/{lessons.length}
+            </span>
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto px-2 py-2 space-y-1">
+          {lessons.map((les, idx) => {
+            const isCurrent = idx === currentLessonIndex;
+            const lessonVocab = filteredVocab.filter(v => v.lessonId === les.id);
+            return (
+              <button
+                key={les.id}
+                onClick={() => {
+                  setCurrentLessonIndex(idx);
+                  setCurrentIndex(0);
+                }}
+                className={`w-full text-left p-2 rounded-lg border transition-all cursor-pointer ${
+                  isCurrent
+                    ? 'bg-[#1e3a6e] border-blue-600/60 text-white'
+                    : 'bg-[#1a1f2e] border-[#2e3750] text-slate-400 hover:text-slate-200 hover:border-slate-600'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-1">
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${isCurrent ? 'bg-blue-400' : 'bg-amber-500/60'}`} />
+                  <span className="flex-1 text-[11px] font-bold truncate">{les.name}</span>
+                </div>
+                <div className="text-[10px] text-slate-500 mt-0.5 pl-3">
+                  {lessonVocab.length} từ
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+    </div>{/* end flex h-screen */}
   );
 }
