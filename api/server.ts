@@ -3,9 +3,30 @@
 //
 // api/_lib/server.cjs is a bundle of server.ts. Regenerate it after editing server.ts:
 //   npm run build:api
-// @ts-ignore -- generated CommonJS bundle has no type declarations
-import serverModule from './_lib/server.cjs';
+import type { IncomingMessage, ServerResponse } from 'http';
 
-const app = (serverModule as any).default ?? serverModule;
+let appHandler: ((req: IncomingMessage, res: ServerResponse) => void) | null = null;
+let loadError: Error | null = null;
 
-export default app;
+try {
+  // @ts-ignore -- generated CommonJS bundle has no type declarations
+  const serverModule = require('./_lib/server.cjs');
+  const app = serverModule.default ?? serverModule;
+  appHandler = app;
+} catch (err: any) {
+  loadError = err;
+  console.error('[api/server] Failed to load server.cjs:', err?.message, err?.stack);
+}
+
+export default function handler(req: IncomingMessage, res: ServerResponse) {
+  if (loadError || !appHandler) {
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      error: 'Server failed to initialize',
+      message: loadError?.message ?? 'No handler loaded',
+      stack: loadError?.stack?.split('\n').slice(0, 5).join('\n'),
+    }));
+    return;
+  }
+  appHandler(req, res);
+}
