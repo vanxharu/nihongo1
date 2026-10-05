@@ -151,17 +151,17 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
 
   return <section className="overflow-hidden rounded-2xl border border-slate-700 bg-slate-950">
     <div ref={host} className="shadowing-video aspect-video w-full bg-black" />
-    <div className="space-y-3 p-4">
+    <div className="space-y-2.5 p-3">
       {!compact && <>
-      <div className="flex flex-wrap gap-3 text-xs text-slate-300">
-        <label>Tốc độ <select aria-label="Tốc độ video" value={speed} onChange={e => setSpeed(Number(e.target.value))} className="ml-1 rounded-lg bg-slate-800 p-2">{[0.5, 0.75, 1, 1.25].map(n => <option key={n} value={n}>{n}×</option>)}</select></label>
-        <label>Lặp <select aria-label="Số lần lặp" value={repeats} onChange={e => setRepeats(Number(e.target.value))} className="ml-1 rounded-lg bg-slate-800 p-2">{[1, 3, 5].map(n => <option key={n} value={n}>{n} lần</option>)}</select></label>
-        <label>Nghỉ để nhại <select aria-label="Thời gian đọc nhại" value={gap} onChange={e => setGap(Number(e.target.value))} className="ml-1 rounded-lg bg-slate-800 p-2">{[0, 3, 5, 8].map(n => <option key={n} value={n}>{n} giây</option>)}</select></label>
+      <div className="flex flex-wrap gap-2 text-xs text-slate-300">
+        <label>Tốc độ <select aria-label="Tốc độ video" value={speed} onChange={e => setSpeed(Number(e.target.value))} className="ml-1 min-h-8 rounded-lg bg-slate-800 px-2 py-1">{[0.5, 0.75, 1, 1.25].map(n => <option key={n} value={n}>{n}×</option>)}</select></label>
+        <label>Lặp <select aria-label="Số lần lặp" value={repeats} onChange={e => setRepeats(Number(e.target.value))} className="ml-1 min-h-8 rounded-lg bg-slate-800 px-2 py-1">{[1, 3, 5].map(n => <option key={n} value={n}>{n} lần</option>)}</select></label>
+        <label>Nghỉ để nhại <select aria-label="Thời gian đọc nhại" value={gap} onChange={e => setGap(Number(e.target.value))} className="ml-1 min-h-8 rounded-lg bg-slate-800 px-2 py-1">{[0, 3, 5, 8].map(n => <option key={n} value={n}>{n} giây</option>)}</select></label>
       </div>
       <div className="flex flex-wrap gap-2">
-        <button disabled={!ready} onClick={playSegment} className="flex min-h-11 items-center gap-2 rounded-xl bg-violet-500 px-4 font-bold text-white disabled:opacity-40"><Play size={16} />Nghe & nhại đoạn này</button>
-        <button disabled={!ready} onClick={stop} className="flex min-h-11 items-center gap-2 rounded-xl bg-slate-800 px-4 disabled:opacity-40"><Square size={15} />Dừng</button>
-        {!ready && <button aria-label="Tải lại video" onClick={() => setReload(n => n + 1)} className="rounded-xl bg-slate-800 p-3"><RotateCcw size={16} /></button>}
+        <button disabled={!ready} onClick={playSegment} className="flex min-h-8 items-center gap-1.5 rounded-lg bg-violet-500 px-3 text-xs font-semibold text-white disabled:opacity-40"><Play size={16} />Nghe & nhại đoạn này</button>
+        <button disabled={!ready} onClick={stop} className="flex min-h-8 items-center gap-1.5 rounded-lg bg-slate-800 px-3 text-xs disabled:opacity-40"><Square size={15} />Dừng</button>
+        {!ready && <button aria-label="Tải lại video" onClick={() => setReload(n => n + 1)} className="min-h-8 rounded-lg bg-slate-800 p-2"><RotateCcw size={16} /></button>}
         <a href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noreferrer" className="flex items-center gap-1 p-2 text-xs text-slate-400"><ExternalLink size={14} />YouTube</a>
       </div>
       </>}

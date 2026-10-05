@@ -14,6 +14,7 @@ import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, 
 import './shadowing.css';
 
 const field = 'w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 focus:border-amber-400 focus:outline-none';
+const compactButton = 'inline-flex min-h-8 items-center justify-center gap-1.5 rounded-lg bg-slate-800 px-3 text-xs font-semibold hover:bg-slate-700 disabled:opacity-40';
 const button = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-slate-800 px-4 text-sm font-semibold hover:bg-slate-700 disabled:opacity-40';
 
 export default function ShadowingHub() {
@@ -210,9 +211,9 @@ export default function ShadowingHub() {
     </section> : <>
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="space-y-4">
-          <div className="flex flex-wrap gap-2"><button onClick={() => setParams({})} className={button}>‹ Thư viện</button><button onClick={() => { setMode('shadowing'); setRevealed(false); }} className={`${button} ${mode === 'shadowing' ? 'bg-blue-600' : ''}`}>Bắt chước phát âm</button><button onClick={() => { setMode('dictation'); setRevealed(false); }} className={`${button} ${mode === 'dictation' ? 'bg-blue-600' : ''}`}>Nghe · Viết chính tả</button></div>
+          <div className="flex flex-wrap gap-2"><button onClick={() => setParams({})} className={compactButton}>‹ Thư viện</button><button onClick={() => { setMode('shadowing'); setRevealed(false); }} className={`${compactButton} ${mode === 'shadowing' ? 'bg-blue-600' : ''}`}>Bắt chước phát âm</button><button onClick={() => { setMode('dictation'); setRevealed(false); }} className={`${compactButton} ${mode === 'dictation' ? 'bg-blue-600' : ''}`}>Nghe · Viết chính tả</button></div>
           {sourceTitle && <h2 className="text-sm font-semibold text-slate-300">{sourceTitle}</h2>}
-          <button className={button} aria-expanded={editing} onClick={() => { playerRef.current?.pause(); setEditing(value => !value); }}>{editing ? 'Đóng soạn phụ đề' : 'Soạn phụ đề video'}</button>
+          <button className={compactButton} aria-expanded={editing} onClick={() => { playerRef.current?.pause(); setEditing(value => !value); }}>{editing ? 'Đóng soạn phụ đề' : 'Soạn phụ đề video'}</button>
           {editing && <SubtitleEditor videoId={videoId} title={sourceTitle || ''} cues={cues} selected={selected} revision={revision} onChange={next => { applyCues(next, true); try { localStorage.setItem(`shadowing-draft:${storageSuffix}`, JSON.stringify({ cues: next, revision })); } catch {} }} onSaved={(saved, title) => { setRevision(saved); setCustomTitle(title); try { localStorage.removeItem(`shadowing-draft:${storageSuffix}`); } catch {} setPersonalVideos(videos => [...videos.filter(v => v.videoId !== videoId), { videoId, title, cueCount: cues.length }]); }} />}
           <ShadowingPlayer ref={playerRef} key={videoId} videoId={videoId} start={parseShadowingTime(start)} end={parseShadowingTime(end)} sentenceKey={sentence} onTime={setCurrentTime} compact={mode === 'dictation'} />
 
