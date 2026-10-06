@@ -184,6 +184,9 @@ export interface ExamQuestion {
   explanation?: string;
   audioScript?: string;
   audioTrack?: string;
+  /** Phát đoạn [audioStart, audioEnd] (giây) của audioTrack/audioUrl thay vì cả file */
+  audioStart?: number;
+  audioEnd?: number;
   audioUrl?: string;
   mondaiIntroAudioUrl?: string;
   mondaiIntroAudioTrack?: string;

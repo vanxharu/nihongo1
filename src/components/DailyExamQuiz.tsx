@@ -954,6 +954,16 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
       try {
         const audio = new Audio(audioSrc);
         audio.playbackRate = playbackRate;
+        const segStart = currentQuestion?.audioStart;
+        const segEnd = currentQuestion?.audioEnd;
+        if (segStart != null) {
+          audio.addEventListener('loadedmetadata', () => { audio.currentTime = segStart; }, { once: true });
+        }
+        if (segEnd != null) {
+          audio.addEventListener('timeupdate', () => {
+            if (audio.currentTime >= segEnd) { audio.pause(); audio.dispatchEvent(new Event('ended')); }
+          });
+        }
         audio.onended = () => {
           setIsPlayingAudio(false);
           audioElementRef.current = null;
