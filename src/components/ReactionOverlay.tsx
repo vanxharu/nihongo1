@@ -5,6 +5,7 @@ type ReactionState = 'neutral' | 'correct' | 'wrong' | 'surrender';
 
 interface Props {
   state: ReactionState;
+  mode?: 'quiz' | 'flashcard';
 }
 
 function Confetti({ count = 40 }: { count?: number }) {
@@ -47,10 +48,17 @@ const stateToMascot: Record<ReactionState, 'idle' | 'correct' | 'wrong' | 'surre
   surrender: 'surrender',
 };
 
-const labels: Record<ReactionState, string> = {
+const quizLabels: Record<ReactionState, string> = {
   neutral:   '',
   correct:   'Chính xác! 🔥',
   wrong:     'Sai rồi! 💪',
+  surrender: 'Ghi nhớ nhé! 📚',
+};
+
+const flashcardLabels: Record<ReactionState, string> = {
+  neutral:   '',
+  correct:   'Đã thuộc! 🌟',
+  wrong:     'Ôn thêm nhé! 💪',
   surrender: 'Ghi nhớ nhé! 📚',
 };
 
@@ -61,7 +69,7 @@ const colors: Record<ReactionState, string> = {
   surrender: 'bg-amber-500',
 };
 
-export default function ReactionOverlay({ state }: Props) {
+export default function ReactionOverlay({ state, mode = 'quiz' }: Props) {
   const [visible, setVisible] = useState(false);
   const [key, setKey] = useState(0);
 
@@ -79,6 +87,7 @@ export default function ReactionOverlay({ state }: Props) {
   if (!visible || state === 'neutral') return null;
 
   const isCorrect = state === 'correct';
+  const labels = mode === 'flashcard' ? flashcardLabels : quizLabels;
 
   return (
     <div
