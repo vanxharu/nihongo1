@@ -61,3 +61,5 @@
 .lyric-now-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;padding:1.1rem 10px 4px}.lyric-now-scroll::-webkit-scrollbar{display:none}
 .lyric-badge{position:absolute;top:5px;left:12px;z-index:1;display:flex;align-items:center;gap:5px;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#fcd581;pointer-events:none}.lyric-badge i{width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px 1px #4ade80;animation:lyricPulse 1.2s ease-in-out infinite}
 @keyframes lyricPulse{50%{opacity:.35;transform:scale(.7)}}@media(prefers-reduced-motion:reduce){.lyric-badge i{animation:none}}
+/* Playing-sentence frame: tall enough for sentence + translation */
+.lyric-frame{height:17rem}.lyric-frame .karaoke-line{line-height:1.95}.lyric-frame .karaoke-translation{margin-top:4px;padding-top:6px;font-size:.88rem;line-height:1.45}.lyric-now-scroll{padding-top:1rem}.lyric-now{margin:auto 0}

@@ -19,7 +19,7 @@ const compactButton = 'inline-flex min-h-8 items-center justify-center gap-1.5 r
 const button = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-slate-800 px-4 text-sm font-semibold hover:bg-slate-700 disabled:opacity-40';
 
 // Shrink long sentences so the playing line always fits its fixed frame.
-const fitSize = (n: number) => n <= 18 ? '1.6rem' : n <= 30 ? '1.4rem' : n <= 45 ? '1.2rem' : n <= 65 ? '1.05rem' : '.92rem';
+const fitSize = (n: number) => n <= 18 ? '1.5rem' : n <= 30 ? '1.3rem' : n <= 45 ? '1.12rem' : n <= 65 ? '1rem' : '.9rem';
 
 export default function ShadowingHub() {
   const [params, setParams] = useSearchParams();
