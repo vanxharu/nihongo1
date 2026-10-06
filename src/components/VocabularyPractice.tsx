@@ -2067,10 +2067,15 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     if (currentItem?.curriculum === 'tango' && currentItem.originalNumber) {
       const timing = TANGO_N4_AUDIO_TIMING[currentItem.originalNumber];
       if (timing) {
-        playTangoSegment(timing.file, timing.start, timing.end);
+        const wantSentence = isSentence || text === currentItem.exampleSentence;
+        let start = timing.start, end = timing.end;
+        if (timing.wordEnd != null && timing.sentStart != null) {
+          if (wantSentence) start = timing.sentStart; else end = timing.wordEnd;
+        }
+        playTangoSegment(timing.file, start, end);
         if (selectedMode === 'shadowing') {
           setIsPlayingWave(true);
-          setTimeout(() => setIsPlayingWave(false), (timing.end - timing.start) * 1000);
+          setTimeout(() => setIsPlayingWave(false), (end - start) * 1000);
         }
         return;
       }
