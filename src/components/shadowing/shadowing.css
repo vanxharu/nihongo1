@@ -64,3 +64,5 @@
 /* Playing-sentence frame: tall enough for sentence + translation */
 .lyric-frame{height:17rem}.lyric-frame .karaoke-line{line-height:1.95}.lyric-frame .karaoke-translation{margin-top:4px;padding-top:6px;font-size:.88rem;line-height:1.45}.lyric-now-scroll{padding-top:1rem}.lyric-now{margin:auto 0}
 .lyric-scroll .lyric-side.is-now{height:0;min-height:0;padding:0;margin:0;overflow:hidden;visibility:hidden}
+/* Compact playing frame so the list below stays above the bottom nav */
+.lyric-frame{height:13.5rem}.lyric-prev{height:2rem}.lyric-frame .karaoke-line{line-height:1.75}.lyric-now-scroll{padding:.8rem 10px 2px}.lyric-frame .karaoke-translation{font-size:.82rem;line-height:1.35;margin-top:2px;padding-top:4px}.lyric-scroll{height:10rem}
