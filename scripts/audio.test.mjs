@@ -251,3 +251,13 @@ test('dialogue alternates Keita/Nanami through the API, one request per turn', (
   assert.equal(env.audios.length, 2);
   assert.equal(voiceOf(env.audios[1]), 'ja-JP-NanamiNeural');
 });
+
+test('A「…」/B「…」 dialogues use two voices and never read the A/B labels', () => {
+  const env = setup();
+  env.api.speakJapanese('① 今度の テストは むずかしかった。\n② A「お酒を 飲みに 行きましょう。」\n   B「ええ、ぜひ。」');
+  const params = () => { const u = new URL(env.audios.at(-1).src, 'https://example.test'); return [u.searchParams.get('voice'), u.searchParams.get('text')]; };
+  const turns = [params()];
+  for (let i = 0; i < 2; i++) { env.audios.at(-1).onended(); env.timeout(); turns.push(params()); }
+  assert.deepEqual(turns.map(t => t[0]), ['ja-JP-NanamiNeural', 'ja-JP-KeitaNeural', 'ja-JP-NanamiNeural']);
+  assert.ok(turns.every(([, text]) => !/[ABＡＢ①②]/.test(text)), JSON.stringify(turns));
+});

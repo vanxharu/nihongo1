@@ -356,7 +356,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_18",
     "kanji": "おととい",
     "hiragana": "おととい",
-    "meaning": "hôm kia, ngày kia",
+    "meaning": "hôm kia",
     "hanViet": "",
     "exampleSentence": "かぜを ひいて、おとといから 熱が あります。",
     "exampleTranslation": "Tôi bị cảm, sốt từ hôm kia.",
@@ -668,7 +668,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "meaning": "cuối cùng",
     "hanViet": "",
     "exampleSentence": "この バスは 最後に 東京駅に 着きます。",
-    "exampleTranslation": "Xe buýt này sẽ đến ga Tokyo cuối cùng.",
+    "exampleTranslation": "Xe buýt này dừng cuối cùng ở ga Tokyo.",
     "level": "N4",
     "curriculum": "tango",
     "chapter": "Chương 1: 私たちの毎日 (Mỗi ngày của chúng tôi)",
@@ -819,7 +819,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "meaning": "con (kính ngữ)",
     "hanViet": "",
     "exampleSentence": "先生の お子さんは 今 中学生ですか。",
-    "exampleTranslation": "Con của thầy/ cô bây giờ là học sinh phổ thông phải không?",
+    "exampleTranslation": "Con của thầy/cô bây giờ là học sinh cấp 2 phải không ạ?",
     "level": "N4",
     "curriculum": "tango",
     "chapter": "Chương 1: 私たちの毎日 (Mỗi ngày của chúng tôi)",
@@ -1660,10 +1660,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_81",
     "kanji": "たたみ",
     "hiragana": "たたみ",
-    "meaning": "chiếu",
+    "meaning": "chiếu tatami",
     "hanViet": "",
     "exampleSentence": "たたみの 部屋が ある アパートに 住みたいです。",
-    "exampleTranslation": "Tôi muốn sống ở căn hộ có phòng chiếu.",
+    "exampleTranslation": "Tôi muốn sống ở căn hộ có phòng trải chiếu tatami.",
     "level": "N4",
     "curriculum": "tango",
     "chapter": "Chương 1: 私たちの毎日 (Mỗi ngày của chúng tôi)",
@@ -1780,10 +1780,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_87",
     "kanji": "家具",
     "hiragana": "かぐ",
-    "meaning": "gia dụng",
+    "meaning": "đồ nội thất",
     "hanViet": "",
     "exampleSentence": "私は 木の 家具が 好きです。",
-    "exampleTranslation": "Tôi thích đồ gia dụng bằng gỗ.",
+    "exampleTranslation": "Tôi thích đồ nội thất bằng gỗ.",
     "level": "N4",
     "curriculum": "tango",
     "chapter": "Chương 1: 私たちの毎日 (Mỗi ngày của chúng tôi)",
@@ -2815,7 +2815,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "とどく",
     "meaning": "được gửi đến, đến nơi",
     "exampleSentence": "国から 手紙が とどきました。",
-    "exampleTranslation": "Thư từ trong nước đã gửi đến nơi.",
+    "exampleTranslation": "Thư từ quê nhà đã gửi đến.",
     "originalNumber": 138,
     "level": "N4",
     "curriculum": "tango",
@@ -3237,7 +3237,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 学校 (Trường học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 158,
-    "partOfSpeech": "形",
+    "partOfSpeech": "イ形",
     "relatedWords": "答え answer, response / câu trả lời ・ 解答 answer / câu trả lời, lời giải đáp",
     "notes": "答え can also be used to mean respond, but 解答 can only be used when referring to answer or solving a question or problem. / 「答え」 còn dùng với nghĩa phản ứng, hồi đáp nhưng 「解答」 thì chỉ dùng với nghĩa giải đáp câu hỏi, vấn đề.",
     "englishMeaning": "strict",
@@ -3260,7 +3260,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 学校 (Trường học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 159,
-    "partOfSpeech": "形",
+    "partOfSpeech": "イ形",
     "englishMeaning": "gentle, kind",
     "englishExampleTranslation": "My senior always teaches me kindly.",
     "antonyms": "きびしい strict / nghiêm khắc"
@@ -3573,7 +3573,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   },
   {
     "kanji": "消しゴム",
-    "hiragana": "けしごむ",
+    "hiragana": "けしゴム",
     "meaning": "cục tẩy, gôm tẩy",
     "exampleSentence": "間違えた 文字を 消しゴムで 消します。",
     "exampleTranslation": "Tôi dùng tẩy xóa chữ viết sai.",
@@ -3779,7 +3779,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 大学 (Trường Đại học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 185,
-    "partOfSpeech": "名"
+    "partOfSpeech": "動"
   },
   {
     "id": "tango_n4_186",
@@ -3797,7 +3797,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 大学 (Trường Đại học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 186,
-    "partOfSpeech": "名",
+    "partOfSpeech": "動",
     "relatedWords": "合格する (ごうかくする)"
   },
   {
@@ -3909,7 +3909,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 大学 (Trường Đại học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 192,
-    "partOfSpeech": "動",
+    "partOfSpeech": "名",
     "relatedWords": "化学 chemistry department / hóa học"
   },
   {
@@ -3928,7 +3928,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 大学 (Trường Đại học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 193,
-    "partOfSpeech": "イ形",
+    "partOfSpeech": "名",
     "relatedWords": "医科大学 medical university / đại học Y khoa"
   },
   {
@@ -3947,7 +3947,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 大学 (Trường Đại học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 194,
-    "partOfSpeech": "動",
+    "partOfSpeech": "名",
     "relatedWords": "日本文学 Japanese literature / văn học Nhật Bản ・ 文学部 literature department / khoa Văn"
   },
   {
@@ -3966,16 +3966,16 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 大学 (Trường Đại học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 195,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_196",
     "kanji": "こうぎ〈する〉",
     "hiragana": "こうぎ",
-    "meaning": "giờ học, tiết học",
+    "meaning": "bài giảng (ở đại học)",
     "hanViet": "",
     "exampleSentence": "山下先生のこうぎはわかりやすいです。",
-    "exampleTranslation": "Giờ học của thầy/cô Yamashita dễ hiểu.",
+    "exampleTranslation": "Bài giảng của thầy/cô Yamashita dễ hiểu.",
     "level": "N4",
     "curriculum": "tango",
     "chapter": "Chương 2: 勉強と仕事 (Việc học và công việc)",
@@ -3984,7 +3984,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 大学 (Trường Đại học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 196,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_197",
@@ -4002,7 +4002,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 大学 (Trường Đại học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 197,
-    "partOfSpeech": "イ形"
+    "partOfSpeech": "名"
   },
   {
     "kanji": "欠席〈する〉",
@@ -4024,7 +4024,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   },
   {
     "kanji": "レポート",
-    "hiragana": "れぽーと",
+    "hiragana": "レポート",
     "meaning": "bài báo cáo",
     "exampleSentence": "英語でレポートを書かなければなりません。",
     "exampleTranslation": "Phải viết báo cáo bằng tiếng Anh.",
@@ -4045,7 +4045,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "ろんぶん",
     "meaning": "luận văn",
     "exampleSentence": "来週までに論文を出してください。",
-    "exampleTranslation": "Hãy nộp bài luận văn cho đến tuần sau.",
+    "exampleTranslation": "Hãy nộp luận văn trước tuần sau.",
     "originalNumber": 200,
     "level": "N4",
     "curriculum": "tango",
@@ -4118,9 +4118,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "kanji": "まとめる",
     "hiragana": "まとめる",
-    "meaning": "tóm tắt (~)",
+    "meaning": "tổng hợp, tóm tắt",
     "exampleSentence": "週末までに研究をまとめます。",
-    "exampleTranslation": "Tôi tóm tắt bài nghiên cứu cho đến cuối tuần.",
+    "exampleTranslation": "Tôi sẽ tổng hợp bài nghiên cứu trước cuối tuần.",
     "originalNumber": 204,
     "level": "N4",
     "curriculum": "tango",
@@ -4130,13 +4130,13 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 大学 (Trường Đại học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "id": "tango_n4_204",
-    "partOfSpeech": "名",
+    "partOfSpeech": "動",
     "englishMeaning": "",
     "relatedWords": "（～が）まとまる to be summarized, to be finalized / (~) được tóm tắt"
   },
   {
     "kanji": "ボランティア",
-    "hiragana": "ぼらんてぃあ",
+    "hiragana": "ボランティア",
     "meaning": "công việc tình nguyện, thiện nguyện",
     "exampleSentence": "休みの日にボランティアをしています。",
     "exampleTranslation": "Ngày nghỉ tôi làm công việc tình nguyện.",
@@ -4167,12 +4167,12 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 大学 (Trường Đại học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "id": "tango_n4_206",
-    "partOfSpeech": "名",
+    "partOfSpeech": "ナ形",
     "englishMeaning": ""
   },
   {
     "kanji": "ひつよう〈な〉",
-    "hiragana": "ひつような",
+    "hiragana": "ひつよう",
     "meaning": "sự cần thiết (cần thiết)",
     "exampleSentence": "学校では学生カードを作るひつようがあります。（名）\nこれは授業にひつような本です。（ナ形）",
     "exampleTranslation": "Cần làm thẻ sinh viên ở trường.\nĐây là quyển sách cần thiết cho giờ học.",
@@ -4185,7 +4185,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 大学 (Trường Đại học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "id": "tango_n4_207",
-    "partOfSpeech": "名",
+    "partOfSpeech": "名/ナ形",
     "englishMeaning": ""
   },
   {
@@ -4204,7 +4204,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 勉強 (Việc học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 208,
-    "partOfSpeech": "動",
+    "partOfSpeech": "名",
     "relatedWords": "復習〈する〉 (ふくしゅう) reviewing / ôn tập"
   },
   {
@@ -4223,7 +4223,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 勉強 (Việc học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 209,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_210",
@@ -4260,7 +4260,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 勉強 (Việc học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 211,
-    "partOfSpeech": "名",
+    "partOfSpeech": "ナ形",
     "notes": "「いや」 means \"don't like/don't want to do.\" 嫌い is the opposite of 好き, and refers to people or things you don't like. / 「いや」 mang ý nghĩa là “không thích/ không muốn làm việc đó”. 「嫌い」 là từ trái nghĩa của 「好き」, biểu hiện người hoặc vật mà mình ghét."
   },
   {
@@ -4279,12 +4279,12 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 勉強 (Việc học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 212,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_213",
     "kanji": "ファイル",
-    "hiragana": "ふぁいる",
+    "hiragana": "ファイル",
     "meaning": "tập hồ sơ",
     "hanViet": "",
     "exampleSentence": "プリントをファイルに入れます。",
@@ -4297,12 +4297,12 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 勉強 (Việc học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 213,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_214",
     "kanji": "メモ〈する〉",
-    "hiragana": "めも",
+    "hiragana": "メモ",
     "meaning": "việc ghi chú",
     "hanViet": "",
     "exampleSentence": "大切なことはメモしてください。",
@@ -4320,7 +4320,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "id": "tango_n4_215",
     "kanji": "キーボード",
-    "hiragana": "きーぼーど",
+    "hiragana": "キーボード",
     "meaning": "bàn phím",
     "hanViet": "",
     "exampleSentence": "パソコンのキーボードがこわれました。",
@@ -4351,12 +4351,12 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 勉強 (Việc học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 216,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_217",
     "kanji": "アルバイト",
-    "hiragana": "あるばいと",
+    "hiragana": "アルバイト",
     "meaning": "việc làm thêm",
     "hanViet": "",
     "exampleSentence": "スーパーでアルバイトをしています。",
@@ -4388,7 +4388,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 勉強 (Việc học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 218,
-    "partOfSpeech": "イ形",
+    "partOfSpeech": "名",
     "relatedWords": "駅員 station attendant / nhân viên nhà ga ・ 銀行員 bank clerk / nhân viên ngân hàng ・ 会社員 company employee / nhân viên công ty"
   },
   {
@@ -4425,7 +4425,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 勉強 (Việc học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 220,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_221",
@@ -4498,7 +4498,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 勉強 (Việc học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "id": "tango_n4_224",
-    "partOfSpeech": "名",
+    "partOfSpeech": "動",
     "englishMeaning": ""
   },
   {
@@ -4534,7 +4534,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 勉強 (Việc học)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "id": "tango_n4_226",
-    "partOfSpeech": "名",
+    "partOfSpeech": "動",
     "englishMeaning": ""
   },
   {
@@ -4558,7 +4558,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "id": "tango_n4_228",
     "kanji": "サラリーマン",
-    "hiragana": "さらりーまん",
+    "hiragana": "サラリーマン",
     "meaning": "người làm công ăn lương",
     "hanViet": "",
     "exampleSentence": "私の父はサラリーマンです。",
@@ -4571,7 +4571,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 仕事① (Công việc 1)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 228,
-    "partOfSpeech": "動",
+    "partOfSpeech": "名",
     "relatedWords": "会社員 (かいしゃいん) company employee / nhân viên công ty"
   },
   {
@@ -4664,7 +4664,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 仕事① (Công việc 1)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 233,
-    "partOfSpeech": "名"
+    "partOfSpeech": "動"
   },
   {
     "id": "tango_n4_234",
@@ -4682,7 +4682,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 仕事① (Công việc 1)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 234,
-    "partOfSpeech": "名"
+    "partOfSpeech": "動"
   },
   {
     "id": "tango_n4_235",
@@ -4700,7 +4700,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 仕事① (Công việc 1)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 235,
-    "partOfSpeech": "名"
+    "partOfSpeech": "動"
   },
   {
     "id": "tango_n4_236",
@@ -4718,7 +4718,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 仕事① (Công việc 1)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 236,
-    "partOfSpeech": "名"
+    "partOfSpeech": "動"
   },
   {
     "id": "tango_n4_237",
@@ -4755,7 +4755,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 仕事① (Công việc 1)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 238,
-    "partOfSpeech": "イ形"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_239",
@@ -4773,12 +4773,12 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 仕事① (Công việc 1)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 239,
-    "partOfSpeech": "名"
+    "partOfSpeech": "動"
   },
   {
     "id": "tango_n4_240",
     "kanji": "コンピューター",
-    "hiragana": "こんぴゅーたー",
+    "hiragana": "コンピューター",
     "meaning": "máy vi tính",
     "hanViet": "",
     "exampleSentence": "コンピューターの仕事がしたいです。",
@@ -4796,7 +4796,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "id": "tango_n4_241",
     "kanji": "ソフト",
-    "hiragana": "そふと",
+    "hiragana": "ソフト",
     "meaning": "phần mềm",
     "hanViet": "",
     "exampleSentence": "便利なソフトを買いました。",
@@ -4814,7 +4814,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "id": "tango_n4_242",
     "kanji": "パソコン",
-    "hiragana": "ぱそこん",
+    "hiragana": "パソコン",
     "meaning": "máy tính cá nhân",
     "hanViet": "",
     "exampleSentence": "パソコンを持って、会社に行きます。",
@@ -4827,7 +4827,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 仕事① (Công việc 1)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 242,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_243",
@@ -4898,7 +4898,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 仕事① (Công việc 1)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "id": "tango_n4_246",
-    "partOfSpeech": "名",
+    "partOfSpeech": "動",
     "englishMeaning": "",
     "relatedWords": "修理〈する〉 (しゅうり) repair / sự sửa chữa"
   },
@@ -4917,12 +4917,12 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 仕事① (Công việc 1)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "id": "tango_n4_247",
-    "partOfSpeech": "名",
+    "partOfSpeech": "動",
     "englishMeaning": ""
   },
   {
     "kanji": "ノート",
-    "hiragana": "のーと",
+    "hiragana": "ノート",
     "meaning": "vở, cuốn tập",
     "exampleSentence": "ノートに漢字を書いて練習します。",
     "exampleTranslation": "Viết Hán tự vào vở rồi luyện tập.",
@@ -4940,7 +4940,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   },
   {
     "kanji": "消しゴム",
-    "hiragana": "けしごむ",
+    "hiragana": "けしゴム",
     "meaning": "cục tẩy",
     "exampleSentence": "すみません、消しゴムを貸してください。",
     "exampleTranslation": "Xin lỗi, hãy cho tôi mượn cục tẩy.",
@@ -4994,7 +4994,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   },
   {
     "kanji": "クリップ",
-    "hiragana": "くりっぷ",
+    "hiragana": "クリップ",
     "meaning": "cái kẹp giấy",
     "exampleSentence": "クリップで書類をとめます。",
     "exampleTranslation": "Kẹp tài liệu bằng kẹp giấy.",
@@ -5013,7 +5013,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "id": "tango_n4_253",
     "kanji": "セロハンテープ",
-    "hiragana": "せろはんてーぷ",
+    "hiragana": "セロハンテープ",
     "meaning": "băng keo trong",
     "hanViet": "",
     "exampleSentence": "ポスターをセロハンテープではります。",
@@ -5026,12 +5026,12 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 5: 仕事② (Công việc 2)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 253,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_254",
     "kanji": "輪ゴム",
-    "hiragana": "わごむ",
+    "hiragana": "わゴム",
     "meaning": "dây thun",
     "hanViet": "",
     "exampleSentence": "輪ゴムで髪を結びます。",
@@ -5049,7 +5049,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "id": "tango_n4_255",
     "kanji": "ホッチキス",
-    "hiragana": "ほっちきす",
+    "hiragana": "ホッチキス",
     "meaning": "cái dập ghim",
     "hanViet": "",
     "exampleSentence": "ホッチキスで書類をとじます。",
@@ -5071,7 +5071,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "meaning": "đinh ghim",
     "hanViet": "",
     "exampleSentence": "カレンダーを画びょうでとめます。",
-    "exampleTranslation": "Đóng lịch bằng đinh ghim.",
+    "exampleTranslation": "Ghim lịch bằng đinh ghim.",
     "level": "N4",
     "curriculum": "tango",
     "chapter": "Chương 2: 勉強と仕事 (Việc học và công việc)",
@@ -5117,7 +5117,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 5: 仕事② (Công việc 2)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 258,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_259",
@@ -5140,7 +5140,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "id": "tango_n4_260",
     "kanji": "メモ帳",
-    "hiragana": "めもちょう",
+    "hiragana": "メモちょう",
     "meaning": "sổ tay ghi chú",
     "hanViet": "",
     "exampleSentence": "大切なことはメモ帳に書きます。",
@@ -5176,7 +5176,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "id": "tango_n4_262",
     "kanji": "チョーク",
-    "hiragana": "ちょーく",
+    "hiragana": "チョーク",
     "meaning": "phấn",
     "hanViet": "",
     "exampleSentence": "チョークで黒板に書きます。",
@@ -5189,7 +5189,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 5: 仕事② (Công việc 2)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 262,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_263",
@@ -5230,7 +5230,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "id": "tango_n4_265",
     "kanji": "リュックサック",
-    "hiragana": "りゅっくさっく",
+    "hiragana": "リュックサック",
     "meaning": "ba lô",
     "hanViet": "",
     "exampleSentence": "山に行くとき、リュックサックを背負います。",
@@ -5279,7 +5279,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 5: 仕事② (Công việc 2)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 267,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "id": "tango_n4_268",
@@ -5297,7 +5297,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 5: 仕事② (Công việc 2)",
     "lessonTitleJp": "勉強と仕事 (Việc học và công việc)",
     "originalNumber": 268,
-    "partOfSpeech": "動"
+    "partOfSpeech": "名"
   },
   {
     "kanji": "体操服",
@@ -5943,7 +5943,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "けいけん",
     "meaning": "kinh nghiệm",
     "exampleSentence": "若い ときに いろいろ 経験して おきます。",
-    "exampleTranslation": "Khi còn trẻ, trải nghiệm nhiều.",
+    "exampleTranslation": "Khi còn trẻ, tôi muốn trải nghiệm thật nhiều điều.",
     "originalNumber": 303,
     "level": "N4",
     "curriculum": "tango",
@@ -6057,10 +6057,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "kanji": "ハンバーグ",
     "hiragana": "ハンバーグ",
     "romaji": "hanbaagu",
-    "meaning": "thịt nướng ham-bơ-gơ",
+    "meaning": "thịt băm viên áp chảo (hamburg)",
     "hanViet": "",
     "exampleSentence": "とうふの ハンバーグは 体に いいです。",
-    "exampleTranslation": "Ham-bơ-gơ bằng đậu hũ tốt cho cơ thể.",
+    "exampleTranslation": "Hamburg làm từ đậu hũ tốt cho cơ thể.",
     "level": "N4",
     "curriculum": "tango",
     "chapter": "Chương 3: 楽しいこと (Những việc vui vẻ)",
@@ -7029,7 +7029,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "kandzume",
-    "hanViet": "QUÁN TIỆT"
+    "hanViet": "QUÁN CẬT"
   },
   {
     "kanji": "家事",
@@ -7057,7 +7057,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "ねだん",
     "romaji": "nedan",
     "meaning": "giá cả",
-    "hanViet": "TRỊ ĐOÀN",
+    "hanViet": "TRỊ ĐOẠN",
     "exampleSentence": "ねだんを 見てから、くつを 買います。",
     "exampleTranslation": "Sau khi xem giá, tôi sẽ mua giày.",
     "level": "N4",
@@ -8194,9 +8194,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "kanji": "たずねる",
     "hiragana": "たずねる",
-    "meaning": "hỏi thăm",
+    "meaning": "hỏi",
     "exampleSentence": "おばあさんに 道を たずねられました。",
-    "exampleTranslation": "Tôi được bà lão hỏi thăm đường.",
+    "exampleTranslation": "Tôi bị một bà cụ hỏi đường.",
     "originalNumber": 417,
     "level": "N4",
     "curriculum": "tango",
@@ -8428,7 +8428,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "レインコート",
     "romaji": "reinkooto",
     "meaning": "áo mưa",
-    "hanViet": "ÁO MƯA",
+    "hanViet": "",
     "exampleSentence": "明日は レインコートを 着て、出かけます。",
     "exampleTranslation": "Ngày mai tôi sẽ mặc áo mưa để ra ngoài.",
     "level": "N4",
@@ -8769,10 +8769,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "kanji": "林",
     "hiragana": "はやし",
     "romaji": "hayashi",
-    "meaning": "rừng",
+    "meaning": "rừng thưa, lùm cây",
     "hanViet": "LÂM",
     "exampleSentence": "林の 中に いろいろな 動物が います。",
-    "exampleTranslation": "Trong rừng có nhiều loại động vật.",
+    "exampleTranslation": "Trong lùm cây có nhiều loại động vật.",
     "level": "N4",
     "curriculum": "tango",
     "chapter": "Chương 4: 出かけよう！ (Hãy đi ra ngoài nào!)",
@@ -9103,7 +9103,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_463",
     "partOfSpeech": "名",
     "romaji": "yakoubasu",
-    "hanViet": "DẠ HÀNH BUS"
+    "hanViet": "DẠ HÀNH"
   },
   {
     "id": "tango_n4_464",
@@ -9130,7 +9130,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "オートバイ",
     "romaji": "ootobai",
     "meaning": "xe máy, xe mô-tô",
-    "hanViet": "MÔ TÔ",
+    "hanViet": "",
     "exampleSentence": "週末、友だちと オートバイで 出かけます。",
     "exampleTranslation": "Cuối tuần tôi sẽ đi chơi bằng xe máy với bạn tôi.",
     "level": "N4",
@@ -9246,7 +9246,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "ラッシュ",
     "romaji": "rasshu",
     "meaning": "giờ cao điểm",
-    "hanViet": "GIỜ CAO ĐIỂM",
+    "hanViet": "",
     "exampleSentence": "この 電車は ラッシュでも 座れます。",
     "exampleTranslation": "Tàu điện này giờ cao điểm vẫn có thể ngồi được.",
     "level": "N4",
@@ -9295,7 +9295,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_473",
     "partOfSpeech": "動",
     "romaji": "suku",
-    "hanViet": "THẤU"
+    "hanViet": "KHÔNG"
   },
   {
     "kanji": "通る",
@@ -9322,7 +9322,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "すぎる",
     "meaning": "chạy qua, quá",
     "exampleSentence": "A駅を すぎたら、電車が すきました。",
-    "exampleTranslation": "Chạy qua nhà ga A thì tàu điện vắng.",
+    "exampleTranslation": "Qua khỏi ga A thì tàu điện vắng hẳn.",
     "originalNumber": 475,
     "level": "N4",
     "curriculum": "tango",
@@ -9501,7 +9501,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   },
   {
     "kanji": "お年より",
-    "hiragana": "としより",
+    "hiragana": "おとしより",
     "meaning": "người lớn tuổi, người già",
     "exampleSentence": "ここは お年よりの ための 席です。",
     "exampleTranslation": "Chỗ này là ghế dành cho người già.",
@@ -9696,7 +9696,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "ぶつかる",
     "romaji": "butsukaru",
     "meaning": "đụng, tông",
-    "hanViet": "ĐỤNG / VA",
+    "hanViet": "",
     "exampleSentence": "信号の ところで 2台の タクシーが ぶつかりました。",
     "exampleTranslation": "Ở chỗ đèn giao thông, 2 chiếc taxi đã đụng nhau.",
     "level": "N4",
@@ -9734,7 +9734,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "あんぜん",
     "meaning": "sự an toàn (an toàn)",
     "exampleSentence": "安全が いちばん 大切です。",
-    "exampleTranslation": "Trong lái xe (sự) an toàn là quan trọng nhất.",
+    "exampleTranslation": "An toàn là quan trọng nhất.",
     "originalNumber": 496,
     "level": "N4",
     "curriculum": "tango",
@@ -9958,7 +9958,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "englishMeaning": "the Earth",
     "hanViet": "ĐỊA CẦU",
     "exampleSentence": "地球は 青くて きれいな 星です。",
-    "exampleTranslation": "Trái Đất là một ngôi sao màu xanh và đẹp.",
+    "exampleTranslation": "Trái Đất là một hành tinh màu xanh rất đẹp.",
     "level": "N4",
     "curriculum": "tango",
     "chapter": "Chương 4: 出かけよう！ (Hãy đi ra ngoài nào!)",
@@ -10174,7 +10174,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "kanji": "森林",
     "hiragana": "しんりん",
     "romaji": "shinrin",
-    "meaning": "rừng rậm, rừng nhiệt đới",
+    "meaning": "rừng, rừng rậm",
     "englishMeaning": "forest",
     "hanViet": "SÂM LÂM",
     "exampleSentence": "この地域には 広い 森林が あります。",
@@ -10456,7 +10456,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "romaji": "ojigi",
     "meaning": "sự cúi đầu chào",
     "englishMeaning": "bow, bowing",
-    "hanViet": "KHUÝNH CƠ",
+    "hanViet": "TỪ NGHI",
     "exampleSentence": "日本では あいさつのとき、おじぎを します。",
     "exampleTranslation": "Ở Nhật Bản khi chào hỏi người ta thường cúi đầu.",
     "level": "N4",
@@ -10696,7 +10696,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "romaji": "shaberu",
     "meaning": "nói chuyện, tán gẫu",
     "englishMeaning": "to chat, to talk",
-    "hanViet": "THUYẾT",
+    "hanViet": "ĐIỆP",
     "exampleSentence": "授業中は しゃべってはいけません。",
     "exampleTranslation": "Không được nói chuyện trong giờ học.",
     "level": "N4",
@@ -10716,7 +10716,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "romaji": "hakkiri",
     "meaning": "rõ ràng, dứt khoát",
     "englishMeaning": "clearly, plainly",
-    "hanViet": "MINH BẠCH",
+    "hanViet": "",
     "exampleSentence": "自分の 意見を はっきり 言いました。",
     "exampleTranslation": "Tôi đã nói rõ ràng ý kiến của mình.",
     "level": "N4",
@@ -10956,7 +10956,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "romaji": "adobaisu",
     "meaning": "lời khuyên, tư vấn",
     "englishMeaning": "advice",
-    "hanViet": "KHUYÊN",
+    "hanViet": "",
     "exampleSentence": "先生から いい アドバイスを もらいました。",
     "exampleTranslation": "Tôi đã nhận được lời khuyên hữu ích từ thầy giáo.",
     "level": "N4",
@@ -11136,7 +11136,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "romaji": "dēto",
     "meaning": "buổi hẹn hò, cuộc hẹn hò",
     "englishMeaning": "date",
-    "hanViet": "HẸN HÒ",
+    "hanViet": "",
     "exampleSentence": "今度の 日曜日に 初めて デートします。",
     "exampleTranslation": "Chủ nhật tới tôi sẽ đi hẹn hò lần đầu tiên.",
     "level": "N4",
@@ -11258,7 +11258,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "englishMeaning": "to get angry",
     "hanViet": "NỘ",
     "exampleSentence": "遅刻して 先生に 怒られました。",
-    "exampleTranslation": "Tôi đến muộn và bị thầy giáo mắng giận.",
+    "exampleTranslation": "Tôi đến muộn nên bị thầy giáo mắng.",
     "level": "N4",
     "curriculum": "tango",
     "chapter": "Chương 5: 人と人との関係 (Mối quan hệ giữa người với người)",
@@ -11396,7 +11396,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "romaji": "toraburu",
     "meaning": "rắc rối, sự cố, vấn đề",
     "englishMeaning": "trouble, issue",
-    "hanViet": "RẮC RỐI",
+    "hanViet": "",
     "exampleSentence": "旅先で トラブルに 巻き込まれました。",
     "exampleTranslation": "Tôi đã bị vướng vào rắc rối tại điểm du lịch.",
     "level": "N4",
@@ -11456,7 +11456,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "romaji": "butsukaru",
     "meaning": "va chạm, đâm vào, đụng",
     "englishMeaning": "to bump into, to collide",
-    "hanViet": "ĐỤNG",
+    "hanViet": "",
     "exampleSentence": "前を よく見ないで 歩いて、電柱に ぶつかりました。",
     "exampleTranslation": "Đi bộ không nhìn kỹ phía trước nên tôi đã va phải cột điện.",
     "level": "N4",
@@ -12569,7 +12569,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "たのしみ",
     "meaning": "niềm vui, thú vui (vui, mong đợi)",
     "exampleSentence": "私には 楽しみが たくさん あります。お正月に 帰国するのが 楽しみです。",
-    "exampleTranslation": "Tôi có rất nhiều niềm vui. Về nước vào ngày Tết thì vui. (Tôi mong đến khi về nước ngày Tết)",
+    "exampleTranslation": "Tôi có rất nhiều niềm vui. Tôi rất mong được về nước vào dịp Tết.",
     "originalNumber": 629,
     "level": "N4",
     "curriculum": "tango",
@@ -13471,7 +13471,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hanViet": "",
     "exampleSentence": "肩が 痛いです。",
     "exampleSentenceReading": "肩が 痛いです。",
-    "exampleTranslation": "Hãy thử ấn vào chỗ này trên vai xem.",
+    "exampleTranslation": "Tôi bị đau vai.",
     "exampleSentenceMeaning": "Hãy thử ấn vào chỗ này trên vai xem.",
     "exampleSentenceMeaningEn": "My shoulder hurts.",
     "englishExampleTranslation": "My shoulder hurts.",
@@ -13696,7 +13696,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hanViet": "",
     "exampleSentence": "毎日、つめを きれいに みがきます。",
     "exampleSentenceReading": "毎日、つめを きれいに みがきます。",
-    "exampleTranslation": "Hàng ngày tôi chải móng cho sạch.",
+    "exampleTranslation": "Hàng ngày tôi đánh bóng móng cho đẹp.",
     "exampleSentenceMeaning": "Hàng ngày tôi chải móng cho sạch.",
     "exampleSentenceMeaningEn": "I neatly polish my nails every day.",
     "englishExampleTranslation": "I neatly polish my nails every day.",
@@ -14365,7 +14365,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "ぐあい",
     "partOfSpeech": "名",
     "type": "Danh từ",
-    "meaning": "cảm giác",
+    "meaning": "tình trạng (sức khỏe)",
     "meaningEn": "condition, status",
     "englishMeaning": "condition, status",
     "hanViet": "CỤ CÁP",
@@ -14446,7 +14446,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hanViet": "CHẨN",
     "exampleSentence": "いつも 近所の お医者さんに 診て もらいます。",
     "exampleSentenceReading": "いつも 近所の お医者さんに 診て もらいます。",
-    "exampleTranslation": "Tôi luôn đi bác sỹ ở gần nhà.",
+    "exampleTranslation": "Tôi luôn được bác sĩ gần nhà khám bệnh.",
     "exampleSentenceMeaning": "Tôi luôn đi bác sỹ ở gần nhà.",
     "exampleSentenceMeaningEn": "I always get examined by the doctor in my neighborhood.",
     "englishExampleTranslation": "I always get examined by the doctor in my neighborhood.",
@@ -15171,7 +15171,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hanViet": "",
     "exampleSentence": "妹は かわいい 服が 大好きです。",
     "exampleSentenceReading": "妹は かわいい 服が 大好きです。",
-    "exampleTranslation": "Chị tôi rất thích trang phục dễ thương.",
+    "exampleTranslation": "Em gái tôi rất thích quần áo dễ thương.",
     "exampleSentenceMeaning": "Chị tôi rất thích trang phục dễ thương.",
     "exampleSentenceMeaningEn": "My younger sister loves cute clothes.",
     "englishExampleTranslation": "My younger sister loves cute clothes.",
@@ -15571,7 +15571,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hanViet": "",
     "exampleSentence": "妹は へんな ファッションが 好きです。",
     "exampleSentenceReading": "妹は へんな ファッションが 好きです。",
-    "exampleTranslation": "Chị tôi thích thời trang kỳ quặc.",
+    "exampleTranslation": "Em gái tôi thích thời trang kỳ quặc.",
     "exampleSentenceMeaning": "Chị tôi thích thời trang kỳ quặc.",
     "exampleSentenceMeaningEn": "My younger sister likes strange fashion.",
     "englishExampleTranslation": "My younger sister likes strange fashion.",
@@ -16843,7 +16843,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "meaning": "lời hứa",
     "meaningEn": "promise",
     "englishMeaning": "promise",
-    "hanViet": "YÊU THÚC",
+    "hanViet": "ƯỚC THÚC",
     "exampleSentence": "友だちと 遊びに 行く 約束を しました。",
     "exampleSentenceReading": "友だちと 遊びに 行く 約束を しました。",
     "exampleTranslation": "Tôi đã hứa đi chơi với bạn tôi.",
@@ -16868,7 +16868,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "meaning": "giữ (lời hứa)",
     "meaningEn": "to keep (a promise)",
     "englishMeaning": "to keep (a promise)",
-    "hanViet": "YÊU THÚC THỦ",
+    "hanViet": "ƯỚC THÚC THỦ",
     "exampleSentence": "約束は 守らなければ なりません。",
     "exampleSentenceReading": "約束は 守らなければ なりません。",
     "exampleTranslation": "Phải giữ lời hứa.",
@@ -16893,7 +16893,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "meaning": "thất (hứa)",
     "meaningEn": "to break (a promise)",
     "englishMeaning": "to break (a promise)",
-    "hanViet": "YÊU THÚC",
+    "hanViet": "ƯỚC THÚC",
     "exampleSentence": "約束を やぶるのは よくないですよ。",
     "exampleSentenceReading": "約束を やぶるのは よくないですよ。",
     "exampleTranslation": "Thất hứa là không tốt đâu đấy.",
@@ -17071,7 +17071,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hanViet": "ĐIỆN THOẠI",
     "exampleSentence": "国の 友だちから 電話が ありました。",
     "exampleSentenceReading": "国の 友だちから 電話が ありました。",
-    "exampleTranslation": "Tôi đã có điện thoại từ bạn trong nước.",
+    "exampleTranslation": "Tôi đã nhận được điện thoại của bạn ở quê nhà.",
     "exampleSentenceMeaning": "Tôi đã có điện thoại từ bạn trong nước.",
     "exampleSentenceMeaningEn": "There was a call from my friend from my home country.",
     "englishExampleTranslation": "There was a call from my friend from my home country.",
@@ -17446,7 +17446,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hanViet": "",
     "exampleSentence": "日本へ 来てから １か月くらい とても さびしかったです。",
     "exampleSentenceReading": "日本へ 来てから １か月くらい とても さびしかったです。",
-    "exampleTranslation": "Khi đến Nhật, khoảng 1 tháng tôi đã rất buồn.",
+    "exampleTranslation": "Sau khi đến Nhật, khoảng 1 tháng đầu tôi đã rất cô đơn.",
     "exampleSentenceMeaning": "Khi đến Nhật, khoảng 1 tháng tôi đã rất buồn.",
     "exampleSentenceMeaningEn": "I was so lonely for about a month after I came to Japan.",
     "englishExampleTranslation": "I was so lonely for about a month after I came to Japan.",
@@ -18146,7 +18146,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hanViet": "",
     "exampleSentence": "日本人の 考え方が だいぶ わかって きました。",
     "exampleSentenceReading": "日本人の 考え方が だいぶ わかって きました。",
-    "exampleTranslation": "Tôi đã phần nào hiểu ra nhiều cách suy nghĩ của người Nhật.",
+    "exampleTranslation": "Tôi đã hiểu được khá nhiều về cách suy nghĩ của người Nhật.",
     "exampleSentenceMeaning": "Tôi đã phần nào hiểu ra nhiều cách suy nghĩ của người Nhật.",
     "exampleSentenceMeaningEn": "I've come to largely understand the Japanese people's way of thinking.",
     "englishExampleTranslation": "I've come to largely understand the Japanese people's way of thinking.",
@@ -18290,13 +18290,13 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "けっして",
     "partOfSpeech": "副",
     "type": "Phó từ",
-    "meaning": "nhất định (không)",
+    "meaning": "tuyệt đối (không)",
     "meaningEn": "never, absolutely (not)",
     "englishMeaning": "never, absolutely (not)",
     "hanViet": "",
     "exampleSentence": "この 絵には けっして さわらないで ください。",
     "exampleSentenceReading": "この 絵には けっして さわらないで ください。",
-    "exampleTranslation": "Nhất định xin đừng rờ vào bức tranh này.",
+    "exampleTranslation": "Tuyệt đối không được chạm vào bức tranh này.",
     "exampleSentenceMeaning": "Nhất định xin đừng rờ vào bức tranh này.",
     "exampleSentenceMeaningEn": "Please don't ever touch this painting.",
     "englishExampleTranslation": "Please don't ever touch this painting.",
@@ -18471,7 +18471,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hanViet": "",
     "exampleSentence": "①ずっと 日本へ 留学したいと 思って いました。\n②妹は 私より ずっと 頭が いいです。",
     "exampleSentenceReading": "①ずっと 日本へ 留学したいと 思って いました。\n②妹は 私より ずっと 頭が いいです。",
-    "exampleTranslation": "① Tôi đã muốn du học Nhật Bản lâu nay.\n② Chị tôi thông minh hơn hẳn tôi.",
+    "exampleTranslation": "① Tôi đã muốn du học Nhật Bản từ lâu.\n② Em gái tôi thông minh hơn tôi nhiều.",
     "exampleSentenceMeaning": "① Tôi đã muốn du học Nhật Bản lâu nay.\n② Chị tôi thông minh hơn hẳn tôi.",
     "exampleSentenceMeaningEn": "① I had always wanted to go on an exchange to Japan.\n② My younger sister is much smarter than I am.",
     "englishExampleTranslation": "① I had always wanted to go on an exchange to Japan.\n② My younger sister is much smarter than I am.",
@@ -18590,13 +18590,13 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "たしか",
     "partOfSpeech": "副",
     "type": "Phó từ",
-    "meaning": "đúng là",
+    "meaning": "hình như, nếu tôi nhớ không nhầm",
     "meaningEn": "certainly, surely",
     "englishMeaning": "certainly, surely",
     "hanViet": "",
     "exampleSentence": "明日の 会議は たしか ３時からだと 思います。",
     "exampleSentenceReading": "明日の 会議は たしか ３時からだと 思います。",
-    "exampleTranslation": "Tôi nhớ đúng là buổi họp ngày mai bắt đầu từ 3 giờ.",
+    "exampleTranslation": "Nếu tôi nhớ không nhầm thì cuộc họp ngày mai bắt đầu từ 3 giờ.",
     "exampleSentenceMeaning": "Tôi nhớ đúng là buổi họp ngày mai bắt đầu từ 3 giờ.",
     "exampleSentenceMeaningEn": "I'm sure the meeting tomorrow starts at 3:00.",
     "englishExampleTranslation": "I'm sure the meeting tomorrow starts at 3:00.",
@@ -18715,13 +18715,13 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "どんどん",
     "partOfSpeech": "副",
     "type": "Phó từ",
-    "meaning": "dần dần, đều",
+    "meaning": "ngày càng, liên tục, nhanh chóng",
     "meaningEn": "steadily, rapidly",
     "englishMeaning": "steadily, rapidly",
     "hanViet": "",
     "exampleSentence": "留学生が どんどん ふえて います。",
     "exampleSentenceReading": "留学生が どんどん ふえて います。",
-    "exampleTranslation": "Du học sinh dần dần tăng lên.",
+    "exampleTranslation": "Du học sinh ngày càng tăng lên.",
     "exampleSentenceMeaning": "Du học sinh dần dần tăng lên.",
     "exampleSentenceMeaningEn": "The number of exchange students is steadily increasing.",
     "englishExampleTranslation": "The number of exchange students is steadily increasing.",
