@@ -299,8 +299,7 @@ function VocabListItemCardComponent({
           </div>
           {/* Word (Kanji & Furigana) */}
           <div className="flex flex-col items-start gap-1 flex-1 min-w-0">
-            {/* The red box from the user's drawn image */}
-            <div className="border border-red-500/60 rounded px-1.5 py-0.5 bg-slate-900/20 max-w-full overflow-x-auto no-scrollbar">
+            <div className="max-w-full overflow-x-auto no-scrollbar">
               {renderWordWithFuriganaInternal(v.kanji, v.hiragana, v.meaning, hanViet, onSelectKanji)}
             </div>
             {showPitchAccent && (
