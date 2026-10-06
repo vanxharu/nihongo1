@@ -27,6 +27,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { speakJapanese } from '../utils/audio';
 import { AiPersona } from './JapaneseAiChat';
 
+import { sanitizeRubyHtml } from '../utils/sanitizeHtml';
 export interface VoiceChatMessage {
   id: string;
   sender: 'user' | 'ai';
@@ -654,7 +655,7 @@ export default function JapaneseLiveVoiceCall({
                 {showFurigana && msg.furiganaHtml ? (
                   <div 
                     className="leading-relaxed [&_ruby]:text-[15px] [&_ruby]:sm:text-base [&_rt]:text-[11px] [&_rt]:text-emerald-400" 
-                    dangerouslySetInnerHTML={{ __html: msg.furiganaHtml }} 
+                    dangerouslySetInnerHTML={{ __html: sanitizeRubyHtml(msg.furiganaHtml) }} 
                   />
                 ) : (
                   <p>{msg.text}</p>

@@ -27,8 +27,6 @@ export default function handler(req: IncomingMessage, res: ServerResponse) {
     res.writeHead(500, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       error: 'Server failed to initialize',
-      message: loadError?.message ?? 'No handler loaded',
-      stack: loadError?.stack?.split('\n').slice(0, 5).join('\n'),
     }));
     return;
   }

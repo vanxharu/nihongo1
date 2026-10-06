@@ -31,6 +31,7 @@ import { cleanVocabSymbols, sanitizeVocabItem, KANJI_TO_HAN_VIET } from './src/u
 import { deduplicateGrammars } from './src/utils/grammarDeduplicator';
 import { KANJI_DICTIONARY } from './src/data/kanjiDictionary';
 import { requireAuth, requireAdmin } from './src/middleware/auth';
+import { adminAuth } from './src/lib/firebase-admin';
 import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid, findUserByIdentifier } from './src/db/users';
 import { readLearningProfile, saveLearningProfile } from './src/server/learningProfile';
 
@@ -75,8 +76,14 @@ const app = express();
 const PORT = 3000;
 
 // Express middleware
-app.use(express.json({ limit: '25mb' }));
-app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+// Small JSON bodies by default; only routes that really carry images/audio/base64 get the big limit.
+const BIG_BODY_PATH = /ocr|transcribe|handwriting|mascot|upload|import|kaiwa|japanese-chat|live|admin|exam|annotat|image|audio|voice|listening\/(questions|mappings)|user\/profile/i;
+const smallJson = express.json({ limit: '1mb' });
+const bigJson = express.json({ limit: '25mb' });
+app.use((req, res, next) => (BIG_BODY_PATH.test(req.path) ? bigJson : smallJson)(req, res, next));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+// Behind one reverse proxy (Vercel/Cloud Run): req.ip is the proxy-appended client address, not a client-forged header.
+app.set('trust proxy', 1);
 
 // Best-effort per-IP rate limit for endpoints that spend AI / TTS quota.
 // In-memory, so on serverless hosts it is per instance; it still blunts casual abuse.
@@ -96,8 +103,7 @@ const RATE_WINDOW_MS = 60_000;
 const RATE_MAX_REQUESTS = 40;
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
 app.use(COST_BEARING_PATHS, (req, res, next) => {
-  const forwarded = (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim();
-  const key = forwarded || req.ip || 'unknown';
+  const key = req.ip || 'unknown';
   const now = Date.now();
   if (rateBuckets.size > 5000) {
     for (const [k, v] of rateBuckets) if (v.resetAt <= now) rateBuckets.delete(k);
@@ -297,7 +303,7 @@ app.post('/api/listening/videos', requireAuth, requireAdmin, express.json({ limi
       videos.unshift(cleanVideo);
     }
 
-    fs.writeFileSync(LISTENING_VIDEOS_FILE, JSON.stringify(videos, null, 2));
+    writeJsonAtomic(LISTENING_VIDEOS_FILE, videos);
     return res.json({ success: true, video: cleanVideo });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -311,7 +317,7 @@ app.delete('/api/listening/videos/:id', requireAuth, requireAdmin, (req, res) =>
     if (fs.existsSync(LISTENING_VIDEOS_FILE)) {
       let videos = JSON.parse(fs.readFileSync(LISTENING_VIDEOS_FILE, 'utf-8'));
       videos = videos.filter((v: any) => v.id !== videoId);
-      fs.writeFileSync(LISTENING_VIDEOS_FILE, JSON.stringify(videos, null, 2));
+      writeJsonAtomic(LISTENING_VIDEOS_FILE, videos);
     }
     return res.json({ success: true });
   } catch (e: any) {
@@ -320,16 +326,38 @@ app.delete('/api/listening/videos/:id', requireAuth, requireAdmin, (req, res) =>
 });
 
 // 4. Get YouTube listening progress for a user
-// Listening endpoints index JSON stores by client-supplied ids: reject keys that could pollute Object.prototype.
+// Write via temp file + rename so a crash mid-write can never leave a truncated JSON store.
+function writeJsonAtomic(file: string, value: unknown) {
+  const tmp = `${file}.${process.pid}.tmp`;
+  fs.writeFileSync(tmp, JSON.stringify(value, null, 2));
+  fs.renameSync(tmp, file);
+}
+
+// Listening progress/attempt/resume endpoints are per-user: a verified Firebase token decides the owner.
+// Without a valid token the caller is a guest and only ever touches the shared 'default_user' bucket,
+// so nobody can read or overwrite another user's data by guessing a uid. Ids are also validated so keys
+// such as __proto__ can never reach the JSON stores (prototype pollution).
 const SAFE_LISTENING_ID = /^[\w.@:-]{1,128}$/;
 const UNSAFE_LISTENING_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
-app.use('/api/listening', (req, res, next) => {
+const LISTENING_USER_PATHS = /^\/(progress|attempts|exam-resume)/;
+app.use('/api/listening', async (req, res, next) => {
+  if (!LISTENING_USER_PATHS.test(req.path)) return next();
+  let uid = 'default_user';
+  const auth = req.headers.authorization;
+  if (auth?.startsWith('Bearer ') && adminAuth) {
+    try { uid = (await adminAuth.verifyIdToken(auth.slice(7))).uid; } catch { /* invalid token: treat as guest */ }
+  }
+  if (req.query && typeof req.query === 'object') (req.query as any).userId = uid;
+  if (req.body && typeof req.body === 'object') {
+    req.body.userId = uid;
+    if (Array.isArray(req.body.records)) for (const r of req.body.records) if (r && typeof r === 'object') r.userId = uid;
+  }
   const ids: unknown[] = [];
   for (const src of [req.query, req.body]) {
     if (!src || typeof src !== 'object') continue;
     const o = src as Record<string, unknown>;
     ids.push(o.userId, o.videoId);
-    if (Array.isArray(o.records)) for (const r of o.records) ids.push((r as any)?.userId, (r as any)?.videoId);
+    if (Array.isArray(o.records)) for (const r of o.records) ids.push((r as any)?.videoId);
   }
   const bad = ids.some(v => v !== undefined && (typeof v !== 'string' || !SAFE_LISTENING_ID.test(v) || UNSAFE_LISTENING_KEYS.has(v)));
   if (bad) return res.status(400).json({ success: false, error: 'Invalid id' });
@@ -413,7 +441,7 @@ app.post('/api/listening/progress', express.json(), (req, res) => {
       return res.status(400).json({ error: 'Invalid payload' });
     }
 
-    fs.writeFileSync(LISTENING_PROGRESS_FILE, JSON.stringify(allProgress, null, 2));
+    writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.json({ success: true, record: result.record });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -439,7 +467,7 @@ app.post('/api/listening/progress/beacon', express.text({ type: '*/*' }), (req, 
     }
 
     upsertListeningProgressRecord(allProgress, payload);
-    fs.writeFileSync(LISTENING_PROGRESS_FILE, JSON.stringify(allProgress, null, 2));
+    writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.status(204).end();
   } catch {
     return res.status(204).end();
@@ -465,7 +493,7 @@ app.post('/api/listening/progress/batch', express.json(), (req, res) => {
       upsertListeningProgressRecord(allProgress, { ...record, userId });
     });
 
-    fs.writeFileSync(LISTENING_PROGRESS_FILE, JSON.stringify(allProgress, null, 2));
+    writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.json({ success: true, count: records.length, progress: allProgress[userId] || {} });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -539,7 +567,7 @@ app.post('/api/listening/attempts', express.json({ limit: '5mb' }), (req, res) =
     if (!all[userId]) all[userId] = [];
     // Prepend attempt
     all[userId] = [attempt, ...all[userId].filter((a: any) => a.attemptId !== attempt.attemptId)];
-    fs.writeFileSync(LISTENING_ATTEMPTS_FILE, JSON.stringify(all, null, 2));
+    writeJsonAtomic(LISTENING_ATTEMPTS_FILE, all);
 
     // Also clear in-progress resume state for this video if exists
     if (fs.existsSync(LISTENING_RESUME_FILE)) {
@@ -548,7 +576,7 @@ app.post('/api/listening/attempts', express.json({ limit: '5mb' }), (req, res) =
         if (resumeData[userId]) {
           delete resumeData[userId][attempt.youtubeVideoId];
           if (attempt.examId) delete resumeData[userId][attempt.examId];
-          fs.writeFileSync(LISTENING_RESUME_FILE, JSON.stringify(resumeData, null, 2));
+          writeJsonAtomic(LISTENING_RESUME_FILE, resumeData);
         }
       } catch {}
     }
@@ -599,7 +627,7 @@ app.post('/api/listening/exam-resume', express.json({ limit: '2mb' }), (req, res
       all[userId][state.examId] = state;
     }
 
-    fs.writeFileSync(LISTENING_RESUME_FILE, JSON.stringify(all, null, 2));
+    writeJsonAtomic(LISTENING_RESUME_FILE, all);
     return res.json({ success: true });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -615,7 +643,7 @@ app.delete('/api/listening/exam-resume', (req, res) => {
       const data = JSON.parse(fs.readFileSync(LISTENING_RESUME_FILE, 'utf-8'));
       if (data[userId] && videoId) {
         delete data[userId][videoId];
-        fs.writeFileSync(LISTENING_RESUME_FILE, JSON.stringify(data, null, 2));
+        writeJsonAtomic(LISTENING_RESUME_FILE, data);
       }
     }
     return res.json({ success: true });
@@ -674,7 +702,7 @@ app.post('/api/listening/questions', requireAuth, requireAdmin, express.json({ l
       updatedAt: new Date().toISOString()
     };
 
-    fs.writeFileSync(LISTENING_QUESTIONS_FILE, JSON.stringify(all, null, 2));
+    writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
     return res.json({ success: true, exam: all[videoId] });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -716,7 +744,7 @@ app.post('/api/listening/questions/update-timestamp', requireAuth, requireAdmin,
     q.sourceVerified = true;
     exam.updatedAt = new Date().toISOString();
 
-    fs.writeFileSync(LISTENING_QUESTIONS_FILE, JSON.stringify(all, null, 2));
+    writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
     return res.json({ success: true, question: q });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -782,7 +810,7 @@ app.post('/api/listening/mappings', requireAuth, requireAdmin, express.json(), (
       mappings.push(enriched);
     }
 
-    fs.writeFileSync(LISTENING_MAPPINGS_FILE, JSON.stringify(mappings, null, 2));
+    writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
     return res.json({ success: true, mapping: enriched });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -821,7 +849,7 @@ app.post('/api/listening/mappings/batch', requireAuth, requireAdmin, express.jso
       }
     }
 
-    fs.writeFileSync(LISTENING_MAPPINGS_FILE, JSON.stringify(mappings, null, 2));
+    writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
     return res.json({ success: true, count: incoming.length });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -1160,13 +1188,22 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+// Edge-TTS parameters come straight from the client: cap the text and allow only well-formed voice/rate/pitch.
+function ttsParams(text: unknown, voice: unknown, rate: unknown, pitch: unknown) {
+  const t = String(text ?? '').trim();
+  if (t.length > 600) return null;
+  const v = /^[a-z]{2}-[A-Z]{2}-\w{2,30}Neural$/.test(String(voice)) ? String(voice) : 'ja-JP-NanamiNeural';
+  const r = /^[+-]\d{1,3}%$/.test(String(rate)) ? String(rate) : '+0%';
+  const p = /^[+-]\d{1,3}Hz$/.test(String(pitch)) ? String(pitch) : '+0Hz';
+  return { text: t, voice: v, rate: r, pitch: p };
+}
+
 // 1.1 API: Microsoft Azure Neural Text-To-Speech (NanamiNeural 👩 & KeitaNeural 👨)
 app.get("/api/tts", async (req, res) => {
   try {
-    const text = (req.query.text as string || "").trim();
-    const voice = (req.query.voice as string || "ja-JP-NanamiNeural").trim();
-    const rate = (req.query.rate as string || "+0%").trim();
-    const pitch = (req.query.pitch as string || "+0Hz").trim();
+    const q = ttsParams(req.query.text, req.query.voice, req.query.rate, req.query.pitch);
+    if (!q) return res.status(400).json({ error: "Parameter 'text' is too long (max 600 characters)" });
+    const { text, voice, rate, pitch } = q;
 
     if (!text) {
       return res.status(400).json({ error: "Parameter 'text' is required" });
@@ -1190,8 +1227,9 @@ app.get("/api/tts", async (req, res) => {
 
 app.post("/api/tts", async (req, res) => {
   try {
-    const { text, voice = "ja-JP-NanamiNeural", rate = "+0%", pitch = "+0Hz" } = req.body;
-    const cleanText = (text || "").trim();
+    const q = ttsParams(req.body?.text, req.body?.voice, req.body?.rate, req.body?.pitch);
+    if (!q) return res.status(400).json({ error: "Parameter 'text' is too long (max 600 characters)" });
+    const { text: cleanText, voice, rate, pitch } = q;
 
     if (!cleanText) {
       return res.status(400).json({ error: "Parameter 'text' is required in body" });
@@ -1217,9 +1255,10 @@ app.post("/api/tts", async (req, res) => {
 app.post("/api/furigana", async (req, res) => {
   try {
     const { text } = req.body;
-    if (!text) {
+    if (!text || typeof text !== 'string') {
       return res.status(400).json({ error: "text is required" });
     }
+    if (text.length > 3000) return res.status(400).json({ error: "text is too long (max 3000 characters)" });
     const k = await getKuroshiro();
     const furiganaHtml = await k.convert(text, { mode: "furigana", to: "hiragana" });
     res.json({ success: true, text, furiganaHtml });
@@ -2733,6 +2772,14 @@ app.get("/api/reading/todai/news-list", async (req, res) => {
   }
 });
 
+// SSRF guard for user-supplied article URLs: https + the two known reading hosts only, no redirects.
+const READING_HOSTS = new Set(['japanese.todaiinews.com', 'watanoc.com']);
+function assertReadingUrl(raw: string): string {
+  const u = new URL(raw);
+  if (u.protocol !== 'https:' || !READING_HOSTS.has(u.hostname) || u.port || u.username || u.password) throw new Error('INVALID_SOURCE');
+  return u.toString();
+}
+
 // 2.7.2 API: Todaii Fetch Single Article (Trích xuất bài báo chi tiết từ URL hoặc ID Todaii News)
 app.post("/api/reading/todai/fetch-article", async (req, res) => {
   try {
@@ -2902,7 +2949,7 @@ app.post("/api/reading/todai/fetch-article", async (req, res) => {
     // 2. Fallback: If URL provided, fetch and scrape HTML
     if (url) {
       try {
-        const pageRes = await axios.get(url, {
+        const pageRes = await axios.get(assertReadingUrl(String(url)), { maxRedirects: 0,
           headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
           },
@@ -3239,7 +3286,7 @@ app.post("/api/reading/watanoc/fetch-article", async (req, res) => {
       targetUrl = "https://watanoc.com/post-1610-jiyuugaoka";
     }
 
-    const pageRes = await axios.get(targetUrl, {
+    const pageRes = await axios.get(assertReadingUrl(targetUrl), { maxRedirects: 0,
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
@@ -4191,6 +4238,16 @@ app.post("/api/transcribe-audio", async (req, res) => {
 // Configure Vite middleware in development or serve built files in production
 
 // 5.4 Username/Identifier Resolver (Enables login by username or email)
+// Username -> email lookup can be used to harvest accounts: allow only a few lookups per minute per IP.
+const identifierBuckets = new Map<string, { count: number; resetAt: number }>();
+app.use('/api/auth/resolve-identifier', (req, res, next) => {
+  const key = req.ip || 'unknown'; const now = Date.now();
+  if (identifierBuckets.size > 5000) for (const [k, v] of identifierBuckets) if (v.resetAt <= now) identifierBuckets.delete(k);
+  const b = identifierBuckets.get(key);
+  if (!b || b.resetAt <= now) { identifierBuckets.set(key, { count: 1, resetAt: now + 60_000 }); return next(); }
+  if (++b.count > 10) return res.status(429).json({ success: false, error: 'Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút.' });
+  next();
+});
 app.post('/api/auth/resolve-identifier', async (req: any, res) => {
   try {
     const rawIdentifier = (req.body?.identifier || '').toString().trim();
@@ -4286,6 +4343,12 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
       name, avatar, targetLevel, xp, coins, studyDays, 
       completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition 
     } = req.body;
+    // Game counters come from the client: reject non-numeric/absurd values and oversized blobs.
+    const badNum = (v: unknown) => v !== undefined && v !== null && (typeof v !== 'number' || !Number.isFinite(v) || v < 0 || v > 10_000_000);
+    const tooBig = (v: unknown) => v !== undefined && JSON.stringify(v).length > 1_000_000;
+    if (badNum(xp) || badNum(coins) || [studyDays, completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition].some(tooBig)) {
+      return res.status(400).json({ success: false, error: 'Invalid profile data' });
+    }
     
     try {
       const updatedUser = await updateUserProfile(dbUser.uid, {
@@ -6314,12 +6377,16 @@ app.get('/api/grammars', async (req, res) => {
 app.post('/api/chat-gpt', async (req, res) => {
   try {
     const { prompt, systemInstruction, model, jsonMode = false } = req.body;
-    if (!prompt) {
+    if (!prompt || typeof prompt !== 'string') {
       return res.status(400).json({ error: "Thành phần 'prompt' là bắt buộc." });
+    }
+    if (prompt.length > 20000 || (systemInstruction !== undefined && (typeof systemInstruction !== 'string' || systemInstruction.length > 8000))) {
+      return res.status(400).json({ error: "Nội dung quá dài." });
     }
 
     const currentKey = getActiveOpenAIApiKey();
-    const modelToUse = model || getActiveOpenAIModel();
+    // Only plain GPT chat models may be requested by the client (no reasoning/pro tiers on your bill).
+    const modelToUse = typeof model === 'string' && /^gpt-[\w.-]{1,40}$/.test(model) && !/pro|o1|o3/i.test(model) ? model : getActiveOpenAIModel();
 
     if (!currentKey) {
       try {

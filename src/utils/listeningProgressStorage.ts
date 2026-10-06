@@ -201,21 +201,12 @@ export function syncProgressToServer(
 
   // If page is unloading/hidden, prefer navigator.sendBeacon or fetch with keepalive: true
   if (options.isUnloading) {
-    const jsonString = JSON.stringify(payload);
-    if (navigator.sendBeacon) {
-      try {
-        const blob = new Blob([jsonString], { type: 'application/json' });
-        const success = navigator.sendBeacon('/api/listening/progress/beacon', blob);
-        if (success) return;
-      } catch {}
-    }
-
-    // Fallback to fetch with keepalive
+    // fetch+keepalive (not sendBeacon) so the auth header can identify the owner on the server.
     try {
       fetch('/api/listening/progress', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: jsonString,
+        body: JSON.stringify(payload),
         keepalive: true
       }).catch(() => {});
     } catch {}

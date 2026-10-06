@@ -1,6 +1,7 @@
 import { StrictMode, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import './lib/authFetch';
 import App from './App';
 import './index.css';
 import './brandTheme.css';

@@ -58,6 +58,7 @@ import { ExamHistoryModal } from './ExamHistoryModal';
 import { PrintableExamBooklet } from './PrintableExamBooklet';
 import { renderStudyQuestionText } from '../utils/questionFormatUtils';
 
+import { svgDataUri } from '../utils/sanitizeHtml';
 interface DrawingStroke {
   id: string;
   tool: 'pen' | 'highlighter';
@@ -2756,7 +2757,7 @@ const BookletQuestionCard: React.FC<BookletQuestionCardProps> = ({
       {question.imageSvg && (
         <div className={`my-4 p-3 sm:p-4 rounded-xl border flex justify-center items-center overflow-x-auto shadow-2xs ${
           isDark ? 'bg-[#18202c] border-slate-700' : 'bg-stone-50 border-stone-300'
-        }`} dangerouslySetInnerHTML={{ __html: question.imageSvg }} />
+        }`}><img src={svgDataUri(question.imageSvg)} alt="Hình minh họa câu hỏi" className="max-w-full h-auto" /></div>
       )}
       {question.imageUrl && (
         <div className={`my-4 p-3 sm:p-4 rounded-xl border flex justify-center items-center overflow-hidden shadow-2xs ${

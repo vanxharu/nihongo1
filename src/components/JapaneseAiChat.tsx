@@ -41,6 +41,7 @@ import { speakJapanese, AzureVoiceChoice } from '../utils/audio';
 import JapaneseLiveVoiceCall from './JapaneseLiveVoiceCall';
 import ShibaMascot from './mascot/ShibaMascot';
 
+import { sanitizeRubyHtml } from '../utils/sanitizeHtml';
 export interface AiPersona {
   id: string;
   name: string;
@@ -1184,7 +1185,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                         {showFurigana && m.furiganaHtml ? (
                           <div 
                             className="inline-block leading-relaxed [&_ruby]:text-[13.5px] sm:[&_ruby]:text-[15px] [&_rt]:text-[10px] [&_rt]:text-amber-300 font-jp" 
-                            dangerouslySetInnerHTML={{ __html: m.furiganaHtml }} 
+                            dangerouslySetInnerHTML={{ __html: sanitizeRubyHtml(m.furiganaHtml) }} 
                           />
                         ) : (
                           <span>{m.text || ''}</span>

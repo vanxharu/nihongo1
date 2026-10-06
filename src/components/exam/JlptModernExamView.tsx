@@ -32,6 +32,7 @@ import { DailyExam, ExamQuestion, UserProfile } from '../../types';
 import { JLPT_SECTION_METAS, ExamSectionMode, renderFormattedQuestion } from '../DailyExamQuiz';
 import ShibaMascot from '../mascot/ShibaMascot';
 
+import { svgDataUri } from '../../utils/sanitizeHtml';
 export interface JlptModernExamViewProps {
   exam: DailyExam;
   selectedSectionMode: ExamSectionMode;
@@ -769,7 +770,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
 
           {/* Visual illustration diagram SVG / Image if present */}
           {currentQuestion.imageSvg && (
-            <div className="my-3 p-4 rounded-2xl border border-[#EADFCF] bg-[#FDFBF7] flex justify-center items-center overflow-x-auto" dangerouslySetInnerHTML={{ __html: currentQuestion.imageSvg }} />
+            <div className="my-3 p-4 rounded-2xl border border-[#EADFCF] bg-[#FDFBF7] flex justify-center items-center overflow-x-auto"><img src={svgDataUri(currentQuestion.imageSvg)} alt="Hình minh họa câu hỏi" className="max-w-full h-auto" /></div>
           )}
           {currentQuestion.imageUrl && (
             <div className="my-3 p-4 rounded-2xl border border-[#EADFCF] bg-[#FDFBF7] flex justify-center items-center overflow-hidden">
