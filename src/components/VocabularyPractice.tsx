@@ -2316,6 +2316,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     if (!currentItem) return;
 
     const cramRaw = cramInput.trim().toLowerCase();
+    if (!cramRaw) return; // empty input must never match an empty romaji/kanji field
     const val = convertRomajiToHiragana(cramRaw, true);
     const convertedInput = convertRomajiToHiragana(val, true);
 
@@ -2341,9 +2342,9 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     const normRawLong = normalizeLongVowels(normRaw);
 
     const isMatch =
-      normVal === normHira || normVal === normKanji || normVal === normRomaji ||
-      normConverted === normHira || normConverted === normKanji || normConverted === normRomaji ||
-      normRaw === normHira || normRaw === normKanji || normRaw === normRomaji ||
+      normVal === normHira || (normKanji && normVal === normKanji) || (normRomaji && normVal === normRomaji) ||
+      normConverted === normHira || (normKanji && normConverted === normKanji) || (normRomaji && normConverted === normRomaji) ||
+      normRaw === normHira || (normKanji && normRaw === normKanji) || (normRomaji && normRaw === normRomaji) ||
       normValLong === normHiraLong || normConvertedLong === normHiraLong || normRawLong === normHiraLong ||
       (stripHira && (stripVal === stripHira || stripConverted === stripHira || stripRaw === stripHira)) ||
       (stripKanji && (stripVal === stripKanji || stripConverted === stripKanji || stripRaw === stripKanji)) ||

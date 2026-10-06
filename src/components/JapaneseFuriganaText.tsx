@@ -141,6 +141,23 @@ function JapaneseFuriganaTextComponent({
   currentItem,
   vocabData
 }: JapaneseFuriganaTextProps) {
+  // Hooks must run before any early return (showFurigana/sentence can change on a mounted instance).
+  const parts = useMemo(() => {
+    if (!sentence || !showFurigana) return [];
+    const rawParts = getSentenceFuriganaParts(
+      sentence,
+      currentItem ? { kanji: currentItem.kanji || currentItem.word, hiragana: currentItem.hiragana || currentItem.reading } : {},
+      vocabData
+    );
+    return (rawParts || []).flatMap((part) => {
+      if (!part || !part.text) return [];
+      if (part.furigana && hasKanji(part.text || '')) {
+        return alignWordFurigana(part.text || '', part.furigana || '');
+      }
+      return [part];
+    });
+  }, [sentence, showFurigana, currentItem, vocabData]);
+
   if (!sentence) return null;
 
   if (!showFurigana || (!hasKanji(sentence) && !sentence.includes('<ruby>') && !sentence.includes('<rt>') && !sentence.includes('['))) {
@@ -155,21 +172,6 @@ function JapaneseFuriganaTextComponent({
       </span>
     );
   }
-
-  const parts = useMemo(() => {
-    const rawParts = getSentenceFuriganaParts(
-      sentence,
-      currentItem ? { kanji: currentItem.kanji || currentItem.word, hiragana: currentItem.hiragana || currentItem.reading } : {},
-      vocabData
-    );
-    return (rawParts || []).flatMap((part) => {
-      if (!part || !part.text) return [];
-      if (part.furigana && hasKanji(part.text || '')) {
-        return alignWordFurigana(part.text || '', part.furigana || '');
-      }
-      return [part];
-    });
-  }, [sentence, currentItem, vocabData]);
 
   // Font size configuration
   let mainTextSize = 'text-base sm:text-lg';

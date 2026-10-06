@@ -896,7 +896,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     return () => {
       window.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, [selectedExam, currentQuestionIndex, activeQuestions.length, isSubmitted, currentQuestion]);
+  }, [selectedExam, currentQuestionIndex, activeQuestions.length, isSubmitted, currentQuestion, userAnswers]); // userAnswers: handleSubmit/handleSelectOption read it
 
   const handleToggleTTS = () => {
     if (isPlayingAudio) {

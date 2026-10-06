@@ -626,23 +626,21 @@ export default function HandwritingPractice({
 
     } catch (err: any) {
       console.warn('AI Grading failed, falling back:', err);
-      // Fallback grade
-      const fallbackResult: GradingResult = {
-        transcription: currentExercise.expectedAnswer,
-        score: 85,
-        isCorrect: true,
-        strokeRating: 'good',
-        strokeFeedback: 'Nét chữ khá đều và đúng tỷ lệ. Tiếp tục luyện tập để tay mềm mại hơn nhé!',
-        overallComment: 'Rất tốt! Bài tập đã được hoàn thành chuẩn xác.',
-        correctionTip: 'Cố gắng giữ lực bút đều tay ở các nét sổ dọc.',
+      // Grading failed (offline / API error): never award a pass or XP for an ungraded drawing.
+      setGradingResult({
+        transcription: '',
+        score: 0,
+        isCorrect: false,
+        strokeRating: 'needs_practice',
+        strokeFeedback: '',
+        overallComment: 'Chưa chấm được bài này (lỗi kết nối). Hãy thử gửi lại — bạn chưa được tính điểm hay XP.',
+        correctionTip: '',
         standardAnswer: currentExercise.expectedAnswer,
         standardFurigana: currentExercise.furigana,
         standardRomaji: currentExercise.romaji,
         standardMeaningVi: currentExercise.meaningVi,
-        xpEarned: 25
-      };
-      setGradingResult(fallbackResult);
-      onEarnXp(25);
+        xpEarned: 0
+      });
     } finally {
       setIsGrading(false);
     }

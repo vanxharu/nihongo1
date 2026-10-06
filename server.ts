@@ -178,7 +178,7 @@ app.post('/api/mascot/upload', requireAuth, requireAdmin, (req, res) => {
     fs.writeFileSync(path.join(mascotDir, 'mascot_original.png'), buffer);
     fs.writeFileSync(path.join(process.cwd(), 'public', 'image.png'), buffer);
     if (filename) {
-      fs.writeFileSync(path.join(mascotDir, filename), buffer);
+      fs.writeFileSync(path.join(mascotDir, path.basename(String(filename))), buffer); // basename: no path traversal
     }
     return res.json({ success: true, url: '/mascot/mascot.png' });
   } catch (err: any) {
@@ -320,6 +320,22 @@ app.delete('/api/listening/videos/:id', requireAuth, requireAdmin, (req, res) =>
 });
 
 // 4. Get YouTube listening progress for a user
+// Listening endpoints index JSON stores by client-supplied ids: reject keys that could pollute Object.prototype.
+const SAFE_LISTENING_ID = /^[\w.@:-]{1,128}$/;
+const UNSAFE_LISTENING_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+app.use('/api/listening', (req, res, next) => {
+  const ids: unknown[] = [];
+  for (const src of [req.query, req.body]) {
+    if (!src || typeof src !== 'object') continue;
+    const o = src as Record<string, unknown>;
+    ids.push(o.userId, o.videoId);
+    if (Array.isArray(o.records)) for (const r of o.records) ids.push((r as any)?.userId, (r as any)?.videoId);
+  }
+  const bad = ids.some(v => v !== undefined && (typeof v !== 'string' || !SAFE_LISTENING_ID.test(v) || UNSAFE_LISTENING_KEYS.has(v)));
+  if (bad) return res.status(400).json({ success: false, error: 'Invalid id' });
+  next();
+});
+
 app.get('/api/listening/progress', (req, res) => {
   try {
     const userId = (req.query.userId as string) || 'default_user';

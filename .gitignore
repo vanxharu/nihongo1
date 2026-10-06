@@ -8,3 +8,8 @@ coverage/
 !.env.example
 .shadowing-tools/
 .shadowing-work/
+ai-config.json
+youtube-listening-progress.json
+youtube-listening-attempts.json
+youtube-listening-resume.json
+userGrammarProgress.json

@@ -1045,14 +1045,14 @@ export const JlptRealBookletExam: React.FC<JlptRealBookletExamProps> = ({
       return { correct, total, pct, grade };
     };
 
-    const mojiGoi = getStats(mojiGoiQuestions);
-    const bunpou = getStats(bunpouQuestions);
+    const mojiGoi = getStats(allQuestions.filter(q => q.section === 'moji-goi'));
+    const bunpou = getStats(allQuestions.filter(q => q.section === 'bunpou'));
     const langKnowledgeTotal = mojiGoi.total + bunpou.total;
     const langKnowledgeCorrect = mojiGoi.correct + bunpou.correct;
     const langKnowledgePct = langKnowledgeTotal > 0 ? (langKnowledgeCorrect / langKnowledgeTotal) : 0;
 
-    const dokkai = getStats(dokkaiQuestions);
-    const choukai = getStats(choukaiQuestions);
+    const dokkai = getStats(allQuestions.filter(q => q.section === 'dokkai'));
+    const choukai = getStats(allQuestions.filter(q => q.section === 'choukai'));
 
     const isN4N5 = exam.level === 'N4' || exam.level === 'N5';
 
@@ -1121,7 +1121,7 @@ export const JlptRealBookletExam: React.FC<JlptRealBookletExamProps> = ({
       isOfficialPassed,
       isN4N5
     };
-  }, [allQuestions, mojiGoiQuestions, bunpouQuestions, dokkaiQuestions, choukaiQuestions, userAnswers, exam.level, sectionMode, totalCount, correctCount]);
+  }, [allQuestions, userAnswers, exam.level, sectionMode, totalCount, correctCount]);
 
   const isPassed = jlptScoreStats.isOfficialPassed;
 

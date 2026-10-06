@@ -81,7 +81,7 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
     if (!userText.trim()) return;
 
     const normUser = normalizeJapanese(userText);
-    const isMatch = item.acceptedAnswers.some(ans => normUser === ans || normUser.includes(ans) || ans.includes(normUser));
+    const isMatch = item.acceptedAnswers.some(ans => normUser === ans || (ans.length >= 3 && normUser.includes(ans)) || (normUser.length >= 3 && ans.includes(normUser) && normUser.length >= ans.length * 0.85));
 
     if (isMatch) {
       playCorrectSound();
@@ -127,7 +127,7 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
       });
 
       const aiData = res?.ok && res?.data ? res.data : null;
-      const isPass = Boolean(aiData?.score >= 6 || aiData?.isNatural);
+      const isPass = Boolean(aiData && (aiData.isCorrect ?? (aiData.score >= 60 || aiData.isNatural)));
       if (isPass) {
         playCorrectSound();
         onEarnXp(20);
@@ -219,7 +219,7 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
       });
 
       const aiData = res?.ok && res?.data ? res.data : null;
-      const isPass = Boolean(aiData && aiData.score >= 6);
+      const isPass = Boolean(aiData && (aiData.isCorrect ?? aiData.score >= 60));
       if (isPass) {
         playCorrectSound();
         onEarnXp(20);
@@ -231,8 +231,8 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
           isCorrect: isPass,
           showAnswer: true,
           aiFeedback: aiData || {
-            score: 8,
-            feedback: 'Bản dịch tiếng Việt tự nhiên và sát nghĩa ngữ cảnh.',
+            score: 0,
+            feedback: 'Chưa chấm được lúc này. Hãy so với đáp án mẫu và thử lại.',
             naturalAlternative: item.vietnamese
           },
           isLoadingAi: false
@@ -242,11 +242,11 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
       setJ2vChecked(prev => ({
         ...prev,
         [item.id]: {
-          isCorrect: true,
+          isCorrect: false,
           showAnswer: true,
           aiFeedback: {
-            score: 8,
-            feedback: 'Bản dịch tiếng Việt tự nhiên và sát nghĩa ngữ cảnh.',
+            score: 0,
+            feedback: 'Chưa chấm được lúc này (lỗi kết nối). Hãy so với đáp án mẫu và thử lại.',
             naturalAlternative: item.vietnamese
           },
           isLoadingAi: false
