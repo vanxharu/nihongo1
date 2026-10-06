@@ -4,7 +4,7 @@
  */
 
 import { showLearningFeedback } from './learningMotion';
-import { cleanJapaneseTextForSpeech, staticTtsUrl } from './ttsStatic';
+import { cleanJapaneseTextForSpeech, staticTtsUrl, parseDialogueTurns, assignDialogueVoices } from './ttsStatic';
 let audioCtx: AudioContext | null = null;
 
 function getAudioContext(): AudioContext {
@@ -512,7 +512,10 @@ export interface JapaneseSpeechStatus {
 
 let activeSpeech: JapaneseSpeechHandle | null = null;
 
+let activeDialogue: JapaneseSpeechHandle | null = null;
+
 export function stopJapaneseSpeech(): void {
+  activeDialogue?.stop();
   activeSpeech?.stop();
 }
 
@@ -533,18 +536,80 @@ export function preloadJapaneseAudio(text: string, voice?: AzureVoiceChoice) {
   audio.preload = 'auto';
 }
 
+type SpeakOptions = {
+  isSentence?: boolean;
+  pitch?: number;
+  voice?: AzureVoiceChoice;
+  onStatus?: (status: JapaneseSpeechStatus) => void;
+};
+
+/**
+ * Đọc văn bản tiếng Nhật. Nếu là hội thoại (男：…/女：…, A：…/B：…, tên：…)
+ * thì mỗi người nói một giọng (nữ Nanami, nam Keita) theo thứ tự.
+ */
 export function speakJapanese(
   text: string,
   rate?: number,
   onEnd?: () => void,
-  options?: {
-    isSentence?: boolean;
-    pitch?: number;
-    voice?: AzureVoiceChoice;
-    onStatus?: (status: JapaneseSpeechStatus) => void;
-  }
+  options?: SpeakOptions
 ): JapaneseSpeechHandle {
+  const turns = options?.voice ? null : parseDialogueTurns(text || '');
+  if (!turns) return speakSingle(text, rate, onEnd, options);
+
   stopJapaneseSpeech();
+  const voices = assignDialogueVoices(turns);
+  let index = 0;
+  let stopped = false;
+  let gap: ReturnType<typeof setTimeout> | undefined;
+  let inner: JapaneseSpeechHandle | null = null;
+  let anyPlayed = false;
+
+  const end = (state: 'completed' | 'cancelled' | 'failed', message?: string) => {
+    if (activeDialogue === handle) activeDialogue = null;
+    options?.onStatus?.({ state, provider: 'azure', voice: voices[Math.min(index, voices.length - 1)], message });
+    if (state !== 'cancelled') onEnd?.();
+  };
+  const handle: JapaneseSpeechHandle = {
+    stop: () => {
+      if (stopped) return;
+      stopped = true;
+      clearTimeout(gap);
+      inner?.stop();
+      end('cancelled');
+    },
+  };
+  activeDialogue = handle;
+
+  const next = () => {
+    if (stopped) return;
+    if (index >= turns.length) { stopped = true; end(anyPlayed ? 'completed' : 'failed'); return; }
+    const i = index;
+    inner = speakSingle(turns[i].text, rate, undefined, {
+      isSentence: true,
+      pitch: options?.pitch,
+      voice: voices[i] as AzureVoiceChoice,
+      onStatus: (st) => {
+        if (stopped) return;
+        if (st.state === 'playing') { anyPlayed = true; options?.onStatus?.(st); }
+        else if (st.state === 'completed' || st.state === 'failed') {
+          index = i + 1;
+          gap = setTimeout(next, 250);
+        }
+      },
+    }, true);
+  };
+  next();
+  return handle;
+}
+
+function speakSingle(
+  text: string,
+  rate?: number,
+  onEnd?: () => void,
+  options?: SpeakOptions,
+  keepDialogue = false
+): JapaneseSpeechHandle {
+  if (keepDialogue) activeSpeech?.stop(); else stopJapaneseSpeech();
 
   let finished = false;
   let audio: HTMLAudioElement | null = null;

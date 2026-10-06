@@ -64,3 +64,53 @@ export function staticTtsUrl(cleanText: string, voice: string, rate: string): st
   const path = staticTtsPath(cleanText, voice, rate);
   return path ? `/${path}` : null;
 }
+
+export interface DialogueTurn { speaker: string; text: string }
+
+const MALE_LABELS = new Set(['男', '男の人', '男性', 'A', 'Ａ', '山田', '佐藤', 'Keita', 'Nam']);
+const FEMALE_LABELS = new Set(['女', '女の人', '女性', 'B', 'Ｂ', '田中', '鈴木', 'Nanami', 'Nữ']);
+const NOT_SPEAKERS = new Set(['例', '問', '問題', '答え', '解答', '注', '注意', '意味', '訳', 'ポイント', '質問', 'Q', 'N', 'ヒント', '読み', '説明']);
+
+/** Tách hội thoại "男：…\n女：…" (hoặc A：/B：/tên：) thành các lượt nói. Không phải hội thoại → null. */
+export function parseDialogueTurns(raw: string): DialogueTurn[] | null {
+  if (!raw || !/[:：]/.test(raw)) return null;
+  let t = raw;
+  if (t.includes('<')) t = t.replace(/<rt[^>]*>[\s\S]*?<\/rt>/gi, '').replace(/<rp[^>]*>[\s\S]*?<\/rp>/gi, '').replace(/<[^>]+>/g, '');
+  // Nhiều lượt nằm cùng một dòng: "…です。女：…" → xuống dòng trước nhãn.
+  t = t.replace(/([。！？!?」])\s*((?:男の人|女の人|男性|女性|男|女|[ABＡＢ])[:：])/g, '$1\n$2');
+  const turns: DialogueTurn[] = [];
+  for (const line of t.split(/\r?\n+/)) {
+    const m = line.match(/^\s*(男の人|女の人|男性|女性|男|女|[ABＡＢ]|[^\s:：「」（）()\d]{1,6})\s*[:：]\s*(.*)$/);
+    if (m && !NOT_SPEAKERS.has(m[1])) {
+      turns.push({ speaker: m[1], text: m[2].trim() });
+    } else if (turns.length && line.trim()) {
+      turns[turns.length - 1].text += ' ' + line.trim();
+    } else if (line.trim()) {
+      return null; // có chữ trước nhãn đầu tiên: không coi là hội thoại
+    }
+  }
+  const spoken = turns.filter(x => x.text);
+  if (spoken.length < 2 || new Set(spoken.map(x => x.speaker)).size < 2) return null;
+  return spoken;
+}
+
+/** Gán giọng nam/nữ cho từng người nói; hai lượt liên tiếp của hai người khác nhau luôn khác giọng. */
+export function assignDialogueVoices(turns: DialogueTurn[]): string[] {
+  const NANAMI = 'ja-JP-NanamiNeural', KEITA = 'ja-JP-KeitaNeural';
+  const bySpeaker = new Map<string, string>();
+  const out: string[] = [];
+  let prevSpeaker = '';
+  for (const { speaker } of turns) {
+    let voice = bySpeaker.get(speaker);
+    if (!voice) {
+      const pref = MALE_LABELS.has(speaker) ? KEITA : FEMALE_LABELS.has(speaker) ? NANAMI : null;
+      const prevVoice = prevSpeaker ? bySpeaker.get(prevSpeaker) : undefined;
+      voice = pref ?? (prevVoice === NANAMI ? KEITA : NANAMI);
+      if (prevVoice && voice === prevVoice) voice = prevVoice === NANAMI ? KEITA : NANAMI;
+      bySpeaker.set(speaker, voice);
+    }
+    out.push(voice);
+    prevSpeaker = speaker;
+  }
+  return out;
+}
