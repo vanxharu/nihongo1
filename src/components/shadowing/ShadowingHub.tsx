@@ -80,9 +80,9 @@ export default function ShadowingHub() {
   useEffect(() => {
     // Keep the playing line at the top of the lyric list (with one previous line above), unless the user is browsing.
     if (Date.now() < followPausedUntil.current) return;
-    const box = lyricRef.current, row = document.getElementById(`lyric-row-${displayedIndex}`);
-    if (!box || !row) return;
-    box.scrollTo({ top: row.offsetTop, behavior: reduceMotion ? 'auto' : 'smooth' });
+    const box = lyricRef.current, row = document.getElementById(`lyric-row-${displayedIndex + 1}`);
+    if (!box) return;
+    box.scrollTo({ top: row ? row.offsetTop : box.scrollHeight, behavior: reduceMotion ? 'auto' : 'smooth' });
   }, [displayedIndex, mode, revealed, cues.length]);
   const wordTimings = displayed && validShadowingTimings(displayed) ? displayed.timings! : [];
   const spokenProgress = wordTimings.length ? 100 * wordTimings.filter(t => currentTime >= t.start).length / wordTimings.length : 0;
@@ -271,7 +271,7 @@ export default function ShadowingHub() {
               </div>
             </div>
             <div ref={lyricRef} className="lyric-scroll" onTouchStart={pauseFollow} onTouchMove={pauseFollow} onWheel={pauseFollow}>
-              {cues.map((cue, i) => <button id={`lyric-row-${i}`} key={cue.id} className={`lyric-side${i === displayedIndex ? ' is-now' : ''}`} aria-current={i === displayedIndex} onClick={() => { followPausedUntil.current = 0; jumpCue(i); }}>{cue.text}</button>)}
+              {cues.map((cue, i) => i === displayedIndex ? null : <button id={`lyric-row-${i}`} key={cue.id} className={`lyric-side${i === displayedIndex ? ' is-now' : ''}`} aria-current={i === displayedIndex} onClick={() => { followPausedUntil.current = 0; jumpCue(i); }}>{cue.text}</button>)}
             </div>
           </section>}
 
