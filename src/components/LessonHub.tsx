@@ -29,6 +29,7 @@ import { MINNA_N5_VOCABULARY } from '../data/minnaN5Vocab';
 import { MINNA_N4_VOCABULARY } from '../data/minnaN4Vocab';
 import { speakJapanese } from '../utils/audio';
 
+import { shuffled, pickDistractors } from '../utils/quizShuffle';
 interface LessonHubProps {
   userProfile?: UserProfile;
   onUpdateProfile?: (profile: UserProfile) => void;
@@ -89,9 +90,8 @@ export default function LessonHub({ userProfile, onUpdateProfile, onNavigateToTa
   const lessonQuizQuestions = useMemo(() => {
     if (activeVocabList.length < 2) return [];
     return activeVocabList.slice(0, 5).map(target => {
-      const others = activeVocabList.filter(v => v.id !== target.id);
-      const wrongOptions = others.sort(() => Math.random() - 0.5).slice(0, 3).map(o => o.meaning);
-      const options = [target.meaning, ...wrongOptions].sort(() => Math.random() - 0.5);
+      const wrongOptions = pickDistractors(activeVocabList.filter(v => v.id !== target.id).map(o => o.meaning), target.meaning);
+      const options = shuffled([target.meaning, ...wrongOptions]);
       return {
         question: `Nghĩa của từ "${target.kanji || target.hiragana}" là gì?`,
         word: target,

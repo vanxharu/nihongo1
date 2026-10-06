@@ -50,6 +50,7 @@ import { showLearningFeedback } from '../utils/learningMotion';
 import { PdfExamBookletViewer } from './PdfExamBookletViewer';
 import StudyExperienceHero from './learning/StudyExperienceHero';
 
+import { localDateStr } from '../utils/localDate';
 const EXAM_PRAISES = [
   'Đỉnh nóc kịch trần! Bạn chọn chuẩn không cần chỉnh! 🎉',
   'Xuất sắc! Giám khảo JLPT nhìn thấy cũng phải gật đầu bái phục! 🌟',
@@ -831,7 +832,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     onEarnXp(xpEarned);
 
     // Save test results to user history
-    const todayStr = new Date().toISOString().split('T')[0] || '';
+    const todayStr = localDateStr();
     const sections = { knowledge:{correct:0,total:0}, reading:{correct:0,total:0}, listening:{correct:0,total:0} };
     relevantQuestions.forEach(q => { const key = q.section === 'dokkai' ? 'reading' : q.section === 'choukai' ? 'listening' : 'knowledge'; sections[key].total++; if (userAnswers[q.id] === q.correctIndex) sections[key].correct++; });
     const updatedHistory = [

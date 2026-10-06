@@ -4209,8 +4209,8 @@ export const MINNA_N5_VOCABULARY: VocabularyItem[] = [
   {
     "id": "v_n5_mn06_282",
     "kanji": "CD",
-    "hiragana": "CD",
-    "romaji": "CD",
+    "hiragana": "シーディー",
+    "romaji": "shiidii",
     "meaning": "đĩa CD",
     "hanViet": "",
     "exampleSentence": "CDを 聞きます。",

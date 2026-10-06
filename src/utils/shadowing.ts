@@ -118,7 +118,8 @@ export function visibleShadowingCue(cues: ShadowingCue[], time: number): number 
 }
 
 export function normalizeDictation(text: string): string {
-  return text.normalize('NFKC').toLowerCase().replace(/[\s\p{P}\p{S}]/gu, '');
+  // Katakana is folded to hiragana so a loanword typed in either script counts the same.
+  return text.normalize('NFKC').toLowerCase().replace(/[\u30a1-\u30f6]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60)).replace(/[\s\p{P}\p{S}]/gu, '');
 }
 
 export async function readShadowingResponse(response: Response): Promise<any> {

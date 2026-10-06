@@ -65,6 +65,7 @@ import { playCorrectSound, playIncorrectSound, speakJapanese } from '../utils/au
 import { useAuth } from '../contexts/AuthContext';
 import { safeFetchJson } from '../utils/safeApi';
 
+import { shuffled, pickDistractors } from '../utils/quizShuffle';
 // Module-level client cache for Kanji Breakdowns
 const clientKanjiBreakdownCache = new Map<string, any>();
 
@@ -2077,8 +2078,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   useEffect(() => {
     if (isShuffle && lessonItems.length > 0) {
       const indices = Array.from({ length: lessonItems.length }, (_, i) => i);
-      const shuffled = indices.sort(() => Math.random() - 0.5);
-      setShuffledIndices(shuffled);
+      setShuffledIndices(shuffled(indices));
       setCurrentIndex(0);
     } else {
       setShuffledIndices([]);
@@ -2115,16 +2115,14 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
         pool = vocabData.filter(v => v.id !== currentItem.id).map(v => v.meaning);
       }
     }
-    const shuffledWrongQuiz = pool.sort(() => 0.5 - Math.random()).slice(0, 3);
-    setQuizOptions([correctQuizAns, ...shuffledWrongQuiz].sort(() => 0.5 - Math.random()));
+    setQuizOptions(shuffled([correctQuizAns, ...pickDistractors(pool, correctQuizAns)]));
     setSelectedAnswerIndex(null);
     setHasAnswered(false);
 
     // Dokkai options setup
     const correctDokkai = currentItem.kanji || currentItem.hiragana;
     const dokkaiPool = vocabData.filter(v => v.id !== currentItem.id).map(v => v.kanji || v.hiragana);
-    const wrongDokkai = dokkaiPool.sort(() => 0.5 - Math.random()).slice(0, 3);
-    setDokkaiOptions([correctDokkai, ...wrongDokkai].sort(() => 0.5 - Math.random()));
+    setDokkaiOptions(shuffled([correctDokkai, ...pickDistractors(dokkaiPool, correctDokkai)]));
     setSelectedDokkaiIndex(null);
     setDokkaiHasAnswered(false);
     setShowDokkaiTranslation(false);
@@ -2227,8 +2225,9 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     if (idx < items.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      alert(`🎉 Hoàn thành bài học: ${lesson?.name || 'Bài học'}! Thêm +50 XP.`);
-      onEarnXp(50);
+      const firstCompletion = lesson?.id === 'SRS_REVIEW' || !profile.completedLessons.includes(lesson?.id as string);
+      alert(`🎉 Hoàn thành bài học: ${lesson?.name || 'Bài học'}!${firstCompletion ? ' Thêm +50 XP.' : ''}`);
+      if (firstCompletion) onEarnXp(50); // replaying a finished lesson must not farm XP
       if (lesson?.id === 'SRS_REVIEW') {
         setSrsActiveSessionItems(null);
         setIsSrsReviewActive(false);
@@ -2241,9 +2240,11 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     }
   }, [onEarnXp, updateProfile]);
 
+  const markTimerRef = useRef<number | null>(null);
+  useEffect(() => () => { if (markTimerRef.current !== null) clearTimeout(markTimerRef.current); }, []);
   const handleFlashcardMark = useCallback((mastered: boolean) => {
     const { currentItem: item, userProfile: profile } = stateRef.current;
-    if (!item) return;
+    if (!item || markTimerRef.current !== null) return; // a mark is already pending: ignore repeats (no XP farming / double skip)
     const status = { ...profile.vocabStatus };
     const oldStatus = typeof status[item.id] === 'object' ? (status[item.id] as any) : null;
     status[item.id] = calculateSRS(oldStatus, mastered ? 5 : 2);
@@ -2255,7 +2256,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       playIncorrectSound();
     }
     onEarnXp(mastered ? 10 : 2);
-    setTimeout(() => {
+    markTimerRef.current = window.setTimeout(() => {
+      markTimerRef.current = null;
       handleNext();
     }, 1400);
   }, [updateProfile, onEarnXp, handleNext]);
@@ -2315,18 +2317,26 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const handleCheckCram = () => {
     if (!currentItem) return;
 
-    const cramRaw = cramInput.trim().toLowerCase();
+    const cramRaw = cramInput.normalize('NFKC').trim().toLowerCase(); // NFKC: full-width letters / half-width kana
     if (!cramRaw) return; // empty input must never match an empty romaji/kanji field
     const val = convertRomajiToHiragana(cramRaw, true);
     const convertedInput = convertRomajiToHiragana(val, true);
 
-    const normHira = katakanaToHiragana(normalizeCramStr(currentItem.hiragana));
-    const normKanji = katakanaToHiragana(normalizeCramStr(currentItem.kanji || ''));
-    const normRomaji = normalizeCramStr(currentItem.romaji || '');
+    // Words with several valid forms ("おっと / しゅじん", "夫 / 主人") accept any one of them.
+    const splitAlt = (v?: string | null) => (v || '').split(/[\/／]/).map(x => x.trim()).filter(Boolean);
+    const hs = splitAlt(currentItem.hiragana), ks = splitAlt(currentItem.kanji), rs = splitAlt(currentItem.romaji);
+    const variants = [{ hiragana: currentItem.hiragana, kanji: currentItem.kanji, romaji: currentItem.romaji }];
+    for (let i = 0; i < Math.max(hs.length, ks.length, rs.length); i++) {
+      variants.push({ hiragana: hs[i] ?? hs[0] ?? '', kanji: ks[i] ?? ks[0] ?? '', romaji: rs[i] ?? rs[0] ?? '' });
+    }
+    const matchesItem = (item: { hiragana: string; kanji?: string | null; romaji?: string | null }): boolean => {
+    const normHira = katakanaToHiragana(normalizeCramStr(item.hiragana));
+    const normKanji = katakanaToHiragana(normalizeCramStr(item.kanji || ''));
+    const normRomaji = normalizeCramStr(item.romaji || '');
 
-    const stripHira = katakanaToHiragana(stripSymbols(currentItem.hiragana));
-    const stripKanji = katakanaToHiragana(stripSymbols(currentItem.kanji || ''));
-    const stripRomaji = stripSymbols(currentItem.romaji || '');
+    const stripHira = katakanaToHiragana(stripSymbols(item.hiragana));
+    const stripKanji = katakanaToHiragana(stripSymbols(item.kanji || ''));
+    const stripRomaji = stripSymbols(item.romaji || '');
 
     const normVal = katakanaToHiragana(normalizeCramStr(val));
     const normRaw = katakanaToHiragana(normalizeCramStr(cramRaw));
@@ -2349,6 +2359,9 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       (stripHira && (stripVal === stripHira || stripConverted === stripHira || stripRaw === stripHira)) ||
       (stripKanji && (stripVal === stripKanji || stripConverted === stripKanji || stripRaw === stripKanji)) ||
       (stripRomaji && (stripVal === stripRomaji || stripConverted === stripRomaji || stripRaw === stripRomaji));
+    return isMatch;
+    };
+    const isMatch = !!normalizeCramStr(cramRaw) && variants.some(matchesItem);
 
     if (isMatch) {
       setCramFeedback('correct');

@@ -206,20 +206,21 @@ export default function MiniTestModal({
     playAudioFeedback(isCorrect);
 
     if (autoNext && !isCompleted) {
+      const answersNow = { ...selectedAnswers, [currentIndex]: idx }; // state is stale inside the timeout
       setTimeout(() => {
-        handleNextQuestion();
+        handleNextQuestion(answersNow);
       }, 1200);
     }
   };
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = (answers: Record<number, number> = selectedAnswers) => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(prev => prev + 1);
       setShowExplanation(selectedAnswers[currentIndex + 1] !== undefined);
     } else {
       // Finished all questions
       setIsCompleted(true);
-      const totalCorrect = Object.entries(selectedAnswers).filter(
+      const totalCorrect = Object.entries(answers).filter(
         ([qIdx, ansIdx]) => questions[Number(qIdx)].correctIndex === ansIdx
       ).length;
       onCompleteDay(dayNumber, totalCorrect);
@@ -547,7 +548,7 @@ export default function MiniTestModal({
           {isCurrentAnswered && (
             <button
               type="button"
-              onClick={handleNextQuestion}
+              onClick={() => handleNextQuestion()}
               className="py-2.5 px-6 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-black text-sm shadow-md shadow-sky-500/20 transition-all cursor-pointer"
             >
               {currentIndex < questions.length - 1 ? 'Câu tiếp theo →' : 'Xem kết quả ✓'}

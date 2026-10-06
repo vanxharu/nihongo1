@@ -13,6 +13,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { auth } from '../lib/firebase';
 import { UserProfile } from '../types';
 
+import { localDateStr } from '../utils/localDate';
 export const getAuthPlatform = (): 'pwa' | 'mobile' | 'desktop' => {
   if (typeof window === 'undefined') return 'desktop';
   const isPwa = window.matchMedia?.('(display-mode: standalone)')?.matches || (window.navigator as any)?.standalone === true;
@@ -117,7 +118,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // Helper to parse the DB user response safely
-  const parseDbUser = (dbData: any): UserProfile => {
+  // A single corrupted column must not break the whole profile sync.
+const safeJson = (value: unknown, fallback: any) => {
+  if (typeof value !== 'string') return value ?? fallback;
+  try { return JSON.parse(value); } catch { return fallback; }
+};
+
+const parseDbUser = (dbData: any): UserProfile => {
     const parsed: UserProfile = {
       uid: dbData.uid || undefined,
       email: dbData.email || undefined,
@@ -129,23 +136,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       streak: dbData.streak !== null && dbData.streak !== undefined ? dbData.streak : 0,
       coins: dbData.coins !== null && dbData.coins !== undefined ? dbData.coins : 0,
       lastActiveDate: dbData.lastActiveDate || dbData.last_active_date || undefined,
-      studyDays: dbData.studyDays ? (typeof dbData.studyDays === 'string' ? JSON.parse(dbData.studyDays) : dbData.studyDays) : [],
-      completedLessons: dbData.completedLessons ? (typeof dbData.completedLessons === 'string' ? JSON.parse(dbData.completedLessons) : dbData.completedLessons) : [],
-      vocabStatus: dbData.vocabStatus ? (typeof dbData.vocabStatus === 'string' ? JSON.parse(dbData.vocabStatus) : dbData.vocabStatus) : {},
-      grammarStatus: dbData.grammarStatus ? (typeof dbData.grammarStatus === 'string' ? JSON.parse(dbData.grammarStatus) : dbData.grammarStatus) : {},
-      kanjiStatus: dbData.kanjiStatus ? (typeof dbData.kanjiStatus === 'string' ? JSON.parse(dbData.kanjiStatus) : dbData.kanjiStatus) : {},
-      dailyTestResults: dbData.dailyTestResults ? (typeof dbData.dailyTestResults === 'string' ? JSON.parse(dbData.dailyTestResults) : dbData.dailyTestResults) : [],
+      studyDays: safeJson(dbData.studyDays, []),
+      completedLessons: safeJson(dbData.completedLessons, []),
+      vocabStatus: safeJson(dbData.vocabStatus, {}),
+      grammarStatus: safeJson(dbData.grammarStatus, {}),
+      kanjiStatus: safeJson(dbData.kanjiStatus, {}),
+      dailyTestResults: safeJson(dbData.dailyTestResults, []),
       studyRoadmap: dbData.studyRoadmap,
       shadowingStats: dbData.shadowingStats,
       unlockedBadges: dbData.unlockedBadges,
       savedWords: dbData.savedWords,
       savedVocab: dbData.savedVocab,
-      lastPosition: dbData.lastPosition ? (typeof dbData.lastPosition === 'string' ? JSON.parse(dbData.lastPosition) : dbData.lastPosition) : undefined,
-      notificationSettings: dbData.notificationSettings || dbData.notification_settings 
-        ? (typeof (dbData.notificationSettings || dbData.notification_settings) === 'string' 
-            ? JSON.parse(dbData.notificationSettings || dbData.notification_settings) 
-            : (dbData.notificationSettings || dbData.notification_settings))
-        : undefined,
+      lastPosition: safeJson(dbData.lastPosition, undefined),
+      notificationSettings: safeJson(dbData.notificationSettings || dbData.notification_settings, undefined),
       role: dbData.role || 'user'
     };
 
@@ -423,8 +426,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       xp: 0,
       streak: 1,
       coins: 0,
-      lastActiveDate: new Date().toISOString().split('T')[0] || '',
-      studyDays: [new Date().toISOString().split('T')[0] || ''],
+      lastActiveDate: localDateStr(),
+      studyDays: [localDateStr()],
       completedLessons: [],
       vocabStatus: {},
       grammarStatus: {},

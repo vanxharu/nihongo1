@@ -757,6 +757,9 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
       {/* TAB 3: SẮP XẾP CÂU ★ (Image 6) */}
       {activeTab === 'ordering' && (
         <div className="space-y-6">
+          {orderingItems.length === 0 && (
+            <p className="rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">Mẫu ngữ pháp này chưa có bài sắp xếp câu ★. Hãy thử các tab khác.</p>
+          )}
           {orderingItems.map((item, idx) => {
             const currentSlots = orderingSlots[item.id] || [];
             const checkInfo = orderingChecked[item.id];

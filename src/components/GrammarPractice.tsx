@@ -256,7 +256,7 @@ export default function GrammarPractice({
         correctCount: isCorrect ? (Number(current.correctCount || 0) + 1) : Number(current.correctCount || 0),
         incorrectCount: !isCorrect ? (Number(current.incorrectCount || 0) + 1) : Number(current.incorrectCount || 0),
         lastReviewed: Date.now(),
-        state: isCorrect ? ('learned' as const) : current.state
+        state: isCorrect ? (current.state === 'mastered' ? ('mastered' as const) : ('learned' as const)) : current.state
       }
     };
 

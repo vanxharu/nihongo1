@@ -50,6 +50,7 @@ import JlptWordDetailModal from './components/JlptWordDetailModal';
 import ShibaAssistantFloating from './components/mascot/ShibaAssistantFloating';
 import ShibaMascot from './components/mascot/ShibaMascot';
 
+import { localDateStr } from './utils/localDate';
 const LOCAL_STORAGE_KEY = 'nhai_kanji_user_profile_v1';
 
 const DEFAULT_PROFILE: UserProfile = {
@@ -213,7 +214,7 @@ export default function App() {
     }
 
     // Initialize daily goal tracking from localStorage
-    const todayStr = new Date().toISOString().split('T')[0] || '';
+    const todayStr = localDateStr();
     const storedXp = user ? Number(localStorage.getItem(`nhai_kanji_today_xp_v1_${todayStr}`) || '0') : 0;
     setTodayXp(storedXp);
     
@@ -400,7 +401,7 @@ export default function App() {
       return;
     }
 
-    const todayStr = new Date().toISOString().split('T')[0] || '';
+    const todayStr = localDateStr();
     const lastCheckedDate = localStorage.getItem('nhai_kanji_streak_checked_date_v1');
 
     if (lastCheckedDate === todayStr) {
@@ -409,7 +410,7 @@ export default function App() {
 
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0] || '';
+    const yesterdayStr = localDateStr(yesterday);
 
     // Check if they completed yesterday's goal (50 XP)
     const yesterdayCompleted = localStorage.getItem(`nhai_kanji_today_completed_v1_${yesterdayStr}`) === 'true';
@@ -475,7 +476,7 @@ export default function App() {
   };
 
   const handleEarnXp = async (amount: number) => {
-    const todayStr = new Date().toISOString().split('T')[0] || '';
+    const todayStr = localDateStr();
     
     // Add today to study days if not already present
     const updatedStudyDays = [...activeProfile.studyDays];
@@ -566,7 +567,7 @@ export default function App() {
 
   const handleResetProgress = () => {
     localStorage.removeItem(LOCAL_STORAGE_KEY);
-    const todayStr = new Date().toISOString().split('T')[0] || '';
+    const todayStr = localDateStr();
     localStorage.removeItem(`nhai_kanji_today_xp_v1_${todayStr}`);
     localStorage.removeItem(`nhai_kanji_today_completed_v1_${todayStr}`);
     setTodayXp(0);

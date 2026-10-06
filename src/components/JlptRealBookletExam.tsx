@@ -146,6 +146,7 @@ export const JlptRealBookletExam: React.FC<JlptRealBookletExamProps> = ({
   const [showPrintModal, setShowPrintModal] = useState<boolean>(false);
   const [selectedPrintRecord, setSelectedPrintRecord] = useState<ExamHistoryRecord | null>(null);
   const hasAutoSavedRef = useRef<boolean>(false);
+  const startedAtRef = useRef<number>(Date.now()); // for the attempt's timeSpentSeconds
 
   // Auto-save history when submitted
   useEffect(() => {
@@ -171,7 +172,7 @@ export const JlptRealBookletExam: React.FC<JlptRealBookletExamProps> = ({
         totalQuestions: total,
         percentage: pct,
         passed: pass,
-        timeSpentSeconds: 0,
+        timeSpentSeconds: Math.max(0, Math.round((Date.now() - startedAtRef.current) / 1000)),
         userAnswers: { ...userAnswers },
         questionNotes: { ...questionNotes },
         examSnapshot: exam
@@ -2001,7 +2002,7 @@ export const JlptRealBookletExam: React.FC<JlptRealBookletExamProps> = ({
                           date: new Date().toISOString(),
                           dateGroup: 'Hôm nay',
                           formattedDate: new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-                          timeSpentSeconds: 0,
+                          timeSpentSeconds: Math.max(0, Math.round((Date.now() - startedAtRef.current) / 1000)),
                           userAnswers: { ...userAnswers },
                           questionNotes: { ...questionNotes },
                           examSnapshot: exam

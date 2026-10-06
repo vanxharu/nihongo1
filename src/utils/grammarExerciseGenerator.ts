@@ -23,7 +23,8 @@ export interface OrderingExerciseItem {
 // Helper to normalize strings for comparison (remove punctuation, spaces, normalize hiragana/katakana)
 export function normalizeJapanese(str: string): string {
   return str
-    .replace(/[。、！？\s\.,!?～〜\-]/g, '')
+    .normalize('NFKC') // full-width ，．？！ and spaces -> ASCII before stripping
+    .replace(/[。、！？\s\.,!?～〜\-「」『』・]/g, '')
     .trim();
 }
 
@@ -265,14 +266,14 @@ export function generateOrderingExercises(grammar: GrammarItem, aiContent?: any)
         subtext: 'Mẫu: TTT + んです',
         options: [
           { id: 1, text: '試験が' },
-          { id: 2, text: '勉強する' },
-          { id: 3, text: 'あるんです' },
+          { id: 2, text: 'んです' },
+          { id: 3, text: 'ある' },
           { id: 4, text: 'あした' }
         ],
-        correctOrder: [4, 1, 3, 2], // あした 試験が あるんです (hoặc あした 試験があるんです)
+        correctOrder: [4, 1, 3, 2], // あした 試験が ある んです
         starPosition: 3,
         correctSentence: 'あした試験があるんです。',
-        explanation: 'Trật tự đúng: あした (4) + 試験が (1) + ある (3) + んです. Vị trí ★ là 3.'
+        explanation: 'Trật tự đúng: あした (4) + 試験が (1) + ある (3) + んです (2). Vị trí ★ là 3 (ある).'
       },
       {
         id: 'ord_4',
@@ -382,28 +383,7 @@ export function generateOrderingExercises(grammar: GrammarItem, aiContent?: any)
     ];
   }
 
-  // Generate 10 standard star ordering questions based on grammar item
-  const rawSentence = grammar.exampleSentence || '日本語の勉強をしています';
-  const clean = rawSentence.replace(/[。、！？\s]/g, '');
-
-  const items: OrderingExerciseItem[] = [];
-  for (let i = 1; i <= 10; i++) {
-    items.push({
-      id: `ord_gen_${i}`,
-      instruction: '4つの言葉を並べ替えて文を完成させ、★の位置の番号を選んでください',
-      subtext: `Mẫu: ${structure}`,
-      options: [
-        { id: 1, text: structure || 'この文' },
-        { id: 2, text: '毎日' },
-        { id: 3, text: '練習を' },
-        { id: 4, text: 'しています' }
-      ],
-      correctOrder: [2, 3, 1, 4],
-      starPosition: 3,
-      correctSentence: `毎日練習を${structure}しています。`,
-      explanation: `Vận dụng cấu trúc ${structure} vào câu. Vị trí ★ số 3 là phương án 1.`
-    });
-  }
-
-  return items;
+  // No curated ordering set for this grammar point. The old generic filler produced nonsense sentences
+  // (e.g. 毎日練習を〜てもいいしています) whose ★ never tested the target pattern, so show none instead.
+  return [];
 }
