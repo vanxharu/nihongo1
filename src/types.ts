@@ -201,6 +201,7 @@ export interface DailyExam {
   year?: string;
   session?: string;
   category?: 'official_past' | 'mock_daily' | 'ai_generated';
+  thumbnailUrl?: string;
   questions: ExamQuestion[];
   durationMinutes: number;
 }

@@ -6,6 +6,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第26課: 連体修飾',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -45,6 +46,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第27課: 体言化のの',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -74,6 +76,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第28課: 条件表現①（たら・ても）',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -103,6 +106,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第29課: 条件表現②（ば・と）',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -132,6 +136,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第30課: 命令・禁止',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -161,6 +166,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第31課: 可能形',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -190,6 +196,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第32課: んです',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -219,6 +226,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第33課: 動詞の意向形',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -268,6 +276,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第34課: つもり・予定',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -317,6 +326,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第35課: 受身形',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -356,6 +366,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第36課: ながら・たり〜たり',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -395,6 +406,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第37課: 使役形',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -434,6 +446,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第38課: 授受表現',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -473,6 +486,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第39課: てしまう・てある・てみる',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -512,6 +526,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第40課: のに',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -551,6 +566,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第41課: かどうか（仕事か結婚か）',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -590,6 +606,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第42課: ようになりました・ようにしてください',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -629,6 +646,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第43課: やすい・にくい・すぎる・がる',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -678,6 +696,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第44課: ところ（電話をしようと思っていたところです）',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -717,6 +736,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第45課: 様態のそうだ（おいしそうだね）',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -756,6 +776,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第46課: ようです・ように比喩（調子がいいようです）',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -795,6 +816,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第47課: 伝聞のそうだ・らしい（スポーツセンターができるそうです）',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -834,6 +856,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第48課: 敬語（まもなく到着いたします）',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -883,6 +906,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第49課: 総合問題①（○はどんな意味？）',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {
@@ -932,6 +956,7 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     title: '毎日の聞き取り Vol.2 — 第50課: 総合問題②（ヤンさんの研究）',
     level: 'N4',
     category: 'mock_daily',
+    thumbnailUrl: '/mainichi-vol2-cover.jpg',
     durationMinutes: 15,
     questions: [
       {

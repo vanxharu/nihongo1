@@ -996,6 +996,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     const questions = lobbyPracticeMode === 'ALL' ? exam.questions : exam.questions.filter(q => q.section === lobbyPracticeMode);
     const minutes = lobbyPracticeMode === 'ALL' ? exam.durationMinutes : Math.round(getSectionStandardDuration(lobbyPracticeMode, exam.level) / 60);
     return <article key={exam.id} className="study-exam-card">
+      {exam.thumbnailUrl && <img src={exam.thumbnailUrl} alt={exam.title} className="w-full h-28 object-cover object-top rounded-t-xl mb-2 -mx-0" style={{marginTop:'-0px'}} />}
       <div className="study-exam-card-top"><span className="study-level">JLPT {exam.level}</span><small>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</small></div>
       <h3>{exam.title}</h3>
       <div className="study-exam-spec"><span><FileText size={15} />{questions.length} câu</span><span><Clock size={15} />{minutes} phút</span></div>
