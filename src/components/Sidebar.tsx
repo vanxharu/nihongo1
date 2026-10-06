@@ -22,6 +22,7 @@ import {
   Flame,
 } from 'lucide-react';
 import JpStudyLogo from './JpStudyLogo';
+import ThemeToggle from './ThemeToggle';
 import ShibaMascot from './mascot/ShibaMascot';
 import { motion } from 'motion/react';
 import { UserProfile } from '../types';
@@ -144,6 +145,7 @@ export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, 
           <Link to="/" onClick={onClose} className="outline-none">
             <JpStudyLogo size="md" dark={true} showSubtitle={true} />
           </Link>
+          <span className="xl:hidden ml-auto mr-2"><ThemeToggle /></span>
           <button
             onClick={onClose}
             aria-label="Đóng menu"

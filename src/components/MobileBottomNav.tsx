@@ -184,6 +184,21 @@ export default function MobileBottomNav({
               </Link>
             );
           })}
+          {onToggleSidebar && (
+            <button
+              type="button"
+              id="mobile-nav-menu"
+              aria-label="Mở menu điều hướng"
+              aria-expanded={isSidebarOpen}
+              onClick={onToggleSidebar}
+              className="relative flex flex-col items-center justify-center flex-1 py-1 cursor-pointer active:scale-95 transition-all touch-manipulation"
+            >
+              <div className={`w-14 h-7.5 rounded-full flex items-center justify-center ${isSidebarOpen ? 'bg-[#E89A3C]/25 text-[#E89A3C] border border-[#E89A3C]/60' : 'text-slate-400'}`}>
+                <Menu className="w-4.5 h-4.5" />
+              </div>
+              <span className={`text-[11px] tracking-tight mt-1 ${isSidebarOpen ? 'text-[#E89A3C] font-black' : 'text-slate-400 font-medium'}`}>Menu</span>
+            </button>
+          )}
         </div>
       </nav>
 
