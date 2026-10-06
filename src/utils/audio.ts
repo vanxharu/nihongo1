@@ -4,7 +4,7 @@
  */
 
 import { showLearningFeedback } from './learningMotion';
-import { cleanJapaneseTextForSpeech, staticTtsUrl, parseDialogueTurns, assignDialogueVoices } from './ttsStatic';
+import { cleanJapaneseTextForSpeech, parseDialogueTurns, assignDialogueVoices } from './ttsStatic';
 let audioCtx: AudioContext | null = null;
 
 function getAudioContext(): AudioContext {
@@ -779,11 +779,6 @@ function speakSingle(
   };
 
   if (selectedVoice.startsWith('device:')) runWebSpeech();
-  else {
-    const live = () => playAudio(`/api/tts?text=${encodedText}&voice=${encodeURIComponent(selectedVoice)}&rate=${encodeURIComponent(azureRate)}`, runGoogle);
-    const prebuilt = staticTtsUrl(cleanText, selectedVoice, azureRate);
-    // File mp3 tạo sẵn (miễn phí, tức thì); thiếu file thì gọi giọng trực tiếp như cũ.
-    if (prebuilt) playAudio(prebuilt, live); else live();
-  }
+  else playAudio(`/api/tts?text=${encodedText}&voice=${encodeURIComponent(selectedVoice)}&rate=${encodeURIComponent(azureRate)}`, runGoogle);
   return handle;
 }

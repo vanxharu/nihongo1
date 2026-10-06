@@ -1,7 +1,4 @@
-/**
- * Dùng chung cho trình duyệt và script tạo mp3 (không phụ thuộc DOM).
- * File tạo sẵn nằm ở /audio/tts/<giọng>/<tốc độ>/<hash>.mp3
- */
+/** Xử lý văn bản trước khi đọc và tách hội thoại hai giọng (không phụ thuộc DOM). */
 
 export function cleanJapaneseTextForSpeech(text: string): string {
   if (!text) return '';
@@ -32,37 +29,6 @@ export function cleanJapaneseTextForSpeech(text: string): string {
   cleaned = cleaned.replace(/\s+/g, ' ').trim();
 
   return cleaned;
-}
-
-
-// cyrb53: hash 53-bit đồng bộ, đủ ít va chạm cho vài chục nghìn câu.
-export function ttsHash(str: string): string {
-  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
-  for (let i = 0; i < str.length; i++) {
-    const ch = str.charCodeAt(i);
-    h1 = Math.imul(h1 ^ ch, 2654435761);
-    h2 = Math.imul(h2 ^ ch, 1597334677);
-  }
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16).padStart(14, '0');
-}
-
-export const STATIC_TTS_VOICES = ['ja-JP-NanamiNeural', 'ja-JP-KeitaNeural'] as const;
-// Chỉ tạo sẵn 2 tốc độ app thực sự dùng: từ đơn (-4%) và câu (+0%).
-export const STATIC_TTS_RATES = ['-4%', '+0%'] as const;
-
-export function staticTtsPath(cleanText: string, voice: string, rate: string): string | null {
-  if (!(STATIC_TTS_VOICES as readonly string[]).includes(voice)) return null;
-  if (!(STATIC_TTS_RATES as readonly string[]).includes(rate)) return null;
-  const v = voice.includes('Keita') ? 'keita' : 'nanami';
-  const r = rate === '+0%' ? 'r0' : 'rm4';
-  return `audio/tts/${v}/${r}/${ttsHash(cleanText)}.mp3`;
-}
-
-export function staticTtsUrl(cleanText: string, voice: string, rate: string): string | null {
-  const path = staticTtsPath(cleanText, voice, rate);
-  return path ? `/${path}` : null;
 }
 
 export interface DialogueTurn { speaker: string; text: string }

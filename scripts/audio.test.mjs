@@ -49,12 +49,17 @@ function setup({ voices = [japanese('Kyoko')], speechSupported = true, construct
     setTimeout: (callback) => { const id = ++timerId; timers.set(id, callback); return id; },
     clearTimeout: (id) => timers.delete(id),
   });
-  const motionSource = ts.transpileModule(readFileSync(new URL('../src/utils/learningMotion.ts', import.meta.url), 'utf8'), { compilerOptions:{module:ts.ModuleKind.CommonJS} }).outputText;
-  vm.runInContext(motionSource, context);
-  const motionExports = context.exports;
-  context.exports = {};
-  context.require = () => motionExports;
-  vm.runInContext(source, context);
+  // Each module gets its own `exports` (transpiled code reads exports.X lazily).
+  const load = (code) => {
+    const exports = {};
+    vm.runInContext(`(function (exports, require) {${code}\n})`, context)(exports, (name) => deps[name]);
+    return exports;
+  };
+  const deps = {};
+  for (const name of ['learningMotion', 'ttsStatic']) {
+    deps[`./${name}`] = load(ts.transpileModule(readFileSync(new URL(`../src/utils/${name}.ts`, import.meta.url), 'utf8'), { compilerOptions:{module:ts.ModuleKind.CommonJS} }).outputText);
+  }
+  context.exports = load(source);
   return {
     api: context.exports, audios, utterances, storage, window, timers, voiceListeners,
     get cancelCount() { return cancelCount; },
@@ -272,4 +277,16 @@ test('successful Azure audio completes once even with late error callbacks', () 
   assert.deepEqual(states.map(s => s.state), ['playing', 'completed']);
   assert.equal(ended, 1);
   assert.equal(env.audios.length, 1);
+});
+
+test('dialogue alternates Keita/Nanami through the API, one request per turn', () => {
+  const env = setup();
+  env.api.speakJapanese('男：こんにちは。\n女：はい、どうも。');
+  const voiceOf = (a) => new URL(a.src, 'https://example.test').searchParams.get('voice');
+  assert.equal(env.audios.length, 1);
+  assert.equal(voiceOf(env.audios[0]), 'ja-JP-KeitaNeural');
+  env.audios[0].onplaying?.(); env.audios[0].onended();
+  env.timeout();
+  assert.equal(env.audios.length, 2);
+  assert.equal(voiceOf(env.audios[1]), 'ja-JP-NanamiNeural');
 });
