@@ -2289,6 +2289,29 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     }, 280);
   }, [updateProfile, onEarnXp, handleNext]);
 
+  const handleDauTriSubmit = useCallback(() => {
+    const { currentItem: item } = stateRef.current;
+    if (!item) return;
+    if (dauTriResult !== null) { handleNext(); setDauTriInput(''); setDauTriResult(null); return; }
+    const correctReading = item.reading || item.word;
+    const normalized = dauTriInput.trim().toLowerCase();
+    const isOk = normalized === correctReading || normalized === item.word;
+    setDauTriResult(isOk ? 'correct' : 'wrong');
+    if (isOk) setDauTriScore(s => s + 10);
+  }, [dauTriInput, dauTriResult, handleNext]);
+
+  const handleKdSubmit = useCallback(() => {
+    const { currentItem: item } = stateRef.current;
+    if (!item) return;
+    if (kdResult !== null) { handleNext(); setKdInput(''); setKdResult(null); return; }
+    const input = kdInput.trim().toLowerCase();
+    const readingHira = item.reading || item.word;
+    const isOk = input === readingHira || input === item.word;
+    setKdResult(isOk ? 'correct' : 'wrong');
+    if (isOk) { setKdScore(s => s + 167); setKdCombo(c => c + 1); setKdDancing(true); setTimeout(() => setKdDancing(false), 800); }
+    else setKdCombo(0);
+  }, [kdInput, kdResult, handleNext]);
+
   const normalizeCramStr = (str: string) => {
     if (!str) return '';
     return cleanVocabSymbols(str)
@@ -4399,16 +4422,7 @@ if (loading) {
           )}
 
           {/* ===== ĐẦU TRÍ MODE ===== */}
-          {selectedMode === 'dautri' && currentItem && (() => {
-            const correctReading = currentItem.reading || currentItem.word;
-            const handleDauTriSubmit = () => {
-              if (dauTriResult !== null) { handleNext(); setDauTriInput(''); setDauTriResult(null); return; }
-              const normalized = dauTriInput.trim().toLowerCase();
-              const isOk = normalized === correctReading || normalized === currentItem.word;
-              setDauTriResult(isOk ? 'correct' : 'wrong');
-              if (isOk) setDauTriScore(s => s + 10);
-            };
-            return (
+          {selectedMode === 'dautri' && currentItem && (
               <div className="space-y-5 w-full max-w-2xl mx-auto">
                 <div className="text-center space-y-1">
                   <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Đầu Trí — Nhớ từ vựng từ gợi ý</span>
@@ -4440,7 +4454,7 @@ if (loading) {
                     autoFocus
                   />
                   {dauTriResult === 'wrong' && (
-                    <div className="text-sm text-rose-400 font-medium text-center">Đáp án: <span className="text-white font-bold">{currentItem.word}</span> ({correctReading})</div>
+                    <div className="text-sm text-rose-400 font-medium text-center">Đáp án: <span className="text-white font-bold">{currentItem.word}</span> ({currentItem.reading || currentItem.word})</div>
                   )}
                   {dauTriResult === 'correct' && (
                     <div className="text-sm text-emerald-400 font-bold text-center">⚡ Chính xác! +10 điểm</div>
@@ -4464,24 +4478,10 @@ if (loading) {
                   )}
                 </div>
               </div>
-            );
-          })()}
+          )}
 
           {/* ===== KANJI DANCE MODE ===== */}
-          {selectedMode === 'kanjidance' && currentItem && (() => {
-            const correctReading = (currentItem.reading || currentItem.word).replace(/[ぁ-ん]/g, c => c);
-            const handleKdSubmit = () => {
-              if (kdResult !== null) { handleNext(); setKdInput(''); setKdResult(null); return; }
-              // Convert romaji input to hiragana for comparison
-              const input = kdInput.trim().toLowerCase();
-              const readingHira = currentItem.reading || currentItem.word;
-              // Simple check: either exact match or romaji converts to reading
-              const isOk = input === readingHira || input === currentItem.word;
-              setKdResult(isOk ? 'correct' : 'wrong');
-              if (isOk) { setKdScore(s => s + 167); setKdCombo(c => c + 1); setKdDancing(true); setTimeout(() => setKdDancing(false), 800); }
-              else setKdCombo(0);
-            };
-            return (
+          {selectedMode === 'kanjidance' && currentItem && (
               <div className="space-y-4 w-full max-w-2xl mx-auto">
                 {/* Header bar */}
                 <div className="flex items-center justify-between px-1">
@@ -4595,8 +4595,7 @@ if (loading) {
                   </button>
                 </div>
               </div>
-            );
-          })()}
+          )}
 
           </div>
         </div>
