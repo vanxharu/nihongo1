@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Share2, 
@@ -24,19 +24,12 @@ import { UserProfile, JLPTLevel } from '../../types';
 import { useAuth } from '../../contexts/AuthContext';
 import { AchievementMascotIcon } from '../achievements/AchievementMascotIcon';
 import { ACHIEVEMENTS_LIST, calculateUnlockedAchievements } from '../../data/achievementsData';
-import { 
-  isSoundEnabled, 
-  setSoundEnabled, 
-  getPreferredVoice, 
-  AzureVoiceChoice,
-  getVoiceDisplayName 
-} from '../../utils/audio';
+import { isSoundEnabled, setSoundEnabled } from '../../utils/audio';
 import PremiumModal from './PremiumModal';
 import ConfirmModal from '../ConfirmModal';
 import ShibaMascot from '../mascot/ShibaMascot';
 import JpStudyLogo from '../JpStudyLogo';
 import UserAvatar from '../UserAvatar';
-import VoiceSelectorModal from '../VoiceSelectorModal';
 
 interface MobileProfileViewProps {
   userProfile: UserProfile;
@@ -59,22 +52,7 @@ export default function MobileProfileView({
   const [isPremiumOpen, setIsPremiumOpen] = useState(false);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
   const [soundOn, setSoundOn] = useState(isSoundEnabled());
-  const [currentVoice, setCurrentVoice] = useState<AzureVoiceChoice>(getPreferredVoice());
-  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
-
-  // Sync voice preference when changed from other components or storage
-  useEffect(() => {
-    const handleVoiceChange = (e: any) => {
-      if (e.detail?.voice) {
-        setCurrentVoice(e.detail.voice);
-      } else {
-        setCurrentVoice(getPreferredVoice());
-      }
-    };
-    window.addEventListener('jlpt_voice_changed', handleVoiceChange);
-    return () => window.removeEventListener('jlpt_voice_changed', handleVoiceChange);
-  }, []);
 
   // Profile Details Modal States (for logged-in user)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -378,35 +356,15 @@ export default function MobileProfileView({
             </div>
           </div>
 
-          {/* Âm thanh & Giọng đọc AI */}
+          {/* Âm thanh */}
           <div className="p-4 flex items-center justify-between gap-3">
-            <div 
-              onClick={() => setIsVoiceModalOpen(true)}
-              className="cursor-pointer select-none min-w-0"
-              title="Nhấn để đổi giọng đọc"
-            >
-              <div className="text-xs sm:text-sm font-bold text-slate-200 hover:text-amber-300 transition-colors flex items-center gap-1.5">
-                <span>Giọng đọc & Âm thanh</span>
-              </div>
+            <div className="select-none min-w-0">
+              <div className="text-xs sm:text-sm font-bold text-slate-200">Âm thanh</div>
               <div className="text-[11px] text-slate-400 mt-0.5 truncate">
-                <span className="text-amber-400 font-semibold">{getVoiceDisplayName(currentVoice)}</span>
-                {' • '}
-                <span>{soundOn ? 'Bật âm thanh' : 'Tắt âm thanh'}</span>
-                {' • '}
-                <span className="text-sky-400 font-medium">Đổi giọng</span>
+                {soundOn ? 'Đang bật' : 'Đang tắt'} • Giọng Nanami/Keita ngẫu nhiên
               </div>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={() => setIsVoiceModalOpen(true)}
-                className="min-h-[44px] px-3 py-2 bg-[#1B223C] hover:bg-[#242E52] text-amber-200 border border-[#E89A3C]/40 rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-95 flex items-center gap-1.5 shadow-xs"
-                title="Chọn giọng đọc tiếng Nhật"
-              >
-                <Volume2 className="w-3.5 h-3.5 text-amber-400" />
-                <span>{getVoiceDisplayName(currentVoice)}</span>
-                <ChevronRight className="w-3.5 h-3.5 text-amber-400/60" />
-              </button>
               <button
                 type="button"
                 onClick={handleToggleSound}
@@ -755,12 +713,6 @@ export default function MobileProfileView({
         onClose={() => setIsResetConfirmOpen(false)}
       />
 
-      {/* Voice Selector Modal (Mobile Sheet / Dialog) */}
-      <VoiceSelectorModal
-        isOpen={isVoiceModalOpen}
-        onClose={() => setIsVoiceModalOpen(false)}
-        onVoiceSelected={(voice) => setCurrentVoice(voice)}
-      />
     </div>
   );
 }

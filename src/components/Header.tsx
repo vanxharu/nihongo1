@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { User, LogIn, ChevronRight, ChevronDown, ChevronLeft, RefreshCw, Trophy, Settings, Menu, Volume2, VolumeX, TrendingUp, BookOpen, CheckCircle2, Bell, Monitor, Flame } from 'lucide-react';
 import { UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'motion/react';
-import { isSoundEnabled, setSoundEnabled, getPreferredVoice, setPreferredVoice, speakJapanese, AzureVoiceChoice, getVoiceDisplayName, PRESET_JAPANESE_VOICES, JapaneseSpeechHandle } from '../utils/audio';
+import { isSoundEnabled, setSoundEnabled } from '../utils/audio';
 import PwaInstallPrompt from './PwaInstallPrompt';
 import JpStudyLogo from './JpStudyLogo';
 import NotificationSettingsModal from './NotificationSettingsModal';
@@ -17,7 +17,6 @@ import AIConfigModal from './AIConfigModal';
 import ConfirmModal from './ConfirmModal';
 import LevelProgressBar from './LevelProgressBar';
 import UserAvatar from './UserAvatar';
-import VoiceSelectorModal from './VoiceSelectorModal';
 import { getPlayerLevelInfo } from '../utils/xpSystem';
 import { BRAND_NAME } from '../constants/brand';
 import ThemeToggle from './ThemeToggle';
@@ -75,17 +74,6 @@ export default function Header({
   }, []);
 
   const [soundOn, setSoundOn] = useState(isSoundEnabled());
-  const [currentVoice, setCurrentVoice] = useState<AzureVoiceChoice>(getPreferredVoice());
-  const [isPlayingTestVoice, setIsPlayingTestVoice] = useState(false);
-  const [voicePreviewMessage, setVoicePreviewMessage] = useState('');
-  const testSpeechRef = useRef<JapaneseSpeechHandle | null>(null);
-  const testSequence = useRef(0);
-
-  useEffect(() => () => {
-    testSequence.current += 1;
-    testSpeechRef.current?.stop();
-  }, []);
-  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     title: string;
@@ -103,38 +91,16 @@ export default function Header({
     const handleSoundChange = () => {
       setSoundOn(isSoundEnabled());
     };
-    const handleVoiceChange = (e: any) => {
-      setCurrentVoice(e.detail?.voice || getPreferredVoice());
-    };
     const handleOpenNotificationModal = () => {
       setIsNotificationModalOpen(true);
     };
     window.addEventListener('jlpt_sound_setting_changed', handleSoundChange);
-    window.addEventListener('jlpt_voice_changed', handleVoiceChange);
     window.addEventListener('open_notification_settings', handleOpenNotificationModal);
     return () => {
       window.removeEventListener('jlpt_sound_setting_changed', handleSoundChange);
-      window.removeEventListener('jlpt_voice_changed', handleVoiceChange);
       window.removeEventListener('open_notification_settings', handleOpenNotificationModal);
     };
   }, []);
-
-  const handleTestVoice = (voiceToTest: AzureVoiceChoice) => {
-    const sequence = ++testSequence.current;
-    testSpeechRef.current?.stop();
-    setIsPlayingTestVoice(true);
-    setVoicePreviewMessage('');
-    const sampleSentence = PRESET_JAPANESE_VOICES.find(v => v.id === voiceToTest)?.sampleText || 'こんにちは！日本語の発音を練習しましょう。';
-    testSpeechRef.current = speakJapanese(sampleSentence, 1.0, undefined, {
-      voice: voiceToTest,
-      isSentence: true,
-      onStatus: (status) => {
-        if (sequence !== testSequence.current) return;
-        if (status.message) setVoicePreviewMessage(status.message);
-        if (status.state !== 'playing') setIsPlayingTestVoice(false);
-      },
-    });
-  };
 
   const location = useLocation();
 
@@ -524,107 +490,6 @@ export default function Header({
                   </div>
                 </div>
 
-                {/* Microsoft Azure Neural Voice Selector (Nanami ⭐⭐⭐⭐⭐ & Keita ⭐⭐⭐⭐⭐) */}
-                <div id="profile-azure-voice-settings" className="border-t border-slate-100 pt-4 mt-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs text-slate-900 uppercase tracking-wider font-bold flex items-center gap-1.5">
-                      <span>🥇</span> Giọng đọc Azure Neural (JLPT)
-                    </label>
-                    <span className="text-[10px] font-mono font-black text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">
-                      Gần đề thi JLPT nhất
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 mb-2">
-                    {/* Nanami Neural (Female) */}
-                    <button
-                      type="button"
-                      id="voice-select-nanami"
-                      onClick={() => {
-                        setCurrentVoice('ja-JP-NanamiNeural');
-                        setPreferredVoice('ja-JP-NanamiNeural');
-                        handleTestVoice('ja-JP-NanamiNeural');
-                      }}
-                      className={`p-3 rounded-xl border text-left transition-all cursor-pointer relative flex flex-col justify-between ${
-                        currentVoice === 'ja-JP-NanamiNeural'
-                          ? 'bg-pink-50 border-pink-400 text-pink-950 shadow-sm ring-1 ring-pink-400'
-                          : 'bg-white border-slate-200 text-slate-600 hover:border-pink-300'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg">👩</span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-pink-200/80 text-pink-800">
-                          Nữ ⭐5
-                        </span>
-                      </div>
-                      <div className="mt-2">
-                        <div className="font-bold text-xs">NanamiNeural</div>
-                        <div className="text-[10px] text-slate-500 line-clamp-2 leading-tight mt-0.5">
-                          Phát thanh viên Tokyo, trong trẻo, tự nhiên
-                        </div>
-                      </div>
-                    </button>
-
-                    {/* Keita Neural (Male) */}
-                    <button
-                      type="button"
-                      id="voice-select-keita"
-                      onClick={() => {
-                        setCurrentVoice('ja-JP-KeitaNeural');
-                        setPreferredVoice('ja-JP-KeitaNeural');
-                        handleTestVoice('ja-JP-KeitaNeural');
-                      }}
-                      className={`p-3 rounded-xl border text-left transition-all cursor-pointer relative flex flex-col justify-between ${
-                        currentVoice === 'ja-JP-KeitaNeural'
-                          ? 'bg-blue-50 border-blue-400 text-blue-950 shadow-sm ring-1 ring-blue-400'
-                          : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg">👨</span>
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-200/80 text-blue-800">
-                          Nam ⭐5
-                        </span>
-                      </div>
-                      <div className="mt-2">
-                        <div className="font-bold text-xs">KeitaNeural</div>
-                        <div className="text-[10px] text-slate-500 line-clamp-2 leading-tight mt-0.5">
-                          Chuẩn đề thi JLPT N4–N2, trầm ấm, dứt khoát
-                        </div>
-                      </div>
-                    </button>
-                  </div>
-
-                  {/* Test voice audio button */}
-                  <button
-                    type="button"
-                    onClick={() => handleTestVoice(currentVoice)}
-                    disabled={isPlayingTestVoice}
-                    className="w-full py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    <Volume2 className={`w-3.5 h-3.5 ${isPlayingTestVoice ? 'animate-bounce text-pink-600' : 'text-slate-600'}`} />
-                    <span>{isPlayingTestVoice ? 'Đang phát âm thanh mẫu...' : `Nghe thử giọng ${getVoiceDisplayName(currentVoice)}`}</span>
-                  </button>
-                  {voicePreviewMessage && <p className="text-xs text-amber-700" role="status">{voicePreviewMessage}</p>}
-                  
-                  {/* More voices button */}
-                  <div className="pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setIsVoiceModalOpen(true)}
-                      className="w-full py-2 px-3 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                    >
-                      <Volume2 className="w-3.5 h-3.5 text-amber-600" />
-                      <span>Chọn từ 7 giọng đọc chuẩn & giọng thiết bị ({getVoiceDisplayName(currentVoice)})</span>
-                    </button>
-                  </div>
-                  
-                  <div className="text-[10px] text-slate-500 mt-1.5 flex items-center gap-1">
-                    <span>🎙️</span>
-                    <span>Tự động ngắt nghỉ, nhấn từ khóa và chuẩn nhịp JLPT N4–N2.</span>
-                  </div>
-                </div>
-
                 {/* Profile Save Button */}
                 <button
                   id="profile-btn-save"
@@ -748,11 +613,6 @@ export default function Header({
         onClose={() => setConfirmDialog(p => ({ ...p, isOpen: false }))}
       />
 
-      <VoiceSelectorModal
-        isOpen={isVoiceModalOpen}
-        onClose={() => setIsVoiceModalOpen(false)}
-        onVoiceSelected={(v) => setCurrentVoice(v)}
-      />
     </header>
     </>
   );

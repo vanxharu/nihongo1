@@ -54,7 +54,7 @@ export default function RoadmapClassroom({ level, day, storageKey, onComplete }:
     useEffect(() => { const audio = audioRef.current; setPlaying(false); setAudioFailed(false); setAudioMessage(''); return () => { audio?.pause(); stopJapaneseSpeech(); }; }, [index]);
     const move = (next: number) => { setIndex(next); headingRef.current?.focus(); };
     const replay = () => { setAudioMessage(''); speakJapanese(exerciseText(q.audioScript || ''), 1, () => setPlaying(false), { isSentence: true, onStatus: s => { setPlaying(s.state === 'playing'); if (s.state === 'failed')
-            setAudioMessage('Chưa phát được giọng đọc. Hãy thử lại hoặc chọn giọng khác trong cài đặt.'); } }); };
+            setAudioMessage('Chưa phát được giọng đọc. Hãy thử lại sau.'); } }); };
     if (!q)
         return <section className="roadmap-classroom"><p>Chưa có bộ bài tập cho cấp độ này.</p></section>;
     const audioUrl = q.audioUrl || (q.audioTrack ? `/audio/${q.audioTrack.replace(/\.mp3$/, '')}.mp3` : '');

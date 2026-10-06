@@ -133,15 +133,13 @@ test('Google fallback reports the actual provider and stops via its handle', () 
   assert.equal(env.audios[1].paused, true);
 });
 
-test('device voice uses URI before name, bypasses server and preserves speaker preference', () => {
+test('device voice uses URI before name and bypasses server', () => {
   const first = japanese('Same name', 'uri:first'), second = japanese('Same name', 'uri:second');
   const env = setup({ voices: [first, second] });
-  env.api.setPreferredVoice('device:uri:second');
-  env.api.preloadJapaneseAudio('こんにちは');
-  const handle = env.api.speakJapanese('男：こんにちは');
+  env.api.preloadJapaneseAudio('こんにちは', 'device:uri:second');
+  const handle = env.api.speakJapanese('男：こんにちは', 1, undefined, { voice: 'device:uri:second' });
   assert.equal(env.audios.length, 0);
   assert.equal(env.utterances[0].voice, second);
-  assert.equal(env.api.getVoiceDisplayName('device:uri:second'), 'Same name (Thiết bị)');
   handle.stop();
   assert.equal(env.cancelCount, 1);
 });
@@ -210,33 +208,6 @@ test('unsupported Web Speech reports failure exactly once', () => {
   assert.equal(ended, 1);
 });
 
-test('saving preferences normalizes aliases, cancels playback and notifies consumers', () => {
-  const env = setup(), events = [];
-  env.window.addEventListener('jlpt_voice_changed', e => events.push(e.detail.voice));
-  env.api.speakJapanese('こんにちは');
-  env.api.setPreferredVoice('keita');
-  assert.equal(env.api.getPreferredVoice(), 'ja-JP-KeitaNeural');
-  assert.equal(env.audios[0].paused, true);
-  assert.deepEqual(events, ['ja-JP-KeitaNeural']);
-  env.api.setPreferredVoice('invalid');
-  assert.equal(env.api.getPreferredVoice(), 'ja-JP-NanamiNeural');
-});
-
-test('storage events sync another tab and ignore unrelated keys', () => {
-  const env = setup(), events = [];
-  env.window.addEventListener('jlpt_voice_changed', e => events.push(e.detail.voice));
-  env.api.speakJapanese('こんにちは');
-  env.storage.set('jlpt_preferred_voice', 'ja-JP-AoiNeural');
-  env.window.dispatchEvent({ type: 'storage', key: 'unrelated', newValue: 'x' });
-  assert.equal(env.audios[0].paused, false);
-  env.window.dispatchEvent({ type: 'storage', key: 'jlpt_preferred_voice', newValue: 'ja-JP-AoiNeural' });
-  assert.equal(env.audios[0].paused, true);
-  assert.deepEqual(events, ['ja-JP-AoiNeural']);
-  env.storage.clear();
-  env.window.dispatchEvent({ type: 'storage', key: null, newValue: null });
-  assert.equal(events[1], 'ja-JP-NanamiNeural');
-});
-
 test('Azure speed is applied once and fallback prefers the exact preset', () => {
   const nanami = japanese('Microsoft Nanami'), aoi = japanese('Microsoft Aoi');
   const env = setup({ voices: [nanami, aoi] });
@@ -248,24 +219,14 @@ test('Azure speed is applied once and fallback prefers the exact preset', () => 
   assert.equal(env.utterances[0].rate, 0.8);
 });
 
-test('preview voice override does not save or broadcast a preference', () => {
-  const env = setup(), events = [];
-  env.api.setPreferredVoice('nanami');
-  env.window.addEventListener('jlpt_voice_changed', e => events.push(e));
+test('explicit voice wins; otherwise each playback picks Nanami or Keita at random', () => {
+  const env = setup();
+  const voiceOf = (a) => new URL(a.src, 'https://example.test').searchParams.get('voice');
   env.api.speakJapanese('こんにちは', 1, undefined, { voice: 'ja-JP-KeitaNeural' });
-  assert.equal(env.api.getPreferredVoice(), 'ja-JP-NanamiNeural');
-  assert.equal(events.length, 0);
-  assert.equal(new URL(env.audios[0].src, 'https://example.test').searchParams.get('voice'), 'ja-JP-KeitaNeural');
-});
-
-test('changing preference settles the preview status without invoking legacy completion', () => {
-  const env = setup(), states = [];
-  let ended = 0;
-  env.api.speakJapanese('こんにちは', 1, () => ended++, { onStatus: s => states.push(s) });
-  env.audios[0].onplaying();
-  env.api.setPreferredVoice('aoi');
-  assert.deepEqual(states.map(s => s.state), ['playing', 'cancelled']);
-  assert.equal(ended, 0);
+  assert.equal(voiceOf(env.audios[0]), 'ja-JP-KeitaNeural');
+  const seen = new Set();
+  for (let i = 0; i < 60; i++) { env.api.speakJapanese('こんにちは'); seen.add(voiceOf(env.audios.at(-1))); }
+  assert.deepEqual([...seen].sort(), ['ja-JP-KeitaNeural', 'ja-JP-NanamiNeural']);
 });
 
 test('successful Azure audio completes once even with late error callbacks', () => {

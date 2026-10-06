@@ -340,21 +340,6 @@ export const PRESET_JAPANESE_VOICES: JapaneseVoiceOption[] = [
   },
 ];
 
-export function getVoiceDisplayName(voiceId: string): string {
-  if (!voiceId) return 'Nanami (Nữ)';
-  const normalized = voiceId === 'nanami' ? 'ja-JP-NanamiNeural' : voiceId === 'keita' ? 'ja-JP-KeitaNeural' : voiceId;
-  const found = PRESET_JAPANESE_VOICES.find(v => v.id === normalized);
-  if (found) return `${found.name} (${found.genderLabel})`;
-  if (voiceId.startsWith('device:')) {
-    const identity = voiceId.slice('device:'.length);
-    const rawName = getDeviceJapaneseVoices().find(v => v.voiceURI === identity || v.name === identity)?.name || identity;
-    return `${rawName} (Thiết bị)`;
-  }
-  if (voiceId.toLowerCase().includes('keita')) return 'Keita (Nam)';
-  if (voiceId.toLowerCase().includes('nanami')) return 'Nanami (Nữ)';
-  return voiceId;
-}
-
 export function getDeviceJapaneseVoices(): SpeechSynthesisVoice[] {
   if (typeof window === 'undefined' || !('speechSynthesis' in window)) return [];
   try {
@@ -368,8 +353,6 @@ export function getDeviceJapaneseVoices(): SpeechSynthesisVoice[] {
     return [];
   }
 }
-
-let currentPreferredVoice: AzureVoiceChoice = 'ja-JP-NanamiNeural';
 
 export function normalizeVoiceChoice(voice: string): AzureVoiceChoice {
   const value = (voice || '').trim();
@@ -387,33 +370,9 @@ export function isDeviceVoiceSelected(selected: string, voice: SpeechSynthesisVo
   return selected === getDeviceVoiceId(voice) || selected === `device:${voice.name}`;
 }
 
-export function getPreferredVoice(): AzureVoiceChoice {
-  if (typeof window !== 'undefined') {
-    try {
-      const saved = localStorage.getItem('jlpt_preferred_voice');
-      if (saved) return normalizeVoiceChoice(saved);
-    } catch { /* Keep the in-memory preference when storage is unavailable. */ }
-  }
-  return currentPreferredVoice;
-}
-
-export function setPreferredVoice(voice: AzureVoiceChoice) {
-  currentPreferredVoice = normalizeVoiceChoice(voice);
-  if (typeof window !== 'undefined') {
-    try { localStorage.setItem('jlpt_preferred_voice', currentPreferredVoice); } catch {}
-    stopJapaneseSpeech();
-    window.dispatchEvent(new CustomEvent('jlpt_voice_changed', { detail: { voice: currentPreferredVoice } }));
-  }
-}
-
-// Reuse the same event for preferences changed by another browser tab.
-if (typeof window !== 'undefined') {
-  window.addEventListener('storage', (event) => {
-    if (event.key !== 'jlpt_preferred_voice' && event.key !== null) return;
-    currentPreferredVoice = normalizeVoiceChoice(event.newValue || '');
-    stopJapaneseSpeech();
-    window.dispatchEvent(new CustomEvent('jlpt_voice_changed', { detail: { voice: getPreferredVoice() } }));
-  });
+// Không còn chọn giọng: mỗi lần đọc chọn ngẫu nhiên Nanami (nữ) hoặc Keita (nam).
+export function randomVoice(): AzureVoiceChoice {
+  return Math.random() < 0.5 ? 'ja-JP-NanamiNeural' : 'ja-JP-KeitaNeural';
 }
 
 function findBestJapaneseVoice(preferredVoiceName?: string): SpeechSynthesisVoice | null {
@@ -432,7 +391,7 @@ function findBestJapaneseVoice(preferredVoiceName?: string): SpeechSynthesisVoic
     }
   }
 
-  const targetVoiceStr = (preferredVoiceName || getPreferredVoice()).toLowerCase();
+  const targetVoiceStr = (preferredVoiceName || '').toLowerCase();
   const preset = PRESET_JAPANESE_VOICES.find(v => v.id.toLowerCase() === targetVoiceStr);
   const exact = preset && getDeviceJapaneseVoices().find(v => v.name.toLowerCase().includes(preset.name.toLowerCase()) || v.voiceURI.toLowerCase().includes(preset.id.toLowerCase()));
   if (exact) return exact;
@@ -530,7 +489,7 @@ export function preloadJapaneseAudio(text: string, voice?: AzureVoiceChoice) {
   if (!text || typeof window === 'undefined') return;
   const clean = cleanJapaneseTextForSpeech(text);
   if (!clean) return;
-  const selectedVoice = normalizeVoiceChoice(voice || getPreferredVoice());
+  const selectedVoice = normalizeVoiceChoice(voice || randomVoice());
   if (selectedVoice.startsWith('device:')) return;
   const audio = new Audio(`/api/tts?text=${encodeURIComponent(clean)}&voice=${encodeURIComponent(selectedVoice)}&rate=%2B0%25`);
   audio.preload = 'auto';
@@ -616,7 +575,8 @@ function speakSingle(
   let utterance: SpeechSynthesisUtterance | null = null;
   let clearVoiceWait: (() => void) | null = null;
   let provider: JapaneseSpeechStatus['provider'] = 'azure';
-  let actualVoice: string = normalizeVoiceChoice(options?.voice || getPreferredVoice());
+  const chosenVoice = normalizeVoiceChoice(options?.voice || randomVoice());
+  let actualVoice: string = chosenVoice;
   let message: string | undefined;
   let googleStarted = false;
   let webSpeechStarted = false;
@@ -663,7 +623,7 @@ function speakSingle(
   }
 
   const isSentence = options?.isSentence ?? (cleanText.length > 8 || /[。！？、]/.test(cleanText));
-  let selectedVoice = normalizeVoiceChoice(options?.voice || getPreferredVoice());
+  let selectedVoice = chosenVoice;
   if (!options?.voice && !selectedVoice.startsWith('device:')) {
     if (/^(男|A|男性|山田|佐藤|Keita|Nam)[:：]/i.test(text.trim())) selectedVoice = 'ja-JP-KeitaNeural';
     else if (/^(女|B|女性|田中|鈴木|Nanami|Nữ)[:：]/i.test(text.trim())) selectedVoice = 'ja-JP-NanamiNeural';

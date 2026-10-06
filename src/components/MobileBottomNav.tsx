@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
 
@@ -35,14 +35,13 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
-import { isSoundEnabled, setSoundEnabled, getPreferredVoice, AzureVoiceChoice, getVoiceDisplayName } from '../utils/audio';
+import { isSoundEnabled, setSoundEnabled } from '../utils/audio';
 import { JLPT_LEVEL_INFO } from './LevelProgressBar';
 import { getPlayerLevelInfo } from '../utils/xpSystem';
 import { calculateUnlockedAchievements, TOTAL_ACHIEVEMENTS_COUNT } from '../data/achievementsData';
 import { BRAND_NAME } from '../constants/brand';
 import JpStudyLogo from './JpStudyLogo';
 import UserAvatar from './UserAvatar';
-import VoiceSelectorModal from './VoiceSelectorModal';
 
 import { useEscape } from '../hooks/useEscape';
 interface MobileBottomNavProps {
@@ -73,21 +72,6 @@ export default function MobileBottomNav({
   useEscape(isMoreOpen, () => setIsMoreOpen(false));
   const unlockedCount = calculateUnlockedAchievements(userProfile).size;
   const [soundOn, setSoundOn] = useState(isSoundEnabled());
-  const [currentVoice, setCurrentVoice] = useState<AzureVoiceChoice>(getPreferredVoice());
-  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
-
-  useEffect(() => {
-    const handleVoiceChange = (e: any) => {
-      if (e.detail?.voice) {
-        setCurrentVoice(e.detail.voice);
-      } else {
-        setCurrentVoice(getPreferredVoice());
-      }
-    };
-    window.addEventListener('jlpt_voice_changed', handleVoiceChange);
-    return () => window.removeEventListener('jlpt_voice_changed', handleVoiceChange);
-  }, []);
-
   const handleToggleSound = () => {
     const nextVal = !soundOn;
     setSoundOn(nextVal);
@@ -96,7 +80,7 @@ export default function MobileBottomNav({
 
   const location = useLocation();
 
-  // Five primary destinations; theory and other features remain in the navigation drawer
+  // Primary destinations; other features remain in the navigation drawer
   const mainNavItems = [
     {
       id: 'shadowing', path: '/shadowing', label: 'Shadowing', icon: Volume2,
@@ -108,6 +92,13 @@ export default function MobileBottomNav({
       label: 'Luyện tập',
       icon: GraduationCap,
       checkActive: (tab: string, pathname: string) => pathname === '/' || tab === 'practice',
+    },
+    {
+      id: 'grammar',
+      path: '/bunpo',
+      label: 'Lý thuyết',
+      icon: BookOpen,
+      checkActive: (tab: string, pathname: string) => tab === 'grammar' || pathname.startsWith('/bunpo'),
     },
     {
       id: 'roadmap',
@@ -365,7 +356,7 @@ export default function MobileBottomNav({
                 </div>
               </div>
 
-              {/* Audio & Voice Quick Settings */}
+              {/* Audio Quick Setting */}
               <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-900/60 border border-slate-800">
                 <button
                   type="button"
@@ -374,15 +365,6 @@ export default function MobileBottomNav({
                 >
                   {soundOn ? <Volume2 className="w-4 h-4 text-emerald-400" /> : <VolumeX className="w-4 h-4 text-rose-400" />}
                   <span>Âm thanh: {soundOn ? 'BẬT' : 'TẮT'}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIsVoiceModalOpen(true)}
-                  className="text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer min-h-[44px] px-2 py-1 bg-amber-500/10 border border-amber-500/20 rounded-xl"
-                  title="Chọn giọng đọc"
-                >
-                  <Volume2 className="w-3.5 h-3.5" />
-                  <span>{getVoiceDisplayName(currentVoice)}</span>
                 </button>
               </div>
 
@@ -407,12 +389,6 @@ export default function MobileBottomNav({
           </>
         )}
       </AnimatePresence>
-
-      <VoiceSelectorModal
-        isOpen={isVoiceModalOpen}
-        onClose={() => setIsVoiceModalOpen(false)}
-        onVoiceSelected={(v) => setCurrentVoice(v)}
-      />
     </>
   );
 }
