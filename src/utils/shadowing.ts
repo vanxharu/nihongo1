@@ -207,3 +207,19 @@ export function parseShadowingSubtitles(input: string): ShadowingCue[] {
   }
   return cues.sort((a, b) => a.start! - b.start!);
 }
+
+/** Join caption fragments that split one sentence (no closing punctuation) so a sentence is never shown cut in half. */
+export function mergeSentenceCues(cues: ShadowingCue[]): ShadowingCue[] {
+  const out: ShadowingCue[] = [];
+  for (const cue of cues) {
+    const prev = out[out.length - 1];
+    if (prev && prev.end !== null && cue.start !== null && cue.end !== null && prev.start !== null &&
+        !/[。！？!?.」』）)]\s*$/.test(prev.text) && cue.start - prev.end <= 1.5 && prev.text.length + cue.text.length <= 90) {
+      const shift = prev.text.length;
+      const timings = validShadowingTimings(prev) && validShadowingTimings(cue)
+        ? [...prev.timings!, ...cue.timings!.map(t => ({ ...t, textStart: t.textStart + shift, textEnd: t.textEnd + shift }))] : undefined;
+      out[out.length - 1] = { id: `${prev.id}+${cue.id}`, text: prev.text + cue.text, start: prev.start, end: Math.max(prev.end, cue.end), ...(timings && { timings }) };
+    } else out.push(cue);
+  }
+  return out;
+}
