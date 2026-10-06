@@ -4,7 +4,7 @@ export interface ShadowingCue {
   start: number | null;
   end: number | null;
   timings?: ShadowingTextTiming[];
-  readings?: { word: string; reading: string }[];
+  readings?: { word: string; reading: string; offset?: number }[];
   translation?: string;
 }
 
@@ -71,7 +71,7 @@ export function parseShadowingAlignment(value: any, videoId: string): ShadowingC
 }
 
 export interface ShadowingAnalysis {
-  readings?: { word: string; reading: string }[];
+  readings?: { word: string; reading: string; offset?: number }[];
   source: 'ai' | 'dictionary';
   translation: string;
   vocabulary: { word: string; reading: string; meaning: string; type?: string }[];

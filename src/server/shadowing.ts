@@ -22,8 +22,12 @@ export async function sentenceReadings(sentence: string) {
     })().catch(error => { readingAnalyzer = null; throw error; });
   }
   const tokens = await (await readingAnalyzer).parse(sentence);
-  return tokens.filter((t: any) => /[\u3400-\u9fff]/.test(t.surface_form) && t.reading && t.reading !== '*')
-    .map((t: any) => ({ word: t.surface_form, reading: t.reading.replace(/[\u30a1-\u30f6]/g, (c: string) => String.fromCharCode(c.charCodeAt(0) - 0x60)) }));
+  // Accumulate byte offset so duplicate surface forms get distinct positions.
+  let pos = 0;
+  return tokens
+    .map((t: any) => { const offset = pos; pos += t.surface_form.length; return { t, offset }; })
+    .filter(({ t }: any) => /[\u3400-\u9fff]/.test(t.surface_form) && t.reading && t.reading !== '*')
+    .map(({ t, offset }: any) => ({ word: t.surface_form, reading: t.reading.replace(/[\u30a1-\u30f6]/g, (c: string) => String.fromCharCode(c.charCodeAt(0) - 0x60)), offset }));
 }
 
 export function parseManagedCaptions(data: any): ShadowingCue[] {
