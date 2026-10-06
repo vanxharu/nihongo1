@@ -43,6 +43,6 @@
 .shadowing-mode-tab:hover{background:color-mix(in srgb,var(--ui-soft) 10%,transparent);color:var(--ui-ink)}
 .shadowing-mode-tab-active{background:var(--ui-primary);border-color:var(--ui-primary);color:#fff}
 
-@media(max-width:1023px){.shadowing-sticky{position:sticky;top:0;z-index:20;margin:0 -16px;padding:6px 16px;background:var(--ui-surface)}.shadowing-sticky .shadowing-video{max-height:32vh}}
+@media(max-width:1023px){.shadowing-sticky{position:sticky;top:0;z-index:20;margin:-20px -16px 0;background:var(--ui-surface)}}
 @media(max-width:639px){.karaoke-stage .karaoke-line{font-size:1.3rem;line-height:2.1;min-height:0;margin:4px auto}.karaoke-translation{margin-top:8px;padding-top:8px}}
 #app-root-container .karaoke-stage [role=button]:focus-visible{outline:none}

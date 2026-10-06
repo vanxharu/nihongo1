@@ -124,7 +124,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
   const speedOptions = [0.5, 0.75, 1, 1.25];
 
   return (
-    <section className="shadowing-player overflow-hidden rounded-2xl border border-slate-700 bg-slate-950">
+    <section className="shadowing-player overflow-hidden bg-slate-950 lg:rounded-2xl lg:border lg:border-slate-700">
       {/* Video stays mounted but collapsed in dictation mode so the YouTube API keeps its session */}
       <div ref={host} className="shadowing-video w-full bg-black" style={compact ? { height: 0, overflow: 'hidden' } : { aspectRatio: '16/9' }} />
       <div className="space-y-1.5 px-3 py-2">

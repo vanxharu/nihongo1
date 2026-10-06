@@ -209,14 +209,6 @@ export default function ShadowingHub() {
       {personalVideos.length > 0 && <section><h3 className="mb-3 font-bold">Video của tôi</h3><div className="grid gap-3 sm:grid-cols-2">{personalVideos.map(v => <button className={button} key={v.videoId} onClick={() => chooseVideo(v.videoId)}>{v.title} · {v.cueCount} câu</button>)}</div></section>}
       {sources.filter(source => category === 'Tất cả' || category === source).map(source => <section key={source}><h3 className="mb-3 font-bold">{source}</h3><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{library.filter(v => v.source === source).map(v => <button key={v.id} onClick={() => chooseVideo(v.youtube_video_id)} className="overflow-hidden rounded-xl bg-slate-950/40 text-left hover:ring-2 hover:ring-violet-400"><div className="relative"><img src={v.thumbnail} alt="" loading="lazy" className="aspect-video w-full object-cover" /><span className="absolute bottom-2 right-2 rounded bg-black/80 px-1 text-xs">{v.duration}</span></div><div className="p-3"><h4 className="line-clamp-2 text-sm font-bold">{v.title}</h4><p className="mt-2 text-xs text-slate-400">{v.level} · Luyện từng câu</p></div></button>)}</div></section>)}
     </section> : <>
-      <div className="flex items-center gap-2">
-        <button onClick={() => setParams({})} aria-label="Về thư viện" className={`${compactButton} w-9 shrink-0 px-0`}><ChevronLeft size={18} /></button>
-        <div className="flex flex-1 gap-1">
-          <button onClick={() => { setMode('shadowing'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'shadowing' ? ' shadowing-mode-tab-active' : ''}`}>Bắt chước</button>
-          <button onClick={() => { setMode('dictation'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'dictation' ? ' shadowing-mode-tab-active' : ''}`}>Chính tả</button>
-        </div>
-      </div>
-
       <div className="flex flex-col gap-3 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="max-lg:contents lg:space-y-4">
           <div className="shadowing-sticky"><ShadowingPlayer
@@ -233,6 +225,13 @@ export default function ShadowingHub() {
             hasPrev={selected > 0}
             hasNext={selected < cues.length - 1}
           /></div>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setParams({})} aria-label="Về thư viện" className={`${compactButton} w-9 shrink-0 px-0`}><ChevronLeft size={18} /></button>
+            <div className="flex flex-1 gap-1">
+              <button onClick={() => { setMode('shadowing'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'shadowing' ? ' shadowing-mode-tab-active' : ''}`}>Bắt chước</button>
+              <button onClick={() => { setMode('dictation'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'dictation' ? ' shadowing-mode-tab-active' : ''}`}>Chính tả</button>
+            </div>
+          </div>
           {sourceTitle && <h2 className="line-clamp-2 text-base font-bold leading-snug text-slate-100">{sourceTitle}</h2>}
 
           {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-3 sm:p-6">
