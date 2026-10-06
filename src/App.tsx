@@ -37,7 +37,6 @@ const JapaneseAiChat = lazyWithRetry(() => import('./components/JapaneseAiChat')
 const AiReadingPractice = lazyWithRetry(() => import('./components/AiReadingPractice'));
 const NotebookManager = lazyWithRetry(() => import('./components/NotebookManager'));
 const DictionaryLookup = lazyWithRetry(() => import('./components/DictionaryLookup'));
-const LessonHub = lazyWithRetry(() => import('./components/LessonHub'));
 const HandwritingPractice = lazyWithRetry(() => import('./components/HandwritingPractice'));
 const ShadowingHub = lazyWithRetry(() => import('./components/shadowing/ShadowingHub'));
 const GrammarPractice = lazyWithRetry(() => import('./components/GrammarPractice'));
@@ -354,8 +353,7 @@ export default function App() {
         'japanese-chat': 'Chat AI Tiếng Nhật',
         progress: 'Tiến độ học tập',
         notebook: 'Sổ tay từ vựng',
-        dictionary: 'Từ điển Jisho',
-        lessons: 'Bài học Minna & JLPT'
+        dictionary: 'Từ điển Jisho'
       };
       const tabLabel = tabNames[pos.tab] || pos.tab;
       const detail = pos.lessonName ? `: ${pos.lessonName}` : pos.level ? ` (${pos.level})` : '';
@@ -744,17 +742,8 @@ export default function App() {
       <Route path="/tu-dien" element={<DictionaryLookup />} />
       <Route path="/shadowing" element={<ShadowingHub />} />
 
-      {/* 16. Bài học Minna */}
-      <Route 
-        path="/bai-hoc" 
-        element={
-          <LessonHub 
-            userProfile={activeProfile} 
-            onUpdateProfile={updateProfile} 
-            onNavigateToTab={handleTabChange} 
-          />
-        } 
-      />
+      {/* Trang Bài học Minna đã gỡ: chuyển về Tango */}
+      <Route path="/bai-hoc" element={<Navigate to="/tango" replace />} />
 
       {/* 17. Luyện viết */}
       <Route 
@@ -821,7 +810,7 @@ export default function App() {
       <Route path="/settings" element={<Navigate to="/cai-dat" replace />} />
       <Route path="/japanese-chat" element={<Navigate to="/chat-ai" replace />} />
       <Route path="/kaiwa" element={<Navigate to="/cong-dong" replace />} />
-      <Route path="/lessons" element={<Navigate to="/bai-hoc" replace />} />
+      <Route path="/lessons" element={<Navigate to="/tango" replace />} />
       <Route path="/exam" element={<Navigate to="/jlpt" replace />} />
 
       {/* 20. 404 Route */}

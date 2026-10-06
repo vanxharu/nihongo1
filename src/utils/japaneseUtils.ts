@@ -1,6 +1,4 @@
 import { KANJI_DICTIONARY } from '../data/kanjiDictionary';
-import { MINNA_N5_VOCABULARY } from '../data/minnaN5Vocab';
-import { MINNA_N4_VOCABULARY } from '../data/minnaN4Vocab';
 import { TANGO_N4_VOCABULARY } from '../data/tangoN4Vocab';
 import { ADVANCED_VOCABULARY } from '../data/advancedVocab';
 
@@ -3510,8 +3508,6 @@ const baseKeywordsMap: Record<string, string> = { ...COMMON_KANJI_READINGS };
 
 // Add all standard vocab datasets (N5, N4, Tango N4, N3, N2, N1) and extract verb/adjective stems & inflections
 const staticVocabSources = [
-  ...(Array.isArray(MINNA_N5_VOCABULARY) ? MINNA_N5_VOCABULARY : []),
-  ...(Array.isArray(MINNA_N4_VOCABULARY) ? MINNA_N4_VOCABULARY : []),
   ...(Array.isArray(TANGO_N4_VOCABULARY) ? TANGO_N4_VOCABULARY : []),
   ...(Array.isArray(ADVANCED_VOCABULARY) ? ADVANCED_VOCABULARY : [])
 ];

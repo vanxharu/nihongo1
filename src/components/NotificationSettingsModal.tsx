@@ -92,7 +92,7 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
           map.set(item.lessonId, {
             id: item.lessonId,
             name: item.lessonName,
-            curriculum: item.curriculum || 'minna',
+            curriculum: item.curriculum || 'tango',
             count: 1
           });
         } else {
@@ -369,7 +369,7 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
                         Tiến độ đang học trên hệ thống:
                       </div>
                       <div className="font-extrabold text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
-                        <span>{activeCtx.curriculum === 'tango' ? '📗 Tango 1500 N4' : '📘 Minna no Nihongo'}</span>
+                        <span>📗 Tango 1500 N4</span>
                         <span className="text-slate-400">•</span>
                         <span className="text-slate-800 dark:text-slate-200">
                           {activeCtx.lessonName || (activeCtx.lessonId ? `Bài ${activeCtx.lessonId}` : 'Chưa chọn bài')}
@@ -396,8 +396,6 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
                     >
                       <option value="active">🎯 Tự động theo giáo trình & bài đang học (Khuyên dùng) ⭐</option>
                       <option value="tango">📗 Toàn bộ giáo trình Tango 1500 N4 (894 từ)</option>
-                      <option value="minna_n5">📘 Minna no Nihongo N5 (Bài 1 - 25)</option>
-                      <option value="minna_n4">📘 Minna no Nihongo N4 (Bài 26 - 50)</option>
                       <option value="custom_lesson">📖 Chỉ định một bài học cụ thể...</option>
                       <option value="all">🌐 Tất cả từ vựng theo cấp độ JLPT đã chọn</option>
                     </select>
@@ -421,24 +419,6 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
                         <optgroup label="📗 Tango 1500 N4">
                           {availableLessons
                             .filter((l) => l.curriculum === 'tango')
-                            .map((l) => (
-                              <option key={l.id} value={l.id}>
-                                {l.name} ({l.count} từ)
-                              </option>
-                            ))}
-                        </optgroup>
-                        <optgroup label="📘 Minna no Nihongo N5">
-                          {availableLessons
-                            .filter((l) => l.curriculum === 'minna' && l.id.includes('mn5'))
-                            .map((l) => (
-                              <option key={l.id} value={l.id}>
-                                {l.name} ({l.count} từ)
-                              </option>
-                            ))}
-                        </optgroup>
-                        <optgroup label="📘 Minna no Nihongo N4">
-                          {availableLessons
-                            .filter((l) => l.curriculum === 'minna' && l.id.includes('mn4'))
                             .map((l) => (
                               <option key={l.id} value={l.id}>
                                 {l.name} ({l.count} từ)

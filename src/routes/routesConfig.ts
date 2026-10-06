@@ -26,7 +26,6 @@ export const APP_ROUTES = {
   ACHIEVEMENTS: '/thanh-tich',
   PROGRESS: '/xep-hang',
   DICTIONARY: '/tu-dien',
-  LESSONS: '/bai-hoc',
   HANDWRITING: '/luyen-viet',
   PROFILE: '/tai-khoan',
   SETTINGS: '/cai-dat',
@@ -51,7 +50,6 @@ export const TAB_TO_ROUTE_MAP: Record<string, string> = {
   achievements: APP_ROUTES.ACHIEVEMENTS,
   progress: APP_ROUTES.PROGRESS,
   dictionary: APP_ROUTES.DICTIONARY,
-  lessons: APP_ROUTES.LESSONS,
   handwriting: APP_ROUTES.HANDWRITING,
   profile: APP_ROUTES.PROFILE,
   settings: APP_ROUTES.SETTINGS,
@@ -83,8 +81,6 @@ export const ROUTE_TO_TAB_MAP: Record<string, string> = {
   '/tien-do': 'progress',
   '/tu-dien': 'dictionary',
   '/dictionary': 'dictionary',
-  '/bai-hoc': 'lessons',
-  '/lessons': 'lessons',
   '/luyen-viet': 'handwriting',
   '/handwriting': 'handwriting',
   '/tai-khoan': 'profile',
@@ -128,7 +124,6 @@ export function getTabFromPathname(pathname: string): string {
   if (cleanPath.startsWith('/thanh-tich') || cleanPath.startsWith('/achievements')) return 'achievements';
   if (cleanPath.startsWith('/xep-hang') || cleanPath.startsWith('/progress') || cleanPath.startsWith('/tien-do')) return 'progress';
   if (cleanPath.startsWith('/tu-dien') || cleanPath.startsWith('/dictionary')) return 'dictionary';
-  if (cleanPath.startsWith('/bai-hoc') || cleanPath.startsWith('/lessons')) return 'lessons';
   if (cleanPath.startsWith('/luyen-viet') || cleanPath.startsWith('/handwriting')) return 'handwriting';
   if (cleanPath.startsWith('/tai-khoan') || cleanPath.startsWith('/profile')) return 'profile';
   if (cleanPath.startsWith('/cai-dat') || cleanPath.startsWith('/settings')) return 'profile';
@@ -147,7 +142,7 @@ export function getRoutePageTitle(pathname: string): { title: string; subtitle?:
     return { title: 'Trung tâm Luyện tập', subtitle: 'Luyện tập tổng hợp hàng ngày' };
   }
   if (cleanPath.startsWith('/bunpo')) {
-    return { title: 'Ngữ pháp (文法)', subtitle: 'Ngữ pháp Minna & JLPT đầy đủ' };
+    return { title: 'Ngữ pháp (文法)', subtitle: 'Ngữ pháp JLPT đầy đủ' };
   }
   if (cleanPath.startsWith('/kanji')) {
     return { title: 'Hán tự (漢字)', subtitle: 'Tra cứu & luyện nhớ Kanji theo cấp độ' };
@@ -194,9 +189,6 @@ export function getRoutePageTitle(pathname: string): { title: string; subtitle?:
   }
   if (cleanPath.startsWith('/tu-dien')) {
     return { title: 'Từ điển Jisho', subtitle: 'Tra cứu từ vựng, kanji & ngữ pháp' };
-  }
-  if (cleanPath.startsWith('/bai-hoc')) {
-    return { title: 'Bài học Minna & JLPT', subtitle: 'Khung bài giảng chuẩn theo giáo trình' };
   }
   if (cleanPath.startsWith('/luyen-viet')) {
     return { title: 'Luyện viết chữ & Chấm điểm AI', subtitle: 'Luyện nét viết Kanji & Kana' };

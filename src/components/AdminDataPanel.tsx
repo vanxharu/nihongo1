@@ -34,7 +34,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
   const [isImporting, setIsImporting] = useState(false);
   const [importError, setImportError] = useState('');
   const [importSuccess, setImportSuccess] = useState('');
-  const [targetCurriculum, setTargetCurriculum] = useState<'auto' | 'minna' | 'tango' | 'custom'>('auto');
+  const [targetCurriculum, setTargetCurriculum] = useState<'auto' | 'tango' | 'custom'>('auto');
   const [defaultLessonNum, setDefaultLessonNum] = useState<number>(1);
   const [defaultLevel, setDefaultLevel] = useState<string>('N4');
   const [previewSearch, setPreviewSearch] = useState('');
@@ -209,8 +209,6 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
             if (['N5', 'N4', 'N3', 'N2', 'N1'].includes(upper)) {
               resolvedLevel = upper;
             }
-          } else if (targetCurriculum === 'minna') {
-            resolvedLevel = parsedLessonNum <= 25 ? 'N5' : 'N4';
           } else if (targetCurriculum === 'tango') {
             resolvedLevel = 'N4';
           }
@@ -231,7 +229,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
             meaning: cleanMeaning,
             type: rawType || null,
             level: resolvedLevel,
-            curriculum: targetCurriculum === 'auto' ? (parsedLessonNum <= 50 ? 'minna' : 'tango') : targetCurriculum,
+            curriculum: targetCurriculum === 'auto' ? 'tango' : targetCurriculum,
             exampleJp: rawExampleJp || null,
             exampleVi: rawExampleVi || null,
             isValid
@@ -291,7 +289,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
           hanViet: p.hanViet,
           meaning: p.meaning,
           level: p.level || 'N4',
-          curriculum: p.curriculum || 'minna',
+          curriculum: p.curriculum || 'tango',
           exampleSentence: p.exampleJp,
           exampleTranslation: p.exampleVi,
           exampleJp: p.exampleJp,
@@ -322,51 +320,11 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
   };
 
   // Preset Template Downloaders
-  const downloadTemplate = (type: 'minna' | 'tango' | 'simple') => {
-    let filename = 'Mau_Nhap_Tu_Vung_Minna.xlsx';
+  const downloadTemplate = (type: 'tango' | 'simple') => {
+    let filename = 'Mau_Nhap_Tu_Vung.xlsx';
     let sampleData: any[] = [];
 
-    if (type === 'minna') {
-      filename = 'Mau_Nhap_Tu_Vung_Minna_50_Bai.xlsx';
-      sampleData = [
-        {
-          'Bài (Lesson)': 1,
-          'Từ vựng (Word)': 'わたし',
-          'Chữ Hán (Kanji)': '私',
-          'Cách đọc (Reading)': 'わたし',
-          'Hán Việt (HanViet)': 'TƯ',
-          'Ý nghĩa (Meaning)': 'Tôi (ngôi thứ nhất)',
-          'Loại từ (Type)': 'Đại từ',
-          'Cấp độ (Level)': 'N5',
-          'Ví dụ tiếng Nhật (Example JP)': '私はベトナム人です。',
-          'Dịch ví dụ (Example VI)': 'Tôi là người Việt Nam.'
-        },
-        {
-          'Bài (Lesson)': 1,
-          'Từ vựng (Word)': 'がくせい',
-          'Chữ Hán (Kanji)': '学生',
-          'Cách đọc (Reading)': 'がくせい',
-          'Hán Việt (HanViet)': 'HỌC SINH',
-          'Ý nghĩa (Meaning)': 'Học sinh, sinh viên',
-          'Loại từ (Type)': 'Danh từ',
-          'Cấp độ (Level)': 'N5',
-          'Ví dụ tiếng Nhật (Example JP)': 'ナムさんはハノイ大学の学生です。',
-          'Dịch ví dụ (Example VI)': 'Nam là sinh viên trường Đại học Hà Nội.'
-        },
-        {
-          'Bài (Lesson)': 26,
-          'Từ vựng (Word)': 'みます',
-          'Chữ Hán (Kanji)': '診ます',
-          'Cách đọc (Reading)': 'みます',
-          'Hán Việt (HanViet)': 'CHẨN',
-          'Ý nghĩa (Meaning)': 'Khám bệnh, xem xét',
-          'Loại từ (Type)': 'Động từ',
-          'Cấp độ (Level)': 'N4',
-          'Ví dụ tiếng Nhật (Example JP)': '医者に診てもらいました。',
-          'Dịch ví dụ (Example VI)': 'Tôi đã được bác sĩ khám bệnh cho.'
-        }
-      ];
-    } else if (type === 'tango') {
+    if (type === 'tango') {
       filename = 'Mau_Nhap_Tu_Vung_Tango_1500.xlsx';
       sampleData = [
         {
@@ -745,7 +703,6 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
                       className="w-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-xl px-2.5 py-1.5 font-bold text-slate-800 dark:text-slate-100 outline-none focus:border-emerald-500 cursor-pointer"
                     >
                       <option value="auto">🎯 Tự động theo cột trong file</option>
-                      <option value="minna">📘 Minna no Nihongo (Bài 1 - 50)</option>
                       <option value="tango">📗 Tango 1500 N4 (Theo Section)</option>
                       <option value="custom">🔖 Giáo trình Tự do / Khác</option>
                     </select>
@@ -824,14 +781,6 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
                     </div>
 
                     <div className="space-y-1.5">
-                      <button 
-                        onClick={() => downloadTemplate('minna')}
-                        className="w-full py-1.5 px-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-400 text-slate-700 dark:text-slate-200 font-bold text-[10.5px] rounded-lg transition-colors cursor-pointer flex items-center justify-between shadow-2xs"
-                      >
-                        <span>📘 Mẫu Minna no Nihongo</span>
-                        <Download className="w-3 h-3 text-slate-400" />
-                      </button>
-
                       <button 
                         onClick={() => downloadTemplate('tango')}
                         className="w-full py-1.5 px-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-emerald-400 text-slate-700 dark:text-slate-200 font-bold text-[10.5px] rounded-lg transition-colors cursor-pointer flex items-center justify-between shadow-2xs"

@@ -21,8 +21,7 @@ import {
 import { speakJapanese } from '../utils/audio';
 import { KANJI_DICTIONARY } from '../data/kanjiDictionary';
 import { KANJI_TO_HAN_VIET } from '../utils/japaneseUtils';
-import { MINNA_N5_VOCABULARY } from '../data/minnaN5Vocab';
-import { MINNA_N4_VOCABULARY } from '../data/minnaN4Vocab';
+import { TANGO_N4_VOCABULARY } from '../data/tangoN4Vocab';
 import { KanjiStrokeCanvas } from './KanjiStrokeCanvas';
 import { detectWordPos } from '../utils/posUtils';
 
@@ -556,14 +555,14 @@ export const JlptWordDetailModal: React.FC<JlptWordDetailModalProps> = ({
     components: activeDict?.components || ''
   } : null;
 
-  // Find related compound vocabulary containing this Kanji from Minna databases
+  // Find related compound vocabulary containing this Kanji from Tango database
   const relatedCompounds = useMemo(() => {
     if (!activeKanji?.character) return [];
     const char = activeKanji.character;
     const results: Array<{ word: string; reading: string; meaning: string; level?: string }> = [];
     const seen = new Set<string>();
 
-    for (const item of [...MINNA_N5_VOCABULARY, ...MINNA_N4_VOCABULARY]) {
+    for (const item of TANGO_N4_VOCABULARY) {
       if (item.kanji && item.kanji.includes(char) && !seen.has(item.kanji)) {
         seen.add(item.kanji);
         results.push({

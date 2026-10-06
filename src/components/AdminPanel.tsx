@@ -347,7 +347,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                 Nhập từ vựng hàng loạt từ file Excel / CSV
               </h3>
               <p className="text-[11px] text-slate-300">
-                Tải lên file Excel Minna no Nihongo, Tango hoặc danh sách tự tạo. Hệ thống tự động phân tích Hán tự và đồng bộ.
+                Tải lên file Excel Tango hoặc danh sách tự tạo. Hệ thống tự động phân tích Hán tự và đồng bộ.
               </p>
             </div>
             <button

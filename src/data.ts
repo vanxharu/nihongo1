@@ -4,16 +4,12 @@
  */
 
 import type { VocabularyItem, GrammarItem, KanjiItem, DailyExam, LeaderboardUser } from './types';
-import { MINNA_N5_VOCABULARY } from './data/minnaN5Vocab.js';
-import { MINNA_N4_VOCABULARY } from './data/minnaN4Vocab.js';
 import { TANGO_N4_VOCABULARY } from './data/tangoN4Vocab.js';
 import { ADVANCED_VOCABULARY } from './data/advancedVocab.js';
 
-export { MINNA_N5_VOCABULARY, MINNA_N4_VOCABULARY, TANGO_N4_VOCABULARY, ADVANCED_VOCABULARY };
+export { TANGO_N4_VOCABULARY, ADVANCED_VOCABULARY };
 
 export const VOCABULARY_DATA: VocabularyItem[] = [
-  ...MINNA_N5_VOCABULARY,
-  ...MINNA_N4_VOCABULARY,
   ...TANGO_N4_VOCABULARY,
   ...ADVANCED_VOCABULARY
 ];

@@ -744,17 +744,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     return userProfile?.targetLevel || 'N4';
   });
 
-  // Curriculum selection state: 'minna' (Minna no Nihongo) or 'tango' (Tango 1500)
-  const [selectedCurriculum, setSelectedCurriculum] = useState<'minna' | 'tango'>(() => {
-    return userProfile?.selectedCurriculum || 'minna';
-  });
-
-  const handleCurriculumChange = (curr: 'minna' | 'tango') => {
-    setSelectedCurriculum(curr);
-    updateProfile({ selectedCurriculum: curr });
-    setCurrentLessonIndex(0);
-    setCurrentIndex(0);
-  };
+  // Chỉ còn giáo trình Tango 1500
+  const selectedCurriculum = 'tango' as const;
 
   // App States
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -830,7 +821,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     '🥶 Sai rồi đồng chí ơi! Học hành kiểu này qua Tokyo khéo đi lạc tới Bắc Cực!',
     '🎯 Khai thật đi, tổ tiên mách bảo nhầm địa chỉ đúng không?',
     '💀 Sai bét nhè! Mau uống hớp nước lọc cho tỉnh táo rồi làm lại nào!',
-    '🍵 Ây da, chọn đáp án này thì thầy cô Minna khóc thét trong góc phòng!',
+    '🍵 Ây da, chọn đáp án này thì thầy cô khóc thét trong góc phòng!',
     '👀 Khoanh bừa lộ liễu quá nha! Hãy nhìn kỹ lại từ vựng nào!'
   ];
 
@@ -2927,7 +2918,7 @@ if (loading) {
             </span>
           </div>
 
-          {/* Center: Integrated Lesson Navigator (< Minna Bài 1 ... >) */}
+          {/* Center: Integrated Lesson Navigator (< Bài 1 ... >) */}
           <div className="flex items-center justify-center gap-0.5 sm:gap-1.5 flex-1 min-w-0 max-w-sm mx-1">
             <button 
               disabled={currentLessonIndex <= 0 || isSrsReviewActive}
@@ -3100,58 +3091,6 @@ if (loading) {
                   <RotateCcw className="w-3 h-3" />
                   <span>Khôi phục mặc định chế độ</span>
                 </button>
-              </div>
-
-              {/* Curriculum Selection Section inside Settings */}
-              <div className="pb-3 mb-3 border-b border-[#343d5f]/70">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-1.5 font-bold text-slate-200 text-xs">
-                    <span className="text-sm">📚</span>
-                    <span>Bộ giáo trình học từ vựng (N4):</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400 font-medium">
-                    {selectedCurriculum === 'minna' ? 'Minna no Nihongo (Bài 26–50)' : 'Tango 1500 (35 Mục chuyên đề)'}
-                  </span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleCurriculumChange('minna')}
-                    className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all cursor-pointer ${
-                      selectedCurriculum === 'minna'
-                        ? 'bg-blue-950/90 border-blue-500 text-white shadow-md ring-1 ring-blue-400/40'
-                        : 'bg-[#242b45]/80 border-[#343d5f] text-slate-400 hover:text-slate-200 hover:bg-[#2b3353]'
-                    }`}
-                  >
-                    <span className="text-2xl shrink-0">📘</span>
-                    <div className="leading-tight flex-1 min-w-0">
-                      <div className="font-extrabold text-xs sm:text-sm text-blue-300 flex items-center justify-between">
-                        <span>Minna no Nihongo</span>
-                        {selectedCurriculum === 'minna' && <span className="text-[10px] bg-blue-500/30 text-blue-200 px-1.5 py-0.5 rounded-full font-bold">Đang chọn</span>}
-                      </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">25 Bài học chuẩn gốc (Bài 26 – 50)</div>
-                    </div>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleCurriculumChange('tango')}
-                    className={`p-2.5 rounded-xl border text-left flex items-center gap-2.5 transition-all cursor-pointer ${
-                      selectedCurriculum === 'tango'
-                        ? 'bg-emerald-950/90 border-emerald-500 text-white shadow-md ring-1 ring-emerald-400/40'
-                        : 'bg-[#242b45]/80 border-[#343d5f] text-slate-400 hover:text-slate-200 hover:bg-[#2b3353]'
-                    }`}
-                  >
-                    <span className="text-2xl shrink-0">📗</span>
-                    <div className="leading-tight flex-1 min-w-0">
-                      <div className="font-extrabold text-xs sm:text-sm text-emerald-300 flex items-center justify-between">
-                        <span>Tango 1500 (N4)</span>
-                        {selectedCurriculum === 'tango' && <span className="text-[10px] bg-emerald-500/30 text-emerald-200 px-1.5 py-0.5 rounded-full font-bold">Đang chọn</span>}
-                      </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">7 Chương • 35 Mục chủ đề gốc</div>
-                    </div>
-                  </button>
-                </div>
               </div>
 
               {/* Action Buttons Grid */}
@@ -4512,7 +4451,7 @@ if (loading) {
                   <div>
                     <h3 className="text-sm sm:text-base font-extrabold text-white tracking-tight">Chọn bài học nhanh</h3>
                     <p className="text-[11px] text-slate-400">
-                      {selectedCurriculum === 'minna' ? '📘 Minna no Nihongo N4' : '📗 Tango 1500 N4'} • {lessons.length} bài
+                      📗 Tango 1500 N4 • {lessons.length} bài
                     </p>
                   </div>
                 </div>
@@ -4525,36 +4464,6 @@ if (loading) {
                 </button>
               </div>
 
-              {/* Curriculum Selector inside Modal */}
-              <div className="px-3 sm:px-4 pt-3 shrink-0">
-                <div className="grid grid-cols-2 gap-1.5 bg-[#121626] p-1 rounded-xl border border-[#2b3353]">
-                  <button
-                    type="button"
-                    onClick={() => handleCurriculumChange('minna')}
-                    className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                      selectedCurriculum === 'minna'
-                        ? 'bg-blue-600 text-white shadow-xs'
-                        : 'text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    <span>📘</span>
-                    <span>Minna (Bài 26-50)</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleCurriculumChange('tango')}
-                    className={`py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                      selectedCurriculum === 'tango'
-                        ? 'bg-emerald-600 text-white shadow-xs'
-                        : 'text-slate-400 hover:text-slate-200'
-                    }`}
-                  >
-                    <span>📗</span>
-                    <span>Tango (7 Chương)</span>
-                  </button>
-                </div>
-              </div>
-
               {/* Search input */}
               <div className="p-3 sm:p-4 border-b border-[#252c48] shrink-0">
                 <div className="relative">
@@ -4564,7 +4473,7 @@ if (loading) {
                     type="text"
                     value={quickLessonSearch}
                     onChange={(e) => setQuickLessonSearch(e.target.value)}
-                    placeholder="Tìm bài học (ví dụ: 1, 25, Minna...)"
+                    placeholder="Tìm bài học (ví dụ: 1, 25...)"
                     className="w-full bg-[#111422] border border-[#343d5f] focus:border-sky-500/80 rounded-xl pl-9 pr-8 py-2 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none transition-colors"
                     autoFocus
                   />

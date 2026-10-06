@@ -3,8 +3,6 @@
  * Supports Windows Desktop Toast / Floating Notifications with JLPT Level filtering & Background Web Worker
  */
 
-import { MINNA_N5_VOCABULARY } from '../data/minnaN5Vocab';
-import { MINNA_N4_VOCABULARY } from '../data/minnaN4Vocab';
 import { TANGO_N4_VOCABULARY } from '../data/tangoN4Vocab';
 import { ADVANCED_VOCABULARY } from '../data/advancedVocab';
 import {
@@ -112,7 +110,7 @@ export const NOTIFICATION_THEMES: Record<NotificationThemeKey, {
   }
 };
 
-export type VocabSourceScope = 'active' | 'tango' | 'minna_n5' | 'minna_n4' | 'custom_lesson' | 'all';
+export type VocabSourceScope = 'active' | 'tango' | 'custom_lesson' | 'all';
 
 export interface ReminderSettings {
   enabled: boolean;
@@ -129,7 +127,7 @@ export interface ReminderSettings {
   lastVocabNotifiedTime?: number; // timestamp
 
   // Scope & Curriculum filter for Windows notification
-  vocabSourceScope?: VocabSourceScope; // 'active' (default: theo giáo trình & bài đang học), 'tango', 'minna_n5', 'minna_n4', 'custom_lesson', 'all'
+  vocabSourceScope?: VocabSourceScope; // 'active' (default: theo giáo trình & bài đang học), 'tango', 'custom_lesson', 'all'
   vocabSelectedLessonId?: string; // Optional specific lesson filter, e.g., 'tango_c1_s1', 'n5_mn01', 'n4_mn26'
 
   // Custom typography & color style options for notification card
@@ -183,8 +181,8 @@ export function formatVocabOriginLabel(word: VocabNotificationPayload): {
 } {
   const level = word.level || 'N4';
   
-  let currName = 'Minna no Nihongo';
-  let currIcon = '📘';
+  let currName = `JLPT ${level}`;
+  let currIcon = '📙';
   let isTango = false;
 
   if (
@@ -195,9 +193,6 @@ export function formatVocabOriginLabel(word: VocabNotificationPayload): {
     currName = 'Tango 1500';
     currIcon = '📗';
     isTango = true;
-  } else if (word.curriculum === 'minna' || (word.id && word.id.includes('_mn'))) {
-    currName = word.level === 'N5' ? 'Minna N5' : 'Minna N4';
-    currIcon = '📘';
   } else if (word.level === 'N3' || word.level === 'N2' || word.level === 'N1') {
     currName = `JLPT ${word.level}`;
     currIcon = '📙';
@@ -504,7 +499,7 @@ export const getAllVocabPool = (): VocabNotificationPayload[] => {
   const processList = (
     list: any[],
     defaultLevel: string,
-    defaultCurriculum: 'minna' | 'tango' | 'advanced',
+    defaultCurriculum: 'tango' | 'advanced',
     defaultCurriculumName: string
   ) => {
     if (!Array.isArray(list)) return;
@@ -535,7 +530,7 @@ export const getAllVocabPool = (): VocabNotificationPayload[] => {
       const curr = item.curriculum || defaultCurriculum;
       const currName = curr === 'tango'
         ? 'Tango 1500'
-        : (curr === 'minna' ? (item.level === 'N5' ? 'Minna N5' : 'Minna N4') : defaultCurriculumName);
+        : defaultCurriculumName;
 
       // Determine word number
       let wordNumber: number | string = currentIndexInLesson;
@@ -570,8 +565,6 @@ export const getAllVocabPool = (): VocabNotificationPayload[] => {
     });
   };
 
-  processList(MINNA_N5_VOCABULARY, 'N5', 'minna', 'Minna N5');
-  processList(MINNA_N4_VOCABULARY, 'N4', 'minna', 'Minna N4');
   processList(TANGO_N4_VOCABULARY, 'N4', 'tango', 'Tango 1500');
   processList(ADVANCED_VOCABULARY, 'N3', 'advanced', 'JLPT N3');
 
@@ -582,7 +575,7 @@ export const getAllVocabPool = (): VocabNotificationPayload[] => {
       if (rawCustom) {
         const customItems = JSON.parse(rawCustom);
         if (Array.isArray(customItems) && customItems.length > 0) {
-          processList(customItems, 'N4', 'minna', 'Từ vựng Tùy chỉnh (Excel)');
+          processList(customItems, 'N4', 'advanced', 'Từ vựng Tùy chỉnh (Excel)');
         }
       }
     }
@@ -605,7 +598,7 @@ export const invalidateVocabPoolCache = (): void => {
  * Get active learning context (current curriculum, target level, active lesson)
  */
 export function getActiveLearningContext(): {
-  curriculum: 'minna' | 'tango';
+  curriculum: 'tango';
   targetLevel: string;
   lessonId?: string;
   lessonName?: string;
@@ -617,7 +610,7 @@ export function getActiveLearningContext(): {
       const pos = rawPos ? JSON.parse(rawPos) : null;
       const profile = rawProfile ? JSON.parse(rawProfile) : null;
 
-      const curriculum = (pos?.curriculum || profile?.selectedCurriculum || 'minna') as 'minna' | 'tango';
+      const curriculum = 'tango' as const;
       const targetLevel = pos?.level || profile?.targetLevel || 'N4';
       const lessonId = pos?.lessonId;
       const lessonName = pos?.lessonName;
@@ -627,7 +620,7 @@ export function getActiveLearningContext(): {
   } catch (e) {
     // ignore
   }
-  return { curriculum: 'minna', targetLevel: 'N4' };
+  return { curriculum: 'tango', targetLevel: 'N4' };
 }
 
 /**
@@ -652,18 +645,6 @@ export function getEffectiveVocabPool(
     if (matched.length > 0) return matched;
   }
 
-  // 3. Explicit Minna N5
-  if (scope === 'minna_n5') {
-    const matched = pool.filter(v => v.curriculum === 'minna' && v.level === 'N5');
-    if (matched.length > 0) return matched;
-  }
-
-  // 4. Explicit Minna N4
-  if (scope === 'minna_n4') {
-    const matched = pool.filter(v => v.curriculum === 'minna' && v.level === 'N4');
-    if (matched.length > 0) return matched;
-  }
-
   // 5. Active Learning Progress (Default & recommended)
   if (scope === 'active') {
     const activeCtx = getActiveLearningContext();
@@ -678,19 +659,6 @@ export function getEffectiveVocabPool(
           }
         }
         return tangoWords;
-      }
-    } else {
-      // Minna curriculum (N5 or N4 based on active level)
-      const targetLvl = activeCtx.targetLevel || 'N4';
-      const minnaWords = pool.filter(v => v.curriculum === 'minna' && (targetLvl === 'ALL' ? true : v.level === targetLvl));
-      if (minnaWords.length > 0) {
-        if (activeCtx.lessonId) {
-          const lessonWords = minnaWords.filter(v => v.lessonId === activeCtx.lessonId);
-          if (lessonWords.length > 0 && Math.random() < 0.7) {
-            return lessonWords;
-          }
-        }
-        return minnaWords;
       }
     }
   }

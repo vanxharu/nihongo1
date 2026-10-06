@@ -22,7 +22,7 @@ import { eq, inArray, and, like, ne, asc } from 'drizzle-orm';
 import { db, pool, withDbRetry } from './src/db/index';
 import { GRAMMAR_SYSTEM_PROMPT, buildGrammarContentUserPrompt } from './src/prompts/grammarContentPrompt';
 import { lessons, vocabularies, grammars, kanjis, users } from './src/db/schema';
-import { VOCABULARY_DATA, GRAMMAR_DATA, KANJI_DATA, MINNA_N4_VOCABULARY, TANGO_N4_VOCABULARY } from './src/data';
+import { VOCABULARY_DATA, GRAMMAR_DATA, KANJI_DATA, TANGO_N4_VOCABULARY } from './src/data';
 import { synthesizeAzureSpeech } from './src/server/azureTts';
 import { shadowingTranscript, shadowingAnalyze } from './src/server/shadowing';
 import { shadowingVideo } from './src/server/shadowingStore';
@@ -3462,7 +3462,7 @@ app.post("/api/reading/lookup-word", async (req, res) => {
     });
 
     // 3. Search local vocabulary databases for instant match
-    const allLocalVocab = [...(VOCABULARY_DATA || []), ...(MINNA_N4_VOCABULARY || []), ...(TANGO_N4_VOCABULARY || [])];
+    const allLocalVocab = [...(VOCABULARY_DATA || []), ...(TANGO_N4_VOCABULARY || [])];
     const matchedLocal = allLocalVocab.find(v => (v.kanji === cleanWord || v.word === cleanWord || v.reading === cleanWord || v.hiragana === cleanWord));
 
     // 4. Try AI enrichment via Gemini for comprehensive dictionary entry & related words
