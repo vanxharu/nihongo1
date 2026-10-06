@@ -45,6 +45,7 @@ export default function ShibaAssistantFloating({
   const [quoteIndex, setQuoteIndex] = useState(0);
   const reducedMotion = useReducedMotion();
   const dragControls = useDragControls();
+  const dragged = useRef(false);
   const [feedback, setFeedback] = useState('');
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
@@ -117,7 +118,13 @@ export default function ShibaAssistantFloating({
   return (
     <>
       {/* Floating Floating Mascot Anchor */}
-      <motion.div drag={!isOpen && !reducedMotion} dragListener={false} dragControls={dragControls} dragMomentum={false} dragConstraints={{ left:-Math.max(0, Math.min(220, window.innerWidth - 120)), right:0, top:-Math.max(0, Math.min(240, window.innerHeight - 220)), bottom:0 }} className={`shiba-floating-anchor feedback-${feedback} fixed bottom-20 xl:bottom-6 right-3 sm:right-6 z-[90] select-none pointer-events-auto`}>
+      {/* Mobile/tablet: the whole mascot is the drag handle, anchored top-right (see responsive.css). Desktop: use the ⠿ handle. */}
+      <motion.div drag={!isOpen} dragListener={window.innerWidth < 1280} dragControls={dragControls} dragMomentum={false}
+        onDragStart={() => { dragged.current = true; }} onDragEnd={() => setTimeout(() => { dragged.current = false; }, 50)}
+        style={window.innerWidth < 1280 ? { touchAction: 'none' } : undefined}
+        dragConstraints={window.innerWidth < 1280
+          ? { left: -(window.innerWidth - 64), right: 0, top: 0, bottom: Math.max(0, window.innerHeight - 130) }
+          : { left:-Math.max(0, Math.min(220, window.innerWidth - 120)), right:0, top:-Math.max(0, Math.min(240, window.innerHeight - 220)), bottom:0 }} className={`shiba-floating-anchor feedback-${feedback} fixed bottom-20 xl:bottom-6 right-3 sm:right-6 z-[90] select-none pointer-events-auto`}>
         {!isOpen && <button type="button" aria-label="Kéo để di chuyển Shiba" className="shiba-drag-handle" onPointerDown={event => dragControls.start(event)}>⠿</button>}
         <AnimatePresence>
           {!isOpen && (
@@ -128,7 +135,7 @@ export default function ShibaAssistantFloating({
               transition={{ type: 'spring', stiffness: 260, damping: 20 }}
               className="relative flex items-center group cursor-pointer" role="button" tabIndex={0} aria-label="Mở trợ lý Nihon Shiba"
               onKeyDown={(e) => { if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); setIsOpen(true); } }}
-              onClick={() => setIsOpen(true)}
+              onClick={() => { if (!dragged.current) setIsOpen(true); }}
             >
               {/* Tooltip / Speech bubble (on hover or initial) */}
               {!isDismissed && (

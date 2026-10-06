@@ -36,7 +36,7 @@ function KaraokeCaption({ text, time, start, end, timings, analysis, furigana, v
   }) : [];
   const visual = measured.length ? measured : estimated;
   const current = currentShadowingWord(time, end, visual);
-  return <p lang="ja" aria-label={text} data-timing={measured.length ? 'measured' : 'estimated'} className={`karaoke-line karaoke-${variant}`}>
+  return <p lang="ja" aria-label={text} data-timing={measured.length ? 'measured' : 'estimated'} className={`karaoke-line karaoke-v-${variant}`}>
     {pieces.map(piece => {
       let offset = piece.offset;
       const activePiece = current && piece.offset < current.textEnd && piece.offset + piece.text.length > current.textStart;

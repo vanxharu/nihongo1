@@ -46,3 +46,4 @@
 @media(max-width:1023px){.shadowing-sticky{position:sticky;top:0;z-index:20;margin:-20px -16px 0;background:var(--ui-surface)}}
 @media(max-width:639px){.karaoke-stage .karaoke-line{font-size:1.3rem;line-height:2.1;min-height:0;margin:4px auto}.karaoke-translation{margin-top:8px;padding-top:8px}}
 #app-root-container .karaoke-stage [role=button]:focus-visible{outline:none}
+@media(max-width:639px){#app-main-view .karaoke-stage{box-shadow:none;border-radius:16px;background:color-mix(in srgb,var(--ui-soft) 6%,var(--ui-surface))}.karaoke-stage .karaoke-line{max-width:none}}

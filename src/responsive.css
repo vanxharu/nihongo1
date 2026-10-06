@@ -33,7 +33,7 @@
 .shiba-companion-panel{max-width:calc(100vw - 24px);max-height:calc(100dvh - 110px);overflow-y:auto!important;overscroll-behavior:contain}
 @media(max-width:1279px){
  #mobile-tablet-header{padding-right:64px}
- .shiba-floating-anchor:not(:has(.shiba-companion-panel)){top:6px;bottom:auto;right:10px;transform:none!important}
+ .shiba-floating-anchor:not(:has(.shiba-companion-panel)){top:6px;bottom:auto;right:10px}
  .shiba-floating-anchor:not(:has(.shiba-companion-panel))>button{display:none}
  .shiba-floating-anchor:not(:has(.shiba-companion-panel)) [role=button]>div:not(:last-child){display:none}
  .shiba-floating-anchor:not(:has(.shiba-companion-panel)) [role=button]>div:last-child{width:44px;height:44px}
