@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Play, Square, RotateCcw, ExternalLink, SkipBack, SkipForward } from 'lucide-react';
+import { Play, Square, RotateCcw, ExternalLink, SkipBack, SkipForward, Settings2 } from 'lucide-react';
 import { validateShadowingRange } from '../../utils/shadowing';
 
 let apiPromise: Promise<void> | null = null;
@@ -52,6 +52,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
   const [repeats, setRepeats] = useState(3);
   const [gap, setGap] = useState(3);
   const [reload, setReload] = useState(0);
+  const [showSettings, setShowSettings] = useState(false);
   const gapRef = useRef(gap);
   gapRef.current = gap;
 
@@ -157,104 +158,40 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
   const repeatOptions = [1, 3, 5];
   const gapOptions = [0, 3, 5, 8];
 
+  const group = (label: string, options: number[], value: number, set: (n: number) => void, fmt: (n: number) => string) => (
+    <div className="flex items-center gap-1.5">
+      <span className="w-14 shrink-0 text-xs text-slate-400">{label}</span>
+      <div className="flex flex-wrap gap-1.5">
+        {options.map(n => <button key={n} onClick={() => set(n)} className={`shadowing-pill${value === n ? ' shadowing-pill-active' : ''}`}>{fmt(n)}</button>)}
+      </div>
+    </div>
+  );
+
   return (
     <section className="shadowing-player overflow-hidden rounded-2xl border border-slate-700 bg-slate-950">
-      {/* Video — hidden in dictation compact mode to save space */}
-      {!compact && <div ref={host} className="shadowing-video aspect-video w-full bg-black" />}
-      {compact && <div ref={host} className="shadowing-video" style={{ height: 0, overflow: 'hidden' }} />}
-
-      {/* Controls */}
-      <div className="px-3 py-2.5 space-y-2">
-
-        {/* Row 1: prev · play/stop · next + speed pill */}
+      {/* Video stays mounted but collapsed in dictation mode so the YouTube API keeps its session */}
+      <div ref={host} className="shadowing-video w-full bg-black" style={compact ? { height: 0, overflow: 'hidden' } : { aspectRatio: '16/9' }} />
+      <div className="space-y-2 px-3 py-2">
         <div className="flex items-center gap-2">
-          {(onPrev || onNext) && (
-            <button
-              disabled={!hasPrev}
-              onClick={onPrev}
-              aria-label="Câu trước"
-              className="shadowing-ctrl-btn"
-            >
-              <SkipBack size={16} />
-            </button>
-          )}
-
-          <button
-            disabled={!ready}
-            onClick={running ? stop : playSegment}
-            aria-label={running ? 'Dừng' : 'Nghe & nhại đoạn này'}
-            className="shadowing-play-btn"
-          >
-            {running ? <Square size={18} /> : <Play size={18} />}
-            <span className="text-xs font-semibold">{running ? 'Dừng' : 'Phát đoạn này'}</span>
+          {(onPrev || onNext) && <button disabled={!hasPrev} onClick={onPrev} aria-label="Câu trước" className="shadowing-ctrl-btn"><SkipBack size={16} /></button>}
+          <button disabled={!ready} onClick={running ? stop : playSegment} aria-label={running ? 'Dừng' : 'Nghe và nhại đoạn này'} className="shadowing-play-btn min-w-0 flex-1">
+            {running ? <Square size={16} /> : <Play size={16} />}
+            <span>{running ? 'Dừng' : 'Phát đoạn này'}</span>
           </button>
-
-          {(onPrev || onNext) && (
-            <button
-              disabled={!hasNext}
-              onClick={onNext}
-              aria-label="Câu sau"
-              className="shadowing-ctrl-btn"
-            >
-              <SkipForward size={16} />
-            </button>
-          )}
-
-          <div className="ml-auto flex items-center gap-1.5">
-            {/* Speed pills */}
-            {speedOptions.map(n => (
-              <button
-                key={n}
-                onClick={() => setSpeed(n)}
-                className={`shadowing-pill${speed === n ? ' shadowing-pill-active' : ''}`}
-              >
-                {n}×
-              </button>
-            ))}
-          </div>
-
-          {!ready && (
-            <button aria-label="Tải lại video" onClick={() => setReload(n => n + 1)} className="shadowing-ctrl-btn">
-              <RotateCcw size={15} />
-            </button>
-          )}
-          <a
-            href={`https://www.youtube.com/watch?v=${videoId}`}
-            target="_blank"
-            rel="noreferrer"
-            className="shadowing-ctrl-btn"
-            aria-label="Mở YouTube"
-          >
-            <ExternalLink size={15} />
-          </a>
+          {(onPrev || onNext) && <button disabled={!hasNext} onClick={onNext} aria-label="Câu sau" className="shadowing-ctrl-btn"><SkipForward size={16} /></button>}
+          {!ready && <button aria-label="Tải lại video" onClick={() => setReload(n => n + 1)} className="shadowing-ctrl-btn"><RotateCcw size={15} /></button>}
+          <button aria-label="Cài đặt luyện tập" aria-expanded={showSettings} onClick={() => setShowSettings(v => !v)} className={`shadowing-ctrl-btn w-auto gap-1 px-2 text-xs font-semibold${showSettings ? ' shadowing-pill-active' : ''}`}>
+            <Settings2 size={15} />{speed}×
+          </button>
         </div>
-
-        {/* Row 2: Lặp + Nghỉ pills (only in shadowing mode) */}
-        {!compact && (
-          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-            <span className="shrink-0">Lặp:</span>
-            {repeatOptions.map(n => (
-              <button
-                key={n}
-                onClick={() => setRepeats(n)}
-                className={`shadowing-pill${repeats === n ? ' shadowing-pill-active' : ''}`}
-              >
-                {n} lần
-              </button>
-            ))}
-            <span className="ml-3 shrink-0">Nghỉ nhại:</span>
-            {gapOptions.map(n => (
-              <button
-                key={n}
-                onClick={() => setGap(n)}
-                className={`shadowing-pill${gap === n ? ' shadowing-pill-active' : ''}`}
-              >
-                {n === 0 ? 'Không' : `${n}s`}
-              </button>
-            ))}
+        {showSettings && (
+          <div className="space-y-2 rounded-xl border border-slate-700/60 p-2.5">
+            {group('Tốc độ', speedOptions, speed, setSpeed, n => `${n}×`)}
+            {!compact && group('Lặp lại', repeatOptions, repeats, setRepeats, n => `${n} lần`)}
+            {!compact && group('Nghỉ nhại', gapOptions, gap, setGap, n => n === 0 ? 'Không' : `${n}s`)}
+            <a href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-slate-400 underline"><ExternalLink size={12} />Mở trên YouTube</a>
           </div>
         )}
-
         {message && <p role="status" className="text-xs text-amber-200">{message}</p>}
       </div>
     </section>

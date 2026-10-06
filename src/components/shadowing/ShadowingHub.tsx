@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Headphones, Link2 } from 'lucide-react';
+import { ChevronLeft, Headphones, Link2 } from 'lucide-react';
 import { SHADOWING_VIDEOS } from '../../data/shadowingVideos';
 import { formatDuration } from '../../utils/youtubeUtils';
 import { parseShadowingVideoId, parseShadowingTime, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
@@ -209,19 +209,17 @@ export default function ShadowingHub() {
       {personalVideos.length > 0 && <section><h3 className="mb-3 font-bold">Video của tôi</h3><div className="grid gap-3 sm:grid-cols-2">{personalVideos.map(v => <button className={button} key={v.videoId} onClick={() => chooseVideo(v.videoId)}>{v.title} · {v.cueCount} câu</button>)}</div></section>}
       {sources.filter(source => category === 'Tất cả' || category === source).map(source => <section key={source}><h3 className="mb-3 font-bold">{source}</h3><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{library.filter(v => v.source === source).map(v => <button key={v.id} onClick={() => chooseVideo(v.youtube_video_id)} className="overflow-hidden rounded-xl bg-slate-950/40 text-left hover:ring-2 hover:ring-violet-400"><div className="relative"><img src={v.thumbnail} alt="" loading="lazy" className="aspect-video w-full object-cover" /><span className="absolute bottom-2 right-2 rounded bg-black/80 px-1 text-xs">{v.duration}</span></div><div className="p-3"><h4 className="line-clamp-2 text-sm font-bold">{v.title}</h4><p className="mt-2 text-xs text-slate-400">{v.level} · Luyện từng câu</p></div></button>)}</div></section>)}
     </section> : <>
-      {/* Compact header: back + title + mode tabs */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <button onClick={() => setParams({})} className={compactButton}>‹ Thư viện</button>
-        {sourceTitle && <h2 className="flex-1 min-w-0 truncate text-sm font-semibold text-slate-300">{sourceTitle}</h2>}
-        <div className="flex gap-1 ml-auto">
+      <div className="flex items-center gap-2">
+        <button onClick={() => setParams({})} aria-label="Về thư viện" className={`${compactButton} w-9 shrink-0 px-0`}><ChevronLeft size={18} /></button>
+        <div className="flex flex-1 gap-1">
           <button onClick={() => { setMode('shadowing'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'shadowing' ? ' shadowing-mode-tab-active' : ''}`}>Bắt chước</button>
           <button onClick={() => { setMode('dictation'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'dictation' ? ' shadowing-mode-tab-active' : ''}`}>Chính tả</button>
         </div>
       </div>
 
-      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
-        <div className="space-y-4">
-          <ShadowingPlayer
+      <div className="flex flex-col gap-3 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
+        <div className="max-lg:contents lg:space-y-4">
+          <div className="shadowing-sticky"><ShadowingPlayer
             ref={playerRef}
             key={videoId}
             videoId={videoId}
@@ -234,9 +232,10 @@ export default function ShadowingHub() {
             onNext={selected < cues.length - 1 ? () => jumpCue(selected + 1) : undefined}
             hasPrev={selected > 0}
             hasNext={selected < cues.length - 1}
-          />
+          /></div>
+          {sourceTitle && <h2 className="line-clamp-2 text-base font-bold leading-snug text-slate-100">{sourceTitle}</h2>}
 
-          {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-4 sm:p-6">
+          {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-3 sm:p-6">
             <div className="mb-2 flex items-center justify-between gap-3 text-xs text-slate-400">
               <span>{displayed ? `Câu ${displayedIndex + 1} / ${cues.length}` : 'Sẵn sàng nghe'}</span>
               <div className="flex gap-3"><label><input type="checkbox" checked={furigana} onChange={e => setFurigana(e.target.checked)} /> Furigana</label><label><input type="checkbox" checked={translation} onChange={e => setTranslation(e.target.checked)} /> Dịch</label></div>
@@ -249,12 +248,13 @@ export default function ShadowingHub() {
             {mode === 'dictation' && revealed && <button className="mt-3 text-sm underline" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
           </section>}
 
-          {/* Subtitle editor — collapsed by default */}
+          <div className="space-y-4 max-lg:order-last">
           <button className={compactButton} aria-expanded={editing} onClick={() => { playerRef.current?.pause(); setEditing(value => !value); }}>{editing ? 'Đóng soạn phụ đề' : 'Soạn phụ đề video'}</button>
           {editing && <SubtitleEditor videoId={videoId} title={sourceTitle || ''} cues={cues} selected={selected} revision={revision} onChange={next => { applyCues(next, true); try { localStorage.setItem(`shadowing-draft:${storageSuffix}`, JSON.stringify({ cues: next, revision })); } catch {} }} onSaved={(saved, title) => { setRevision(saved); setCustomTitle(title); try { localStorage.removeItem(`shadowing-draft:${storageSuffix}`); } catch {} setPersonalVideos(videos => [...videos.filter(v => v.videoId !== videoId), { videoId, title, cueCount: cues.length }]); }} />}
+          </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="max-lg:contents lg:space-y-4">
           {insightCue && (mode === 'shadowing' || revealed) && <SentenceInsights key={videoId + insightCue.text} videoId={videoId || ''} cue={insightCue} cached={cache.current.get(insightCue.text)} onClose={() => setInsightCue(null)} onResult={(text, data) => { cache.current.set(text, data); refreshAnalysis(n => n + 1); }} />}
           {mode === 'dictation' && <DictationPanel key={`${videoId}:${selected}:${sentence}`} sentence={sentence} autoPause={autoPause} onAutoPause={value => { playerRef.current?.pause(); setAutoPause(value); }} onPlay={() => playerRef.current?.playSentence(parseShadowingTime(start), parseShadowingTime(end), autoPause) || false} onReveal={setRevealed} onPrevious={() => jumpCue(selected - 1)} onNext={() => jumpCue(selected + 1)} hasPrevious={selected > 0} hasNext={selected < cues.length - 1} />}
           {(mode === 'shadowing' || revealed) && <section className="rounded-xl bg-[#101010] p-3">
