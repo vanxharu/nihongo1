@@ -665,6 +665,12 @@ export const saveVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dok
   } catch {}
 };
 
+// ?mode=quiz (vd. nút "Ôn từ vựng 5 phút") mở thẳng chế độ đó.
+const URL_VOCAB_MODE = () => {
+  const m = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('mode') : null;
+  return (['flashcard', 'quiz', 'cram', 'dokkai', 'shadowing'] as const).find(x => x === m);
+};
+
 export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel }: VocabularyPracticeProps) {
   const [vocabData, setVocabData] = useState<VocabularyItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -722,6 +728,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   // App States
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedMode, setSelectedMode] = useState<'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing'>(() => {
+    const urlMode = URL_VOCAB_MODE();
+    if (urlMode) return urlMode;
     if (!user) return 'flashcard';
     const pos = userProfile?.lastPosition;
     if (pos?.tab === 'vocabulary' && pos.mode) {
@@ -907,7 +915,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     if (!user) {
       setCurrentLessonIndex(0);
       setCurrentIndex(0);
-      setSelectedMode('flashcard');
+      setSelectedMode(URL_VOCAB_MODE() || 'flashcard');
       isRestoredRef.current = true;
       return;
     }
@@ -929,7 +937,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       if (pos.itemIndex !== undefined && pos.itemIndex >= 0) {
         setCurrentIndex(pos.itemIndex);
       }
-      if (pos.mode) {
+      if (pos.mode && !URL_VOCAB_MODE()) {
         setSelectedMode(pos.mode as any);
       }
       isRestoredRef.current = true;

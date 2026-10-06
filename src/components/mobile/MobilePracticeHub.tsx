@@ -227,7 +227,7 @@ export default function MobilePracticeHub({
               <Trophy className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <span className="text-[10px] sm:text-[11px] text-center text-slate-300 font-medium leading-tight max-w-[64px] sm:max-w-[70px]">
-              Bảng xếp hạng
+              Thành tựu
             </span>
           </button>
 
@@ -446,15 +446,15 @@ export default function MobilePracticeHub({
           <button
             type="button"
             id="saved-btn-questions"
-            onClick={() => onNavigate('notebook')}
+            onClick={() => onNavigate('exam')}
             className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#121927] border border-[#1b253b] hover:border-slate-700 text-left transition-all active:scale-[0.98] cursor-pointer"
           >
             <div className="w-10 h-10 rounded-xl bg-[#291722] text-[#f43f5e] flex items-center justify-center shrink-0">
               <HelpCircle className="w-5 h-5" />
             </div>
             <div className="min-w-0">
-              <div className="text-base font-bold text-white leading-tight">0</div>
-              <div className="text-xs text-slate-400 mt-0.5">Câu hỏi</div>
+              <div className="text-base font-bold text-white leading-tight">JLPT</div>
+              <div className="text-xs text-slate-400 mt-0.5">Luyện đề</div>
             </div>
           </button>
         </div>

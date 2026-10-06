@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Award, MessageCircle, Flame, ArrowRight, BookOpen, Volume2 } from 'lucide-react';
 import ShibaMascot from './ShibaMascot';
+import { useNavigate } from 'react-router-dom';
 import { speakJapanese } from '../../utils/audio';
 import { dailyShibaTip } from '../../utils/dailyShibaTip';
 
@@ -19,6 +20,7 @@ export default function ShibaCompanionBanner({
   streakCount = 3,
   className = ''
 }: ShibaCompanionBannerProps) {
+  const navigate = useNavigate();
   const [poseIndex, setPoseIndex] = useState<number>(0);
   const poses: Array<'waving' | 'studying' | 'cheering' | 'winking'> = ['waving', 'cheering', 'studying', 'winking'];
 
@@ -125,7 +127,7 @@ export default function ShibaCompanionBanner({
             <button
               type="button"
               id="shiba-banner-btn-practice"
-              onClick={() => onNavigate('vocabulary')}
+              onClick={() => navigate('/tango?mode=quiz')}
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#252e50] hover:bg-[#2d3960] text-slate-200 border border-slate-600/50 font-bold text-xs transition-colors cursor-pointer"
             >
               <BookOpen className="w-3.5 h-3.5 text-amber-400" />
