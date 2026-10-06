@@ -4760,6 +4760,6 @@ if (loading) {
         </div>
       </div>
 
-    </div>{/* end flex h-screen */}
+    </div>
   );
 }
