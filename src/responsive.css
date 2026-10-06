@@ -88,3 +88,12 @@
  .shiba-floating-anchor:has(.shiba-companion-panel){z-index:220;transform:none!important;inset:12px}
  .shiba-companion-panel{width:100%!important;max-height:calc(100dvh - 24px);overflow-y:auto!important}
 }
+
+/* Vocabulary flashcard: compact on phones */
+@media(max-width:639px){
+ #app-root-container .vocab-study-toolbar{gap:6px;margin-bottom:8px;padding-bottom:8px}
+ #app-root-container .vocab-study-toolbar button,
+ #app-root-container .vocab-study-toolbar button:has(>svg:only-child){min-height:36px;min-width:36px}
+ #app-root-container .vocab-study-toolbar button:has(>svg:only-child){padding:6px}
+ .responsive-flashcard{min-height:clamp(180px,30dvh,250px)}
+}
