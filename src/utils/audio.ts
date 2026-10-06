@@ -476,6 +476,30 @@ let activeDialogue: JapaneseSpeechHandle | null = null;
 export function stopJapaneseSpeech(): void {
   activeDialogue?.stop();
   activeSpeech?.stop();
+  stopTangoAudio();
+}
+
+let tangoAudio: HTMLAudioElement | null = null;
+let tangoTimer: ReturnType<typeof setTimeout> | null = null;
+
+function stopTangoAudio() {
+  if (tangoTimer) { clearTimeout(tangoTimer); tangoTimer = null; }
+  if (tangoAudio) { tangoAudio.pause(); tangoAudio = null; }
+}
+
+export function playTangoSegment(start: number, end: number, onEnd?: () => void): void {
+  stopTangoAudio();
+  const audio = new Audio('/audio/tango_n4.mp3');
+  tangoAudio = audio;
+  audio.currentTime = start;
+  audio.play().catch(() => {});
+  const duration = (end - start) * 1000;
+  tangoTimer = setTimeout(() => {
+    audio.pause();
+    tangoAudio = null;
+    tangoTimer = null;
+    onEnd?.();
+  }, duration);
 }
 
 export { cleanJapaneseTextForSpeech };

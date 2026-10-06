@@ -62,7 +62,8 @@ import PitchAccentDisplay from './PitchAccentDisplay';
 import { SelectiveFuriganaWord } from './JapaneseFuriganaText';
 import VocabListItemCard from './VocabListItemCard';
 import ReactionOverlay from './ReactionOverlay';
-import { playCorrectSound, playIncorrectSound, speakJapanese } from '../utils/audio';
+import { playCorrectSound, playIncorrectSound, speakJapanese, playTangoSegment } from '../utils/audio';
+import { TANGO_N4_AUDIO_TIMING } from '../data/tangoN4AudioTiming';
 import { useAuth } from '../contexts/AuthContext';
 import { safeFetchJson } from '../utils/safeApi';
 
@@ -2062,14 +2063,26 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   }, [selectedMode, currentIndex, currentLessonIndex]);
 
   const handleSpeak = useCallback((text: string, isSentence?: boolean) => {
+    // Use official audio for tango N4 entries when available
+    if (currentItem?.curriculum === 'tango' && currentItem.originalNumber) {
+      const timing = TANGO_N4_AUDIO_TIMING[currentItem.originalNumber];
+      if (timing) {
+        playTangoSegment(timing.start, timing.end);
+        if (selectedMode === 'shadowing') {
+          setIsPlayingWave(true);
+          setTimeout(() => setIsPlayingWave(false), (timing.end - timing.start) * 1000);
+        }
+        return;
+      }
+    }
     speakJapanese(text, undefined, undefined, { isSentence });
-    
+
     // Animate wave if shadowing
     if (selectedMode === 'shadowing') {
       setIsPlayingWave(true);
       setTimeout(() => setIsPlayingWave(false), 2000);
     }
-  }, [selectedMode]);
+  }, [selectedMode, currentItem]);
 
   const stateRef = useRef({
     selectedMode,
