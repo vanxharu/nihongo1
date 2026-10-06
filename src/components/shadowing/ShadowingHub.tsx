@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ChevronLeft, Headphones, Link2 } from 'lucide-react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { SHADOWING_VIDEOS } from '../../data/shadowingVideos';
 import { formatDuration } from '../../utils/youtubeUtils';
 import { parseShadowingVideoId, parseShadowingTime, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
@@ -19,6 +20,7 @@ const button = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-x
 
 export default function ShadowingHub() {
   const [params, setParams] = useSearchParams();
+  const reduceMotion = useReducedMotion();
   const videoId = parseShadowingVideoId(params.get('v') || '');
   const [urlInput, setUrlInput] = useState(params.get('v') || '');
   const [cues, setCues] = useState<ShadowingCue[]>([]);
@@ -239,12 +241,22 @@ export default function ShadowingHub() {
               <span>{displayed ? `Câu ${displayedIndex + 1} / ${cues.length}` : 'Sẵn sàng nghe'}</span>
               {mode === 'dictation' && revealed && <button className="underline lg:hidden" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
             </div>
-            {cues[displayedIndex - 1] && <button className="lyric-side" onClick={() => jumpCue(displayedIndex - 1)}>{cues[displayedIndex - 1].text}</button>}
-            <div role="button" tabIndex={displayed ? 0 : -1} aria-label="Xem nghĩa và phân tích câu đang phát" aria-disabled={!displayed} onClick={() => displayed && setInsightCue({ ...displayed })} onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && displayed) { e.preventDefault(); setInsightCue({ ...displayed }); } }} className="cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
-              <KaraokeCaption text={displayed?.text || ''} time={currentTime} start={displayed?.start ?? null} end={displayed?.end ?? null} timings={displayed?.timings} analysis={displayedAnalysis} furigana={furigana} />
+            <div className="relative">
+              <AnimatePresence initial={false} mode="popLayout">
+                {cues.slice(Math.max(0, displayedIndex - 1), displayedIndex + 4).map((cue, n) => {
+                  const i = Math.max(0, displayedIndex - 1) + n;
+                  const off = i - displayedIndex;
+                  return <motion.div key={cue.id} layout="position" initial={{ opacity: 0, y: reduceMotion ? 0 : 28 }} animate={{ opacity: [0.5, 1, 0.7, 0.5, 0.35][off + 1] ?? 0.35, y: 0 }} exit={{ opacity: 0, y: reduceMotion ? 0 : -28 }} transition={{ duration: reduceMotion ? 0 : 0.32, ease: 'easeOut' }}>
+                    {off === 0 ? <>
+                      <div role="button" tabIndex={0} aria-label="Xem nghĩa và phân tích câu đang phát" onClick={() => setInsightCue({ ...cue })} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setInsightCue({ ...cue }); } }} className="cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
+                        <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} timings={cue.timings} analysis={displayedAnalysis} furigana={furigana} />
+                      </div>
+                      {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
+                    </> : <button className="lyric-side" onClick={() => jumpCue(i)}>{cue.text}</button>}
+                  </motion.div>;
+                })}
+              </AnimatePresence>
             </div>
-            {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
-            {cues.slice(displayedIndex + 1, displayedIndex + 4).map((cue, n) => <button key={cue.id} className="lyric-side" style={{ opacity: [0.7, 0.5, 0.35][n] }} onClick={() => jumpCue(displayedIndex + 1 + n)}>{cue.text}</button>)}
           </section>}
 
 
