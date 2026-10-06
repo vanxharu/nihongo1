@@ -6,15 +6,12 @@ import {
   User, 
   ChevronRight, 
   Bookmark, 
-  Users, 
-  Network, 
   Volume2, 
   VolumeX, 
   Bell, 
   Download, 
   RefreshCw, 
   LogOut, 
-  ExternalLink,
   ShieldCheck,
   Flame,
   CheckCircle2,
@@ -297,41 +294,6 @@ export default function MobileProfileView({
         </h2>
 
         <div className="rounded-2xl bg-[#121929] border border-slate-800/80 overflow-hidden divide-y divide-slate-800/70">
-          {/* Cộng đồng học tập */}
-          <a
-            href="https://facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-4 flex items-center justify-between hover:bg-slate-800/40 transition-colors"
-          >
-            <div className="flex items-center gap-3.5">
-              <div className="w-8 h-8 rounded-lg bg-sky-500/15 text-sky-400 flex items-center justify-center shrink-0">
-                <Users className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs sm:text-sm font-bold text-slate-200">Cộng đồng học tập</div>
-                <div className="text-[11px] text-slate-400 truncate max-w-[200px] sm:max-w-none">
-                  Giao lưu cùng hơn 50.000 người học tiếng Nhật
-                </div>
-              </div>
-            </div>
-            <ExternalLink className="w-4 h-4 text-slate-500 shrink-0" />
-          </a>
-
-          {/* Mạng lưới đã lưu */}
-          <div className="p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3.5">
-              <div className="w-8 h-8 rounded-lg bg-indigo-500/15 text-indigo-400 flex items-center justify-center shrink-0">
-                <Network className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="text-xs sm:text-sm font-bold text-slate-200">Mạng lưới đã lưu</div>
-                <div className="text-[11px] text-slate-400">Đồng bộ đám mây</div>
-              </div>
-            </div>
-            <span className="text-xs font-mono text-slate-400">0</span>
-          </div>
-
           {/* Đổi cấp độ JLPT mục tiêu */}
           <div className="p-4 flex items-center justify-between gap-2">
             <div>

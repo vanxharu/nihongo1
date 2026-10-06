@@ -283,9 +283,22 @@ export const DEFAULT_CATEGORY: Omit<KanjiCategoryInfo, 'kanjis'> = {
 /**
  * Returns color category info for a single Kanji character
  */
+/** Nhóm gốc (kèm màu chủ đề cũ) — chỉ dùng để tra nhãn. */
+export function getKanjiTopicCategory(kanjiChar: string): Omit<KanjiCategoryInfo, 'kanjis'> {
+  return KANJI_CATEGORIES.find(c => c.kanjis.has(kanjiChar)) || DEFAULT_CATEGORY;
+}
+
 export function getKanjiCategory(kanjiChar: string): Omit<KanjiCategoryInfo, 'kanjis'> {
-  const cat = KANJI_CATEGORIES.find(c => c.kanjis.has(kanjiChar));
-  return cat ? cat : DEFAULT_CATEGORY;
+  const cat = KANJI_CATEGORIES.find(c => c.kanjis.has(kanjiChar)) || DEFAULT_CATEGORY;
+  // Giữ tên nhóm, nhưng mọi kanji dùng chung một màu dễ đọc.
+  return {
+    ...cat, colorName: 'slate',
+    bg: 'bg-slate-800', text: 'text-white', border: 'border-slate-900',
+    lightBg: 'bg-slate-50 dark:bg-slate-900/40', lightText: 'text-slate-900 dark:text-slate-100',
+    lightBorder: 'border-slate-200 dark:border-slate-700',
+    badgeBg: 'bg-slate-100 dark:bg-slate-800/50', badgeText: 'text-slate-900 dark:text-slate-200',
+    badgeBorder: 'border-slate-300 dark:border-slate-700',
+  };
 }
 
 /**

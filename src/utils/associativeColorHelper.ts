@@ -4,7 +4,7 @@
  */
 
 import { getHanViet } from './japaneseUtils';
-import { getKanjiCategory } from './kanjiHelper';
+import { getKanjiTopicCategory } from './kanjiHelper';
 
 export interface AssociativeColorTheme {
   // Tailwind text classes
@@ -333,7 +333,25 @@ const KEYWORD_ASSOCIATION_RULES: { keywords: string[]; theme: string }[] = [
 /**
  * Gets associative theme color for a single Kanji character based on its nature and Sino-Vietnamese roots
  */
+// Một màu dễ đọc cho mọi kanji (không tô theo chủ đề nữa); chỉ giữ nhãn/emoji của chủ đề.
+export const UNIFORM_KANJI_THEME = {
+  text: 'text-slate-900 dark:text-slate-100',
+  furigana: 'text-slate-500 dark:text-slate-300',
+  bg: 'bg-slate-50 dark:bg-slate-900/40',
+  border: 'border-slate-200 dark:border-slate-700/80',
+  badgeBg: 'bg-slate-100 dark:bg-slate-800/50',
+  badgeText: 'text-slate-900 dark:text-slate-200',
+  badgeBorder: 'border-slate-300 dark:border-slate-700',
+  glow: 'shadow-slate-500/20',
+  hex: '#0f172a',
+};
+
 export function getKanjiAssociativeColor(kanjiChar: string): AssociativeColorTheme {
+  const t = getKanjiTopicTheme(kanjiChar);
+  return { ...t, ...UNIFORM_KANJI_THEME };
+}
+
+function getKanjiTopicTheme(kanjiChar: string): AssociativeColorTheme {
   if (!kanjiChar || typeof kanjiChar !== 'string') return COLOR_THEMES.neutral;
 
   try {
@@ -344,7 +362,7 @@ export function getKanjiAssociativeColor(kanjiChar: string): AssociativeColorThe
     }
 
     // 2. Category lookup from kanjiHelper
-    const cat = getKanjiCategory(kanjiChar);
+    const cat = getKanjiTopicCategory(kanjiChar);
     if (cat && cat.colorName && COLOR_THEMES[cat.colorName]) {
       return COLOR_THEMES[cat.colorName];
     }

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { useParams } from 'react-router-dom';
 import { calculateSRS } from '../utils/srs';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
@@ -632,47 +633,18 @@ export interface VocabModeSettings {
   studyDirection: 'JP_VI' | 'VI_JP';
 }
 
+// Mặc định: ẩn những gì làm lộ đáp án của chế độ đó, hiện những gì giúp hiểu ngữ cảnh.
 export const VOCAB_MODE_DEFAULTS: Record<'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing', VocabModeSettings> = {
-  flashcard: {
-    showFurigana: true,
-    showExampleFurigana: true,
-    showPitchAccent: true,
-    showRomaji: false,
-    autoAdvance: false,
-    studyDirection: 'JP_VI',
-  },
-  quiz: {
-    showFurigana: true,
-    showExampleFurigana: true,
-    showPitchAccent: true,
-    showRomaji: false,
-    autoAdvance: false, // Tắt tự chuyển để người học chủ động xem giải thích đáp án
-    studyDirection: 'JP_VI',
-  },
-  cram: {
-    showFurigana: false, // Ẩn khi đang gõ từ vựng để rèn luyện trí nhớ
-    showExampleFurigana: true,
-    showPitchAccent: false,
-    showRomaji: false,
-    autoAdvance: true, // Gõ đúng tự động chuyển sang từ tiếp theo
-    studyDirection: 'JP_VI',
-  },
-  dokkai: {
-    showFurigana: true,
-    showExampleFurigana: true,
-    showPitchAccent: false,
-    showRomaji: false,
-    autoAdvance: false,
-    studyDirection: 'JP_VI',
-  },
-  shadowing: {
-    showFurigana: true,
-    showExampleFurigana: true,
-    showPitchAccent: true,
-    showRomaji: false,
-    autoAdvance: false,
-    studyDirection: 'JP_VI',
-  },
+  // Lật thẻ: mặt trước chỉ có chữ để tự nhớ cách đọc; lật thẻ mới thấy đọc/nghĩa.
+  flashcard: { showFurigana: false, showExampleFurigana: true, showPitchAccent: false, showRomaji: false, autoAdvance: false, studyDirection: 'JP_VI' },
+  // Trắc nghiệm: furigana của từ sẽ lộ đáp án câu hỏi cách đọc.
+  quiz: { showFurigana: false, showExampleFurigana: true, showPitchAccent: false, showRomaji: false, autoAdvance: false, studyDirection: 'JP_VI' },
+  // Luyện gõ: ẩn mọi furigana (kể cả câu ví dụ) vì đáp án chính là cách đọc; gõ đúng tự chuyển.
+  cram: { showFurigana: false, showExampleFurigana: false, showPitchAccent: false, showRomaji: false, autoAdvance: true, studyDirection: 'JP_VI' },
+  // Đọc hiểu: hiện furigana để đọc trôi chảy.
+  dokkai: { showFurigana: true, showExampleFurigana: true, showPitchAccent: false, showRomaji: false, autoAdvance: false, studyDirection: 'JP_VI' },
+  // Ghép câu (nghe – nói theo): cần cách đọc và trọng âm.
+  shadowing: { showFurigana: true, showExampleFurigana: true, showPitchAccent: true, showRomaji: false, autoAdvance: false, studyDirection: 'JP_VI' },
 };
 
 export const getVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing'): VocabModeSettings => {
@@ -918,9 +890,19 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
 
   // Safely restore or set current indices on initial load
   const isRestoredRef = useRef(false);
+  const { lessonId: routeLessonId } = useParams<{ lessonId?: string }>();
 
   useEffect(() => {
     if (isRestoredRef.current || lessons.length === 0 || lessons[0]?.id === 'default') return;
+
+    // Liên kết trực tiếp /tango/:lessonId mở đúng bài đó.
+    const routeIdx = routeLessonId ? lessons.findIndex(l => l.id === routeLessonId) : -1;
+    if (routeIdx !== -1) {
+      setCurrentLessonIndex(routeIdx);
+      setCurrentIndex(0);
+      isRestoredRef.current = true;
+      return;
+    }
 
     if (!user) {
       setCurrentLessonIndex(0);
@@ -1037,79 +1019,23 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   // Intelligent Mode Defaults
   const initialModeSettings = useMemo(() => getVocabModeSettings(selectedMode), [selectedMode]);
 
-  const [showRomaji, setShowRomaji] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(`jlpt_vocab_show_romaji_${selectedMode}`);
-      if (saved !== null) return JSON.parse(saved);
-      const legacy = localStorage.getItem('jlpt_show_romaji');
-      if (legacy !== null) return JSON.parse(legacy);
-      return VOCAB_MODE_DEFAULTS[selectedMode]?.showRomaji ?? false;
-    } catch { return false; }
-  });
+  const [showRomaji, setShowRomaji] = useState<boolean>(initialModeSettings.showRomaji);
 
-  const [showFurigana, setShowFurigana] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(`jlpt_vocab_show_furigana_${selectedMode}`);
-      if (saved !== null) return JSON.parse(saved);
-      const legacy = localStorage.getItem('jlpt_show_furigana');
-      if (legacy !== null) return JSON.parse(legacy);
-      return VOCAB_MODE_DEFAULTS[selectedMode]?.showFurigana ?? true;
-    } catch { return true; }
-  });
+  const [showFurigana, setShowFurigana] = useState<boolean>(initialModeSettings.showFurigana);
 
-  const [showExampleFurigana, setShowExampleFurigana] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(`jlpt_vocab_show_example_furigana_${selectedMode}`);
-      if (saved !== null) return JSON.parse(saved);
-      const legacy = localStorage.getItem('jlpt_show_example_furigana');
-      if (legacy !== null) return JSON.parse(legacy);
-      return VOCAB_MODE_DEFAULTS[selectedMode]?.showExampleFurigana ?? true;
-    } catch { return true; }
-  });
+  const [showExampleFurigana, setShowExampleFurigana] = useState<boolean>(initialModeSettings.showExampleFurigana);
 
-  const [showPitchAccent, setShowPitchAccent] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(`jlpt_vocab_show_pitch_accent_${selectedMode}`);
-      if (saved !== null) return JSON.parse(saved);
-      const legacy = localStorage.getItem('jlpt_show_pitch_accent');
-      if (legacy !== null) return JSON.parse(legacy);
-      return VOCAB_MODE_DEFAULTS[selectedMode]?.showPitchAccent ?? true;
-    } catch { return true; }
-  });
+  const [showPitchAccent, setShowPitchAccent] = useState<boolean>(initialModeSettings.showPitchAccent);
 
-  const [autoAdvance, setAutoAdvance] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(`jlpt_vocab_auto_advance_${selectedMode}`);
-      if (saved !== null) return JSON.parse(saved);
-      const legacy = localStorage.getItem('jlpt_vocab_auto_advance');
-      if (legacy !== null) return JSON.parse(legacy);
-      return VOCAB_MODE_DEFAULTS[selectedMode]?.autoAdvance ?? false;
-    } catch { return false; }
-  });
+  const [autoAdvance, setAutoAdvance] = useState<boolean>(initialModeSettings.autoAdvance);
 
   const [expandedWords, setExpandedWords] = useState<Record<string, boolean>>({});
 
   // Mode specific sub-states
   const [showFlashcardAnswer, setShowFlashcardAnswer] = useState(false);
   const [flashcardView, setFlashcardView] = useState<'word' | 'example'>('word');
-  const [studyDirection, setStudyDirection] = useState<'JP_VI' | 'VI_JP'>(() => {
-    try {
-      const saved = localStorage.getItem(`jlpt_study_direction_${selectedMode}`);
-      if (saved === 'VI_JP' || saved === 'JP_VI') return saved;
-      const legacy = localStorage.getItem('jlpt_study_direction');
-      if (legacy === 'VI_JP' || legacy === 'JP_VI') return legacy;
-      return VOCAB_MODE_DEFAULTS[selectedMode]?.studyDirection || 'JP_VI';
-    } catch { return 'JP_VI'; }
-  });
-  const [flashcardDirection, setFlashcardDirection] = useState<'JP_VI' | 'VI_JP'>(() => {
-    try {
-      const saved = localStorage.getItem(`jlpt_study_direction_${selectedMode}`);
-      if (saved === 'VI_JP' || saved === 'JP_VI') return saved;
-      const legacy = localStorage.getItem('jlpt_study_direction');
-      if (legacy === 'VI_JP' || legacy === 'JP_VI') return legacy;
-      return VOCAB_MODE_DEFAULTS[selectedMode]?.studyDirection || 'JP_VI';
-    } catch { return 'JP_VI'; }
-  });
+  const [studyDirection, setStudyDirection] = useState<'JP_VI' | 'VI_JP'>(initialModeSettings.studyDirection);
+  const [flashcardDirection, setFlashcardDirection] = useState<'JP_VI' | 'VI_JP'>(initialModeSettings.studyDirection);
   const [isAutoplay, setIsAutoplay] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
   const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
@@ -1140,31 +1066,12 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   };
 
   const toggleSetting = (key: keyof VocabModeSettings, value: any) => {
-    if (key === 'showFurigana') {
-      setShowFurigana(value);
-      localStorage.setItem(`jlpt_vocab_show_furigana_${selectedMode}`, JSON.stringify(value));
-    }
-    if (key === 'showExampleFurigana') {
-      setShowExampleFurigana(value);
-      localStorage.setItem(`jlpt_vocab_show_example_furigana_${selectedMode}`, JSON.stringify(value));
-    }
-    if (key === 'showPitchAccent') {
-      setShowPitchAccent(value);
-      localStorage.setItem(`jlpt_vocab_show_pitch_accent_${selectedMode}`, JSON.stringify(value));
-    }
-    if (key === 'showRomaji') {
-      setShowRomaji(value);
-      localStorage.setItem(`jlpt_vocab_show_romaji_${selectedMode}`, JSON.stringify(value));
-    }
-    if (key === 'autoAdvance') {
-      setAutoAdvance(value);
-      localStorage.setItem(`jlpt_vocab_auto_advance_${selectedMode}`, JSON.stringify(value));
-    }
-    if (key === 'studyDirection') {
-      setStudyDirection(value);
-      setFlashcardDirection(value);
-      localStorage.setItem(`jlpt_study_direction_${selectedMode}`, value);
-    }
+    if (key === 'showFurigana') setShowFurigana(value);
+    if (key === 'showExampleFurigana') setShowExampleFurigana(value);
+    if (key === 'showPitchAccent') setShowPitchAccent(value);
+    if (key === 'showRomaji') setShowRomaji(value);
+    if (key === 'autoAdvance') setAutoAdvance(value);
+    if (key === 'studyDirection') { setStudyDirection(value); setFlashcardDirection(value); }
     saveVocabModeSettings(selectedMode, { [key]: value });
   };
 
@@ -2993,9 +2900,7 @@ if (loading) {
               <>
                 <button
                   onClick={() => {
-                    const newVal = !autoAdvance;
-                    setAutoAdvance(newVal);
-                    localStorage.setItem('jlpt_vocab_auto_advance', JSON.stringify(newVal));
+                    toggleSetting('autoAdvance', !autoAdvance);
                   }}
                   className={`flex items-center gap-1 px-1.5 py-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border text-[10px] sm:text-[11px] font-semibold transition-all cursor-pointer shrink-0 ${
                     autoAdvance 
@@ -3010,9 +2915,7 @@ if (loading) {
 
                 <button
                   onClick={() => {
-                    const newVal = !showExampleFurigana;
-                    setShowExampleFurigana(newVal);
-                    localStorage.setItem('jlpt_show_example_furigana', JSON.stringify(newVal));
+                    toggleSetting('showExampleFurigana', !showExampleFurigana);
                   }}
                   className={`flex items-center gap-1 px-1.5 py-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border text-[10px] sm:text-[11px] font-semibold transition-all cursor-pointer shrink-0 ${
                     showExampleFurigana 
@@ -3341,7 +3244,7 @@ if (loading) {
                             <SelectiveFuriganaWord
                               kanji={currentItem.kanji}
                               hiragana={currentItem.hiragana}
-                              showFurigana={showFurigana}
+                              showFurigana={true}
                               sizeClassName="text-2xl sm:text-3xl md:text-4xl"
                             />
                             {showPitchAccent && (
@@ -3648,7 +3551,7 @@ if (loading) {
                         <SelectiveFuriganaWord
                           kanji={currentItem.kanji}
                           hiragana={currentItem.hiragana}
-                          showFurigana={showFurigana}
+                          showFurigana={showFurigana || hasAnswered}
                           sizeClassName="text-2xl sm:text-3xl md:text-4xl"
                         />
                       )}
