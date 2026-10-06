@@ -208,7 +208,7 @@ export default function Header({
   return (
     <>
       {/* Mobile & tablet navigation; chat retains its own full-height toolbar */}
-      {currentTab !== 'japanese-chat' && currentTab !== 'shadowing' && (
+      {currentTab !== 'japanese-chat' && currentTab !== 'shadowing' && currentTab !== 'vocabulary' && (
         <header 
           id="mobile-tablet-header"
           className="xl:hidden flex items-center justify-between h-11 px-3 sm:px-4 bg-[#0F1424]/95 backdrop-blur-md border-b border-[#1B223C] sticky top-0 z-40 select-none shrink-0 pt-[env(safe-area-inset-top,0px)]"
