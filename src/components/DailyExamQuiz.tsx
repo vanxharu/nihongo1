@@ -509,7 +509,8 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
   });
 
   const rawAllExams: DailyExam[] = [...JLPT_PAST_EXAMS, ...DAILY_EXAMS, ...aiGeneratedExams];
-  const allExams: DailyExam[] = rawAllExams.map(ensureFullExamQuestions);
+  // Đề do AI soạn giữ nguyên; đề có sẵn dưới 10 câu thì ẩn khỏi thư viện.
+  const allExams: DailyExam[] = rawAllExams.map(ensureFullExamQuestions).filter(e => e.category === 'ai_generated' || e.questions.length >= 10);
 
   // Filtering & Tab Navigation state
   const [mainTab, setMainTab] = useState<'ai_builder' | 'pdf_practice' | 'library'>('library');
@@ -1198,7 +1199,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                   <span className="text-slate-400 font-medium text-[11px] shrink-0">Phân loại:</span>
                   {[
                     { id: 'ALL', label: 'Tất cả đề' },
-                    { id: 'official_past', label: 'Đề thi chính thức' },
+                    { id: 'official_past', label: 'Đề có sẵn' },
                     { id: 'mock_daily', label: 'Đề thi thử' },
                     { id: 'ai_generated', label: 'Đề do AI soạn' }
                   ].map(cat => (

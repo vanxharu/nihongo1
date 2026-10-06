@@ -10,93 +10,86 @@ export const JLPT_LEVEL_TARGETS: Record<string, { mojiGoi: number; bunpou: numbe
 };
 
 // ============================================
-// LEVEL-SPECIFIC AUTHENTIC QUESTION POOLS
+// Chuẩn hoá đề trước khi hiển thị (chạy được nhiều lần, kết quả không đổi)
 // ============================================
 
-// N5 AUTHENTIC POOLS
-const N5_MOJI_GOI: Omit<ExamQuestion, 'id'>[] = [
-  { question: '毎朝、【新聞】を読みます。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['しんぶん', 'ほん', 'ざっし', 'じしょ'], correctIndex: 0, section: 'moji-goi', explanation: '新聞 (しんぶん) nghĩa là tờ báo.' },
-  { question: 'あそこに大きな【犬】がいますね。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['ねこ', 'いぬ', 'とり', 'さかな'], correctIndex: 1, section: 'moji-goi', explanation: '犬 (いぬ) nghĩa là con chó.' },
-  { question: 'この部屋は【あかるい】ですね。', hint: 'Chữ Kanji đúng của từ trong ngoặc 【】', options: ['明るい', '暗い', '広い', '高い'], correctIndex: 0, section: 'moji-goi', explanation: 'あかるい = 明るい (sáng sủa).' },
-  { question: '昨日はとても【あつかった】です。', hint: 'Chữ Kanji đúng của từ trong ngoặc 【】', options: ['暑かった', '寒かった', '温かかった', '涼しかった'], correctIndex: 0, section: 'moji-goi', explanation: 'あつかった = 暑かった (thời tiết nóng).' },
-  { question: '毎晩10時に【ねます】。', hint: 'Chữ Kanji đúng của từ trong ngoặc 【】', options: ['寝ます', '起きます', '行きます', '来ます'], correctIndex: 0, section: 'moji-goi', explanation: 'ねます = 寝ます (đi ngủ).' },
-  { question: '昨日は友達と公園で【遊びました】。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['あそびました', 'はしりました', 'あるきました', 'およぎました'], correctIndex: 0, section: 'moji-goi', explanation: '遊びました = あそびました (đã vui chơi).' },
-  { question: 'あの【建物】は図書館です。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['たてもの', 'たべもの', 'のみもの', 'かいもの'], correctIndex: 0, section: 'moji-goi', explanation: '建物 = たてもの (tòa nhà).' },
-  { question: 'テーブルの上にりんごが【三つ】あります。', hint: 'Cách đọc từ trong ngoặc 【】', options: ['みっつ', 'ひとつ', 'ふたつ', 'よっつ'], correctIndex: 0, section: 'moji-goi', explanation: '三つ = みっつ (3 cái/quả).' },
-  { question: '友達から手紙が【とどきました】。', hint: 'Chữ Kanji đúng của từ trong ngoặc 【】', options: ['届きました', '着きました', '来ました', '書きました'], correctIndex: 0, section: 'moji-goi', explanation: 'とどきました = 届きました (đã gửi tới nơi).' },
-  { question: 'ここで【写真】をとってはいけません。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['しゃしん', 'かがみ', 'えいが', 'えのぐ'], correctIndex: 0, section: 'moji-goi', explanation: '写真 = しゃしん (bức ảnh).' },
-  { question: '【電車】の中で本を読みます。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['でんしゃ', 'じどうしゃ', 'じてんしゃ', 'ひこうき'], correctIndex: 0, section: 'moji-goi', explanation: '電車 = でんしゃ (tàu điện).' },
-  { question: '【高い】山に登りたいです。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['たかい', 'ひくい', 'ながい', 'みじかい'], correctIndex: 0, section: 'moji-goi', explanation: '高い = たかい (cao).' },
-  { question: '冷たい【水】を飲みます。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['みず', 'おゆ', 'さけ', 'スープ'], correctIndex: 0, section: 'moji-goi', explanation: '水 = みず (nước).' },
-  { question: '【白】いシャツを着ています。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['しろ', 'くろ', 'あか', 'あお'], correctIndex: 0, section: 'moji-goi', explanation: '白 = しろ (màu trắng).' },
-  { question: '図書館で【本】を借りました。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['ほん', 'ざっし', 'ノート', 'じしょ'], correctIndex: 0, section: 'moji-goi', explanation: '本 = ほん (sách).' },
-  { question: 'パンと【牛乳】を買いました。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['ぎゅうにゅう', 'おちゃ', 'みず', 'ジュース'], correctIndex: 0, section: 'moji-goi', explanation: '牛乳 = ぎゅうにゅう (sữa bò).' },
-  { question: '【夏】休みに海へ行きます。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['なつ', 'ふゆ', 'はる', 'あき'], correctIndex: 0, section: 'moji-goi', explanation: '夏 = なつ (mùa hè).' },
-  { question: '【右】に曲がってください。', hint: 'Cách đọc Kanji trong ngoặc 【】', options: ['みぎ', 'ひだり', 'きた', 'みなみ'], correctIndex: 0, section: 'moji-goi', explanation: '右 = みぎ (bên phải).' },
-  { question: '毎朝シャワーを（　　）。', hint: 'Điền động từ đúng vào chỗ trống （）', options: ['あびます', 'のみます', 'はいります', 'あらいます'], correctIndex: 0, section: 'moji-goi', explanation: 'シャワーをあびる (tắm vòi sen).' },
-  { question: 'デパートで（　　）を買いました。', hint: 'Điền từ Katakana thích hợp', options: ['カメラ', 'ドア', 'プール', 'ノート'], correctIndex: 0, section: 'moji-goi', explanation: 'カメラ = camera (máy ảnh).' }
-];
-
-const N5_BUNPOU: Omit<ExamQuestion, 'id'>[] = [
-  { question: '私は毎日、バス（　　）学校へ行きます。', hint: 'Chọn trợ từ chỉ phương tiện', options: ['で', 'に', 'を', 'へ'], correctIndex: 0, section: 'bunpou', explanation: 'Trợ từ で chỉ phương tiện di chuyển.' },
-  { question: '日曜日に友達（　　）買い物に行きました。', hint: 'Chọn trợ từ đi cùng ai', options: ['と', 'に', 'で', 'を'], correctIndex: 0, section: 'bunpou', explanation: 'Trợ từ と chỉ người cùng làm việc.' },
-  { question: '部屋に田中さん（　　）います。', hint: 'Chọn trợ từ chủ ngữ tồn tại', options: ['が', 'を', 'で', 'へ'], correctIndex: 0, section: 'bunpou', explanation: 'Chủ ngữ của sự tồn tại (います) đi với が.' },
-  { question: '昨日は熱があった（　　）、学校を休んだ。', hint: 'Chọn liên từ nguyên nhân', options: ['から', 'けれど', 'で', 'のに'], correctIndex: 0, section: 'bunpou', explanation: '〜から: Vì... nên.' },
-  { question: '今からラジオを聞き（　　）ご飯を食べます。', hint: 'Chọn mẫu câu đồng thời hai hành động', options: ['ながら', 'て', 'たり', 'あとで'], correctIndex: 0, section: 'bunpou', explanation: 'V-bỏ-masu + ながら: vừa làm A vừa làm B.' },
-  { question: 'ここに名前を（　　）ください。', hint: 'Chọn dạng thể Te', options: ['書いて', '書きます', '書かないで', '書いた'], correctIndex: 0, section: 'bunpou', explanation: 'V-てください: Xin hãy viết tên.' },
-  { question: '公園へ散歩（　　）行きます。', hint: 'Chọn trợ từ chỉ mục đích', options: ['に', 'で', 'を', 'へ'], correctIndex: 0, section: 'bunpou', explanation: 'N + に行きます: Đi để dạo bộ.' }
-];
-
-// Padding / exam completing helper
-export function ensureFullExamQuestions(exam: DailyExam): DailyExam {
-  const level = exam.level || 'N5';
-  const targets = JLPT_LEVEL_TARGETS[level] || JLPT_LEVEL_TARGETS['N5'];
-  
-  const existingQuestions = [...exam.questions];
-  const mojiGoi = existingQuestions.filter(q => q.section === 'moji-goi');
-  const bunpou = existingQuestions.filter(q => q.section === 'bunpou');
-  const dokkai = existingQuestions.filter(q => q.section === 'dokkai');
-  const choukai = existingQuestions.filter(q => q.section === 'choukai');
-
-  // If exam already has substantial questions (e.g. 15+ questions), keep it as authentic as possible
-  if (existingQuestions.length >= 10) {
-    return {
-      ...exam,
-      durationMinutes: targets.duration
-    };
+/** Hướng dẫn trung tính theo dạng câu — không tiết lộ đáp án. */
+export function neutralHint(q: ExamQuestion): string {
+  const text = q.question || '';
+  if (q.section === 'choukai') return 'Nghe và chọn câu trả lời đúng.';
+  if (q.section === 'dokkai') return 'Đọc đoạn văn và chọn câu trả lời đúng nhất.';
+  if (text.includes('★')) return 'Sắp xếp các từ thành câu đúng và chọn từ ở vị trí ★.';
+  const bracket = text.match(/【([^】]+)】/);
+  if (bracket) return /[\u4e00-\u9faf]/.test(bracket[1]) ? 'Chọn cách đọc đúng của từ trong 【 】.' : 'Chọn chữ Hán đúng của từ trong 【 】.';
+  if (q.options.every(o => o.length > 12) && !/[（(]/.test(text)) {
+    return text.length <= 8 ? 'Chọn câu dùng từ này đúng nhất.' : 'Chọn câu có nghĩa gần nhất với câu đã cho.';
   }
+  return q.section === 'bunpou' ? 'Chọn từ / cấu trúc thích hợp điền vào chỗ trống.' : 'Chọn từ thích hợp điền vào chỗ trống.';
+}
 
-  const padSection = (
-    currentList: ExamQuestion[], 
-    targetCount: number, 
-    pool: Omit<ExamQuestion, 'id'>[], 
-    sectionKey: 'moji-goi' | 'bunpou' | 'dokkai' | 'choukai'
-  ): ExamQuestion[] => {
-    const result = [...currentList];
-    let poolIdx = 0;
-    while (result.length < Math.min(targetCount, pool.length)) {
-      const template = pool[poolIdx % pool.length];
-      const qNum = result.length + 1;
-      const newQ: ExamQuestion = {
-        ...template,
-        id: `${exam.id}_${sectionKey}_${qNum}`,
-        section: sectionKey,
-        question: template.question
-      };
-      result.push(newQ);
-      poolIdx++;
+// Xáo thứ tự đáp án ổn định theo id câu (tránh đáp án dồn hết vào A).
+function seededShuffle(id: string, n: number): number[] {
+  let h = 2166136261;
+  for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619);
+  const order = Array.from({ length: n }, (_, i) => i);
+  for (let i = n - 1; i > 0; i--) { h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0; const j = h % (i + 1); [order[i], order[j]] = [order[j], order[i]]; }
+  return order;
+}
+const positionDependent = (q: ExamQuestion) =>
+  q.section === 'choukai' || q.section === 'dokkai' || q.options.some(o => /番|^[1-4][.．]/.test(o)) || (q.question || '').includes('★')
+  || /Đáp án\s*[1-4]|\([1-4]\)|vị trí|thứ\s*[1-4]/i.test(`${q.explanation || ''} ${q.hint || ''}`);
+
+export function sanitizeExam(exam: DailyExam): DailyExam {
+  if ((exam as any)._sanitized) return exam;
+  const targets = JLPT_LEVEL_TARGETS[exam.level] || JLPT_LEVEL_TARGETS['N5'];
+  let lastPassage = '';
+  const questions = (exam.questions || []).map((orig): ExamQuestion => {
+    const q: ExamQuestion = { ...orig, options: (orig.options || []).map(o => String(o).replace(/^[1-4][.．]\s*/, '')) };
+    // Đoạn văn dùng chung: câu sau chỉ ghi "【文章】..." → lấy lại đoạn văn của câu trước.
+    const full = (q.question || '').match(/^(【(?:文章|案内)】[\s\S]+?)\n*質問[：:]/);
+    if (full && !full[1].includes('...')) lastPassage = full[1].trim();
+    const stub = (q.question || '').match(/^【(?:文章|案内)】[^\n]*?\.\.\.\s*([\s\S]*)$/);
+    if (stub && lastPassage && q.section === 'dokkai' && !q.readingPassage) {
+      q.readingPassage = lastPassage;
+      q.question = stub[1].trim();
     }
-    return result;
-  };
+    // Gợi ý gốc thường là lời dịch hoặc chính đáp án → chỉ hiện sau khi nộp bài (trong phần giải thích).
+    const original = (q.hint || '').trim();
+    const neutral = neutralHint(q);
+    if (original && original !== neutral && !/^(Cách đọc|Chữ Kanji đúng|Chọn|Điền) [^:：]{0,40}$/.test(original)) {
+      q.explanation = q.explanation?.trim() ? (q.explanation.includes(original) ? q.explanation : `${q.explanation}\n💡 ${original}`) : original;
+    }
+    q.hint = neutral;
+    if (!q.explanation?.trim()) {
+      const ans = q.options[q.correctIndex] ?? '';
+      const br = (q.question || '').match(/【([^】]+)】/);
+      q.explanation = br
+        ? (/[\u4e00-\u9faf]/.test(br[1]) ? `${br[1]} đọc là ${ans}.` : `${br[1]} viết bằng chữ Hán là ${ans}.`)
+        : `Đáp án đúng: ${ans}.`;
+    }
+    if (!positionDependent(q) && q.options.length > 1) {
+      const order = seededShuffle(q.id, q.options.length);
+      q.options = order.map(i => orig.options[i]).map(o => String(o).replace(/^[1-4][.．]\s*/, ''));
+      if (Array.isArray(orig.optionExplanations) && orig.optionExplanations.length === order.length) q.optionExplanations = order.map(i => orig.optionExplanations![i]);
+      q.correctIndex = order.indexOf(orig.correctIndex);
+    }
+    return q;
+  }).filter(q => (q.question || '').trim() || q.audioUrl || q.audioTrack || q.audioScript || q.imageSvg || q.imageUrl || q.readingPassage);
 
-  const fullMojiGoi = padSection(mojiGoi, 8, N5_MOJI_GOI, 'moji-goi');
-  const fullBunpou = padSection(bunpou, 6, N5_BUNPOU, 'bunpou');
-  const fullDokkai = dokkai;
-  const fullChoukai = choukai;
+  // Đề có ít câu hơn nhiều so với đề thật không được gọi là "Đề thi chính thức".
+  let title = exam.title;
+  let category = exam.category;
+  if (/chính thức/i.test(title) && questions.length < targets.total * 0.8) {
+    title = `Đề luyện rút gọn JLPT ${exam.level} · ${questions.length} câu${exam.session ? ` (${exam.session})` : ''}`;
+    category = 'mock_daily';
+  }
+  return { ...exam, title, category, questions, _sanitized: true } as DailyExam;
+}
 
-  return {
-    ...exam,
-    questions: [...fullMojiGoi, ...fullBunpou, ...fullDokkai, ...fullChoukai],
-    durationMinutes: targets.duration,
-  };
+// Chuẩn hoá đề và đặt thời gian làm bài theo cấp độ.
+// ponytail: không còn "đệm" câu hỏi mẫu N5 cho đủ số câu — đề ít câu là đề rút gọn thật.
+export function ensureFullExamQuestions(rawExam: DailyExam): DailyExam {
+  const exam = sanitizeExam(rawExam);
+  const targets = JLPT_LEVEL_TARGETS[exam.level] || JLPT_LEVEL_TARGETS['N5'];
+  return { ...exam, durationMinutes: exam.questions.length >= targets.total * 0.8 ? targets.duration : Math.max(10, Math.round(targets.duration * exam.questions.length / targets.total)) };
 }

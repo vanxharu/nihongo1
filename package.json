@@ -13,6 +13,7 @@
     "lint": "tsc --noEmit",
     "test:audio": "node --test scripts/audio.test.mjs",
     "test:reading": "node --test scripts/reading.test.mjs",
+    "test:exams": "node --import tsx --test scripts/exams.test.mjs",
     "test:roadmap": "node --import tsx --test scripts/roadmap.test.mjs",
     "test:shadowing": "node --test scripts/shadowing.test.mjs scripts/shadowing-runtime.test.mjs scripts/shadowing-alignment.test.mjs",
     "align:shadowing": "tsx scripts/align-shadowing.ts",

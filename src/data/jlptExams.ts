@@ -889,5 +889,6 @@ const RAW_JLPT_PAST_EXAMS: DailyExam[] = [
   ...REAL_EXAMS_N1
 ];
 
-export const JLPT_PAST_EXAMS: DailyExam[] = RAW_JLPT_PAST_EXAMS.map(ensureFullExamQuestions);
+// Bỏ các đề chỉ còn vài câu (trước đây bị "đệm" bằng câu N5 cho đủ số lượng).
+export const JLPT_PAST_EXAMS: DailyExam[] = RAW_JLPT_PAST_EXAMS.map(ensureFullExamQuestions).filter(e => e.questions.length >= 10);
 

@@ -187,7 +187,7 @@ export const REAL_EXAMS_N4_DE2: DailyExam = {
             "切本",
             "切券"
         ],
-        "correctIndex": 1,
+        "correctIndex": 0,
         "section": "moji-goi",
         "explanation": "きって viết chữ Hán là 切手 (Thiết Thủ - tem bưu điện)."
     },
@@ -215,7 +215,7 @@ export const REAL_EXAMS_N4_DE2: DailyExam = {
             "夕",
             "夜"
         ],
-        "correctIndex": 1,
+        "correctIndex": 3,
         "section": "moji-goi",
         "explanation": "よる viết chữ Hán là 夜 (Dạ - đêm, buổi tối). 朝 là sáng, 昼 là trưa, 夕 là hoàng hôn."
     },
@@ -790,7 +790,7 @@ export const REAL_EXAMS_N4_DE2: DailyExam = {
             "なら"
         ],
         "correctIndex": 1,
-        "section": "dokkai",
+        "section": "bunpou",
         "explanation": "Vào đội tuyển công ty nhưng (が) thành tích không được như mong đợi."
     },
     {
@@ -804,7 +804,7 @@ export const REAL_EXAMS_N4_DE2: DailyExam = {
             "出ないほうが よかった"
         ],
         "correctIndex": 0,
-        "section": "dokkai",
+        "section": "bunpou",
         "explanation": "Cấu trúc bắt buộc: なければならなかった (phải làm cả việc của công ty)."
     },
     {
@@ -818,7 +818,7 @@ export const REAL_EXAMS_N4_DE2: DailyExam = {
             "会社に 入って から"
         ],
         "correctIndex": 0,
-        "section": "dokkai",
+        "section": "bunpou",
         "explanation": "Vてから: 会社をやめてから (Sau khi nghỉ việc ở công ty thì vô cùng vất vả)."
     },
     {
@@ -832,7 +832,7 @@ export const REAL_EXAMS_N4_DE2: DailyExam = {
             "それに"
         ],
         "correctIndex": 0,
-        "section": "dokkai",
+        "section": "bunpou",
         "explanation": "Tuy nhiên (しかし), anh Fujiwara không hề bỏ cuộc."
     },
     {
@@ -846,7 +846,7 @@ export const REAL_EXAMS_N4_DE2: DailyExam = {
             "世界で 一番に ならない ように"
         ],
         "correctIndex": 2,
-        "section": "dokkai",
+        "section": "bunpou",
         "explanation": "〜ためには: Để đạt được mục đích trở thành số một thế giới (世界で一番になるためには)."
     },
     {
