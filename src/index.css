@@ -466,3 +466,49 @@ ruby > rt {
   color: var(--ui-accent); /* bright amber yellow on dark/gradient bubbles */
 }
 
+
+/* ── Reaction overlay animations ── */
+@keyframes flashFade {
+  0%   { opacity: 0.25; }
+  30%  { opacity: 0.18; }
+  100% { opacity: 0; }
+}
+
+@keyframes mascotJump {
+  0%   { transform: translateY(0) scale(0.5); opacity: 0; }
+  40%  { transform: translateY(-20px) scale(1.15); opacity: 1; }
+  70%  { transform: translateY(5px) scale(0.95); }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes mascotShake {
+  0%   { transform: translateX(0) scale(0.5); opacity: 0; }
+  20%  { transform: translateX(-10px) scale(1.05); opacity: 1; }
+  40%  { transform: translateX(10px); }
+  60%  { transform: translateX(-6px); }
+  80%  { transform: translateX(6px); }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes confettiFall {
+  0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg) translateX(var(--wobble, 30px)); opacity: 0; }
+}
+
+@keyframes emojiBurst {
+  0%   { transform: translate(0,0) scale(0.5); opacity: 0; }
+  40%  { opacity: 1; }
+  100% {
+    transform: 
+      translateX(calc(cos(var(--angle, 0deg)) * var(--dist, 60px)))
+      translateY(calc(sin(var(--angle, 0deg)) * var(--dist, 60px)))
+      scale(0.8);
+    opacity: 0;
+  }
+}

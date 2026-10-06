@@ -60,6 +60,7 @@ import KanjiDetailModal from './KanjiDetailModal';
 import PitchAccentDisplay from './PitchAccentDisplay';
 import { SelectiveFuriganaWord } from './JapaneseFuriganaText';
 import VocabListItemCard from './VocabListItemCard';
+import ReactionOverlay from './ReactionOverlay';
 import { playCorrectSound, playIncorrectSound, speakJapanese } from '../utils/audio';
 import { useAuth } from '../contexts/AuthContext';
 import { safeFetchJson } from '../utils/safeApi';
@@ -2872,7 +2873,7 @@ if (loading) {
         <div className="w-full">
           {/* Main Study Card Stage */}
           <div className="bg-[#242b45] text-white border border-[#343d5f] shadow-2xl shadow-slate-950/40 rounded-2xl sm:rounded-3xl p-3 sm:p-5 md:p-6 relative overflow-hidden min-h-[220px] sm:min-h-[280px] md:min-h-[340px] flex flex-col justify-between transition-all duration-300 w-full">
-        
+        <ReactionOverlay state={reactionState} />
         {/* Top Header Inside Card Frame: Integrated Lesson Navigator & Study Controls */}
         <div className="vocab-study-toolbar flex flex-row items-center justify-between gap-1 sm:gap-2 mb-2.5 sm:mb-3.5 pb-2 sm:pb-2.5 border-b border-[#343d5f]/80 relative z-10 w-full flex-nowrap">
           {/* Left Controls */}
