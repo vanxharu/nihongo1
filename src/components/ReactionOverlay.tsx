@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ShibaMascot from './ShibaMascot';
 
 type ReactionState = 'neutral' | 'correct' | 'wrong' | 'surrender';
 
@@ -39,6 +40,27 @@ function Confetti({ count = 40 }: { count?: number }) {
   );
 }
 
+const stateToMascot: Record<ReactionState, 'idle' | 'correct' | 'wrong' | 'surrender'> = {
+  neutral:   'idle',
+  correct:   'correct',
+  wrong:     'wrong',
+  surrender: 'surrender',
+};
+
+const labels: Record<ReactionState, string> = {
+  neutral:   '',
+  correct:   'Chính xác! 🔥',
+  wrong:     'Sai rồi! 💪',
+  surrender: 'Ghi nhớ nhé! 📚',
+};
+
+const colors: Record<ReactionState, string> = {
+  neutral:   '',
+  correct:   'bg-emerald-500',
+  wrong:     'bg-rose-500',
+  surrender: 'bg-amber-500',
+};
+
 export default function ReactionOverlay({ state }: Props) {
   const [visible, setVisible] = useState(false);
   const [key, setKey] = useState(0);
@@ -47,7 +69,7 @@ export default function ReactionOverlay({ state }: Props) {
     if (state !== 'neutral') {
       setVisible(true);
       setKey(k => k + 1);
-      const t = setTimeout(() => setVisible(false), 1400);
+      const t = setTimeout(() => setVisible(false), 1800);
       return () => clearTimeout(t);
     } else {
       setVisible(false);
@@ -64,25 +86,25 @@ export default function ReactionOverlay({ state }: Props) {
       className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-2xl sm:rounded-3xl overflow-hidden"
       style={{ zIndex: 40 }}
     >
+      {/* Background flash */}
       <div
-        className={`absolute inset-0 ${isCorrect ? 'bg-emerald-500' : 'bg-rose-500'}`}
+        className={`absolute inset-0 ${isCorrect ? 'bg-emerald-500' : state === 'surrender' ? 'bg-amber-500' : 'bg-rose-500'}`}
         style={{ animation: 'flashFade 0.5s ease-out forwards', opacity: 0 }}
       />
 
       {isCorrect && <Confetti count={45} />}
 
+      {/* Mascot + label */}
       <div
         className="relative z-50 flex flex-col items-center gap-2"
-        style={{ animation: isCorrect ? 'mascotJump 0.6s ease-out' : 'mascotShake 0.5s ease-out' }}
+        style={{ animation: isCorrect ? 'mascotJump 0.65s ease-out' : 'mascotShake 0.5s ease-out' }}
       >
-        <span style={{ fontSize: '3.5rem', lineHeight: 1 }}>
-          {isCorrect ? '🎉' : state === 'surrender' ? '😅' : '😢'}
-        </span>
+        <ShibaMascot state={stateToMascot[state]} size={110} />
         <span
-          className={`px-4 py-1.5 rounded-full text-white font-bold text-sm shadow-lg ${isCorrect ? 'bg-emerald-500' : 'bg-rose-500'}`}
+          className={`px-4 py-1.5 rounded-full text-white font-bold text-sm shadow-lg ${colors[state]}`}
           style={{ animation: 'popIn 0.35s 0.1s ease-out both' }}
         >
-          {isCorrect ? 'Chính xác! 🔥' : state === 'surrender' ? 'Ghi nhớ nhé! 📚' : 'Sai rồi! 💪'}
+          {labels[state]}
         </span>
       </div>
     </div>
