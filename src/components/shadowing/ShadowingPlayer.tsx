@@ -131,7 +131,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
     <section className="shadowing-player overflow-hidden bg-slate-950 lg:rounded-2xl lg:border lg:border-slate-700">
       {/* Video stays mounted but collapsed in dictation mode so the YouTube API keeps its session */}
       <div ref={host} className="shadowing-video w-full bg-black" style={compact ? { height: 0, overflow: 'hidden' } : { aspectRatio: '16/9' }} />
-      <div className="space-y-1.5 px-3 py-2">
+      <div className="space-y-1.5 px-2 py-1">
         <div className="flex items-center gap-1.5">
           {lead}
           {!compact && onPrev && <button disabled={!hasPrev} onClick={onPrev} aria-label="Câu trước" className="shadowing-ctrl-btn"><SkipBack size={16} /></button>}
