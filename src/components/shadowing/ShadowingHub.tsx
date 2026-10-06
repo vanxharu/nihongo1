@@ -256,13 +256,16 @@ export default function ShadowingHub() {
               {mode === 'dictation' && revealed && <button className="underline lg:hidden" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
             </div>
             <div className="lyric-frame">
-              <div className="lyric-now" style={{ '--karaoke-size': fitSize(displayed?.text.length || 0) } as React.CSSProperties}>
-                {displayed ? <>
-                  <div role="button" tabIndex={0} aria-label="Xem nghĩa và phân tích câu đang phát" onClick={() => setInsightCue({ ...displayed })} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setInsightCue({ ...displayed }); } }} className="cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
-                    <KaraokeCaption text={displayed.text} time={currentTime} start={displayed.start} end={displayed.end} timings={displayed.timings} analysis={displayedAnalysis} furigana={furigana} />
-                  </div>
-                  {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
-                </> : <p className="text-center text-sm text-slate-400">Bấm phát video hoặc chọn một câu bên dưới</p>}
+              <div className="lyric-prev">{cues[displayedIndex - 1] && <button key={cues[displayedIndex - 1].id} className="lyric-prev-btn" onClick={() => { followPausedUntil.current = 0; jumpCue(displayedIndex - 1); }}>{cues[displayedIndex - 1].text}</button>}</div>
+              <div className="lyric-now-wrap">
+                <div key={displayed?.id || 'none'} className="lyric-now lyric-in" style={{ '--karaoke-size': fitSize(displayed?.text.length || 0) } as React.CSSProperties}>
+                  {displayed ? <>
+                    <div role="button" tabIndex={0} aria-label="Xem nghĩa và phân tích câu đang phát" onClick={() => setInsightCue({ ...displayed })} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setInsightCue({ ...displayed }); } }} className="cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
+                      <KaraokeCaption text={displayed.text} time={currentTime} start={displayed.start} end={displayed.end} timings={displayed.timings} analysis={displayedAnalysis} furigana={furigana} />
+                    </div>
+                    {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
+                  </> : <p className="text-center text-sm text-slate-400">Bấm phát video hoặc chọn một câu bên dưới</p>}
+                </div>
               </div>
             </div>
             <div ref={lyricRef} className="lyric-scroll" onTouchStart={pauseFollow} onTouchMove={pauseFollow} onWheel={pauseFollow}>
