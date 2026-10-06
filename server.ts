@@ -5759,23 +5759,8 @@ You MUST respond strictly in valid JSON matching this schema:
     } catch (aiErr: any) {
       console.warn("AI handwriting grading error, using robust fallback evaluation:", aiErr?.message);
       
-      // Smart fallback response
-      const fallbackResult = {
-        transcription: expectedAnswer || "Nhận diện chữ viết tay",
-        score: 85,
-        isCorrect: true,
-        strokeRating: "good",
-        strokeFeedback: "Nét viết rõ ràng, bố cục các nét tương đối đều đặn và dễ đọc. Hãy chú ý giữ trục thẳng đứng giữa các nét sổ chính.",
-        grammarFeedback: "Đúng theo yêu cầu đề bài.",
-        overallComment: "Rất tốt! Bạn đã hoàn thành bài viết tay bằng bút chuẩn xác. Tiếp tục duy trì thói quen luyện viết mỗi ngày nhé!",
-        correctionTip: "Đặt bút dứt khoát ở điểm bắt đầu và giữ lực đều tay khi kéo nét.",
-        standardAnswer: expectedAnswer || "練習",
-        standardFurigana: expectedAnswer || "れんしゅう",
-        standardRomaji: "renshuu",
-        standardMeaningVi: "Luyện tập",
-        xpEarned: 25
-      };
-      return res.json(fallbackResult);
+      // Never invent a passing grade (or XP) for a drawing that was not actually graded.
+      return res.status(503).json({ error: 'Chưa chấm được bài viết tay lúc này. Vui lòng thử lại.' });
     }
   } catch (error: any) {
     console.error("Error in /api/handwriting/grade:", error);

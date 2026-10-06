@@ -45,6 +45,7 @@ import {
 import { NotebookWord, JLPTLevel } from '../types';
 import { speakJapanese } from '../utils/audio';
 import ShibaMascot, { MascotEmptyState } from './mascot/ShibaMascot';
+import { useEscape } from '../hooks/useEscape';
 
 interface NotebookManagerProps {
   onNavigateToTab?: (tab: string, extra?: any) => void;
@@ -69,6 +70,8 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
 
   // Add Word Modal State
   const [isWordModalOpen, setIsWordModalOpen] = useState(false);
+  useEscape(isFolderModalOpen, () => setIsFolderModalOpen(false));
+  useEscape(isWordModalOpen, () => setIsWordModalOpen(false));
   const [newWordKanji, setNewWordKanji] = useState('');
   const [newWordFurigana, setNewWordFurigana] = useState('');
   const [newWordMeaning, setNewWordMeaning] = useState('');
@@ -1109,7 +1112,7 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
       {/* MODAL: CREATE NEW FOLDER */}
       {isFolderModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in">
-          <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+          <div role="dialog" aria-modal="true" aria-label="Tạo thư mục mới" className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <h3 className="font-bold text-base text-slate-900 dark:text-white">Tạo Sổ tay mới</h3>
               <button onClick={() => setIsFolderModalOpen(false)} className="text-slate-400 hover:text-slate-600">
@@ -1179,7 +1182,7 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
       {/* MODAL: ADD CUSTOM WORD */}
       {isWordModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in">
-          <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+          <div role="dialog" aria-modal="true" aria-label="Thêm từ tùy chỉnh" className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <h3 className="font-bold text-base text-slate-900 dark:text-white">Thêm từ vựng thủ công</h3>
               <button onClick={() => setIsWordModalOpen(false)} className="text-slate-400 hover:text-slate-600">
