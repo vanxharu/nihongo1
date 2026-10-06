@@ -100,6 +100,17 @@ export default function App() {
     window.addEventListener('nihongo:open-login', open);
     return () => window.removeEventListener('nihongo:open-login', open);
   }, []);
+
+  // Prefetch the most-visited chunks after initial paint so navigation feels instant
+  useEffect(() => {
+    const t = setTimeout(() => {
+      import('./components/VocabularyPractice');
+      import('./components/KanjiExplorer');
+      import('./components/DictionaryLookup');
+      import('./components/ProgressDashboard');
+    }, 3000); // wait 3s so it doesn't compete with first paint
+    return () => clearTimeout(t);
+  }, []);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
   const [toast, setToast] = useState<{ message: string; visible: boolean } | null>(null);
 
@@ -863,13 +874,13 @@ export default function App() {
               : 'overflow-y-auto pb-28 xl:pb-8'
           }`}
         >
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="sync">
             <motion.div
               key={location.pathname}
-              initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+              initial={reducedMotion ? false : { opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: reducedMotion ? 0 : 0.22, ease: 'easeOut' }}
+              exit={{ opacity: 0, position: 'absolute' } as any}
+              transition={{ duration: reducedMotion ? 0 : 0.15, ease: 'easeOut' }}
               className={`w-full ${
                 currentTab === 'japanese-chat' 
                   ? 'h-full flex-1 flex flex-col min-h-0 overflow-hidden' 
