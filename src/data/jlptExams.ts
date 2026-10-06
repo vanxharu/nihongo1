@@ -2,14 +2,14 @@ import { DailyExam } from '../types';
 
 export const JLPT_PAST_EXAMS: DailyExam[] = [
   {
-    id: 'mainichi-vol2-26',
-    title: '毎日の聞き取り Vol.2 — 第26課: 連体修飾',
+    id: 'mainichi-vol2-complete',
+    title: '毎日の聞き取り Vol.2 — Bài 26〜50 (Trọn bộ)',
     level: 'N4',
     category: 'mock_daily',
     thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
+    durationMinutes: 90,
     questions: [
-      {
+{
         id: 'mv2-26-1',
         section: 'choukai',
         audioTrack: 'Track 26.mp3',
@@ -38,18 +38,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['来た', 'きます', 'くる', 'きました'],
         correctIndex: 0,
         explanation: '連体修飾：「昨日来た人」（過去の動詞＋名詞）',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-27',
-    title: '毎日の聞き取り Vol.2 — 第27課: 体言化のの',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-27-1',
         section: 'choukai',
         audioTrack: 'Track 27.mp3',
@@ -68,18 +58,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['もの（物・品物）', '人', '場所', '時間'],
         correctIndex: 0,
         explanation: '「大きいのをください」＝「大きいもの（器など）をください」',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-28',
-    title: '毎日の聞き取り Vol.2 — 第28課: 条件表現①（たら・ても）',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-28-1',
         section: 'choukai',
         audioTrack: 'Track 28.mp3',
@@ -98,18 +78,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['吹いても', '吹いたら', '吹けば', '吹くなら'],
         correctIndex: 0,
         explanation: '「風が強く吹いても、傘は役に立ちません」（逆接ても）',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-29',
-    title: '毎日の聞き取り Vol.2 — 第29課: 条件表現②（ば・と）',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-29-1',
         section: 'choukai',
         audioTrack: 'Track 29.mp3',
@@ -128,18 +98,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['れば', 'たら', 'ると', 'ても'],
         correctIndex: 0,
         explanation: '後悔の表現：「もっと早く来れば、よかったのに」',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-30',
-    title: '毎日の聞き取り Vol.2 — 第30課: 命令・禁止',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-30-1',
         section: 'choukai',
         audioTrack: 'Track 30.mp3',
@@ -158,18 +118,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['早く来てください', '早く来るな', '早く来なさい', '早く来るべき'],
         correctIndex: 0,
         explanation: '命令形「来い」の丁寧形は「来てください」',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-31',
-    title: '毎日の聞き取り Vol.2 — 第31課: 可能形',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-31-1',
         section: 'choukai',
         audioTrack: 'Track 31.mp3',
@@ -188,18 +138,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['読め', '読める', '読み', '読んで'],
         correctIndex: 1,
         explanation: '「読む」の可能形は「読める」：「この漢字が読めますか？」',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-32',
-    title: '毎日の聞き取り Vol.2 — 第32課: んです',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-32-1',
         section: 'choukai',
         audioTrack: 'Track 32.mp3',
@@ -218,18 +158,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['理由や説明を述べる時', '命令する時', '質問する時だけ', '禁止する時'],
         correctIndex: 0,
         explanation: '「んです（のです）」は理由・説明・事情を述べる時に使う',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-33',
-    title: '毎日の聞き取り Vol.2 — 第33課: 動詞の意向形',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-33-1',
         section: 'choukai',
         audioTrack: 'Track 33.mp3',
@@ -268,18 +198,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['○ 正しい', '× 違う'],
         correctIndex: 1,
         explanation: '「急ぐ」→「急ごう」×（正しくは「いそごう」— 答えは×だが、実際の意向形は「急ごう」なので文脈確認要）',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-34',
-    title: '毎日の聞き取り Vol.2 — 第34課: つもり・予定',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-34-1',
         section: 'choukai',
         audioTrack: 'Track 34.mp3',
@@ -318,18 +238,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['○ 正しい', '× 違う'],
         correctIndex: 0,
         explanation: '答えは○：「留学する予定があります」は正しい表現',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-35',
-    title: '毎日の聞き取り Vol.2 — 第35課: 受身形',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-35-1',
         section: 'choukai',
         audioTrack: 'Track 35.mp3',
@@ -358,18 +268,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['b', 'a', 'c', 'd'],
         correctIndex: 0,
         explanation: 'メイン1の答えはb',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-36',
-    title: '毎日の聞き取り Vol.2 — 第36課: ながら・たり〜たり',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-36-1',
         section: 'choukai',
         audioTrack: 'Track 36.mp3',
@@ -398,18 +298,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['ながら=同時、たり=交互/複数', 'ながら=順番、たり=同時', '意味は同じ', '両方とも禁止表現'],
         correctIndex: 0,
         explanation: '「ながら」は同時動作、「たり〜たり」は複数・交互の動作を表す',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-37',
-    title: '毎日の聞き取り Vol.2 — 第37課: 使役形',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-37-1',
         section: 'choukai',
         audioTrack: 'Track 37.mp3',
@@ -438,18 +328,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['c・d・eが正しい', 'a・b・cが正しい', 'd・e・fが正しい', 'すべて正しい'],
         correctIndex: 0,
         explanation: 'メイン Q2の答えはc, d, e',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-38',
-    title: '毎日の聞き取り Vol.2 — 第38課: 授受表現',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-38-1',
         section: 'choukai',
         audioTrack: 'Track 38.mp3',
@@ -478,18 +358,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['かしてくれませんでした', 'かしてあげませんでした', 'かしてもらいませんでした', 'かしてやりませんでした'],
         correctIndex: 0,
         explanation: 'Q2a：かしてくれませんでした（友達が私に貸してくれなかった）',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-39',
-    title: '毎日の聞き取り Vol.2 — 第39課: てしまう・てある・てみる',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-39-1',
         section: 'choukai',
         audioTrack: 'Track 39.mp3',
@@ -518,18 +388,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['試みる・試してみる', '完了を表す', '状態の結果', '後悔を表す'],
         correctIndex: 0,
         explanation: '「てみる」は「試しにやってみる」という意味',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-40',
-    title: '毎日の聞き取り Vol.2 — 第40課: のに',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-40-1',
         section: 'choukai',
         audioTrack: 'Track 40.mp3',
@@ -558,18 +418,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['交差点を渡って、曲がってきた', 'まっすぐ行く', '右に曲がる', '橋を渡る'],
         correctIndex: 0,
         explanation: 'メイン Q2：交差点を渡る、曲がってきた（こうさてんをわたる、まがってきた）',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-41',
-    title: '毎日の聞き取り Vol.2 — 第41課: かどうか（仕事か結婚か）',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-41-1',
         section: 'choukai',
         audioTrack: 'Track 41.mp3',
@@ -598,18 +448,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['bとcが正しい', 'aとbが正しい', 'cとdが正しい', 'すべて正しい'],
         correctIndex: 0,
         explanation: 'メイン Q2答え：○はbとc',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-42',
-    title: '毎日の聞き取り Vol.2 — 第42課: ようになりました・ようにしてください',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-42-1',
         section: 'choukai',
         audioTrack: 'Track 42.mp3',
@@ -638,18 +478,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['一緒に捨てること・入れないこと', '分別すること', '袋に入れること', '曜日に出すこと'],
         correctIndex: 0,
         explanation: '一緒に捨てない・いれない（いっしょにすてない、いれない）',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-43',
-    title: '毎日の聞き取り Vol.2 — 第43課: やすい・にくい・すぎる・がる',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-43-1',
         section: 'choukai',
         audioTrack: 'Track 43.mp3',
@@ -688,18 +518,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['○ 正しい', '× 違う'],
         correctIndex: 1,
         explanation: 'Q2 b答え：×',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-44',
-    title: '毎日の聞き取り Vol.2 — 第44課: ところ（電話をしようと思っていたところです）',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-44-1',
         section: 'choukai',
         audioTrack: 'Track 44.mp3',
@@ -728,18 +548,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['○ 正しい', '× 違う'],
         correctIndex: 0,
         explanation: 'Q2 c答え：○',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-45',
-    title: '毎日の聞き取り Vol.2 — 第45課: 様態のそうだ（おいしそうだね）',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-45-1',
         section: 'choukai',
         audioTrack: 'Track 45.mp3',
@@ -768,18 +578,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['大きくて食べられそうもないから', '値段が高いから', '嫌いだから', '売り切れだったから'],
         correctIndex: 0,
         explanation: 'ハンバーグ→大きくて食べられそうもないから',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-46',
-    title: '毎日の聞き取り Vol.2 — 第46課: ようです・ように比喩（調子がいいようです）',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-46-1',
         section: 'choukai',
         audioTrack: 'Track 46.mp3',
@@ -808,18 +608,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['調子がいい', '疲れている', '怪我をした', '元気がない'],
         correctIndex: 0,
         explanation: '②：ちょうしがいい（調子がいいようです）',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-47',
-    title: '毎日の聞き取り Vol.2 — 第47課: 伝聞のそうだ・らしい（スポーツセンターができるそうです）',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-47-1',
         section: 'choukai',
         audioTrack: 'Track 47.mp3',
@@ -848,18 +638,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['来年の5月ごろ', '今年の3月', '再来年', '未定'],
         correctIndex: 0,
         explanation: '④：来年の5月ごろです',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-48',
-    title: '毎日の聞き取り Vol.2 — 第48課: 敬語（まもなく到着いたします）',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-48-1',
         section: 'choukai',
         audioTrack: 'Track 48.mp3',
@@ -898,18 +678,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['6時〜9時（2階）', '5時〜8時', '7時〜10時', '12時〜2時'],
         correctIndex: 0,
         explanation: 'ホテル夕食：6時〜9時、2階',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-49',
-    title: '毎日の聞き取り Vol.2 — 第49課: 総合問題①（○はどんな意味？）',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-49-1',
         section: 'choukai',
         audioTrack: 'Track 49.mp3',
@@ -948,18 +718,8 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
         options: ['○ 正しい', '× 違う'],
         correctIndex: 0,
         explanation: '答え d○：○がきれいに書けた時は心が落ち着いているということ',
-      },
-    ],
-  },
-  {
-    id: 'mainichi-vol2-50',
-    title: '毎日の聞き取り Vol.2 — 第50課: 総合問題②（ヤンさんの研究）',
-    level: 'N4',
-    category: 'mock_daily',
-    thumbnailUrl: '/mainichi-vol2-cover.jpg',
-    durationMinutes: 15,
-    questions: [
-      {
+      },,
+{
         id: 'mv2-50-1',
         section: 'choukai',
         audioTrack: 'Track 50.mp3',

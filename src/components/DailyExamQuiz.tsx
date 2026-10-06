@@ -948,10 +948,11 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
       window.speechSynthesis.speak(utterance);
     };
 
-    // If direct audioUrl is provided, play audio track
-    if (currentQuestion?.audioUrl) {
+    // If direct audioUrl or audioTrack is provided, play audio file
+    const audioSrc = currentQuestion?.audioUrl || (currentQuestion?.audioTrack ? `/audio/${currentQuestion.audioTrack}` : null);
+    if (audioSrc) {
       try {
-        const audio = new Audio(currentQuestion.audioUrl);
+        const audio = new Audio(audioSrc);
         audio.playbackRate = playbackRate;
         audio.onended = () => {
           setIsPlayingAudio(false);

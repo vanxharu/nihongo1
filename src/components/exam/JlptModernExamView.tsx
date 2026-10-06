@@ -682,7 +682,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
         </div>
 
         {/* Choukai Audio Player (if listening section) */}
-        {currentQuestion.section === 'choukai' && (currentQuestion.audioScript || currentQuestion.audioUrl) && (
+        {currentQuestion.section === 'choukai' && (currentQuestion.audioScript || currentQuestion.audioUrl || currentQuestion.audioTrack) && (
           <div className="bg-[#1F2639] text-[#FDF1E2] rounded-2xl p-4 space-y-3 shadow-md">
             <div className="flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-2.5">
