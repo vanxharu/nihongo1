@@ -2080,7 +2080,10 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
         return;
       }
     }
-    speakJapanese(text, undefined, undefined, { isSentence });
+    // Từ riêng: đọc theo cách đọc (hiragana) để không đọc sai kanji; câu ví dụ đọc nguyên câu.
+    const isWord = !!currentItem && !isSentence && text === (currentItem.kanji || currentItem.hiragana);
+    const spoken = isWord && currentItem?.hiragana ? currentItem.hiragana : text;
+    speakJapanese(spoken, undefined, undefined, { isSentence });
 
     // Animate wave if shadowing
     if (selectedMode === 'shadowing') {

@@ -17,6 +17,9 @@ export function cleanJapaneseTextForSpeech(text: string): string {
   cleaned = cleaned.replace(/[①-⑳]/g, ' ');
   cleaned = cleaned.replace(/[（(](?:名|名詞|ナ形|イ形|な形|い形|動|動詞|副|副詞|自|他|自動詞|他動詞)[）)]/g, ' ');
 
+  // 2b. Headword decorations: ひっこし〈する〉 / (かぎを) かける / 入り口 (入口) -> read only the headword
+  cleaned = cleaned.replace(/〈[^〉]*〉/g, '').replace(/^\s*[（(][^）)]*[）)]\s*(?=\S)/, '');
+
   // 3. Remove reading in brackets if paired with kanji: 食べる(たべる) -> 食べる
   cleaned = cleaned.replace(/([\u4e00-\u9faf]+)[（(][\u3040-\u309f\u30a0-\u30ff]+[）)]/g, '$1');
   cleaned = cleaned.replace(/([\u4e00-\u9faf]+)\[[\u3040-\u309f\u30a0-\u30ff]+\]/g, '$1');
