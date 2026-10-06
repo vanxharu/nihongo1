@@ -224,6 +224,9 @@ export default function ShadowingHub() {
             onNext={selected < cues.length - 1 ? () => jumpCue(selected + 1) : undefined}
             hasPrev={selected > 0}
             hasNext={selected < cues.length - 1}
+            extra={<div className="flex flex-wrap items-center gap-1.5"><span className="w-16 shrink-0 text-xs text-slate-400">Hiển thị</span>
+              <button aria-pressed={furigana} onClick={() => setFurigana(v => !v)} className={`shadowing-pill${furigana ? ' shadowing-pill-active' : ''}`}>Furigana</button>
+              <button aria-pressed={translation} onClick={() => setTranslation(v => !v)} className={`shadowing-pill${translation ? ' shadowing-pill-active' : ''}`}>Dịch</button></div>}
           /></div>
           <div className="flex items-center gap-2">
             <button onClick={() => setParams({})} aria-label="Về thư viện" className={`${compactButton} w-9 shrink-0 px-0`}><ChevronLeft size={18} /></button>
@@ -237,7 +240,6 @@ export default function ShadowingHub() {
           {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-3 sm:p-6">
             <div className="mb-2 flex items-center justify-between gap-3 text-xs text-slate-400">
               <span>{displayed ? `Câu ${displayedIndex + 1} / ${cues.length}` : 'Sẵn sàng nghe'}</span>
-              <div className="flex gap-3"><label><input type="checkbox" checked={furigana} onChange={e => setFurigana(e.target.checked)} /> Furigana</label><label><input type="checkbox" checked={translation} onChange={e => setTranslation(e.target.checked)} /> Dịch</label></div>
             </div>
             <div role="button" tabIndex={displayed ? 0 : -1} aria-label="Xem nghĩa và phân tích câu đang phát" aria-disabled={!displayed} onClick={() => displayed && setInsightCue({ ...displayed })} onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && displayed) { e.preventDefault(); setInsightCue({ ...displayed }); } }} className="cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
               <KaraokeCaption text={displayed?.text || ''} time={currentTime} start={displayed?.start ?? null} end={displayed?.end ?? null} timings={displayed?.timings} analysis={displayedAnalysis} furigana={furigana} />

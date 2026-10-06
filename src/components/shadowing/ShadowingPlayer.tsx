@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { RotateCcw, ExternalLink, SkipBack, SkipForward } from 'lucide-react';
+import { RotateCcw, ExternalLink, SkipBack, SkipForward, Settings2 } from 'lucide-react';
 import { validateShadowingRange } from '../../utils/shadowing';
 
 let apiPromise: Promise<void> | null = null;
@@ -34,10 +34,11 @@ interface Props {
   onNext?: () => void;
   hasPrev?: boolean;
   hasNext?: boolean;
+  extra?: React.ReactNode;
 }
 export interface ShadowingPlayerHandle { seek: (time: number) => void; pause: () => void; playSentence: (start: number | null, end: number | null, autoPause: boolean) => boolean }
 
-const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function ShadowingPlayer({ videoId, start, end, onTime, compact, onPrev, onNext, hasPrev, hasNext }, ref) {
+const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function ShadowingPlayer({ videoId, start, end, onTime, compact, onPrev, onNext, hasPrev, hasNext, extra }, ref) {
   const host = useRef<HTMLDivElement>(null);
   const player = useRef<any>(null);
   const exercise = useRef<{ start: number; end: number; remaining: number; armed: boolean } | null>(null);
@@ -48,6 +49,7 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
   const [message, setMessage] = useState('');
   const [speed, setSpeed] = useState(1);
   const [reload, setReload] = useState(0);
+  const [showSettings, setShowSettings] = useState(false);
 
   function stop() {
     exercise.current = null;
@@ -131,12 +133,16 @@ const ShadowingPlayer = forwardRef<ShadowingPlayerHandle, Props>(function Shadow
         <div className="flex items-center gap-1.5">
           {!compact && onPrev && <button disabled={!hasPrev} onClick={onPrev} aria-label="Câu trước" className="shadowing-ctrl-btn"><SkipBack size={16} /></button>}
           {!compact && onNext && <button disabled={!hasNext} onClick={onNext} aria-label="Câu sau" className="shadowing-ctrl-btn"><SkipForward size={16} /></button>}
-          <div className="ml-auto flex items-center gap-1">
-            {speedOptions.map(n => <button key={n} onClick={() => setSpeed(n)} className={`shadowing-pill${speed === n ? ' shadowing-pill-active' : ''}`}>{n}×</button>)}
-          </div>
+          <button aria-label="Cài đặt" aria-expanded={showSettings} onClick={() => setShowSettings(v => !v)} className={`shadowing-ctrl-btn ml-auto${showSettings ? ' shadowing-pill-active' : ''}`}><Settings2 size={16} /></button>
           {!ready && <button aria-label="Tải lại video" onClick={() => setReload(n => n + 1)} className="shadowing-ctrl-btn"><RotateCcw size={15} /></button>}
           <a href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noreferrer" className="shadowing-ctrl-btn" aria-label="Mở YouTube"><ExternalLink size={15} /></a>
         </div>
+        {showSettings && (
+          <div className="space-y-2 rounded-xl border border-slate-700/60 p-2.5">
+            <div className="flex flex-wrap items-center gap-1.5"><span className="w-16 shrink-0 text-xs text-slate-400">Tốc độ</span>{speedOptions.map(n => <button key={n} onClick={() => setSpeed(n)} className={`shadowing-pill${speed === n ? ' shadowing-pill-active' : ''}`}>{n}×</button>)}</div>
+            {extra}
+          </div>
+        )}
         {message && <p role="status" className="text-xs text-amber-200">{message}</p>}
       </div>
     </section>
