@@ -263,7 +263,7 @@ export default function ShadowingHub() {
               const isActive = active === i;
               return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => !editing && isActive ? setInsightCue({ ...cue }) : jumpCue(i)} className={`w-full rounded-xl border p-3 text-left ${isActive ? 'border-blue-400 bg-blue-500/15' : selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950'}`}>
                 <span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>
-                {mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={isActive ? currentTime : cue.start !== null && currentTime >= cue.start ? (cue.end ?? 0) : 0} start={cue.start} end={cue.end} timings={cue.timings} analysis={preparedAnalysis(cue)} furigana={furigana} variant="transcript" />}
+                {mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={isActive ? currentTime : 0} start={cue.start} end={cue.end} timings={cue.timings} analysis={preparedAnalysis(cue)} furigana={furigana} variant="transcript" />}
                 {translation && (mode !== 'dictation' || revealed) && cue.translation && <p className="mt-2 text-xs italic text-slate-400">{cue.translation}</p>}
               </button>;
             })}</div>
