@@ -796,9 +796,13 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   };
 
   // Send message
+  // One in-flight chat request at a time; it is aborted when the chat unmounts.
+  const chatAbortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => chatAbortRef.current?.abort(), []);
+
   const handleSendMessage = async (textToSend?: string) => {
     const text = textToSend || inputText;
-    if (!text.trim() || isLoading) return;
+    if (!text.trim() || isLoading || chatAbortRef.current) return; // ref check: state can lag behind a fast double tap
 
     const userMsg: ChatMessage = {
       id: Date.now(),
@@ -811,10 +815,13 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
     setMessages(newHistory);
     setInputText('');
     setIsLoading(true);
+    const controller = new AbortController();
+    chatAbortRef.current = controller;
 
     try {
       const res = await fetch('/api/japanese-chat', {
         method: 'POST',
+        signal: controller.signal,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: newHistory.map(m => ({ sender: m.sender, text: m.text || '' })),
@@ -858,6 +865,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
         handlePlayAudio(data.japaneseResponse, aiMsgId, selectedPersona.voice);
       }
     } catch (err) {
+      if (controller.signal.aborted) return; // chat closed mid-request: nothing to show (finally still cleans up)
       const fallbackText = 'はい、よく分かりました！とても興味深いお話ですね。もっと詳しく聞かせていただけますか？';
       const fallbackAiMsg: ChatMessage = {
         id: Date.now() + 1,
@@ -871,8 +879,11 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
       };
       setMessages(prev => [...prev, fallbackAiMsg]);
     } finally {
-      setIsLoading(false);
-      setTimeout(() => inputRef.current?.focus(), 100);
+      chatAbortRef.current = null;
+      if (!controller.signal.aborted) {
+        setIsLoading(false);
+        setTimeout(() => inputRef.current?.focus(), 100);
+      }
     }
   };
 

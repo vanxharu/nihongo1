@@ -111,9 +111,16 @@ export default function DictionaryLookup() {
     localStorage.removeItem('todaii_dict_search_history');
   };
 
+  // Latest search wins: a slow earlier response must never overwrite a newer one, and leaving the page cancels it.
+  const searchAbortRef = useRef<AbortController | null>(null);
+  useEffect(() => () => searchAbortRef.current?.abort(), []);
+
   const handleSearch = async (targetQuery?: string) => {
     const term = (targetQuery || query).trim();
     if (!term) return;
+    searchAbortRef.current?.abort();
+    const controller = new AbortController();
+    searchAbortRef.current = controller;
 
     setIsLoading(true);
     setErrorMsg(null);
@@ -124,6 +131,7 @@ export default function DictionaryLookup() {
       saveToHistory(term);
       const res = await fetch('/api/reading/lookup-word', {
         method: 'POST',
+        signal: controller.signal,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ word: term })
       });
@@ -139,6 +147,7 @@ export default function DictionaryLookup() {
         setErrorMsg('Không tìm thấy từ vựng này. Vui lòng thử từ khóa khác.');
       }
     } catch (err: any) {
+      if (controller.signal.aborted) return; // superseded or page left
       console.error('Dictionary search error:', err);
       // Fallback local response for demo
       setResult({
@@ -157,7 +166,7 @@ export default function DictionaryLookup() {
         ]
       });
     } finally {
-      setIsLoading(false);
+      if (searchAbortRef.current === controller) { searchAbortRef.current = null; setIsLoading(false); }
     }
   };
 
