@@ -7,7 +7,15 @@ interface Props {
   size?: number;
 }
 
-const images: Record<MascotState, string> = {
+const webp: Record<MascotState, string> = {
+  idle:      '/mascot-idle.webp',
+  correct:   '/mascot-celebrate.webp',
+  wrong:     '/mascot-writing.webp',
+  surrender: '/mascot-wink.webp',
+  thinking:  '/mascot-thinking.webp',
+};
+
+const png: Record<MascotState, string> = {
   idle:      '/mascot-idle.png',
   correct:   '/mascot-celebrate.png',
   wrong:     '/mascot-writing.png',
@@ -17,13 +25,16 @@ const images: Record<MascotState, string> = {
 
 export default function ShibaMascot({ state, size = 120 }: Props) {
   return (
-    <img
-      src={images[state]}
-      alt={`mascot-${state}`}
-      width={size}
-      height={size}
-      style={{ objectFit: 'contain', imageRendering: 'auto' }}
-      draggable={false}
-    />
+    <picture>
+      <source srcSet={webp[state]} type="image/webp" />
+      <img
+        src={png[state]}
+        alt={`mascot-${state}`}
+        width={size}
+        height={size}
+        style={{ objectFit: 'contain' }}
+        draggable={false}
+      />
+    </picture>
   );
 }

@@ -21,7 +21,7 @@ import MobileBottomNav from './components/MobileBottomNav';
 import { checkAndTriggerReminder, getDefaultReminderSettings } from './utils/notifications';
 import { calculateEarnedXp, getPlayerLevelInfo } from './utils/xpSystem';
 import { lazyWithRetry, AppErrorBoundary } from './utils/lazyWithRetry';
-import VocabularyPractice from './components/VocabularyPractice';
+const VocabularyPractice = lazyWithRetry(() => import('./components/VocabularyPractice'));
 import NotFoundPage from './components/NotFoundPage';
 import { BRAND_NAME } from './constants/brand';
 import { getTabFromPathname, TAB_TO_ROUTE_MAP, getRoutePageTitle } from './routes/routesConfig';

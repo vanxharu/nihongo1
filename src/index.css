@@ -512,3 +512,74 @@ ruby > rt {
     opacity: 0;
   }
 }
+
+/* ── Performance: GPU layers for animated elements ── */
+.reaction-overlay,
+[class*="mascot"],
+[class*="confetti"] {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}
+
+/* ── Card flip animation ── */
+.card-flip-wrapper {
+  perspective: 1000px;
+  contain: layout style;
+}
+
+.card-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.card-flip-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-flip-front,
+.card-flip-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-flip-back {
+  transform: rotateY(180deg);
+}
+
+/* ── Smooth page transitions ── */
+.page-enter {
+  animation: pageSlideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes pageSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Faster button press feedback ── */
+button:active:not(:disabled) {
+  transform: scale(0.96);
+  transition: transform 0.08s ease;
+}
+
+/* ── Smooth image loading ── */
+img {
+  transition: opacity 0.2s ease;
+}
+img[loading="lazy"] {
+  opacity: 0;
+}
+img[loading="lazy"].loaded {
+  opacity: 1;
+}
+
+/* ── Reduce layout thrash on list renders ── */
+.lesson-grid {
+  contain: layout style;
+}
