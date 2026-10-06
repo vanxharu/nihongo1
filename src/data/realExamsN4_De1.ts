@@ -997,7 +997,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "女の人に電話をする",
             "女の人にメールをする"
         ],
-        "correctIndex": 0,
+        "correctIndex": 1,
         "section": "choukai",
         "explanation": "Việc phải làm trước tiên là gửi thông báo/liên lạc cho mọi người (みんなに連絡する). Đáp án 2.",
         "audioScript": "女：会議の時間が変更になったの。まずみんなに連絡してくれる？\\n男：わかりました、すぐメールで連絡します。"
@@ -1014,7 +1014,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "3番",
             "4番"
         ],
-        "correctIndex": 3,
+        "correctIndex": 0,
         "section": "choukai",
         "explanation": "Ghế kê dọc theo tường, 2 bàn tròn đặt ở giữa phòng (hình 1). Đáp án 1.",
         "audioScript": "男：椅子は壁際に並べて、真ん中に丸いテーブルを2つ置こうか。\\n女：ええ、それが動きやすくていいわね。"
@@ -1079,7 +1079,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "青いペンで書いたから",
             "時間に遅れたから"
         ],
-        "correctIndex": 3,
+        "correctIndex": 2,
         "section": "choukai",
         "explanation": "Quy định phải viết bằng bút đen, nhưng anh ta lỡ viết bằng bút mực xanh (青いペンで書いたから). Đáp án 3.",
         "audioScript": "女：どうして書き直しているの？\\n男：黒いペンで書かなきゃいけないのに、うっかり青いペンで書いちゃったんだ。"
@@ -1095,7 +1095,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "引っ越しする",
             "メールする"
         ],
-        "correctIndex": 2,
+        "correctIndex": 0,
         "section": "choukai",
         "explanation": "Ngày mai cô ấy ra sân bay đón bạn từ Pháp về (空港に行く). Đáp án 1.",
         "audioScript": "女：明日、フランスから友だちが来るの。だから午前中は空港まで迎えに行ってくるね。"
@@ -1111,7 +1111,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "山田さん",
             "中村さん"
         ],
-        "correctIndex": 0,
+        "correctIndex": 2,
         "section": "choukai",
         "explanation": "Yamada xung phong làm người phụ trách tổ chức tiệc (山田さん). Đáp án 3.",
         "audioScript": "女：今度の歓迎会の幹事、だれにお願いする？\\n男：山田さんが自分からやるって言ってくれたよ。\\n女：そう、じゃあ山田さんにお願いしましょう。"
@@ -1127,7 +1127,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "中で写真を撮る",
             "靴を持って歩く"
         ],
-        "correctIndex": 2,
+        "correctIndex": 0,
         "section": "choukai",
         "explanation": "Tuyệt đối không được sờ tay vào các đồ thờ cúng/tượng ở chùa (お寺のものにさわる). Đáp án 1.",
         "audioScript": "案内：お寺の中では静かにしてください。展示されている仏像や貴重なものには絶対に触らないでください。"
@@ -1143,7 +1143,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "旅行に行く",
             "プレゼントを買う"
         ],
-        "correctIndex": 0,
+        "correctIndex": 3,
         "section": "choukai",
         "explanation": "Cả hai hẹn nhau cuối tuần đi mua quà sinh nhật cho mẹ (プレゼントを買う). Đáp án 4.",
         "audioScript": "男：今週末、母の誕生日プレゼントを買いに行かない？\\n女：いいね。デパートに行ってみましょう。"
@@ -1159,7 +1159,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "会議に出るから",
             "一人で食べたいから"
         ],
-        "correctIndex": 3,
+        "correctIndex": 1,
         "section": "choukai",
         "explanation": "Vì công việc chưa xong nên phải vừa ăn vừa tranh thủ làm (仕事をするから). Đáp án 2.",
         "audioScript": "女：あれ、みんなと食べに行かなかったの？\\n男：うん、急ぎの仕事が残ってて、デスクで食べながら片付けようと思ってね。"
@@ -1175,7 +1175,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "手伝いましょうか",
             "手伝ってください"
         ],
-        "correctIndex": 2,
+        "correctIndex": 1,
         "section": "choukai",
         "explanation": "Lời đề nghị giúp đỡ lịch sự: 「手伝いましょうか」 (Để tôi giúp một tay nhé). Đáp án 2.",
         "audioScript": "1. 手伝ってもいいですか\\n2. 手伝いましょうか\\n3. 手伝ってください"
@@ -1254,7 +1254,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "うん、行こう！",
             "いいえ、行きましたよ。"
         ],
-        "correctIndex": 0,
+        "correctIndex": 1,
         "section": "choukai",
         "explanation": "Đáp lại lời rủ rê 「〜ない？」 thân mật: 「うん、行こう！」 (Ừ, đi chứ!). Đáp án 2.",
         "audioScript": "男：来週の日曜日、映画でも見に行かない？\\n1. ええ、行きませんでした。\\n2. うん、行こう！\\n3. いいえ、行きましたよ。"
@@ -1269,7 +1269,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "いいえ、使いました。",
             "はい、使いたいです。"
         ],
-        "correctIndex": 2,
+        "correctIndex": 0,
         "section": "choukai",
         "explanation": "Cho phép: 「ええ、どうぞ使ってください」 (Vâng, xin mời cứ dùng). Đáp án 1.",
         "audioScript": "女：この傘、使ってもいいですか。\\n1. ええ、どうぞ使ってください。\\n2. いいえ、使いました。\\n3. はい、使いたいです。"
@@ -1284,7 +1284,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "どういたしまして。",
             "いいえ、まだまだです。"
         ],
-        "correctIndex": 0,
+        "correctIndex": 2,
         "section": "choukai",
         "explanation": "Cách khiêm tốn khi được khen: 「いいえ、まだまだです」 (Dạ chưa, tôi còn phải học nhiều). Đáp án 3.",
         "audioScript": "男：日本語がお上手ですね。\\n1. はい、上手です。\\n2. どういたしまして。\\n3. いいえ、まだまだです。"
@@ -1299,7 +1299,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "どういたしまして。",
             "手伝わないよ。"
         ],
-        "correctIndex": 2,
+        "correctIndex": 0,
         "section": "choukai",
         "explanation": "Đồng ý giúp bạn bè: 「いいよ、何？」 (Được chứ, chuyện gì thế?). Đáp án 1.",
         "audioScript": "女：ちょっと手伝ってくれない？\\n1. いいよ、何？\\n2. どういたしまして。\\n3. 手伝わないよ。"
@@ -1314,7 +1314,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "おかえりなさい。",
             "お疲れ様でした。"
         ],
-        "correctIndex": 0,
+        "correctIndex": 2,
         "section": "choukai",
         "explanation": "Đáp lại 「お先に失礼します」 là 「お疲れ様でした」 (Anh vất vả rồi). Đáp án 3.",
         "audioScript": "男：お先に失礼します。\\n1. いってらっしゃい。\\n2. おかえりなさい。\\n3. お疲れ様でした。"
@@ -1329,7 +1329,7 @@ export const REAL_EXAMS_N4_DE1: DailyExam = {
             "いいえ、もう結構です。",
             "ええ、飲みませんでした。"
         ],
-        "correctIndex": 2,
+        "correctIndex": 1,
         "section": "choukai",
         "explanation": "Từ chối lịch sự khi được mời thêm: 「いいえ、もう結構です」 (Dạ thôi, tôi uống đủ rồi). Đáp án 2.",
         "audioScript": "女：コーヒー、もう一杯いかがですか。\\n1. はい、いかがです。\\n2. いいえ、もう結構です。\\n3. ええ、飲みませんでした。"
