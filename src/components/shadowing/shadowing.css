@@ -27,7 +27,7 @@
 .shadowing-transcript { max-height:640px;scrollbar-width:thin; }
 .shadowing-transcript .karaoke-line { font-size:.9rem;text-align:left;line-height:2.4; }
 .shadowing-transcript ruby { display:inline-block;border:1px solid var(--ui-line);border-radius:3px;padding:0 4px;margin:2px; }
-@media(max-width:1023px) { .shadowing-transcript { max-height:360px; } }
+@media(max-width:1023px) { .shadowing-transcript { max-height:none; } }
 .karaoke-meta{justify-content:flex-end}.karaoke-stage .karaoke-line .karaoke-token{display:inline-block;transform-origin:center 75%;transition:transform .18s cubic-bezier(.2,.8,.2,1);margin:0 .025em;vertical-align:baseline}.karaoke-stage .karaoke-line .karaoke-token-active{transform:translateY(-.13em) scale(1.1);filter:none}.shadowing-transcript .karaoke-line{line-height:2.8;letter-spacing:.025em}.shadowing-transcript ruby{border:0;border-radius:0;padding:0;margin:0 .02em;display:ruby}.shadowing-transcript .karaoke-char{background:none;color:var(--ui-ink);text-shadow:none}.shadowing-transcript .karaoke-token-active .karaoke-char{color:var(--ui-accent)}.shadowing-transcript rt{font-size:.52em;line-height:1;color:var(--ui-muted)}.karaoke-progress,.karaoke-mode{display:none}@media(prefers-reduced-motion:reduce){.karaoke-stage .karaoke-line .karaoke-token{transition:none;transform:none!important;filter:none!important}}
 .shadowing-player{}
 .shadowing-ctrl-btn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:8px;border:1px solid color-mix(in srgb,var(--ui-line) 30%,transparent);background:color-mix(in srgb,var(--ui-soft) 8%,transparent);color:var(--ui-muted);flex-shrink:0;transition:background .15s,color .15s}
@@ -47,3 +47,4 @@
 @media(max-width:639px){.karaoke-stage .karaoke-line{font-size:1.3rem;line-height:2.1;min-height:0;margin:4px auto}.karaoke-translation{margin-top:8px;padding-top:8px}}
 #app-root-container .karaoke-stage [role=button]:focus-visible{outline:none}
 @media(max-width:639px){#app-main-view .karaoke-stage{box-shadow:none;border-radius:16px;background:color-mix(in srgb,var(--ui-soft) 6%,var(--ui-surface))}.karaoke-stage .karaoke-line{max-width:none}}
+.shadowing-transcript .karaoke-row-active .karaoke-line{font-size:1.3rem;text-align:center;line-height:2.2;margin:4px 0}.shadowing-transcript .karaoke-row-active .karaoke-char{color:transparent;background:linear-gradient(90deg,#fcd581 0%,#ffe6a3 var(--karaoke-fill),var(--ui-ink) var(--karaoke-fill),var(--ui-ink) 100%);-webkit-background-clip:text;background-clip:text}.shadowing-transcript .karaoke-row-active rt{font-size:.5em}.shadowing-transcript .karaoke-row-active .karaoke-translation{margin-top:8px;padding-top:8px;font-size:.9rem}

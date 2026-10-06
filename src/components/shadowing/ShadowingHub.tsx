@@ -76,7 +76,8 @@ export default function ShadowingHub() {
       selectCue(active);
       const card = document.getElementById(`shadowing-cue-${active}`);
       const container = card?.parentElement;
-      if (card && container) container.scrollTo({ top: card.offsetTop - container.offsetTop, behavior: 'smooth' });
+      if (card && window.innerWidth < 1024) card.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      else if (card && container) container.scrollTo({ top: card.offsetTop - container.offsetTop, behavior: 'smooth' });
     }
   }, [active, mode, editing]);
 
@@ -235,17 +236,6 @@ export default function ShadowingHub() {
           /></div>
           {sourceTitle && <h2 className="line-clamp-2 text-base font-bold leading-snug text-slate-100">{sourceTitle}</h2>}
 
-          {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-3 sm:p-6">
-            <div className="mb-2 flex items-center justify-between gap-3 text-xs text-slate-400">
-              <span>{displayed ? `Câu ${displayedIndex + 1} / ${cues.length}` : 'Sẵn sàng nghe'}</span>
-            </div>
-            <div role="button" tabIndex={displayed ? 0 : -1} aria-label="Xem nghĩa và phân tích câu đang phát" aria-disabled={!displayed} onClick={() => displayed && setInsightCue({ ...displayed })} onKeyDown={e => { if ((e.key === 'Enter' || e.key === ' ') && displayed) { e.preventDefault(); setInsightCue({ ...displayed }); } }} className="cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
-              <KaraokeCaption text={displayed?.text || ''} time={currentTime} start={displayed?.start ?? null} end={displayed?.end ?? null} timings={displayed?.timings} analysis={displayedAnalysis} furigana={furigana} />
-            </div>
-            {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
-            {displayed && translation && !displayedAnalysis?.translation && <button className="mt-2 w-full text-center text-xs text-slate-400 underline" onClick={() => setEditing(true)}>Chuẩn bị bản dịch trong phần Soạn phụ đề</button>}
-            {mode === 'dictation' && revealed && <button className="mt-3 text-sm underline" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
-          </section>}
 
           <div className="space-y-4 max-lg:order-last">
           <button className={compactButton} aria-expanded={editing} onClick={() => { playerRef.current?.pause(); setEditing(value => !value); }}>{editing ? 'Đóng soạn phụ đề' : 'Soạn phụ đề video'}</button>
@@ -257,13 +247,24 @@ export default function ShadowingHub() {
           {insightCue && (mode === 'shadowing' || revealed) && <SentenceInsights key={videoId + insightCue.text} videoId={videoId || ''} cue={insightCue} cached={cache.current.get(insightCue.text)} onClose={() => setInsightCue(null)} onResult={(text, data) => { cache.current.set(text, data); refreshAnalysis(n => n + 1); }} />}
           {mode === 'dictation' && <DictationPanel key={`${videoId}:${selected}:${sentence}`} sentence={sentence} autoPause={autoPause} onAutoPause={value => { playerRef.current?.pause(); setAutoPause(value); }} onPlay={() => playerRef.current?.playSentence(parseShadowingTime(start), parseShadowingTime(end), autoPause) || false} onReveal={setRevealed} onPrevious={() => jumpCue(selected - 1)} onNext={() => jumpCue(selected + 1)} hasPrevious={selected > 0} hasNext={selected < cues.length - 1} />}
           {(mode === 'shadowing' || revealed) && <section className="rounded-xl bg-[#101010] p-3">
-            <h2 className="mb-3 text-sm font-bold">BẢN CHÉP · {cues.length} câu</h2>
-            <div className="shadowing-transcript space-y-2 overflow-y-auto">{cues.map((cue, i) => {
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <h2 className="text-sm font-bold">BẢN CHÉP{displayed ? ` · Câu ${displayedIndex + 1} / ${cues.length}` : ` · ${cues.length} câu`}</h2>
+              {mode === 'dictation' && revealed && <button className="text-xs underline" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
+            </div>
+            <div className="shadowing-transcript space-y-1.5 overflow-y-auto">{cues.map((cue, i) => {
               const isActive = active === i;
-              return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => !editing && isActive ? setInsightCue({ ...cue }) : jumpCue(i)} className={`w-full rounded-xl border p-3 text-left ${isActive ? 'border-blue-400 bg-blue-500/15' : selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950'}`}>
-                <span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>
-                {mode === 'dictation' && !revealed ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={isActive ? currentTime : 0} start={cue.start} end={cue.end} timings={cue.timings} analysis={preparedAnalysis(cue)} furigana={furigana} variant="transcript" />}
-                {translation && (mode !== 'dictation' || revealed) && cue.translation && <p className="mt-2 text-xs italic text-slate-400">{cue.translation}</p>}
+              const isCurrent = displayedIndex === i;
+              const hidden = mode === 'dictation' && !revealed;
+              const tone = isActive ? 'border-blue-400 bg-blue-500/15' : isCurrent || selected === i ? 'border-violet-400 bg-violet-400/10' : 'border-slate-800 bg-slate-950';
+              return <button id={`shadowing-cue-${i}`} key={cue.id} aria-pressed={selected === i} onClick={() => !editing && isActive ? setInsightCue({ ...cue }) : jumpCue(i)} className={`w-full rounded-xl border text-left ${tone} ${isCurrent ? 'karaoke-row-active p-3' : 'px-3 py-2'}`}>
+                {isCurrent ? <>
+                  <span className="mb-1 block text-xs text-slate-400">#{i + 1} · {cue.start === null ? 'Đặt mốc thủ công' : formatDuration(cue.start)}</span>
+                  {hidden ? <span className="text-sm">Lời thoại đang ẩn · bấm để nghe</span> : <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} timings={cue.timings} analysis={preparedAnalysis(cue)} furigana={furigana} variant="transcript" />}
+                  {translation && !hidden && cue.translation && <p className="karaoke-translation">{cue.translation}</p>}
+                </> : <span className="flex items-baseline gap-2">
+                  <span className="shrink-0 text-xs text-slate-500">#{i + 1}</span>
+                  <span className={`truncate text-sm ${hidden ? 'text-slate-500' : ''}`}>{hidden ? 'Lời thoại đang ẩn' : cue.text}</span>
+                </span>}
               </button>;
             })}</div>
             {!cues.length && <p className="p-3 text-sm text-slate-400">Chưa tải được phụ đề tiếng Nhật cho video này.</p>}
