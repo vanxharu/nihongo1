@@ -510,7 +510,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
 
   const rawAllExams: DailyExam[] = [...JLPT_PAST_EXAMS, ...DAILY_EXAMS, ...aiGeneratedExams];
   // Đề do AI soạn giữ nguyên; đề có sẵn dưới 10 câu thì ẩn khỏi thư viện.
-  const allExams: DailyExam[] = rawAllExams.map(ensureFullExamQuestions).filter(e => e.category === 'ai_generated' || e.questions.length >= 10);
+  const allExams: DailyExam[] = rawAllExams.map(ensureFullExamQuestions).filter(e => e.category === 'ai_generated' || e.category === 'mock_daily' || e.questions.length >= 10);
 
   // Filtering & Tab Navigation state
   const [mainTab, setMainTab] = useState<'ai_builder' | 'pdf_practice' | 'library'>('library');
