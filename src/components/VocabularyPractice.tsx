@@ -2067,7 +2067,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     if (currentItem?.curriculum === 'tango' && currentItem.originalNumber) {
       const timing = TANGO_N4_AUDIO_TIMING[currentItem.originalNumber];
       if (timing) {
-        playTangoSegment(timing.start, timing.end);
+        playTangoSegment(timing.file, timing.start, timing.end);
         if (selectedMode === 'shadowing') {
           setIsPlayingWave(true);
           setTimeout(() => setIsPlayingWave(false), (timing.end - timing.start) * 1000);

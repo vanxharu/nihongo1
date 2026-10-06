@@ -487,12 +487,10 @@ function stopTangoAudio() {
   if (tangoAudio) { tangoAudio.pause(); tangoAudio = null; }
 }
 
-// ponytail: URL is env-overridable so we can host the 102MB file externally
-const TANGO_AUDIO_URL = (import.meta as any).env?.VITE_TANGO_N4_AUDIO_URL || '/audio/tango_n4.mp3';
-
-export function playTangoSegment(start: number, end: number, onEnd?: () => void): void {
+export function playTangoSegment(file: number, start: number, end: number, onEnd?: () => void): void {
   stopTangoAudio();
-  const audio = new Audio(TANGO_AUDIO_URL);
+  const url = `/audio/tango_sec${String(file).padStart(2, '0')}.mp3`;
+  const audio = new Audio(url);
   tangoAudio = audio;
   audio.currentTime = start;
   audio.play().catch(() => {});
