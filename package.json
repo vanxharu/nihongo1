@@ -18,7 +18,8 @@
     "align:shadowing": "tsx scripts/align-shadowing.ts",
     "prepare:shadowing": "tsx scripts/prepare-shadowing.ts",
     "prepare:shadowing:sentences": "tsx scripts/prepare-shadowing-sentences.ts",
-    "import:shadowing": "tsx scripts/import-shadowing.ts"
+    "import:shadowing": "tsx scripts/import-shadowing.ts",
+    "generate:tts": "tsx scripts/generate-tts.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
