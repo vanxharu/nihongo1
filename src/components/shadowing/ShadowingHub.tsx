@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ChevronLeft, Headphones, Link2 } from 'lucide-react';
-import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import { useReducedMotion } from 'motion/react';
 import { SHADOWING_VIDEOS } from '../../data/shadowingVideos';
 import { formatDuration } from '../../utils/youtubeUtils';
 import { parseShadowingVideoId, parseShadowingTime, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
@@ -21,6 +21,9 @@ const button = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-x
 export default function ShadowingHub() {
   const [params, setParams] = useSearchParams();
   const reduceMotion = useReducedMotion();
+  const lyricRef = useRef<HTMLDivElement>(null);
+  const followPausedUntil = useRef(0);
+  const pauseFollow = () => { followPausedUntil.current = Date.now() + 5000; };
   const videoId = parseShadowingVideoId(params.get('v') || '');
   const [urlInput, setUrlInput] = useState(params.get('v') || '');
   const [cues, setCues] = useState<ShadowingCue[]>([]);
@@ -71,6 +74,14 @@ export default function ShadowingHub() {
   const displayedIndex = mode === 'dictation' ? selected : visibleShadowingCue(cues, currentTime);
   const displayed = cues[displayedIndex] || null;
   const displayedAnalysis = displayed ? preparedAnalysis(displayed) : null;
+  useEffect(() => {
+    // Keep the playing line at the top of the lyric list (with one previous line above), unless the user is browsing.
+    if (Date.now() < followPausedUntil.current) return;
+    const box = lyricRef.current, row = document.getElementById(`lyric-row-${displayedIndex}`);
+    if (!box || !row) return;
+    const first = (row.previousElementSibling as HTMLElement | null) ?? row;
+    box.scrollTo({ top: first.offsetTop, behavior: reduceMotion ? 'auto' : 'smooth' });
+  }, [displayedIndex, mode, revealed, cues.length]);
   const wordTimings = displayed && validShadowingTimings(displayed) ? displayed.timings! : [];
   const spokenProgress = wordTimings.length ? 100 * wordTimings.filter(t => currentTime >= t.start).length / wordTimings.length : 0;
   useEffect(() => {
@@ -241,23 +252,15 @@ export default function ShadowingHub() {
               <span>{displayed ? `Câu ${displayedIndex + 1} / ${cues.length}` : 'Sẵn sàng nghe'}</span>
               {mode === 'dictation' && revealed && <button className="underline lg:hidden" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
             </div>
-            <div className="relative">
-              {displayedIndex < 1 && <div className="lyric-side" aria-hidden />}
-              <AnimatePresence initial={false} mode="popLayout">
-                {cues.slice(Math.max(0, displayedIndex - 1), displayedIndex + 4).map((cue, n) => {
-                  const i = Math.max(0, displayedIndex - 1) + n;
-                  const off = i - displayedIndex;
-                  return <motion.div key={cue.id} layout="position" initial={{ opacity: 0, y: reduceMotion ? 0 : 28 }} animate={{ opacity: [0.5, 1, 0.7, 0.5, 0.35][off + 1] ?? 0.35, y: 0 }} exit={{ opacity: 0, y: reduceMotion ? 0 : -28 }} transition={{ duration: reduceMotion ? 0 : 0.32, ease: 'easeOut' }}>
-                    {off === 0 ? <div className="lyric-current">
-                      <div role="button" tabIndex={0} aria-label="Xem nghĩa và phân tích câu đang phát" onClick={() => setInsightCue({ ...cue })} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setInsightCue({ ...cue }); } }} className="cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
-                        <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} timings={cue.timings} analysis={displayedAnalysis} furigana={furigana} />
-                      </div>
-                      {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
-                    </div> : <button className="lyric-side" onClick={() => jumpCue(i)}>{cue.text}</button>}
-                  </motion.div>;
-                })}
-              </AnimatePresence>
-              {Array.from({ length: Math.max(0, displayedIndex + 4 - cues.length) }, (_, n) => <div key={`pad${n}`} className="lyric-side" aria-hidden />)}
+            <div ref={lyricRef} className="lyric-scroll" onTouchStart={pauseFollow} onTouchMove={pauseFollow} onWheel={pauseFollow}>
+              {cues.map((cue, i) => i === displayedIndex
+                ? <div id={`lyric-row-${i}`} key={cue.id} className="lyric-current">
+                    <div role="button" tabIndex={0} aria-label="Xem nghĩa và phân tích câu đang phát" onClick={() => setInsightCue({ ...cue })} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setInsightCue({ ...cue }); } }} className="cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
+                      <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} timings={cue.timings} analysis={displayedAnalysis} furigana={furigana} />
+                    </div>
+                    {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
+                  </div>
+                : <button id={`lyric-row-${i}`} key={cue.id} className="lyric-side" onClick={() => { followPausedUntil.current = 0; jumpCue(i); }}>{cue.text}</button>)}
             </div>
           </section>}
 
