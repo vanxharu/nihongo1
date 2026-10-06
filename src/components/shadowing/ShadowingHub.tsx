@@ -242,20 +242,22 @@ export default function ShadowingHub() {
               {mode === 'dictation' && revealed && <button className="underline lg:hidden" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
             </div>
             <div className="relative">
+              {displayedIndex < 1 && <div className="lyric-side" aria-hidden />}
               <AnimatePresence initial={false} mode="popLayout">
                 {cues.slice(Math.max(0, displayedIndex - 1), displayedIndex + 4).map((cue, n) => {
                   const i = Math.max(0, displayedIndex - 1) + n;
                   const off = i - displayedIndex;
                   return <motion.div key={cue.id} layout="position" initial={{ opacity: 0, y: reduceMotion ? 0 : 28 }} animate={{ opacity: [0.5, 1, 0.7, 0.5, 0.35][off + 1] ?? 0.35, y: 0 }} exit={{ opacity: 0, y: reduceMotion ? 0 : -28 }} transition={{ duration: reduceMotion ? 0 : 0.32, ease: 'easeOut' }}>
-                    {off === 0 ? <>
+                    {off === 0 ? <div className="lyric-current">
                       <div role="button" tabIndex={0} aria-label="Xem nghĩa và phân tích câu đang phát" onClick={() => setInsightCue({ ...cue })} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setInsightCue({ ...cue }); } }} className="cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
                         <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} timings={cue.timings} analysis={displayedAnalysis} furigana={furigana} />
                       </div>
                       {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
-                    </> : <button className="lyric-side" onClick={() => jumpCue(i)}>{cue.text}</button>}
+                    </div> : <button className="lyric-side" onClick={() => jumpCue(i)}>{cue.text}</button>}
                   </motion.div>;
                 })}
               </AnimatePresence>
+              {Array.from({ length: Math.max(0, displayedIndex + 4 - cues.length) }, (_, n) => <div key={`pad${n}`} className="lyric-side" aria-hidden />)}
             </div>
           </section>}
 
