@@ -1,13 +1,11 @@
 // JPStudy PWA Service Worker with Background Notification & Offline Support
-const CACHE_NAME = 'jpstudy-pwa-v9-network-navigation';
+const CACHE_NAME = 'jpstudy-pwa-v10-network-navigation';
 const DATA_CACHE_NAME = 'jpstudy-data-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/icon.svg',
-  '/logo.svg',
-  '/brand/nihon-shiba-2026-corrected.png'
+  '/icon-192.png'
 ];
 
 // In-memory / cached reminder state
@@ -92,8 +90,8 @@ async function scheduleFutureNotifications() {
         
         await self.registration.showNotification(title, {
           body: scheduleBody,
-          icon: '/icon.svg',
-          badge: '/icon.svg',
+          icon: '/icon-192.png',
+          badge: '/icon-192.png',
           tag: `jpstudy-scheduled-${i}`,
           showTrigger: new TimestampTrigger(scheduledTime),
           data: {
@@ -718,8 +716,8 @@ async function triggerVocabNotification(customWord) {
 
     await self.registration.showNotification(title, {
       body,
-      icon: '/icon.svg',
-      badge: '/icon.svg',
+      icon: '/icon-192.png',
+      badge: '/icon-192.png',
       image: imageUrl,
       tag: notificationTag,
       renotify: true,
@@ -858,8 +856,8 @@ self.addEventListener('push', (event) => {
   const title = data.title || '🌸 NihonGo! - Học Tiếng Nhật';
   const options = {
     body: data.body || 'Cùng mở NihonGo! ôn từ vựng và Kanji ngay nào!',
-    icon: data.icon || '/icon.svg',
-    badge: '/icon.svg',
+    icon: data.icon || '/icon-192.png',
+    badge: '/icon-192.png',
     tag: data.tag || 'jlptgo-push-reminder',
     vibrate: [200, 100, 200],
     data: {

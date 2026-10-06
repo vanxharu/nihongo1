@@ -12,6 +12,7 @@ import { KANJI_DICTIONARY } from '../data/kanjiDictionary';
 import { safeFetchJson } from '../utils/safeApi';
 import { KanjiAiMnemonicCard } from './KanjiAiMnemonicCard';
 
+import { useEscape } from '../hooks/useEscape';
 interface RelatedWord {
   id: string;
   kanji: string;
@@ -30,6 +31,7 @@ interface KanjiDetailModalProps {
 }
 
 export default function KanjiDetailModal({ kanjiChar, isOpen, onClose, onSelectWord, allVocabData = [] }: KanjiDetailModalProps) {
+  useEscape(isOpen, onClose);
   const [loading, setLoading] = useState(false);
   const [details, setDetails] = useState<any>(null);
   const [wordData, setWordData] = useState<any>(null);
@@ -151,6 +153,7 @@ export default function KanjiDetailModal({ kanjiChar, isOpen, onClose, onSelectW
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0, y: 15 }}
           transition={{ type: "spring", duration: 0.4 }}
+          role="dialog" aria-modal="true" aria-label="Chi tiết Kanji"
           className="relative bg-white w-full max-w-lg rounded-3xl shadow-xl border border-slate-100 overflow-hidden z-10 flex flex-col min-h-0 max-h-[85vh]"
         >
           {/* Header Accent Bar */}

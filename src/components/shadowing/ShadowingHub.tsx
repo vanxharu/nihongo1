@@ -256,7 +256,7 @@ export default function ShadowingHub() {
               {mode === 'dictation' && revealed && <button className="underline lg:hidden" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
             </div>
             <div className="lyric-frame">
-              <div className="lyric-prev">{cues[displayedIndex - 1] && <button key={cues[displayedIndex - 1].id} className="lyric-prev-btn" onClick={() => { followPausedUntil.current = 0; jumpCue(displayedIndex - 1); }}>{cues[displayedIndex - 1].text}</button>}</div>
+              <div className="lyric-prev">{cues[displayedIndex - 1] && <button key={cues[displayedIndex - 1].id} lang="ja" className="lyric-prev-btn" onClick={() => { followPausedUntil.current = 0; jumpCue(displayedIndex - 1); }}>{cues[displayedIndex - 1].text}</button>}</div>
               <div className="lyric-now-wrap">
                 <span className="lyric-badge" aria-hidden><i /></span>
                 <div className="lyric-now-scroll">
@@ -272,7 +272,7 @@ export default function ShadowingHub() {
               </div>
             </div>
             <div ref={lyricRef} className="lyric-scroll" onTouchStart={pauseFollow} onTouchMove={pauseFollow} onWheel={pauseFollow}>
-              {cues.map((cue, i) => i === displayedIndex ? null : <button id={`lyric-row-${i}`} key={cue.id} className={`lyric-side${i === displayedIndex ? ' is-now' : ''}`} aria-current={i === displayedIndex} onClick={() => { followPausedUntil.current = 0; jumpCue(i); }}>{cue.text}</button>)}
+              {cues.map((cue, i) => i === displayedIndex ? null : <button id={`lyric-row-${i}`} key={cue.id} lang="ja" className={`lyric-side${i === displayedIndex ? ' is-now' : ''}`} aria-current={i === displayedIndex} onClick={() => { followPausedUntil.current = 0; jumpCue(i); }}>{cue.text}</button>)}
             </div>
           </section>}
 

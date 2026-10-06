@@ -146,6 +146,7 @@ export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, 
           </Link>
           <button
             onClick={onClose}
+            aria-label="Đóng menu"
             className="xl:hidden p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/08 transition-colors cursor-pointer"
           >
             <X size={16} />

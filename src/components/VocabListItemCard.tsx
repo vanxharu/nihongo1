@@ -77,7 +77,7 @@ function renderWordWithFuriganaInternal(
 ) {
   if (!kanji) {
     return (
-      <span className="text-xl sm:text-2xl font-bold tracking-wide font-display text-white leading-none select-all whitespace-nowrap">
+      <span lang="ja" className="text-xl sm:text-2xl font-bold tracking-wide font-display text-white leading-none select-all whitespace-nowrap">
         {cleanVocabSymbols(hiragana)}
       </span>
     );
@@ -86,7 +86,7 @@ function renderWordWithFuriganaInternal(
   const hasAnyKanji = kanji.split('').some((char) => /[\u4e00-\u9faf]/.test(char));
   if (!hasAnyKanji) {
     return (
-      <span className="text-xl sm:text-2xl font-bold tracking-wide font-display text-white leading-none select-all whitespace-nowrap">
+      <span lang="ja" className="text-xl sm:text-2xl font-bold tracking-wide font-display text-white leading-none select-all whitespace-nowrap">
         {cleanVocabSymbols(kanji)}
       </span>
     );

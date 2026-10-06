@@ -104,7 +104,7 @@ function SelectiveFuriganaWordComponent({
   }
 
   return (
-    <span className={`selective-furigana-word inline-flex flex-wrap items-baseline justify-center max-w-full font-bold ${textColorClassName} tracking-wide ${className}`}>
+    <span lang="ja" className={`selective-furigana-word inline-flex flex-wrap items-baseline justify-center max-w-full font-bold ${textColorClassName} tracking-wide ${className}`}>
       {renderedSegments}
     </span>
   );
@@ -167,7 +167,7 @@ function JapaneseFuriganaTextComponent({
       .replace(/\[([^\]]+)\]\[[^\]]+\]/g, '$1')
       .replace(/\{([^|]+)\|[^}]+\}/g, '$1');
     return (
-      <span className={`inline-block font-jp font-bold whitespace-pre-line ${forceDark ? 'text-white' : 'text-slate-900 dark:text-white'} ${className}`}>
+      <span lang="ja" className={`inline-block font-jp font-bold whitespace-pre-line ${forceDark ? 'text-white' : 'text-slate-900 dark:text-white'} ${className}`}>
         {plainText}
       </span>
     );
@@ -175,20 +175,20 @@ function JapaneseFuriganaTextComponent({
 
   // Font size configuration
   let mainTextSize = 'text-base sm:text-lg';
-  let furiganaTextSize = 'text-[9px] sm:text-[10px]';
+  let furiganaTextSize = 'text-[11px] sm:text-xs';
   let minHeight = '1.15em';
 
   if (size === 'xs') {
     mainTextSize = 'text-xs';
-    furiganaTextSize = 'text-[7.5px]';
+    furiganaTextSize = 'text-[10px]';
     minHeight = '1.0em';
   } else if (size === 'sm') {
     mainTextSize = 'text-sm';
-    furiganaTextSize = 'text-[8.5px]';
+    furiganaTextSize = 'text-[10.5px]';
     minHeight = '1.1em';
   } else if (size === 'lg') {
     mainTextSize = 'text-lg sm:text-xl';
-    furiganaTextSize = 'text-[10px] sm:text-[11px]';
+    furiganaTextSize = 'text-[11px] sm:text-xs';
     minHeight = '1.2em';
   } else if (size === 'xl') {
     mainTextSize = 'text-xl sm:text-2xl';
@@ -205,7 +205,7 @@ function JapaneseFuriganaTextComponent({
   }
 
   return (
-    <span className={`inline-flex items-end flex-wrap leading-none gap-y-1.5 align-bottom font-jp ${className}`}>
+    <span lang="ja" className={`inline-flex items-end flex-wrap leading-none gap-y-1.5 align-bottom font-jp ${className}`}>
       {parts.map((part, index) => {
         if (!part || !part.text) return null;
         if (part.text === '\n') {

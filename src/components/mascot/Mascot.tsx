@@ -44,7 +44,7 @@ export interface MascotProps {
 
 // Map any state/pose to the corresponding official Nihon Shiba asset
 export function getMascotAssetUrl(_stateOrPose: MascotState | string = 'default'): string {
-  return '/mascot/shiba-journey-atlas.png';
+  return '/mascot/shiba-journey-atlas.webp';
 }
 export function getMascotPoseIndex(pose: string): number {
   const poses: Record<string, number> = { learning:1, study:1, studying:1, typing:1, listening:2, reading:3, thinking:4, curious:4, success:5, celebration:5, celebrating:5, joy:5, happy:6, encourage:6, winking:6, wrong_answer:7, warning:7, empty:7, empty_state:7, achievement:8, trophy:8, flag:9, 'level-up':14, walking:13, adventure:18 };
@@ -174,9 +174,10 @@ export const Mascot: React.FC<MascotProps> = ({
           {!hasError ? (
             <span className={`shiba-sprite-window ${animated ? 'is-animated' : ''} shiba-pose-${getMascotPoseIndex(activeState)}`} style={{ position:'relative', display:'block', width:'100%', height:'100%', overflow:'hidden' }}><img
               src={imgSrc}
+              decoding="async"
               alt={alt}
               className={animated ? 'shiba-sprite-image' : ''}
-              style={imgSrc === '/mascot/shiba-journey-atlas.png' ? { position:'absolute', width:'500%', height:'400%', maxWidth:'none', left:`${-(getMascotPoseIndex(activeState) % 5) * 100}%`, top:`${-Math.floor(getMascotPoseIndex(activeState) / 5) * 100}%`, objectFit:'fill' } : { width:'100%', height:'100%', objectFit:'contain' }}
+              style={imgSrc === '/mascot/shiba-journey-atlas.webp' ? { position:'absolute', width:'500%', height:'400%', maxWidth:'none', left:`${-(getMascotPoseIndex(activeState) % 5) * 100}%`, top:`${-Math.floor(getMascotPoseIndex(activeState) / 5) * 100}%`, objectFit:'fill' } : { width:'100%', height:'100%', objectFit:'contain' }}
               onError={handleImageError}
               referrerPolicy="no-referrer"
             /></span>

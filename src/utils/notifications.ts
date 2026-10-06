@@ -1831,7 +1831,7 @@ export const scheduleNotificationAutoClose = (
 export const sendNotification = (
   title: string,
   body: string,
-  icon = '/icon.svg',
+  icon = '/icon-192.png',
   tag = 'jpstudy-daily-reminder',
   data: any = {},
   requireInteraction = false,
@@ -2001,7 +2001,7 @@ export const sendFloatingVocabNotification = (
     // Generate crystal-clear colored image card with Furigana on top of Kanji (in word & example)
     const imageCard = generateVocabNotificationImage(word, settings);
 
-    sendNotification(title, body, '/icon.svg', tag, { word }, requireInteraction, imageCard, 5000);
+    sendNotification(title, body, '/icon-192.png', tag, { word }, requireInteraction, imageCard, 5000);
   }
 
   if (settings.vocabPlaySound !== false) {
@@ -2038,7 +2038,7 @@ export const checkAndTriggerReminder = (settings: ReminderSettings): ReminderSet
     ];
     const randomMsg = messages[Math.floor(Math.random() * messages.length)];
 
-    const sent = sendNotification(`🌸 ${BRAND_NAME} - Nhắc nhở học tập!`, randomMsg, '/icon.svg', 'jlptgo-daily-reminder');
+    const sent = sendNotification(`🌸 ${BRAND_NAME} - Nhắc nhở học tập!`, randomMsg, '/icon-192.png', 'jlptgo-daily-reminder');
     if (sent) {
       const updated = { ...settings, lastNotifiedDate: todayStr };
       saveReminderSettings(updated);

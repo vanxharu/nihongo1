@@ -43,6 +43,7 @@ import {
 } from '../utils/notifications';
 import { useAuth } from '../contexts/AuthContext';
 
+import { useEscape } from '../hooks/useEscape';
 interface NotificationSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -68,6 +69,7 @@ const SAMPLE_PREVIEW_WORD: VocabNotificationPayload = {
 };
 
 export default function NotificationSettingsModal({ isOpen, onClose }: NotificationSettingsModalProps) {
+  useEscape(isOpen, onClose);
   const { user, updateDbProfile } = useAuth();
   const [settings, setSettings] = useState<ReminderSettings>(getDefaultReminderSettings());
   const [permission, setPermission] = useState<NotificationPermission | 'unsupported'>('default');
@@ -244,6 +246,7 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
   return (
     <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 animate-fade-in" onClick={onClose}>
       <div 
+        role="dialog" aria-modal="true" aria-label="Cài đặt nhắc nhở học tập"
         className="bg-white dark:bg-slate-900 rounded-3xl max-w-xl w-full p-5 sm:p-6 shadow-2xl border border-slate-100 dark:border-slate-800 relative space-y-4 max-h-[92vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >

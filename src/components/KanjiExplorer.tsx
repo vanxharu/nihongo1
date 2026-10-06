@@ -452,7 +452,7 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target instanceof Element ? e.target : null;
-      if (e.defaultPrevented || e.isComposing || target?.closest('[role="dialog"]') ||
+      if (e.defaultPrevented || e.isComposing || document.querySelector('[role="dialog"][aria-modal="true"]') /* any open modal swallows the shortcuts */ ||
         (target?.closest('button,a[href],select,[role="button"]') &&
           !target.matches('[aria-label="Lật thẻ Hán tự (Space)"]'))) return;
       const { currentKanji: kItem } = kanjiStateRef.current;

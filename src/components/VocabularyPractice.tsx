@@ -2467,7 +2467,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target instanceof Element ? e.target : null;
       // Native controls and dialogs own their keys; card shortcuts still work on the card/canvas.
-      if (e.defaultPrevented || e.isComposing || target?.closest('[role="dialog"]') ||
+      if (e.defaultPrevented || e.isComposing || document.querySelector('[role="dialog"][aria-modal="true"]') /* any open modal swallows the shortcuts */ ||
         (target?.closest('button,a[href],select,[role="button"]') && !target.matches('.responsive-flashcard'))) return;
       const { 
         selectedMode: mode, 
@@ -4487,6 +4487,7 @@ if (loading) {
       <AnimatePresence>
         {isQuickLessonSelectorOpen && (
           <div 
+            role="dialog" aria-modal="true" aria-label="Chọn bài học nhanh"
             className="fixed inset-0 z-[120] bg-black/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4"
             onClick={() => setIsQuickLessonSelectorOpen(false)}
           >

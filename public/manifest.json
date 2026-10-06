@@ -4,18 +4,9 @@
   "name": "NihonGo!",
   "description": "Nền tảng học tiếng Nhật JLPT, Hán tự Kanji, ôn tập thông minh và thi thử trên Windows PC & Di động",
   "icons": [
-    {
-      "src": "/brand/nihon-shiba-2026-corrected.png",
-      "type": "image/png",
-      "sizes": "1254x1254",
-      "purpose": "any"
-    },
-    {
-      "src": "/icon.svg",
-      "type": "image/svg+xml",
-      "sizes": "any",
-      "purpose": "maskable"
-    }
+    { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
   ],
   "start_url": "/",
   "scope": "/",
@@ -40,8 +31,8 @@
       "url": "/?tab=vocabulary",
       "icons": [
         {
-          "src": "/icon.svg",
-          "sizes": "any"
+          "src": "/icon-192.png",
+          "sizes": "192x192"
         }
       ]
     },
@@ -52,8 +43,8 @@
       "url": "/?tab=kanji",
       "icons": [
         {
-          "src": "/icon.svg",
-          "sizes": "any"
+          "src": "/icon-192.png",
+          "sizes": "192x192"
         }
       ]
     },
@@ -64,8 +55,8 @@
       "url": "/?tab=exam",
       "icons": [
         {
-          "src": "/icon.svg",
-          "sizes": "any"
+          "src": "/icon-192.png",
+          "sizes": "192x192"
         }
       ]
     },
@@ -76,8 +67,8 @@
       "url": "/?tab=japanese-chat",
       "icons": [
         {
-          "src": "/icon.svg",
-          "sizes": "any"
+          "src": "/icon-192.png",
+          "sizes": "192x192"
         }
       ]
     }

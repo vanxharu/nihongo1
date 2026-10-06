@@ -22,6 +22,7 @@ import { getPlayerLevelInfo } from '../utils/xpSystem';
 import { BRAND_NAME } from '../constants/brand';
 import ThemeToggle from './ThemeToggle';
 
+import { useEscape } from '../hooks/useEscape';
 interface HeaderProps {
   currentTab: string;
   userProfile: UserProfile;
@@ -47,6 +48,7 @@ export default function Header({
 }: HeaderProps) {
   const { user, logout, authStatus, loading } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  useEscape(isProfileOpen, () => setIsProfileOpen(false));
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);
   const [isAiConfigModalOpen, setIsAiConfigModalOpen] = useState(false);
   const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
@@ -378,6 +380,7 @@ export default function Header({
         >
           <div 
             id="profile-drawer-content" 
+            role="dialog" aria-modal="true" aria-label="Hồ sơ và cài đặt"
             className="w-full sm:w-96 max-w-full bg-white border-l border-slate-100 h-full p-6 flex flex-col justify-between shadow-2xl relative animate-slide-left overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >

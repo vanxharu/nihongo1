@@ -3,6 +3,7 @@ import { ExamHistoryRecord } from '../types';
 import { getExamHistory, deleteExamAttempt, groupHistoryByDate } from '../utils/examHistoryStorage';
 import { Calendar, CheckCircle, Clock, Eye, FileDown, History, RefreshCw, Trash2, X, AlertCircle } from 'lucide-react';
 
+import { useEscape } from '../hooks/useEscape';
 export interface ExamHistoryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,6 +26,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
   const [historyList, setHistoryList] = useState<ExamHistoryRecord[]>([]);
 
   const handleReviewAction = onReviewAttempt || onSelectAttempt || onExportPDF || onPrintAttempt;
+  useEscape(isOpen, onClose);
   const handlePrintAction = onExportPDF || onPrintAttempt || onReviewAttempt || onSelectAttempt;
 
   React.useEffect(() => {
@@ -49,6 +51,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200">
       <div 
+        role="dialog" aria-modal="true" aria-label="Lịch sử bài thi"
         className="bg-[#fbf9f4] border-2 border-slate-700 w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden text-slate-900"
         onClick={(e) => e.stopPropagation()}
       >

@@ -44,6 +44,7 @@ import JpStudyLogo from './JpStudyLogo';
 import UserAvatar from './UserAvatar';
 import VoiceSelectorModal from './VoiceSelectorModal';
 
+import { useEscape } from '../hooks/useEscape';
 interface MobileBottomNavProps {
   currentTab: string;
   setCurrentTab: (tab: string) => void;
@@ -69,6 +70,7 @@ export default function MobileBottomNav({
 }: MobileBottomNavProps) {
   const { user, logout } = useAuth();
   const [isMoreOpen, setIsMoreOpen] = useState(false);
+  useEscape(isMoreOpen, () => setIsMoreOpen(false));
   const unlockedCount = calculateUnlockedAchievements(userProfile).size;
   const [soundOn, setSoundOn] = useState(isSoundEnabled());
   const [currentVoice, setCurrentVoice] = useState<AzureVoiceChoice>(getPreferredVoice());
@@ -144,6 +146,7 @@ export default function MobileBottomNav({
     <>
       {/* Pinned Bottom Navigation Bar for Mobile & Tablet (< xl) - Direct Match with Screenshots */}
       <nav 
+        aria-label="Điều hướng chính"
         id="mobile-bottom-navigation"
         className="fixed bottom-0 left-0 right-0 z-[100] xl:hidden bg-[#0F1424]/95 backdrop-blur-md border-t border-[#1B223C] shadow-2xl select-none px-2 pt-1 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       >
@@ -157,6 +160,7 @@ export default function MobileBottomNav({
                 key={item.id}
                 id={`mobile-nav-${item.id}`}
                 to={item.path}
+                aria-current={isTabActive ? 'page' : undefined}
                 onClick={() => handleItemClick(item.id)}
                 className="relative flex flex-col items-center justify-center flex-1 py-1 cursor-pointer active:scale-95 transition-all touch-manipulation"
               >
@@ -199,7 +203,8 @@ export default function MobileBottomNav({
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-lg max-h-[85vh] overflow-y-auto bg-[#0d1624] border-t sm:border border-slate-700 rounded-t-3xl sm:rounded-3xl sm:mb-4 z-[120] p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl xl:hidden space-y-4 text-white"
+              role="dialog" aria-modal="true" aria-label="Tùy chọn và mở rộng"
+              className="fixed bottom-0 left-0 right-0 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-lg max-h-[85dvh] overflow-y-auto bg-[#0d1624] border-t sm:border border-slate-700 rounded-t-3xl sm:rounded-3xl sm:mb-4 z-[120] p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl xl:hidden space-y-4 text-white"
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-slate-800">
