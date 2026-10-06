@@ -18,6 +18,9 @@ const field = 'w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.
 const compactButton = 'inline-flex min-h-8 items-center justify-center gap-1.5 rounded-lg bg-slate-800 px-3 text-xs font-semibold hover:bg-slate-700 disabled:opacity-40';
 const button = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-slate-800 px-4 text-sm font-semibold hover:bg-slate-700 disabled:opacity-40';
 
+// Shrink long sentences so the playing line always fits its fixed frame.
+const fitSize = (n: number) => n <= 18 ? '1.6rem' : n <= 30 ? '1.4rem' : n <= 45 ? '1.2rem' : n <= 65 ? '1.05rem' : '.92rem';
+
 export default function ShadowingHub() {
   const [params, setParams] = useSearchParams();
   const reduceMotion = useReducedMotion();
@@ -252,15 +255,18 @@ export default function ShadowingHub() {
               <span>{displayed ? `Câu ${displayedIndex + 1} / ${cues.length}` : 'Sẵn sàng nghe'}</span>
               {mode === 'dictation' && revealed && <button className="underline lg:hidden" onClick={() => setRevealed(false)}>Ẩn đáp án</button>}
             </div>
-            <div ref={lyricRef} className="lyric-scroll" onTouchStart={pauseFollow} onTouchMove={pauseFollow} onWheel={pauseFollow}>
-              {cues.map((cue, i) => i === displayedIndex
-                ? <div id={`lyric-row-${i}`} key={cue.id} className="lyric-current">
-                    <div role="button" tabIndex={0} aria-label="Xem nghĩa và phân tích câu đang phát" onClick={() => setInsightCue({ ...cue })} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setInsightCue({ ...cue }); } }} className="cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
-                      <KaraokeCaption text={cue.text} time={currentTime} start={cue.start} end={cue.end} timings={cue.timings} analysis={displayedAnalysis} furigana={furigana} />
-                    </div>
-                    {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
+            <div className="lyric-frame">
+              <div className="lyric-now" style={{ '--karaoke-size': fitSize(displayed?.text.length || 0) } as React.CSSProperties}>
+                {displayed ? <>
+                  <div role="button" tabIndex={0} aria-label="Xem nghĩa và phân tích câu đang phát" onClick={() => setInsightCue({ ...displayed })} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setInsightCue({ ...displayed }); } }} className="cursor-pointer rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-violet-400">
+                    <KaraokeCaption text={displayed.text} time={currentTime} start={displayed.start} end={displayed.end} timings={displayed.timings} analysis={displayedAnalysis} furigana={furigana} />
                   </div>
-                : <button id={`lyric-row-${i}`} key={cue.id} className="lyric-side" onClick={() => { followPausedUntil.current = 0; jumpCue(i); }}>{cue.text}</button>)}
+                  {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
+                </> : <p className="text-center text-sm text-slate-400">Bấm phát video hoặc chọn một câu bên dưới</p>}
+              </div>
+            </div>
+            <div ref={lyricRef} className="lyric-scroll" onTouchStart={pauseFollow} onTouchMove={pauseFollow} onWheel={pauseFollow}>
+              {cues.map((cue, i) => <button id={`lyric-row-${i}`} key={cue.id} className={`lyric-side${i === displayedIndex ? ' is-now' : ''}`} aria-current={i === displayedIndex} onClick={() => { followPausedUntil.current = 0; jumpCue(i); }}>{cue.text}</button>)}
             </div>
           </section>}
 
