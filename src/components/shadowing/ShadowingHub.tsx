@@ -258,7 +258,7 @@ export default function ShadowingHub() {
             <div className="lyric-frame">
               <div className="lyric-prev">{cues[displayedIndex - 1] && <button key={cues[displayedIndex - 1].id} className="lyric-prev-btn" onClick={() => { followPausedUntil.current = 0; jumpCue(displayedIndex - 1); }}>{cues[displayedIndex - 1].text}</button>}</div>
               <div className="lyric-now-wrap">
-                <span className="lyric-badge" aria-hidden><i />Đang phát</span>
+                <span className="lyric-badge" aria-hidden><i /></span>
                 <div className="lyric-now-scroll">
                 <div key={displayed?.id || 'none'} className="lyric-now lyric-in" style={{ '--karaoke-size': fitSize(displayed?.text.length || 0) } as React.CSSProperties}>
                   {displayed ? <>
