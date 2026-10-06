@@ -224,17 +224,15 @@ export default function ShadowingHub() {
             onNext={selected < cues.length - 1 ? () => jumpCue(selected + 1) : undefined}
             hasPrev={selected > 0}
             hasNext={selected < cues.length - 1}
+            lead={<button onClick={() => setParams({})} aria-label="Về thư viện" className="shadowing-ctrl-btn"><ChevronLeft size={18} /></button>}
+            tabs={<div className="flex min-w-0 flex-1 gap-1">
+              <button onClick={() => { setMode('shadowing'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'shadowing' ? ' shadowing-mode-tab-active' : ''}`}>Bắt chước</button>
+              <button onClick={() => { setMode('dictation'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'dictation' ? ' shadowing-mode-tab-active' : ''}`}>Chính tả</button>
+            </div>}
             extra={<div className="flex flex-wrap items-center gap-1.5"><span className="w-16 shrink-0 text-xs text-slate-400">Hiển thị</span>
               <button aria-pressed={furigana} onClick={() => setFurigana(v => !v)} className={`shadowing-pill${furigana ? ' shadowing-pill-active' : ''}`}>Furigana</button>
               <button aria-pressed={translation} onClick={() => setTranslation(v => !v)} className={`shadowing-pill${translation ? ' shadowing-pill-active' : ''}`}>Dịch</button></div>}
           /></div>
-          <div className="flex items-center gap-2">
-            <button onClick={() => setParams({})} aria-label="Về thư viện" className={`${compactButton} w-9 shrink-0 px-0`}><ChevronLeft size={18} /></button>
-            <div className="flex flex-1 gap-1">
-              <button onClick={() => { setMode('shadowing'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'shadowing' ? ' shadowing-mode-tab-active' : ''}`}>Bắt chước</button>
-              <button onClick={() => { setMode('dictation'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'dictation' ? ' shadowing-mode-tab-active' : ''}`}>Chính tả</button>
-            </div>
-          </div>
           {sourceTitle && <h2 className="line-clamp-2 text-base font-bold leading-snug text-slate-100">{sourceTitle}</h2>}
 
           {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-3 sm:p-6">
