@@ -2257,7 +2257,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     onEarnXp(mastered ? 10 : 2);
     setTimeout(() => {
       handleNext();
-    }, 280);
+    }, 1400);
   }, [updateProfile, onEarnXp, handleNext]);
 
   const normalizeCramStr = (str: string) => {
