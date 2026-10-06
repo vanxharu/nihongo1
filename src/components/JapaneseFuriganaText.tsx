@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { getSentenceFuriganaParts, hasKanji, alignWordFurigana, findBestFuriganaPartition, tokenizeWithFurigana } from '../utils/japaneseUtils';
 import { getKanjiCategory } from '../utils/kanjiHelper';
 
+import { clickOnKey } from '../utils/a11y';
 export interface SelectiveFuriganaWordProps {
   kanji?: string | null;
   hiragana?: string | null;
@@ -242,7 +243,7 @@ function JapaneseFuriganaTextComponent({
                         className={`${mainTextSize} font-bold ${forceDark ? 'text-white' : 'text-slate-900 dark:text-white'} ${kanjiClassName} inline-flex items-center leading-none tracking-normal`}
                       >
                         {onClickKanji ? (
-                          <span
+                          <span role="button" tabIndex={0} onKeyDown={clickOnKey}
                             onClick={() => onClickKanji(token.text)}
                             className="cursor-pointer hover:text-amber-300 transition-colors"
                           >

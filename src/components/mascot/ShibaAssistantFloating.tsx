@@ -44,6 +44,13 @@ export default function ShibaAssistantFloating({
   const [currentPose, setCurrentPose] = useState<ShibaPose>('welcome');
   const [quoteIndex, setQuoteIndex] = useState(0);
   const reducedMotion = useReducedMotion();
+  // Track the viewport so drag mode/bounds stay right after rotation or resizing across the 1280px breakpoint.
+  const [vp, setVp] = React.useState(() => ({ w: window.innerWidth, h: window.innerHeight }));
+  React.useEffect(() => {
+    const onResize = () => setVp({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
   const dragControls = useDragControls();
   const dragged = useRef(false);
   const [feedback, setFeedback] = useState('');
@@ -119,12 +126,12 @@ export default function ShibaAssistantFloating({
     <>
       {/* Floating Floating Mascot Anchor */}
       {/* Mobile/tablet: the whole mascot is the drag handle, anchored top-right (see responsive.css). Desktop: use the ⠿ handle. */}
-      <motion.div drag={!isOpen} dragListener={window.innerWidth < 1280} dragControls={dragControls} dragMomentum={false}
+      <motion.div drag={!isOpen} dragListener={vp.w < 1280} dragControls={dragControls} dragMomentum={false}
         onDragStart={() => { dragged.current = true; }} onDragEnd={() => setTimeout(() => { dragged.current = false; }, 50)}
-        style={window.innerWidth < 1280 ? { touchAction: 'none' } : undefined}
-        dragConstraints={window.innerWidth < 1280
-          ? { left: -(window.innerWidth - 64), right: 0, top: 0, bottom: Math.max(0, window.innerHeight - 130) }
-          : { left:-Math.max(0, Math.min(220, window.innerWidth - 120)), right:0, top:-Math.max(0, Math.min(240, window.innerHeight - 220)), bottom:0 }} className={`shiba-floating-anchor feedback-${feedback} fixed bottom-20 xl:bottom-6 right-3 sm:right-6 z-[90] select-none pointer-events-auto`}>
+        style={vp.w < 1280 ? { touchAction: 'none' } : undefined}
+        dragConstraints={vp.w < 1280
+          ? { left: -(vp.w - 64), right: 0, top: 0, bottom: Math.max(0, vp.h - 130) }
+          : { left:-Math.max(0, Math.min(220, vp.w - 120)), right:0, top:-Math.max(0, Math.min(240, vp.h - 220)), bottom:0 }} className={`shiba-floating-anchor feedback-${feedback} fixed bottom-20 xl:bottom-6 right-3 sm:right-6 z-[90] select-none pointer-events-auto`}>
         {!isOpen && <button type="button" aria-label="Kéo để di chuyển Shiba" className="shiba-drag-handle" onPointerDown={event => dragControls.start(event)}>⠿</button>}
         <AnimatePresence>
           {!isOpen && (

@@ -38,6 +38,7 @@ import { safeFetchJson } from '../utils/safeApi';
 import JapaneseFuriganaText, { SelectiveFuriganaWord } from './JapaneseFuriganaText';
 import { KanjiAiMnemonicCard } from './KanjiAiMnemonicCard';
 
+import { clickOnKey } from '../utils/a11y';
 interface KanjiExplorerProps {
   userProfile: UserProfile;
   updateProfile: (updated: Partial<UserProfile>) => void;
@@ -984,6 +985,7 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
                     <div className="grid grid-cols-2 gap-2.5 max-w-sm sm:max-w-md mx-auto w-full shrink-0">
                       {/* Onyomi */}
                       <div 
+                        role="button" tabIndex={0} onKeyDown={clickOnKey}
                         onClick={(e) => {
                           e.stopPropagation();
                           if (currentKanji?.onyomi) handleSpeak(currentKanji.onyomi.split(/[,、\s]+/)[0]);
@@ -1004,6 +1006,7 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
 
                       {/* Kunyomi */}
                       <div 
+                        role="button" tabIndex={0} onKeyDown={clickOnKey}
                         onClick={(e) => {
                           e.stopPropagation();
                           if (currentKanji?.kunyomi) handleSpeak(currentKanji.kunyomi.split(/[,、\s]+/)[0]);

@@ -610,6 +610,12 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     setIsPlayingAudio(false);
   }, [currentQuestionIndex, selectedExam?.id]);
 
+  // Leaving the page must silence any audio that is still playing.
+  useEffect(() => () => {
+    audioElementRef.current?.pause();
+    if (typeof window !== 'undefined' && window.speechSynthesis) window.speechSynthesis.cancel();
+  }, []);
+
   // Timer states for the current exam parts (mapped dynamically based on level)
   const [partTimes, setPartTimes] = useState<Record<string, number>>({
     part1: 30 * 60,
@@ -742,6 +748,9 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     }
   };
 
+  const mountedRef = useRef(true);
+  useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; }; }, []);
+
   const handleGenerateAiExam = async (level: string) => {
     setIsGenerating(true);
     setGenerationError(null);
@@ -764,11 +773,12 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
       });
 
       if (!response.ok) {
-        const errData = await response.json();
+        const errData = await response.json().catch(() => ({} as any)); // error body may not be JSON
         throw new Error(errData.error || errData.details || "Không thể kết nối máy chủ AI");
       }
 
       const examData = await response.json();
+      if (!mountedRef.current) { clearInterval(interval); return; } // user left the page while the AI was writing
       
       const newExam: DailyExam = {
         ...examData,
@@ -778,7 +788,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
 
       const updated = [newExam, ...aiGeneratedExams];
       setAiGeneratedExams(updated);
-      localStorage.setItem('jlpt_ai_exams', JSON.stringify(updated));
+      try { localStorage.setItem('jlpt_ai_exams', JSON.stringify(updated)); } catch { /* storage full/blocked: the exam still starts */ }
 
       clearInterval(interval);
       setIsGenerating(false);
@@ -788,6 +798,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
 
     } catch (error: any) {
       clearInterval(interval);
+      if (!mountedRef.current) return;
       setIsGenerating(false);
       setGenerationError(error.message || "Quá trình biên soạn đề thi bằng AI thất bại. Vui lòng thử lại!");
     }
@@ -1149,6 +1160,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                   <div className="relative flex-1">
                     <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
+                      aria-label="Tìm đề thi"
                       type="text"
                       value={searchQuery}
                       onChange={e => setSearchQuery(e.target.value)}

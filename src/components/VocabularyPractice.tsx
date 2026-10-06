@@ -66,6 +66,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { safeFetchJson } from '../utils/safeApi';
 
 import { shuffled, pickDistractors } from '../utils/quizShuffle';
+import { clickOnKey } from '../utils/a11y';
 // Module-level client cache for Kanji Breakdowns
 const clientKanjiBreakdownCache = new Map<string, any>();
 
@@ -1413,7 +1414,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
           if (isKanji) {
             const colors = getKanjiSemanticColor(char);
             return (
-              <span
+              <span role={disableClick ? undefined : 'button'} tabIndex={disableClick ? undefined : 0} onKeyDown={disableClick ? undefined : clickOnKey}
                 key={index}
                 onClick={disableClick ? undefined : (e) => {
                   e.stopPropagation();
@@ -1558,7 +1559,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
                                 {subFurigana}
                               </span>
                               {/* Kanji Badge */}
-                              <span
+                              <span role={disableClick ? undefined : 'button'} tabIndex={disableClick ? undefined : 0} onKeyDown={disableClick ? undefined : clickOnKey}
                                 onClick={disableClick ? undefined : (e) => {
                                   e.stopPropagation();
                                   setSelectedKanji(char);
@@ -1574,7 +1575,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
                               </span>
                               {/* Hán Việt directly under Kanji */}
                               {showHanVietUnder && charHv ? (
-                                <span
+                                <span role={disableClick ? undefined : 'button'} tabIndex={disableClick ? undefined : 0} onKeyDown={disableClick ? undefined : clickOnKey}
                                   onClick={disableClick ? undefined : (e) => {
                                     e.stopPropagation();
                                     setSelectedKanji(char);
@@ -1618,7 +1619,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
                         {part.furigana}
                       </span>
                       {/* Kanji Badge */}
-                      <span
+                      <span role={disableClick ? undefined : 'button'} tabIndex={disableClick ? undefined : 0} onKeyDown={disableClick ? undefined : clickOnKey}
                         onClick={disableClick ? undefined : (e) => {
                           e.stopPropagation();
                           setSelectedKanji(char);
@@ -1634,7 +1635,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
                       </span>
                       {/* Hán Việt directly under Kanji */}
                       {showHanVietUnder && charHv ? (
-                        <span
+                        <span role={disableClick ? undefined : 'button'} tabIndex={disableClick ? undefined : 0} onKeyDown={disableClick ? undefined : clickOnKey}
                           onClick={disableClick ? undefined : (e) => {
                             e.stopPropagation();
                             setSelectedKanji(char);
@@ -1669,7 +1670,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
                       className="inline-flex flex-col items-center justify-end leading-none mx-[1px]"
                     >
                       <span className="text-[10px] sm:text-[12px] invisible select-none pb-0.5 block" style={{ minHeight: '1.2em' }}>&nbsp;</span>
-                      <span
+                      <span role={disableClick ? undefined : 'button'} tabIndex={disableClick ? undefined : 0} onKeyDown={disableClick ? undefined : clickOnKey}
                         onClick={disableClick ? undefined : (e) => {
                           e.stopPropagation();
                           setSelectedKanji(char);
@@ -1684,7 +1685,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
                         {char}
                       </span>
                       {showHanVietUnder && charHv ? (
-                        <span
+                        <span role={disableClick ? undefined : 'button'} tabIndex={disableClick ? undefined : 0} onKeyDown={disableClick ? undefined : clickOnKey}
                           onClick={disableClick ? undefined : (e) => {
                             e.stopPropagation();
                             setSelectedKanji(char);
@@ -1774,7 +1775,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
                           {token.reading || ''}
                         </span>
                         {/* Kanji text with optional click to inspect */}
-                        <span
+                        <span role={disableClick ? undefined : 'button'} tabIndex={disableClick ? undefined : 0} onKeyDown={disableClick ? undefined : clickOnKey}
                           onClick={disableClick ? undefined : (e) => {
                             e.stopPropagation();
                             setSelectedKanji(token.text || '');
@@ -3898,6 +3899,7 @@ if (loading) {
                 >
                   {/* Invisible input capturing keystrokes & converting Romaji */}
                   <input 
+                   
                     ref={cramInputRef}
                     type="text"
                     autoFocus
@@ -4422,6 +4424,7 @@ if (loading) {
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-800 block">Loại lỗi:</label>
                   <select 
+                    aria-label="Loại góp ý"
                     value={feedbackType} 
                     onChange={e => setFeedbackType(e.target.value)}
                     className="w-full px-3 py-2 bg-slate-50/50 border border-slate-100 rounded-lg text-sm"
@@ -4436,6 +4439,7 @@ if (loading) {
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-800 block">Mô tả chi tiết:</label>
                   <textarea 
+                    aria-label="Nội dung góp ý"
                     value={feedbackText}
                     onChange={e => setFeedbackText(e.target.value)}
                     required
@@ -4556,6 +4560,7 @@ if (loading) {
                 <div className="relative">
                   <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input 
+                    aria-label="Tìm bài học"
                     type="text"
                     value={quickLessonSearch}
                     onChange={(e) => setQuickLessonSearch(e.target.value)}

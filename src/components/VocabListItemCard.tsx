@@ -13,6 +13,7 @@ import { getKanjiAssociativeColor } from '../utils/associativeColorHelper';
 import PitchAccentDisplay from './PitchAccentDisplay';
 import JapaneseFuriganaText from './JapaneseFuriganaText';
 
+import { clickOnKey } from '../utils/a11y';
 interface VocabListItemCardProps {
   v: VocabularyItem;
   index: number;
@@ -174,7 +175,7 @@ function renderWordWithFuriganaInternal(
                             >
                               {subFurigana}
                             </span>
-                            <span
+                            <span role={onSelectKanji ? 'button' : undefined} tabIndex={onSelectKanji ? 0 : undefined} onKeyDown={onSelectKanji ? clickOnKey : undefined}
                               onClick={onSelectKanji ? (e) => { e.stopPropagation(); onSelectKanji(char); } : undefined}
                               title={`Bấm xem chi tiết chữ ${char}${charHv ? ` (${charHv})` : ''}`}
                               className={`inline-flex items-center justify-center font-display font-black transition-all border ${colors.bg} ${colors.text} ${colors.border} ${onSelectKanji ? 'cursor-pointer hover:scale-105 active:scale-95' : ''} px-1.5 py-0.5 rounded-md text-xl sm:text-2xl shadow-3xs leading-none select-all`}
@@ -211,7 +212,7 @@ function renderWordWithFuriganaInternal(
                     >
                       {part.furigana}
                     </span>
-                    <span
+                    <span role={onSelectKanji ? 'button' : undefined} tabIndex={onSelectKanji ? 0 : undefined} onKeyDown={onSelectKanji ? clickOnKey : undefined}
                       onClick={onSelectKanji ? (e) => { e.stopPropagation(); onSelectKanji(part.text || ''); } : undefined}
                       title={`Bấm xem chi tiết chữ ${part.text || ''}${charHv ? ` (${charHv})` : ''}`}
                       className={`inline-flex items-center justify-center font-display font-black transition-all border ${colors.bg} ${colors.text} ${colors.border} ${onSelectKanji ? 'cursor-pointer hover:scale-105 active:scale-95' : ''} px-1.5 py-0.5 rounded-md text-xl sm:text-2xl shadow-3xs leading-none select-all`}

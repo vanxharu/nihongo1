@@ -30,6 +30,7 @@ import { MINNA_N4_VOCABULARY } from '../data/minnaN4Vocab';
 import { speakJapanese } from '../utils/audio';
 
 import { shuffled, pickDistractors } from '../utils/quizShuffle';
+import { clickOnKey } from '../utils/a11y';
 interface LessonHubProps {
   userProfile?: UserProfile;
   onUpdateProfile?: (profile: UserProfile) => void;
@@ -187,6 +188,7 @@ export default function LessonHub({ userProfile, onUpdateProfile, onNavigateToTa
                 <div
                   key={num}
                   id={`lesson-card-${num}`}
+                  role="button" tabIndex={0} onKeyDown={clickOnKey}
                   onClick={() => {
                     setActiveLessonNum(num);
                     setActiveLessonTab('vocab');
@@ -337,7 +339,7 @@ export default function LessonHub({ userProfile, onUpdateProfile, onNavigateToTa
                 /* Lesson Flashcard */
                 <div className="max-w-md mx-auto space-y-4">
                   {activeVocabList[flashcardIndex] && (
-                    <div
+                    <div role="button" tabIndex={0} onKeyDown={clickOnKey} aria-label="Lật thẻ"
                       onClick={() => setIsCardFlipped(!isCardFlipped)}
                       className="h-64 rounded-3xl p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl cursor-pointer flex flex-col items-center justify-between text-center select-none"
                     >
