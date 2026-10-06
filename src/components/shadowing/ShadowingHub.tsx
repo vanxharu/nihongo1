@@ -82,8 +82,7 @@ export default function ShadowingHub() {
     if (Date.now() < followPausedUntil.current) return;
     const box = lyricRef.current, row = document.getElementById(`lyric-row-${displayedIndex}`);
     if (!box || !row) return;
-    const first = (row.previousElementSibling as HTMLElement | null) ?? row;
-    box.scrollTo({ top: first.offsetTop, behavior: reduceMotion ? 'auto' : 'smooth' });
+    box.scrollTo({ top: row.offsetTop, behavior: reduceMotion ? 'auto' : 'smooth' });
   }, [displayedIndex, mode, revealed, cues.length]);
   const wordTimings = displayed && validShadowingTimings(displayed) ? displayed.timings! : [];
   const spokenProgress = wordTimings.length ? 100 * wordTimings.filter(t => currentTime >= t.start).length / wordTimings.length : 0;
