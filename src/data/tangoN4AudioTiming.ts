@@ -182,7 +182,7 @@ export const TANGO_N4_AUDIO_TIMING: Record<number, TangoTiming> = {
   185: { file: 6, start: 259.51, end: 264.26, wordEnd: 260.32, sentStart: 261.51 },
   186: { file: 6, start: 266.17, end: 271.19, wordEnd: 266.99, sentStart: 268.1 },
   187: { file: 6, start: 273.03, end: 279.15, wordEnd: 274.04, sentStart: 275.27 },
-  189: { file: 7, start: 0, end: 10.8, wordEnd: 5.25, sentStart: 7.01 },
+  189: { file: 7, start: 0, end: 10.8, wordEnd: 0.9, sentStart: 2.3 },
   190: { file: 7, start: 12.54, end: 18.31, wordEnd: 13.44, sentStart: 14.82 },
   191: { file: 7, start: 20.08, end: 25.68, wordEnd: 21.11, sentStart: 22.21 },
   192: { file: 7, start: 27.47, end: 33.3, wordEnd: 28.37, sentStart: 29.86 },
