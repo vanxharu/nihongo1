@@ -1,3 +1,4 @@
+import { EXAMPLE_FURIGANA } from '../data/exampleFurigana';
 import { KANJI_DICTIONARY } from '../data/kanjiDictionary';
 import { TANGO_N4_VOCABULARY } from '../data/tangoN4Vocab';
 import { ADVANCED_VOCABULARY } from '../data/advancedVocab';
@@ -3612,6 +3613,7 @@ export function getSentenceFuriganaParts(
   vocabData: any[] = []
 ): FuriganaPart[] {
   if (!sentence) return [];
+  sentence = EXAMPLE_FURIGANA[sentence] ?? sentence;
 
   const cacheKey = `${sentence}__${currentItem.kanji || ''}__${currentItem.hiragana || ''}`;
   const cached = sentenceFuriganaCache.get(cacheKey);
@@ -3620,13 +3622,13 @@ export function getSentenceFuriganaParts(
   // Check if the sentence has explicit HTML <ruby> or bracket markdown furigana tags
   const hasRuby = /<ruby[\s\S]*?<\/ruby>/i.test(sentence);
   const hasMdParen = /\[([^\]]+)\]\(([^)]+)\)/.test(sentence);
-  const hasKanjiBracket = /([\u4e00-\u9faf\u3400-\u4dbf]+)\[([\u3040-\u30ff]+)\]/.test(sentence);
+  const hasKanjiBracket = /([\u4e00-\u9faf\u3400-\u4dbf々〆]+)\[([\u3040-\u30ff]+)\]/.test(sentence);
   const hasBracketPair = /\[([^\]]+)\]\[([^\]]+)\]/.test(sentence);
   const hasCurly = /\{([^|]+)\|([^}]+)\}/.test(sentence);
 
   if (hasRuby || hasMdParen || hasKanjiBracket || hasBracketPair || hasCurly) {
     const rawExplicitParts: { text: string; furigana?: string }[] = [];
-    const regex = /<ruby>(.*?)<rt>(.*?)<\/rt>(?:<rp>.*?<\/rp>)*<\/ruby>|\[([^\]]+)\]\(([^)]+)\)|\[([^\]]+)\]\[([^\]]+)\]|([\u4e00-\u9faf\u3400-\u4dbf]+)\[([\u3040-\u30ff]+)\]|\{([^|]+)\|([^}]+)\}/gi;
+    const regex = /<ruby>(.*?)<rt>(.*?)<\/rt>(?:<rp>.*?<\/rp>)*<\/ruby>|\[([^\]]+)\]\(([^)]+)\)|\[([^\]]+)\]\[([^\]]+)\]|([\u4e00-\u9faf\u3400-\u4dbf々〆]+)\[([\u3040-\u30ff]+)\]|\{([^|]+)\|([^}]+)\}/gi;
     let lastIdx = 0;
     let match: RegExpExecArray | null;
 

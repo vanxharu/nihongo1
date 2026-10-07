@@ -177,131 +177,53 @@ function JapaneseFuriganaTextComponent({
   // Font size configuration
   let mainTextSize = 'text-base sm:text-lg';
   let furiganaTextSize = 'text-[11px] sm:text-xs';
-  let minHeight = '1.15em';
 
   if (size === 'xs') {
     mainTextSize = 'text-xs';
     furiganaTextSize = 'text-[10px]';
-    minHeight = '1.0em';
   } else if (size === 'sm') {
     mainTextSize = 'text-sm';
     furiganaTextSize = 'text-[10.5px]';
-    minHeight = '1.1em';
   } else if (size === 'lg') {
     mainTextSize = 'text-lg sm:text-xl';
     furiganaTextSize = 'text-[11px] sm:text-xs';
-    minHeight = '1.2em';
   } else if (size === 'xl') {
     mainTextSize = 'text-xl sm:text-2xl';
     furiganaTextSize = 'text-[11px] sm:text-[12px]';
-    minHeight = '1.25em';
   } else if (size === '2xl') {
     mainTextSize = 'text-2xl sm:text-3xl';
     furiganaTextSize = 'text-[12px] sm:text-[13px]';
-    minHeight = '1.3em';
   } else if (size === '3xl') {
     mainTextSize = 'text-3xl sm:text-4xl';
     furiganaTextSize = 'text-[13px] sm:text-[14px]';
-    minHeight = '1.35em';
   }
 
+  // Native <ruby> in one inline text flow: all glyphs share one baseline (no bobbing).
+  const kanaCls = `${mainTextSize} font-bold ${forceDark ? 'text-slate-100' : 'text-slate-800 dark:text-slate-100'} ${textClassName}`;
+  const kanjiCls = `${mainTextSize} font-bold ${forceDark ? 'text-white' : 'text-slate-900 dark:text-white'} ${kanjiClassName}`;
+  // Textbook word-spacing ("日本の 小学校は") is dropped next to Japanese chars; kept between latin/digits.
+  const tidy = (s: string) => s.replace(/(?<=[^\x00-\x7F]) +| +(?=[^\x00-\x7F])/g, '');
+
   return (
-    <span lang="ja" className={`inline-flex items-end flex-wrap leading-none gap-y-1.5 align-bottom font-jp ${className}`}>
+    <span lang="ja" className={`font-jp leading-[2.1] ${className}`}>
       {parts.map((part, index) => {
         if (!part || !part.text) return null;
-        if (part.text === '\n') {
-          return <span key={index} className="basis-full h-1 block select-none" />;
-        }
-
-        const containsKanji = hasKanji(part.text || '');
-
-        if (containsKanji && part.furigana) {
+        if (part.text === '\n') return <br key={index} />;
+        if (hasKanji(part.text) && part.furigana) {
           const readings = findBestFuriganaPartition(part.text, part.furigana);
-          const tokens = tokenizeWithFurigana(part.text, readings);
-
-          return (
-            <span
-              key={index}
-              className="inline-flex items-end leading-none align-bottom mx-0"
-            >
-              {tokens.map((token, tIdx) => {
-                if (token.type === 'kanji' && token.reading) {
-                  return (
-                    <span
-                      key={tIdx}
-                      className="inline-flex flex-col items-center justify-end leading-none align-bottom mx-0"
-                    >
-                      {/* Furigana Reading */}
-                      <span
-                        className={`${furiganaTextSize} font-bold text-[#43EEF7] select-none pb-0.5 tracking-normal whitespace-nowrap text-center block ${furiganaClassName}`}
-                        style={{ minHeight }}
-                      >
-                        {token.reading}
-                      </span>
-                      {/* Kanji Character */}
-                      <span
-                        className={`${mainTextSize} font-bold ${forceDark ? 'text-white' : 'text-slate-900 dark:text-white'} ${kanjiClassName} inline-flex items-center leading-none tracking-normal`}
-                      >
-                        {onClickKanji ? (
-                          <span role="button" tabIndex={0} onKeyDown={clickOnKey}
-                            onClick={() => onClickKanji(token.text)}
-                            className="cursor-pointer hover:text-amber-300 transition-colors"
-                          >
-                            {token.text}
-                          </span>
-                        ) : (
-                          token.text
-                        )}
-                      </span>
-                    </span>
-                  );
-                }
-
-                // Kana character inside compound
-                return (
-                  <span
-                    key={tIdx}
-                    className="inline-flex flex-col items-center justify-end leading-none align-bottom mx-0"
-                  >
-                    <span
-                      className={`${furiganaTextSize} invisible select-none pb-0.5 block whitespace-nowrap`}
-                      style={{ minHeight }}
-                    >
-                      &nbsp;
-                    </span>
-                    <span
-                      className={`${mainTextSize} font-medium ${forceDark ? 'text-slate-100' : 'text-slate-800 dark:text-slate-100'} px-0 ${textClassName}`}
-                    >
-                      {token.text}
-                    </span>
-                  </span>
-                );
-              })}
-            </span>
-          );
+          return tokenizeWithFurigana(part.text, readings).map((token, tIdx) => {
+            if (token.type !== 'kanji' || !token.reading) return <span key={`${index}-${tIdx}`} className={kanaCls}>{tidy(token.text)}</span>;
+            return (
+              <ruby key={`${index}-${tIdx}`} className={kanjiCls}>
+                {onClickKanji ? (
+                  <span role="button" tabIndex={0} onKeyDown={clickOnKey} onClick={() => onClickKanji(token.text)} className="cursor-pointer hover:text-amber-300 transition-colors">{token.text}</span>
+                ) : token.text}
+                <rt className={`${furiganaTextSize} font-bold text-[#43EEF7] select-none tracking-normal ${furiganaClassName}`}>{token.reading}</rt>
+              </ruby>
+            );
+          });
         }
-
-        // Kana or punctuation token (without Furigana)
-        return (
-          <span
-            key={index}
-            className="inline-flex flex-col items-center justify-end leading-none align-bottom mx-px"
-          >
-            {/* Invisible spacer ensuring 100% stable baseline */}
-            <span
-              className={`${furiganaTextSize} invisible select-none pb-0.5 block whitespace-nowrap`}
-              style={{ minHeight }}
-            >
-              &nbsp;
-            </span>
-            {/* Text */}
-            <span
-              className={`${mainTextSize} font-medium ${forceDark ? 'text-slate-100' : 'text-slate-800 dark:text-slate-100'} px-px ${textClassName}`}
-            >
-              {part.text || ''}
-            </span>
-          </span>
-        );
+        return <span key={index} className={kanaCls}>{tidy(part.text)}</span>;
       })}
     </span>
   );
