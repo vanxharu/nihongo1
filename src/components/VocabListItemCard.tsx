@@ -287,13 +287,13 @@ function VocabListItemCardComponent({
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onToggleMastered?.(v.id); }}
-              className="transition-transform active:scale-90 cursor-pointer"
+              className="transition-transform active:scale-90 cursor-pointer p-2 -m-1 rounded-lg"
               title={isMastered ? 'Đã thuộc' : 'Đánh dấu'}
             >
               {isMastered ? (
-                <CheckSquare className="w-4 h-4 text-emerald-400 fill-emerald-950/40" />
+                <CheckSquare className="w-6 h-6 text-emerald-400 fill-emerald-950/40" />
               ) : (
-                <Square className="w-4 h-4 text-slate-400 hover:text-emerald-400" />
+                <Square className="w-6 h-6 text-slate-400 hover:text-emerald-400" />
               )}
             </button>
           </div>
