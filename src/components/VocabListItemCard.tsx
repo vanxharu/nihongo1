@@ -22,7 +22,7 @@ interface VocabListItemCardProps {
   showPitchAccent: boolean;
   onToggleStar: (id: string) => void;
   onToggleMastered?: (id: string) => void;
-  onSpeak: (text: string) => void;
+  onSpeak: (text: string, isSentence: boolean) => void;
   onSelectKanji?: (kanji: string) => void;
 }
 
@@ -320,7 +320,7 @@ function VocabListItemCardComponent({
             </button>
             <button
               type="button"
-              onClick={(e) => { e.stopPropagation(); onSpeak(v.kanji || v.hiragana); }}
+              onClick={(e) => { e.stopPropagation(); onSpeak(v.kanji || v.hiragana, false); }}
               className="text-slate-400 hover:text-white p-1 rounded cursor-pointer"
               title="Phát âm từ vựng"
             >
@@ -344,7 +344,7 @@ function VocabListItemCardComponent({
           </div>
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); onSpeak(ex.exampleSentence); }}
+            onClick={(e) => { e.stopPropagation(); onSpeak(ex.exampleSentence, true); }}
             className="text-slate-400 hover:text-white transition-colors p-1 shrink-0 cursor-pointer"
             title="Nghe phát âm câu ví dụ"
           >

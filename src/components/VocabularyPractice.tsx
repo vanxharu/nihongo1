@@ -2062,12 +2062,17 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     }
   }, [selectedMode, currentIndex, currentLessonIndex]);
 
-  const handleSpeak = useCallback((text: string, isSentence?: boolean) => {
-    // Use official audio for tango N4 entries when available
-    if (currentItem?.curriculum === 'tango' && currentItem.originalNumber) {
-      const timing = TANGO_N4_AUDIO_TIMING[currentItem.originalNumber];
+  const handleSpeak = useCallback((text: string, isSentence?: boolean, sourceItem: VocabularyItem | undefined = currentItem) => {
+    if (!text.trim()) return;
+    const matchesExample = !!sourceItem?.exampleSentence?.trim() && text.trim() === sourceItem.exampleSentence.trim();
+    const wantSentence = isSentence ?? matchesExample;
+    const isWord = !!sourceItem && !wantSentence &&
+      [sourceItem.kanji, sourceItem.hiragana].some(word => word?.trim() === text.trim());
+    // Resolve recordings from the clicked row, not the active flashcard.
+    // Generated/replaced examples must use their displayed text instead of unrelated audio.
+    if (sourceItem?.curriculum === 'tango' && sourceItem.originalNumber && (isWord || (wantSentence && matchesExample))) {
+      const timing = TANGO_N4_AUDIO_TIMING[sourceItem.originalNumber];
       if (timing) {
-        const wantSentence = isSentence || text === currentItem.exampleSentence;
         let start = timing.start, end = timing.end;
         if (timing.wordEnd != null && timing.sentStart != null) {
           if (wantSentence) start = timing.sentStart; else end = timing.wordEnd;
@@ -2081,9 +2086,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       }
     }
     // Từ riêng: đọc theo cách đọc (hiragana) để không đọc sai kanji; câu ví dụ đọc nguyên câu.
-    const isWord = !!currentItem && !isSentence && text === (currentItem.kanji || currentItem.hiragana);
-    const spoken = isWord && currentItem?.hiragana ? currentItem.hiragana : text;
-    speakJapanese(spoken, undefined, undefined, { isSentence });
+    const spoken = isWord && sourceItem?.hiragana ? sourceItem.hiragana : text;
+    speakJapanese(spoken, undefined, undefined, { isSentence: wantSentence });
 
     // Animate wave if shadowing
     if (selectedMode === 'shadowing') {
@@ -4350,7 +4354,7 @@ if (loading) {
                 showPitchAccent={showPitchAccent}
                 onToggleStar={toggleStar}
                 onToggleMastered={toggleMastered}
-                onSpeak={handleSpeak}
+                onSpeak={(text, isSentence) => handleSpeak(text, isSentence, v)}
                 onSelectKanji={handleSelectKanji}
               />
             );
