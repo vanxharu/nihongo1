@@ -62,8 +62,8 @@ import PitchAccentDisplay from './PitchAccentDisplay';
 import { SelectiveFuriganaWord } from './JapaneseFuriganaText';
 import VocabListItemCard from './VocabListItemCard';
 import ReactionOverlay from './ReactionOverlay';
-import { playCorrectSound, playIncorrectSound, speakJapanese, playTangoSegment } from '../utils/audio';
-import { TANGO_N4_AUDIO_TIMING } from '../data/tangoN4AudioTiming';
+import { playCorrectSound, playIncorrectSound, speakJapanese, playTangoClip } from '../utils/audio';
+import { TANGO_SPLIT_CLIPS, TANGO_CLIP_NUMBERS } from '../data/tangoN4AudioClips';
 import { useAuth } from '../contexts/AuthContext';
 import { safeFetchJson } from '../utils/safeApi';
 
@@ -2071,16 +2071,12 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     // Resolve recordings from the clicked row, not the active flashcard.
     // Generated/replaced examples must use their displayed text instead of unrelated audio.
     if (sourceItem?.curriculum === 'tango' && sourceItem.originalNumber && (isWord || (wantSentence && matchesExample))) {
-      const timing = TANGO_N4_AUDIO_TIMING[sourceItem.originalNumber];
-      if (timing) {
-        let start = timing.start, end = timing.end;
-        if (timing.wordEnd != null && timing.sentStart != null) {
-          if (wantSentence) start = timing.sentStart; else end = timing.wordEnd;
-        }
-        playTangoSegment(timing.file, start, end);
+      const n = sourceItem.originalNumber;
+      if (TANGO_CLIP_NUMBERS.has(n)) {
+        playTangoClip(n, TANGO_SPLIT_CLIPS.has(n) ? (wantSentence ? 's' : 'w') : '');
         if (selectedMode === 'shadowing') {
           setIsPlayingWave(true);
-          setTimeout(() => setIsPlayingWave(false), (end - start) * 1000);
+          setTimeout(() => setIsPlayingWave(false), wantSentence ? 4000 : 1500);
         }
         return;
       }

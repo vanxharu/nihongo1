@@ -480,27 +480,22 @@ export function stopJapaneseSpeech(): void {
 }
 
 let tangoAudio: HTMLAudioElement | null = null;
-let tangoTimer: ReturnType<typeof setTimeout> | null = null;
 
 function stopTangoAudio() {
-  if (tangoTimer) { clearTimeout(tangoTimer); tangoTimer = null; }
   if (tangoAudio) { tangoAudio.pause(); tangoAudio = null; }
 }
 
-export function playTangoSegment(file: number, start: number, end: number, onEnd?: () => void): void {
+const tangoClips = new Map<string, HTMLAudioElement>();
+/** Plays a pre-cut Tango clip (/audio/tango/<n>[w|s].mp3). Elements are reused so repeat plays start instantly. */
+export function playTangoClip(n: number, part: '' | 'w' | 's', onEnd?: () => void): void {
   stopTangoAudio();
-  const url = `/audio/tango_sec${String(file).padStart(2, '0')}.mp3`;
-  const audio = new Audio(url);
+  const url = `/audio/tango/${n}${part}.mp3`;
+  let audio = tangoClips.get(url);
+  if (!audio) { audio = new Audio(url); tangoClips.set(url, audio); }
   tangoAudio = audio;
-  audio.currentTime = start;
+  audio.currentTime = 0;
+  audio.onended = () => { tangoAudio = null; onEnd?.(); };
   audio.play().catch(() => {});
-  const duration = (end - start) * 1000;
-  tangoTimer = setTimeout(() => {
-    audio.pause();
-    tangoAudio = null;
-    tangoTimer = null;
-    onEnd?.();
-  }, duration);
 }
 
 export { cleanJapaneseTextForSpeech };
