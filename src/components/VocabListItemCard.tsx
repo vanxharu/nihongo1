@@ -287,7 +287,7 @@ function VocabListItemCardComponent({
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onToggleMastered?.(v.id); }}
-              className="transition-transform active:scale-90 cursor-pointer p-2 -m-1 rounded-lg"
+              className="transition-transform active:scale-90 cursor-pointer flex items-center justify-center"
               title={isMastered ? 'Đã thuộc' : 'Đánh dấu'}
             >
               {isMastered ? (
