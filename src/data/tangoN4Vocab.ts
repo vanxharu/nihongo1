@@ -356,7 +356,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_18",
     "kanji": "おととい",
     "hiragana": "おととい",
-    "meaning": "hôm kia",
+    "meaning": "hôm kia, ngày kia",
     "hanViet": "",
     "exampleSentence": "かぜを ひいて、おとといから 熱が あります。",
     "exampleTranslation": "Tôi bị cảm, sốt từ hôm kia.",
@@ -1660,7 +1660,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_81",
     "kanji": "たたみ",
     "hiragana": "たたみ",
-    "meaning": "chiếu tatami",
+    "meaning": "chiếu",
     "hanViet": "",
     "exampleSentence": "たたみの 部屋が ある アパートに 住みたいです。",
     "exampleTranslation": "Tôi muốn sống ở căn hộ có phòng trải chiếu tatami.",
@@ -1780,7 +1780,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_87",
     "kanji": "家具",
     "hiragana": "かぐ",
-    "meaning": "đồ nội thất",
+    "meaning": "gia dụng",
     "hanViet": "",
     "exampleSentence": "私は 木の 家具が 好きです。",
     "exampleTranslation": "Tôi thích đồ nội thất bằng gỗ.",
@@ -2394,7 +2394,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_117",
     "kanji": "鳴る",
     "hiragana": "なる",
-    "meaning": "reo, kêu, reng",
+    "meaning": "reo, kêu, rung",
     "hanViet": "",
     "exampleSentence": "ケータイが 大きな 音で 鳴って います。",
     "exampleTranslation": "Điện thoại di động reo với âm thanh lớn.",
@@ -3939,7 +3939,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_196",
     "kanji": "こうぎ〈する〉",
     "hiragana": "こうぎ",
-    "meaning": "bài giảng (ở đại học)",
+    "meaning": "giờ học, tiết học",
     "hanViet": "",
     "exampleSentence": "山下先生の こうぎは わかりやすいです。",
     "exampleTranslation": "Bài giảng của thầy/cô Yamashita dễ hiểu.",
@@ -4095,7 +4095,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "kanji": "まとめる",
     "hiragana": "まとめる",
-    "meaning": "tổng hợp, tóm tắt",
+    "meaning": "tóm tắt (~)",
     "exampleSentence": "週末までに 研究を まとめます。",
     "exampleTranslation": "Tôi sẽ tổng hợp bài nghiên cứu trước cuối tuần.",
     "originalNumber": 204,
@@ -5516,7 +5516,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 278,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "guidebook",
+    "englishExampleTranslation": "I bought a guidebook at a book store."
   },
   {
     "id": "tango_n4_279",
@@ -5535,7 +5537,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 279,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "timetable",
+    "englishExampleTranslation": "Where is the train timetable?"
   },
   {
     "id": "tango_n4_280",
@@ -5554,7 +5558,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 280,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "plan",
+    "englishExampleTranslation": "This year, I plan to go a trip with my family."
   },
   {
     "id": "tango_n4_281",
@@ -5573,7 +5579,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 281,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "far (away)",
+    "englishExampleTranslation": "Sometimes, I like to travel to someplace far away."
   },
   {
     "id": "tango_n4_282",
@@ -5592,7 +5600,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 282,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "overseas",
+    "englishExampleTranslation": "I would like to travel overseas during summer vacation."
   },
   {
     "id": "tango_n4_283",
@@ -5611,7 +5621,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 283,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "domestic, in the country",
+    "englishExampleTranslation": "In the summer, I'm going to travel the country with my mother."
   },
   {
     "id": "tango_n4_284",
@@ -5630,7 +5642,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 284,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "scenery",
+    "englishExampleTranslation": "The scenery visible from here is really beautiful."
   },
   {
     "id": "tango_n4_285",
@@ -5649,7 +5663,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 285,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "festival",
+    "englishExampleTranslation": "There are many interesting festivals in Japan."
   },
   {
     "id": "tango_n4_286",
@@ -5668,7 +5684,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 286,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "fireworks",
+    "englishExampleTranslation": "Japanese fireworks engineering is the best in the world."
   },
   {
     "id": "tango_n4_287",
@@ -5687,7 +5705,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 287,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "extended weekend, ~day weekend",
+    "englishExampleTranslation": "I'm happy for the four-day weekend we're about to have."
   },
   {
     "id": "tango_n4_288",
@@ -5707,7 +5727,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 288,
     "partOfSpeech": "名",
-    "notes": "「花見（を）する」(hanami (wo) suru) is often used to talk about viewing cherry blossoms.\nTừ thường dùng để nói về việc ngắm hoa anh đào là 「花見（を）する」."
+    "notes": "「花見（を）する」(hanami (wo) suru) is often used to talk about viewing cherry blossoms.\nTừ thường dùng để nói về việc ngắm hoa anh đào là 「花見（を）する」.",
+    "englishMeaning": "New Year's",
+    "englishExampleTranslation": "I intend to go back to my company during the New Year's holiday."
   },
   {
     "id": "tango_n4_289",
@@ -5726,7 +5748,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 289,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "travel agency",
+    "englishExampleTranslation": "The travel agency near the station is really kind."
   },
   {
     "id": "tango_n4_290",
@@ -5745,7 +5769,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 旅行 (Du lịch) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 290,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to apply",
+    "englishExampleTranslation": "I applied for a trip to Hawaii with my friend."
   },
   {
     "id": "tango_n4_291",
@@ -5765,7 +5791,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 291,
     "partOfSpeech": "名",
-    "notes": "ベッド is usually omitted. / Thông thường, được nói bằng cách lược bỏ chữ 'giường'."
+    "notes": "ベッド is usually omitted. / Thông thường, được nói bằng cách lược bỏ chữ 'giường'.",
+    "englishMeaning": "room with a single bed",
+    "englishExampleTranslation": "I reserved a room with a single bed."
   },
   {
     "kanji": "予約〈する〉",
@@ -5784,7 +5812,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_292",
     "partOfSpeech": "名",
     "romaji": "yoyaku",
-    "hanViet": "DƯ ƯỚC"
+    "hanViet": "DƯ ƯỚC",
+    "englishMeaning": "reservation",
+    "englishExampleTranslation": "You should make a hotel reservation soon."
   },
   {
     "kanji": "したく〈する〉",
@@ -5803,7 +5833,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_293",
     "partOfSpeech": "名",
     "romaji": "shitaku",
-    "hanViet": "CHI ĐỘ"
+    "hanViet": "CHI ĐỘ",
+    "englishMeaning": "preparations",
+    "englishExampleTranslation": "I'm making preparations for my trip."
   },
   {
     "kanji": "空港",
@@ -5822,7 +5854,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_294",
     "partOfSpeech": "名",
     "romaji": "kuukou",
-    "hanViet": "KHÔNG CẢNG"
+    "hanViet": "KHÔNG CẢNG",
+    "englishMeaning": "airport",
+    "englishExampleTranslation": "I'm going from here to the airport by bus."
   },
   {
     "kanji": "両替〈する〉",
@@ -5841,7 +5875,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_295",
     "partOfSpeech": "名",
     "romaji": "ryougae",
-    "hanViet": "LƯỠNG THẾ"
+    "hanViet": "LƯỠNG THẾ",
+    "englishMeaning": "exchange",
+    "englishExampleTranslation": "Where should I exchange money into Japanese yen?"
   },
   {
     "kanji": "出発〈する〉",
@@ -5860,7 +5896,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_296",
     "partOfSpeech": "名",
     "romaji": "shuppatsu",
-    "hanViet": "XUẤT PHÁT"
+    "hanViet": "XUẤT PHÁT",
+    "englishMeaning": "departing",
+    "englishExampleTranslation": "The plane will depart soon."
   },
   {
     "kanji": "到着〈する〉",
@@ -5879,7 +5917,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_297",
     "partOfSpeech": "名",
     "romaji": "touchaku",
-    "hanViet": "ĐÁO TRƯỚC"
+    "hanViet": "ĐÁO TRƯỚC",
+    "englishMeaning": "arrival",
+    "englishExampleTranslation": "What time will you arrive in Japan?"
   },
   {
     "kanji": "帰国〈する〉",
@@ -5898,7 +5938,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_298",
     "partOfSpeech": "名",
     "romaji": "kikoku",
-    "hanViet": "QUY QUỐC"
+    "hanViet": "QUY QUỐC",
+    "englishMeaning": "returning to one's country",
+    "englishExampleTranslation": "I must go back to my country next month."
   },
   {
     "kanji": "旅館",
@@ -5917,7 +5959,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_299",
     "partOfSpeech": "名",
     "romaji": "ryokan",
-    "hanViet": "LỮ QUÁN"
+    "hanViet": "LỮ QUÁN",
+    "englishMeaning": "Japanese-style inn",
+    "englishExampleTranslation": "This Japanese-style inn is very famous."
   },
   {
     "kanji": "フロント",
@@ -5936,7 +5980,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_300",
     "partOfSpeech": "名",
     "romaji": "furonto",
-    "hanViet": ""
+    "hanViet": "",
+    "englishMeaning": "front desk",
+    "englishExampleTranslation": "I will show my passport at the hotel front desk."
   },
   {
     "kanji": "泊まる",
@@ -5955,7 +6001,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_301",
     "partOfSpeech": "動",
     "romaji": "tomaru",
-    "hanViet": "BẠC"
+    "hanViet": "BẠC",
+    "englishMeaning": "to stay",
+    "englishExampleTranslation": "I want to stay at that famous Japanese-style inn."
   },
   {
     "kanji": "すごす",
@@ -5974,7 +6022,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_302",
     "partOfSpeech": "動",
     "romaji": "sugosu",
-    "hanViet": "QUÁ"
+    "hanViet": "QUÁ",
+    "englishMeaning": "to spend",
+    "englishExampleTranslation": "I want to spend my time living leisurely in a warm country."
   },
   {
     "kanji": "経験〈する〉",
@@ -5993,7 +6043,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_303",
     "partOfSpeech": "名",
     "romaji": "keiken",
-    "hanViet": "KINH NGHIỆM"
+    "hanViet": "KINH NGHIỆM",
+    "englishMeaning": "experience",
+    "englishExampleTranslation": "I will experience a lot when I am young."
   },
   {
     "kanji": "見物〈する〉",
@@ -6012,7 +6064,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_304",
     "partOfSpeech": "名",
     "romaji": "kenbutsu",
-    "hanViet": "KIẾN VẬT"
+    "hanViet": "KIẾN VẬT",
+    "englishMeaning": "sightseeing",
+    "englishExampleTranslation": "I got on a bus and went sightseeing in Tokyo."
   },
   {
     "kanji": "はがき",
@@ -6031,7 +6085,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_305",
     "partOfSpeech": "名",
     "romaji": "hagaki",
-    "hanViet": "DIỆP THƯ"
+    "hanViet": "DIỆP THƯ",
+    "englishMeaning": "postcard",
+    "englishExampleTranslation": "My friend sent me a beautiful postcard."
   },
   {
     "id": "tango_n4_306",
@@ -6050,7 +6106,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 306,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "Japanese food",
+    "englishExampleTranslation": "Japanese cuisine is called washoku."
   },
   {
     "id": "tango_n4_307",
@@ -6069,7 +6127,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 307,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "Western food",
+    "englishExampleTranslation": "Today, I want to eat Western food."
   },
   {
     "id": "tango_n4_308",
@@ -6088,14 +6148,16 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 308,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "steak",
+    "englishExampleTranslation": "I ate a 400 gram steak by myself."
   },
   {
     "id": "tango_n4_309",
     "kanji": "ハンバーグ",
     "hiragana": "ハンバーグ",
     "romaji": "hanbaagu",
-    "meaning": "thịt băm viên áp chảo (hamburg)",
+    "meaning": "thịt nướng ham-bơ-gơ",
     "hanViet": "",
     "exampleSentence": "とうふの ハンバーグは 体に いいです。",
     "exampleTranslation": "Hamburg làm từ đậu hũ tốt cho cơ thể.",
@@ -6107,7 +6169,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 309,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "hamburger steak",
+    "englishExampleTranslation": "Tofu hamburger steak is good for you."
   },
   {
     "id": "tango_n4_310",
@@ -6126,7 +6190,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 310,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "salad",
+    "englishExampleTranslation": "I eat a lot of salad every day."
   },
   {
     "id": "tango_n4_311",
@@ -6145,7 +6211,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 311,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "cake",
+    "englishExampleTranslation": "I eat cake at 3:00 every day."
   },
   {
     "id": "tango_n4_312",
@@ -6164,7 +6232,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 312,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "menu",
+    "englishExampleTranslation": "What's on the menu for dinner tonight?"
   },
   {
     "id": "tango_n4_313",
@@ -6183,7 +6253,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 313,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "all-you-can-eat",
+    "englishExampleTranslation": "That restaurant has an all-you-can-eat menu for 2,000 yen."
   },
   {
     "id": "tango_n4_314",
@@ -6202,7 +6274,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 314,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "order",
+    "englishExampleTranslation": "I ordered a lot of food with meat."
   },
   {
     "id": "tango_n4_315",
@@ -6221,7 +6295,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 315,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "treating to a meal",
+    "englishExampleTranslation": "On my birthday, my friend treated me to a meal."
   },
   {
     "id": "tango_n4_316",
@@ -6240,7 +6316,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 316,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "alcohol",
+    "englishExampleTranslation": "I can't drink alcohol, so I ordered some oolong tea."
   },
   {
     "id": "tango_n4_317",
@@ -6259,7 +6337,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 317,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "toast",
+    "englishExampleTranslation": "Let's have a toast with beer."
   },
   {
     "id": "tango_n4_318",
@@ -6279,7 +6359,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 318,
     "partOfSpeech": "動",
-    "notes": "「酔っぱらう」chỉ dùng khi uống rượu nhiều quá nhưng 「酔う」còn dùng để diễn tả cảm giác khó chịu khi đi tàu, xe."
+    "notes": "「酔っぱらう」chỉ dùng khi uống rượu nhiều quá nhưng 「酔う」còn dùng để diễn tả cảm giác khó chịu khi đi tàu, xe.",
+    "englishMeaning": "to get drunk",
+    "englishExampleTranslation": "I drank too much wine and got drunk."
   },
   {
     "id": "tango_n4_319",
@@ -6298,7 +6380,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 319,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "soy sauce",
+    "englishExampleTranslation": "Soy sauce is used in this dish."
   },
   {
     "id": "tango_n4_320",
@@ -6317,7 +6401,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 料理〜食べる (Món ăn ~ Ăn) · Phần 3: 楽しいこと",
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 320,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "sauce",
+    "englishExampleTranslation": "This dish goes well with sauce."
   },
   {
     "kanji": "(しょうゆを) つける",
@@ -6336,7 +6422,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_321",
     "partOfSpeech": "動",
     "romaji": "tsukeru",
-    "hanViet": ""
+    "hanViet": "",
+    "englishMeaning": "to put in soy sauce",
+    "englishExampleTranslation": "This is good if you put it in soy sauce."
   },
   {
     "kanji": "味",
@@ -6355,7 +6443,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_322",
     "partOfSpeech": "名",
     "romaji": "aji",
-    "hanViet": "VỊ"
+    "hanViet": "VỊ",
+    "englishMeaning": "taste, flavor",
+    "englishExampleTranslation": "I love the way the food at this restaurant tastes."
   },
   {
     "kanji": "(味が) うすい",
@@ -6375,7 +6465,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "イ形",
     "notes": "Không chỉ dùng với nghĩa vị của thức ăn, mà còn có thể dùng để chỉ màu sắc.",
     "romaji": "usui",
-    "hanViet": "BẠC"
+    "hanViet": "BẠC",
+    "englishMeaning": "thin (flavor)",
+    "englishExampleTranslation": "The miso soup is a little thin today."
   },
   {
     "kanji": "(味が) こい",
@@ -6394,7 +6486,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_324",
     "partOfSpeech": "イ形",
     "romaji": "koi",
-    "hanViet": "NỒNG"
+    "hanViet": "NỒNG",
+    "englishMeaning": "rich, thick (flavor)",
+    "englishExampleTranslation": "I like thick tea."
   },
   {
     "kanji": "にがい",
@@ -6413,7 +6507,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_325",
     "partOfSpeech": "イ形",
     "romaji": "nigai",
-    "hanViet": "KHỔ"
+    "hanViet": "KHỔ",
+    "englishMeaning": "bitter",
+    "englishExampleTranslation": "Beer is bitter, so I don't drink it much."
   },
   {
     "kanji": "におい",
@@ -6432,7 +6528,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_326",
     "partOfSpeech": "名",
     "romaji": "nioi",
-    "hanViet": ""
+    "hanViet": "",
+    "englishMeaning": "smell",
+    "englishExampleTranslation": "There is a nice smell coming from the kitchen."
   },
   {
     "kanji": "かむ",
@@ -6451,7 +6549,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_327",
     "partOfSpeech": "動",
     "romaji": "kamu",
-    "hanViet": "NGẬP"
+    "hanViet": "NGẬP",
+    "englishMeaning": "to chew, to bite",
+    "englishExampleTranslation": "Make sure to chew your food thoroughly when eating."
   },
   {
     "kanji": "量",
@@ -6470,7 +6570,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_328",
     "partOfSpeech": "名",
     "romaji": "ryou",
-    "hanViet": "LƯỢNG"
+    "hanViet": "LƯỢNG",
+    "englishMeaning": "amount, portion",
+    "englishExampleTranslation": "This restaurant's spaghetti's portions are big."
   },
   {
     "kanji": "残す",
@@ -6489,7 +6591,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_329",
     "partOfSpeech": "動",
     "romaji": "nokosu",
-    "hanViet": "TÀN"
+    "hanViet": "TÀN",
+    "englishMeaning": "to leave",
+    "englishExampleTranslation": "I left a little rice."
   },
   {
     "kanji": "残る",
@@ -6508,7 +6612,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_330",
     "partOfSpeech": "動",
     "romaji": "nokoru",
-    "hanViet": "TÀN"
+    "hanViet": "TÀN",
+    "englishMeaning": "to remain, to be left over",
+    "englishExampleTranslation": "If there is any left over food, let's eat it tomorrow."
   },
   {
     "kanji": "チャレンジ〈する〉",
@@ -6527,7 +6633,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_331",
     "partOfSpeech": "名",
     "romaji": "charenji",
-    "hanViet": ""
+    "hanViet": "",
+    "englishMeaning": "challenge",
+    "englishExampleTranslation": "I want to try Thai food."
   },
   {
     "id": "tango_n4_332",
@@ -6547,7 +6655,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 332,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "ingredient",
+    "englishExampleTranslation": "I'm going to make a dish with the ingredients in the refrigerator."
   },
   {
     "id": "tango_n4_333",
@@ -6567,7 +6677,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 333,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "half",
+    "englishExampleTranslation": "Please cut the tomato in half."
   },
   {
     "id": "tango_n4_334",
@@ -6587,7 +6699,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 334,
     "partOfSpeech": "動",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "to measure",
+    "englishExampleTranslation": "I measure the salt and sugar with a spoon."
   },
   {
     "id": "tango_n4_335",
@@ -6607,7 +6721,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 335,
     "partOfSpeech": "動",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "to mix",
+    "englishExampleTranslation": "Please mix the meat and onions well."
   },
   {
     "id": "tango_n4_336",
@@ -6627,7 +6743,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 336,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "tool",
+    "englishExampleTranslation": "I bought some convenient tools for the kitchen."
   },
   {
     "id": "tango_n4_337",
@@ -6647,7 +6765,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 337,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "pot",
+    "englishExampleTranslation": "Please put water in the pot."
   },
   {
     "id": "tango_n4_338",
@@ -6667,14 +6787,16 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 338,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "lid",
+    "englishExampleTranslation": "Where is the lid for this bottle?"
   },
   {
     "id": "tango_n4_339",
     "kanji": "[お]皿",
     "hiragana": "さら",
     "romaji": "sara",
-    "meaning": "cái dĩa (đĩa)",
+    "meaning": "cái đĩa (dĩa)",
     "hanViet": "MÃNH",
     "exampleSentence": "この 料理には 白い 皿を 使いましょう。",
     "exampleTranslation": "Hãy dùng dĩa màu trắng cho món ăn này.",
@@ -6687,7 +6809,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 339,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "plate",
+    "englishExampleTranslation": "Let's use a white plate for this dish."
   },
   {
     "id": "tango_n4_340",
@@ -6707,7 +6831,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 340,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "bowl",
+    "englishExampleTranslation": "Whose large bowl is this?"
   },
   {
     "id": "tango_n4_341",
@@ -6727,7 +6853,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 341,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "preparations",
+    "englishExampleTranslation": "Please prepare a large bowl."
   },
   {
     "id": "tango_n4_342",
@@ -6747,7 +6875,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 342,
     "partOfSpeech": "動",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "to line up",
+    "englishExampleTranslation": "There are a lot of people lined up outside of the ramen shop."
   },
   {
     "id": "tango_n4_343",
@@ -6767,7 +6897,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 343,
     "partOfSpeech": "動",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "to put in a line, to line up",
+    "englishExampleTranslation": "There are dishes lined up on the table."
   },
   {
     "id": "tango_n4_344",
@@ -6787,7 +6919,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 344,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "heat, fire",
+    "englishExampleTranslation": "The heat is a little high, so please lower it."
   },
   {
     "id": "tango_n4_345",
@@ -6807,7 +6941,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 345,
     "partOfSpeech": "動",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "to cook, to bake",
+    "englishExampleTranslation": "I will cook the fish for about 10 minutes."
   },
   {
     "id": "tango_n4_346",
@@ -6827,7 +6963,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 346,
     "partOfSpeech": "動",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "to be cooked, to be baked",
+    "englishExampleTranslation": "The bread will soon be baked."
   },
   {
     "kanji": "やかん",
@@ -6847,7 +6985,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "yakan",
-    "hanViet": "DƯỢC QUÁN"
+    "hanViet": "DƯỢC QUÁN",
+    "englishMeaning": "kettle",
+    "englishExampleTranslation": "Is there water in the kettle?"
   },
   {
     "kanji": "わかす",
@@ -6867,7 +7007,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "wakasu",
-    "hanViet": "PHÍ"
+    "hanViet": "PHÍ",
+    "englishMeaning": "to boil",
+    "englishExampleTranslation": "Let's boil water in the kettle."
   },
   {
     "kanji": "温める",
@@ -6887,7 +7029,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "atatameru",
-    "hanViet": "ÔN"
+    "hanViet": "ÔN",
+    "englishMeaning": "to heat up",
+    "englishExampleTranslation": "Please heat up this soup."
   },
   {
     "kanji": "冷やす",
@@ -6907,7 +7051,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "hiyasu",
-    "hanViet": "LÃNH"
+    "hanViet": "LÃNH",
+    "englishMeaning": "to chill, to cool",
+    "englishExampleTranslation": "I'm going to cool this off in the refrigerator for 30 minutes."
   },
   {
     "kanji": "(お茶を) 入れる",
@@ -6927,7 +7073,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "ireru",
-    "hanViet": "NHẬP"
+    "hanViet": "NHẬP",
+    "englishMeaning": "to make tea",
+    "englishExampleTranslation": "Shall I make some tea?"
   },
   {
     "kanji": "くさる",
@@ -6947,7 +7095,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "kusaru",
-    "hanViet": "HỦ"
+    "hanViet": "HỦ",
+    "englishMeaning": "to go bad",
+    "englishExampleTranslation": "The meat in the refrigerator has gone bad."
   },
   {
     "kanji": "すてる",
@@ -6967,7 +7117,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "suteru",
-    "hanViet": "XẢ"
+    "hanViet": "XẢ",
+    "englishMeaning": "to throw away",
+    "englishExampleTranslation": "Please don't throw these vegetables away."
   },
   {
     "kanji": "[お]米",
@@ -6987,7 +7139,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "kome",
-    "hanViet": "MỄ"
+    "hanViet": "MỄ",
+    "englishMeaning": "rice",
+    "englishExampleTranslation": "I like rice more than bread."
   },
   {
     "kanji": "[お]べんとう",
@@ -7007,7 +7161,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "bentou",
-    "hanViet": "BIỆN ĐƯƠNG"
+    "hanViet": "BIỆN ĐƯƠNG",
+    "englishMeaning": "boxed lunch",
+    "englishExampleTranslation": "I make my own boxed lunch every day."
   },
   {
     "kanji": "おかず",
@@ -7027,7 +7183,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "okazu",
-    "hanViet": ""
+    "hanViet": "",
+    "englishMeaning": "side dish",
+    "englishExampleTranslation": "Today's side dish is tempura."
   },
   {
     "kanji": "インスタント食品",
@@ -7047,7 +7205,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "insutantoshokuhin",
-    "hanViet": "THỰC PHẨM"
+    "hanViet": "THỰC PHẨM",
+    "englishMeaning": "instant food",
+    "englishExampleTranslation": "I often eat instant food."
   },
   {
     "kanji": "かんづめ",
@@ -7067,7 +7227,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "kandzume",
-    "hanViet": "QUÁN CẬT"
+    "hanViet": "QUÁN CẬT",
+    "englishMeaning": "canned food",
+    "englishExampleTranslation": "Canned food is convenient for cooking."
   },
   {
     "kanji": "家事",
@@ -7087,7 +7249,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "kaji",
-    "hanViet": "GIA SỰ"
+    "hanViet": "GIA SỰ",
+    "englishMeaning": "house chore",
+    "englishExampleTranslation": "Cooking is my favorite house chore."
   },
   {
     "id": "tango_n4_360",
@@ -7107,7 +7271,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 360,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "price",
+    "englishExampleTranslation": "I buy shoes after looking at the price."
   },
   {
     "id": "tango_n4_361",
@@ -7127,7 +7293,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 361,
     "partOfSpeech": "動",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "to increase",
+    "englishExampleTranslation": "The price of food has increased."
   },
   {
     "id": "tango_n4_362",
@@ -7147,7 +7315,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 362,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "bargain",
+    "englishExampleTranslation": "Summer bargains start tomorrow."
   },
   {
     "id": "tango_n4_363",
@@ -7167,7 +7337,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 363,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "discount",
+    "englishExampleTranslation": "This restaurant offers a student discount."
   },
   {
     "id": "tango_n4_364",
@@ -7187,7 +7359,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 364,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "free",
+    "englishExampleTranslation": "This magazine is free."
   },
   {
     "id": "tango_n4_365",
@@ -7207,7 +7381,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 365,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "having a fee/charge",
+    "englishExampleTranslation": "You have to pay a fee to use this toilet."
   },
   {
     "id": "tango_n4_366",
@@ -7227,7 +7403,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 366,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "wallet",
+    "englishExampleTranslation": "I left my wallet at home."
   },
   {
     "id": "tango_n4_367",
@@ -7247,7 +7425,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 367,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "(cash) register",
+    "englishExampleTranslation": "There are about 10 lined up in front of the register."
   },
   {
     "id": "tango_n4_368",
@@ -7267,7 +7447,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 368,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "calculation",
+    "englishExampleTranslation": "It will take some time to calculate."
   },
   {
     "id": "tango_n4_369",
@@ -7287,7 +7469,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 369,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "store employee",
+    "englishExampleTranslation": "The store employees at this supermarket are kind."
   },
   {
     "id": "tango_n4_370",
@@ -7307,7 +7491,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 370,
     "partOfSpeech": "動",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "to count",
+    "englishExampleTranslation": "Please count the bananas."
   },
   {
     "id": "tango_n4_371",
@@ -7327,7 +7513,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 371,
     "partOfSpeech": "動",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "to pay",
+    "englishExampleTranslation": "Where should I pay the money?"
   },
   {
     "id": "tango_n4_372",
@@ -7347,7 +7535,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 372,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "signature",
+    "englishExampleTranslation": "Please sign here."
   },
   {
     "kanji": "足りる",
@@ -7367,12 +7557,14 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "tariru",
-    "hanViet": "TÚC"
+    "hanViet": "TÚC",
+    "englishMeaning": "to be enough, to be sufficient",
+    "englishExampleTranslation": "There's not quite enough money."
   },
   {
     "kanji": "[お]つり",
     "hiragana": "つり",
-    "meaning": "tiền thối (tiền thừa)",
+    "meaning": "tiền thối",
     "exampleSentence": "おつりを もらうのを わすれました。",
     "exampleTranslation": "Tôi đã quên nhận tiền thối.",
     "originalNumber": 374,
@@ -7387,7 +7579,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "tsuri",
-    "hanViet": "ĐIẾU"
+    "hanViet": "ĐIẾU",
+    "englishMeaning": "change",
+    "englishExampleTranslation": "I forgot to get my change."
   },
   {
     "kanji": "レシート",
@@ -7407,7 +7601,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "reshiito",
-    "hanViet": ""
+    "hanViet": "",
+    "englishMeaning": "receipt",
+    "englishExampleTranslation": "I get receipts when I go shopping."
   },
   {
     "kanji": "りょうしゅう書",
@@ -7427,7 +7623,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "ryoushuusho",
-    "hanViet": "LÃNH THU THƯ"
+    "hanViet": "LÃNH THU THƯ",
+    "englishMeaning": "formal receipt",
+    "englishExampleTranslation": "I got a formal receipt at the restaurant."
   },
   {
     "kanji": "ふくろ",
@@ -7447,7 +7645,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "fukuro",
-    "hanViet": "ĐẠI"
+    "hanViet": "ĐẠI",
+    "englishMeaning": "bag",
+    "englishExampleTranslation": "I always take a bag when I go shopping."
   },
   {
     "kanji": "取りかえる",
@@ -7467,7 +7667,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "torikaeru",
-    "hanViet": "THỦ HOÁN"
+    "hanViet": "THỦ HOÁN",
+    "englishMeaning": "to exchange, to replace",
+    "englishExampleTranslation": "I had them exchange the shoes."
   },
   {
     "kanji": "さがす",
@@ -7487,7 +7689,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "sagasu",
-    "hanViet": "TẦM"
+    "hanViet": "TẦM",
+    "englishMeaning": "to look for",
+    "englishExampleTranslation": "I've been looking for a pink sweater for a while."
   },
   {
     "kanji": "えらぶ",
@@ -7507,7 +7711,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "erabu",
-    "hanViet": "TUYỂN"
+    "hanViet": "TUYỂN",
+    "englishMeaning": "to choose, to pick",
+    "englishExampleTranslation": "I'm glad that I can pick the present."
   },
   {
     "kanji": "包む",
@@ -7527,7 +7733,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "tsutsumu",
-    "hanViet": "BAO"
+    "hanViet": "BAO",
+    "englishMeaning": "to wrap",
+    "englishExampleTranslation": "Please wrap this shirt."
   },
   {
     "kanji": "(お金を) 下ろす",
@@ -7547,7 +7755,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "orosu",
-    "hanViet": "HẠ"
+    "hanViet": "HẠ",
+    "englishMeaning": "to withdraw (money)",
+    "englishExampleTranslation": "I withdraw money at the bank."
   },
   {
     "kanji": "売れる",
@@ -7567,7 +7777,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "ureru",
-    "hanViet": "MẠI"
+    "hanViet": "MẠI",
+    "englishMeaning": "to sell well, to be selling",
+    "englishExampleTranslation": "The bread here is selling really well."
   },
   {
     "kanji": "食料品",
@@ -7587,7 +7799,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "shokuryouhin",
-    "hanViet": "THỰC LIỆU PHẨM"
+    "hanViet": "THỰC LIỆU PHẨM",
+    "englishMeaning": "food product",
+    "englishExampleTranslation": "This store's food products are inexpensive."
   },
   {
     "kanji": "おもちゃ",
@@ -7607,7 +7821,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "omocha",
-    "hanViet": ""
+    "hanViet": "",
+    "englishMeaning": "toy",
+    "englishExampleTranslation": "The toy sales department is on the fifth floor."
   },
   {
     "kanji": "パンフレット",
@@ -7627,7 +7843,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "panfuretto",
-    "hanViet": ""
+    "hanViet": "",
+    "englishMeaning": "pamphlet",
+    "englishExampleTranslation": "I'm going to buy a computer after I read the pamphlet."
   },
   {
     "kanji": "日本製",
@@ -7647,7 +7865,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "nihonsei",
-    "hanViet": "NHẬT BẢN CHẾ"
+    "hanViet": "NHẬT BẢN CHẾ",
+    "englishMeaning": "Japanese-made",
+    "englishExampleTranslation": "This is a Japanese-made TV."
   },
   {
     "kanji": "本物",
@@ -7667,7 +7887,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "honmono",
-    "hanViet": "BẢN VẬT"
+    "hanViet": "BẢN VẬT",
+    "englishMeaning": "real, authentic",
+    "englishExampleTranslation": "If this is real, I'd buy it even if it were expensive."
   },
   {
     "id": "tango_n4_389",
@@ -7687,7 +7909,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 389,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "place, location",
+    "englishExampleTranslation": "There are places I want to go."
   },
   {
     "id": "tango_n4_390",
@@ -7707,7 +7931,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 390,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "in front of the station",
+    "englishExampleTranslation": "A new store opened in front of the station."
   },
   {
     "id": "tango_n4_391",
@@ -7727,7 +7953,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 391,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "police box",
+    "englishExampleTranslation": "I asked for directions at the police box in front of the station."
   },
   {
     "id": "tango_n4_392",
@@ -7747,7 +7975,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 392,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "city hall, city office",
+    "englishExampleTranslation": "There is a bus that goes from the station to the city office."
   },
   {
     "id": "tango_n4_393",
@@ -7767,7 +7997,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 393,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "bus stop",
+    "englishExampleTranslation": "There is a bus stop right by my house."
   },
   {
     "id": "tango_n4_394",
@@ -7787,7 +8019,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 394,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "wide open area, field",
+    "englishExampleTranslation": "Let's play with the children in the field."
   },
   {
     "id": "tango_n4_395",
@@ -7807,7 +8041,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 395,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "castle",
+    "englishExampleTranslation": "This castle was built 450 years ago."
   },
   {
     "id": "tango_n4_396",
@@ -7827,7 +8063,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 396,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "shrine",
+    "englishExampleTranslation": "On New Year's Day, I went to a shrine with my friend."
   },
   {
     "id": "tango_n4_397",
@@ -7847,7 +8085,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 397,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "church",
+    "englishExampleTranslation": "There is an old church in my neighborhood."
   },
   {
     "id": "tango_n4_398",
@@ -7867,7 +8107,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 398,
     "partOfSpeech": "名",
-    "notes": "Tên của các cảng cụ thể thường đọc là「○○こう」. Ví dụ: ヨコハマこう (cảng Yokohama)."
+    "notes": "Tên của các cảng cụ thể thường đọc là「○○こう」. Ví dụ: ヨコハマこう (cảng Yokohama).",
+    "englishMeaning": "harbor",
+    "englishExampleTranslation": "Sometimes I walk to the harbor."
   },
   {
     "id": "tango_n4_399",
@@ -7887,7 +8129,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 399,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "zoo",
+    "englishExampleTranslation": "I'm going to the zoo to see the pandas."
   },
   {
     "id": "tango_n4_400",
@@ -7907,7 +8151,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 400,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "art museum",
+    "englishExampleTranslation": "On my days off, I often go to the art museum."
   },
   {
     "id": "tango_n4_401",
@@ -7927,7 +8173,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 401,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "amusement park",
+    "englishExampleTranslation": "My family is going to the amusement park on Sunday."
   },
   {
     "id": "tango_n4_402",
@@ -7947,7 +8195,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "楽しいこと (Những việc vui vẻ)",
     "originalNumber": 402,
     "partOfSpeech": "名",
-    "notes": null
+    "notes": null,
+    "englishMeaning": "ski resort, snow resort",
+    "englishExampleTranslation": "We will arrive at the snow resort in one hour."
   },
   {
     "kanji": "温泉",
@@ -7967,7 +8217,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "onsen",
-    "hanViet": "ÔN TUYỀN"
+    "hanViet": "ÔN TUYỀN",
+    "englishMeaning": "hot springs",
+    "englishExampleTranslation": "There are many hot springs in Japan."
   },
   {
     "kanji": "駐車場",
@@ -7987,7 +8239,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "chuushajou",
-    "hanViet": "TRÚ XA TRÀNG"
+    "hanViet": "TRÚ XA TRÀNG",
+    "englishMeaning": "parking lot",
+    "englishExampleTranslation": "There is a big parking lot by the condominium building."
   },
   {
     "kanji": "屋上",
@@ -8007,7 +8261,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "okujou",
-    "hanViet": "ỐC THƯỢNG"
+    "hanViet": "ỐC THƯỢNG",
+    "englishMeaning": "roof",
+    "englishExampleTranslation": "You can't go out on the roof of this building."
   },
   {
     "kanji": "地下",
@@ -8027,7 +8283,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "chika",
-    "hanViet": "ĐỊA HẠ"
+    "hanViet": "ĐỊA HẠ",
+    "englishMeaning": "basement",
+    "englishExampleTranslation": "I'm going to buy a cake in the basement of this department store."
   },
   {
     "kanji": "いなか",
@@ -8047,7 +8305,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "inaka",
-    "hanViet": "ĐIỀN XÁ / ĐỒNG QUÊ"
+    "hanViet": "ĐIỀN XÁ / ĐỒNG QUÊ",
+    "englishMeaning": "countryside",
+    "englishExampleTranslation": "I want to live in the countryside."
   },
   {
     "kanji": "郊外",
@@ -8067,7 +8327,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "kougai",
-    "hanViet": "GIAO NGOẠI"
+    "hanViet": "GIAO NGOẠI",
+    "englishMeaning": "suburbs",
+    "englishExampleTranslation": "I moved to the suburbs of Tokyo last year."
   },
   {
     "kanji": "方言",
@@ -8087,7 +8349,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "hougen",
-    "hanViet": "PHƯƠNG NGÔN"
+    "hanViet": "PHƯƠNG NGÔN",
+    "englishMeaning": "dialect",
+    "englishExampleTranslation": "In the countryside where I'm from, we have our own dialect."
   },
   {
     "kanji": "禁煙〈する〉",
@@ -8107,7 +8371,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "kin'en",
-    "hanViet": "CẤM YÊN"
+    "hanViet": "CẤM YÊN",
+    "englishMeaning": "no smoking",
+    "englishExampleTranslation": "There is no smoking here, but please help yourself over there."
   },
   {
     "kanji": "立入禁止",
@@ -8127,7 +8393,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "tachiirikinshi",
-    "hanViet": "LẬP NHẬP CẤM CHỈ"
+    "hanViet": "LẬP NHẬP CẤM CHỈ",
+    "englishMeaning": "no entrance, entrance prohibited",
+    "englishExampleTranslation": "Entrance is prohibited in this area."
   },
   {
     "kanji": "通り",
@@ -8147,7 +8415,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "toori",
-    "hanViet": "THÔNG"
+    "hanViet": "THÔNG",
+    "englishMeaning": "street",
+    "englishExampleTranslation": "This is the widest street in the city."
   },
   {
     "kanji": "右側",
@@ -8167,7 +8437,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "migigawa",
-    "hanViet": "HỮU TRẮC"
+    "hanViet": "HỮU TRẮC",
+    "englishMeaning": "right-side",
+    "englishExampleTranslation": "There is a bank on the right side of this street."
   },
   {
     "kanji": "間",
@@ -8187,7 +8459,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "aida",
-    "hanViet": "GIAN"
+    "hanViet": "GIAN",
+    "englishMeaning": "in between, between",
+    "englishExampleTranslation": "There is a café between the flower shop and the bookstore."
   },
   {
     "kanji": "真ん中",
@@ -8207,7 +8481,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "mannaka",
-    "hanViet": "CHÂN TRUNG"
+    "hanViet": "CHÂN TRUNG",
+    "englishMeaning": "in the middle",
+    "englishExampleTranslation": "The is a large park in the middle of the city."
   },
   {
     "kanji": "向こう",
@@ -8227,12 +8503,14 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "名",
     "notes": null,
     "romaji": "mukou",
-    "hanViet": "HƯỚNG"
+    "hanViet": "HƯỚNG",
+    "englishMeaning": "on the other side",
+    "englishExampleTranslation": "A hotel opened on the other side of the mountain."
   },
   {
     "kanji": "たずねる",
     "hiragana": "たずねる",
-    "meaning": "hỏi",
+    "meaning": "hỏi thăm",
     "exampleSentence": "おばあさんに 道を たずねられました。",
     "exampleTranslation": "Tôi bị một bà cụ hỏi đường.",
     "originalNumber": 417,
@@ -8247,7 +8525,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "tazuneru",
-    "hanViet": "TẦM"
+    "hanViet": "TẦM",
+    "englishMeaning": "to ask",
+    "englishExampleTranslation": "A old woman asked me for directions."
   },
   {
     "kanji": "寄る",
@@ -8267,7 +8547,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "yoru",
-    "hanViet": "KÝ"
+    "hanViet": "KÝ",
+    "englishMeaning": "to stop by, to drop by",
+    "englishExampleTranslation": "I'm going to stop by the bank before going to school."
   },
   {
     "kanji": "(ビルが) できる",
@@ -8287,7 +8569,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "partOfSpeech": "動",
     "notes": null,
     "romaji": "dekiru",
-    "hanViet": "XUẤT LAI"
+    "hanViet": "XUẤT LAI",
+    "englishMeaning": "(a building) to be opened",
+    "englishExampleTranslation": "A large building opened up in front of the station."
   },
   {
     "id": "tango_n4_420",
@@ -8306,7 +8590,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 420,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "weather forecast",
+    "englishExampleTranslation": "I check the weather report every day."
   },
   {
     "id": "tango_n4_421",
@@ -8325,7 +8611,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 421,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "blue sky",
+    "englishExampleTranslation": "Today, there are very beautiful blue skies."
   },
   {
     "id": "tango_n4_422",
@@ -8344,7 +8632,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 422,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to be clear",
+    "englishExampleTranslation": "The weather is probably going to be clear tomorrow."
   },
   {
     "id": "tango_n4_423",
@@ -8363,7 +8653,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 423,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "cloudy weather",
+    "englishExampleTranslation": "It's going to be cloudy every day this week."
   },
   {
     "id": "tango_n4_424",
@@ -8382,7 +8674,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 424,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "wind",
+    "englishExampleTranslation": "The trains were stopped due to strong winds."
   },
   {
     "id": "tango_n4_425",
@@ -8401,7 +8695,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 425,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to blow",
+    "englishExampleTranslation": "Today, there are very strong winds blowing."
   },
   {
     "id": "tango_n4_426",
@@ -8420,7 +8716,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 426,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to stop",
+    "englishExampleTranslation": "The rain is probably going to stop soon."
   },
   {
     "id": "tango_n4_427",
@@ -8439,7 +8737,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 427,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "typhoon",
+    "englishExampleTranslation": "A large typhoon might come."
   },
   {
     "id": "tango_n4_428",
@@ -8458,7 +8758,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 428,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "thunder",
+    "englishExampleTranslation": "I really hate thunder."
   },
   {
     "id": "tango_n4_429",
@@ -8477,7 +8779,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 429,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "raincoat",
+    "englishExampleTranslation": "I'm going to wear a raincoat when I go out tomorrow."
   },
   {
     "id": "tango_n4_430",
@@ -8496,7 +8800,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 430,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to hold (an umbrella)",
+    "englishExampleTranslation": "There are many people holding umbrellas."
   },
   {
     "id": "tango_n4_431",
@@ -8515,7 +8821,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 1: 天気 (Thời tiết) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 431,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to get wet",
+    "englishExampleTranslation": "I didn't have an umbrella, so my clothes got wet."
   },
   {
     "kanji": "波",
@@ -8534,7 +8842,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_432",
     "partOfSpeech": "名",
     "romaji": "nami",
-    "hanViet": "BA"
+    "hanViet": "BA",
+    "englishMeaning": "wave",
+    "englishExampleTranslation": "The waves are high today."
   },
   {
     "kanji": "気温",
@@ -8553,7 +8863,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_433",
     "partOfSpeech": "名",
     "romaji": "kion",
-    "hanViet": "KHÍ ÔN"
+    "hanViet": "KHÍ ÔN",
+    "englishMeaning": "(atmospheric) temperature",
+    "englishExampleTranslation": "The temperature seems like it's going to rise today."
   },
   {
     "kanji": "冷える",
@@ -8572,7 +8884,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_434",
     "partOfSpeech": "動",
     "romaji": "hieru",
-    "hanViet": "LÃNH"
+    "hanViet": "LÃNH",
+    "englishMeaning": "to be chilled, to be cold",
+    "englishExampleTranslation": "I was outside for a while, so my body got cold."
   },
   {
     "kanji": "比べる",
@@ -8591,7 +8905,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_435",
     "partOfSpeech": "動",
     "romaji": "kuraberu",
-    "hanViet": "TỶ"
+    "hanViet": "TỶ",
+    "englishMeaning": "to compare",
+    "englishExampleTranslation": "Compared to Japan, my country is very cold."
   },
   {
     "id": "tango_n4_436",
@@ -8610,7 +8926,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 436,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "earthquake",
+    "englishExampleTranslation": "There was a small earthquake last night."
   },
   {
     "id": "tango_n4_437",
@@ -8629,7 +8947,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 437,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "tsunami",
+    "englishExampleTranslation": "Tsunamis are a concern when there are earthquakes."
   },
   {
     "id": "tango_n4_438",
@@ -8648,7 +8968,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 438,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "sun",
+    "englishExampleTranslation": "In the summer, the sun gets very high in the sky."
   },
   {
     "id": "tango_n4_439",
@@ -8667,7 +8989,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 439,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "sky",
+    "englishExampleTranslation": "It's a beautiful cloudless sky."
   },
   {
     "id": "tango_n4_440",
@@ -8686,7 +9010,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 440,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "moon",
+    "englishExampleTranslation": "The moon looks so bright tonight."
   },
   {
     "id": "tango_n4_441",
@@ -8705,7 +9031,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 441,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "star",
+    "englishExampleTranslation": "There are a lot of visible stars tonight."
   },
   {
     "id": "tango_n4_442",
@@ -8724,7 +9052,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 442,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to light up, to shine",
+    "englishExampleTranslation": "The stars are shining beautifully."
   },
   {
     "id": "tango_n4_443",
@@ -8743,7 +9073,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 443,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "space, universe",
+    "englishExampleTranslation": "Some day, I want to go into space."
   },
   {
     "id": "tango_n4_444",
@@ -8762,7 +9094,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 444,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "atmosphere",
+    "englishExampleTranslation": "The air is very clear in the countryside."
   },
   {
     "id": "tango_n4_445",
@@ -8781,7 +9115,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 445,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "island",
+    "englishExampleTranslation": "I hear there are 6,800 islands in Japan."
   },
   {
     "id": "tango_n4_446",
@@ -8800,14 +9136,16 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 446,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "beach, coast",
+    "englishExampleTranslation": "There is a clean beach in this town."
   },
   {
     "id": "tango_n4_447",
     "kanji": "林",
     "hiragana": "はやし",
     "romaji": "hayashi",
-    "meaning": "rừng thưa, lùm cây",
+    "meaning": "rừng",
     "hanViet": "LÂM",
     "exampleSentence": "林の 中に いろいろな 動物が います。",
     "exampleTranslation": "Trong lùm cây có nhiều loại động vật.",
@@ -8819,7 +9157,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 2: 自然 (Tự nhiên) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 447,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "woods",
+    "englishExampleTranslation": "There are many different animals in the woods."
   },
   {
     "kanji": "湖",
@@ -8837,9 +9177,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_448",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "lake",
     "romaji": "mizuumi",
-    "hanViet": "HỒ"
+    "hanViet": "HỒ",
+    "englishExampleTranslation": "There is a large lake in the park."
   },
   {
     "kanji": "池",
@@ -8857,9 +9198,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_449",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "pond",
     "romaji": "ike",
-    "hanViet": "TRÌ"
+    "hanViet": "TRÌ",
+    "englishExampleTranslation": "In the past, I often swam in this pond."
   },
   {
     "kanji": "虫",
@@ -8877,9 +9219,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_450",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "insect",
     "romaji": "mushi",
-    "hanViet": "TRÙNG"
+    "hanViet": "TRÙNG",
+    "englishExampleTranslation": "I often went to catch bugs with my older brother."
   },
   {
     "kanji": "鳥",
@@ -8897,9 +9240,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_451",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "bird",
     "romaji": "tori",
-    "hanViet": "ĐIỂU"
+    "hanViet": "ĐIỂU",
+    "englishExampleTranslation": "I was awoken by the cute sound of birds chirping."
   },
   {
     "kanji": "季節",
@@ -8917,9 +9261,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_452",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "season",
     "romaji": "kisetsu",
-    "hanViet": "QUÝ TIẾT"
+    "hanViet": "QUÝ TIẾT",
+    "englishExampleTranslation": "My favorite season is fall."
   },
   {
     "kanji": "紅葉",
@@ -8937,9 +9282,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_453",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "autumn foliage, leaves turning color in the fall",
     "romaji": "kouyou",
-    "hanViet": "HỒNG DIỆP"
+    "hanViet": "HỒNG DIỆP",
+    "englishExampleTranslation": "It is almost the season for the leaves to change color."
   },
   {
     "kanji": "[お]花見",
@@ -8957,9 +9303,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_454",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "flower viewing",
     "romaji": "ohanami",
-    "hanViet": "HOA KIẾN"
+    "hanViet": "HOA KIẾN",
+    "englishExampleTranslation": "I intent to go flower viewing this weekend."
   },
   {
     "kanji": "咲く",
@@ -8977,9 +9324,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_455",
     "partOfSpeech": "動",
-    "englishMeaning": "",
+    "englishMeaning": "to bloom",
     "romaji": "saku",
-    "hanViet": "TIẾU"
+    "hanViet": "TIẾU",
+    "englishExampleTranslation": "The flowers are in bloom in the park."
   },
   {
     "kanji": "葉",
@@ -8997,9 +9345,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_456",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "leaf",
     "romaji": "ha",
-    "hanViet": "DIỆP"
+    "hanViet": "DIỆP",
+    "englishExampleTranslation": "The leaves of this flower are beautiful."
   },
   {
     "kanji": "枝",
@@ -9017,9 +9366,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_457",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "branch",
     "romaji": "eda",
-    "hanViet": "CHI"
+    "hanViet": "CHI",
+    "englishExampleTranslation": "There is a bird perched on the branch of a tree."
   },
   {
     "kanji": "折れる",
@@ -9037,9 +9387,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_458",
     "partOfSpeech": "動",
-    "englishMeaning": "",
+    "englishMeaning": "to be broken, to be cracked",
     "romaji": "oreru",
-    "hanViet": "CHIẾT"
+    "hanViet": "CHIẾT",
+    "englishExampleTranslation": "The tree cracked due to the typhoon."
   },
   {
     "kanji": "折る",
@@ -9057,9 +9408,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_459",
     "partOfSpeech": "動",
-    "englishMeaning": "",
+    "englishMeaning": "to break to crack",
     "romaji": "oru",
-    "hanViet": "CHIẾT"
+    "hanViet": "CHIẾT",
+    "englishExampleTranslation": "You mustn't break the branches of cherry blossom trees."
   },
   {
     "kanji": "植える",
@@ -9077,9 +9429,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_460",
     "partOfSpeech": "動",
-    "englishMeaning": "",
+    "englishMeaning": "to grow, to plant",
     "romaji": "ueru",
-    "hanViet": "THỰC"
+    "hanViet": "THỰC",
+    "englishExampleTranslation": "I planted a cherry blossom tree in the garden."
   },
   {
     "id": "tango_n4_461",
@@ -9141,7 +9494,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_463",
     "partOfSpeech": "名",
     "romaji": "yakoubasu",
-    "hanViet": "DẠ HÀNH"
+    "hanViet": "DẠ HÀNH",
+    "englishMeaning": "night bus, overnight bus",
+    "englishExampleTranslation": "The night bus arrived in Kyoto around 8:00 in the morning."
   },
   {
     "id": "tango_n4_464",
@@ -9160,7 +9515,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 乗り物 (Phương tiện giao thông) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 464,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "car, automobile",
+    "englishExampleTranslation": "Small cars are popular."
   },
   {
     "id": "tango_n4_465",
@@ -9179,7 +9536,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 乗り物 (Phương tiện giao thông) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 465,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "motorcycle",
+    "englishExampleTranslation": "On the weekends, I go out with my friend on a motorcycle."
   },
   {
     "id": "tango_n4_466",
@@ -9199,7 +9558,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 466,
     "partOfSpeech": "名",
-    "relatedWords": "嘘をつく to tell a lie / nói dối"
+    "relatedWords": "嘘をつく to tell a lie / nói dối",
+    "englishMeaning": "boat, ship",
+    "englishExampleTranslation": "Someday, I want to travel the world on a boat."
   },
   {
     "id": "tango_n4_467",
@@ -9218,7 +9579,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 乗り物 (Phương tiện giao thông) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 467,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "traffic, transportation",
+    "englishExampleTranslation": "Transportation is very convenient in Tokyo."
   },
   {
     "id": "tango_n4_468",
@@ -9237,7 +9600,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 乗り物 (Phương tiện giao thông) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 468,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "use, usage",
+    "englishExampleTranslation": "I always use the subway."
   },
   {
     "id": "tango_n4_469",
@@ -9257,7 +9622,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 469,
     "partOfSpeech": "動",
-    "relatedWords": "育つ (そだつ) to grow up / lớn lên, phát triển"
+    "relatedWords": "育つ (そだつ) to grow up / lớn lên, phát triển",
+    "englishMeaning": "to get off (of ~)",
+    "englishExampleTranslation": "I'm getting off the bus here."
   },
   {
     "id": "tango_n4_470",
@@ -9276,7 +9643,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 乗り物 (Phương tiện giao thông) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 470,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to transfer",
+    "englishExampleTranslation": "Please transfer here to the metro."
   },
   {
     "id": "tango_n4_471",
@@ -9295,7 +9664,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 3: 乗り物 (Phương tiện giao thông) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 471,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "rush hour",
+    "englishExampleTranslation": "You can find a seat on this train even during rush hour."
   },
   {
     "kanji": "こむ",
@@ -9314,7 +9685,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_472",
     "partOfSpeech": "動",
     "romaji": "komu",
-    "hanViet": "NHẬP / HỖN"
+    "hanViet": "NHẬP / HỖN",
+    "englishMeaning": "to be crowded",
+    "englishExampleTranslation": "The morning trains are really crowded."
   },
   {
     "kanji": "すく",
@@ -9333,7 +9706,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_473",
     "partOfSpeech": "動",
     "romaji": "suku",
-    "hanViet": "KHÔNG"
+    "hanViet": "KHÔNG",
+    "englishMeaning": "to become empty",
+    "englishExampleTranslation": "This bus is always empty."
   },
   {
     "kanji": "通る",
@@ -9351,9 +9726,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_474",
     "partOfSpeech": "動",
-    "englishMeaning": "",
+    "englishMeaning": "to pass through",
     "romaji": "tooru",
-    "hanViet": "THÔNG"
+    "hanViet": "THÔNG",
+    "englishExampleTranslation": "Many different trains pass through this station."
   },
   {
     "kanji": "すぎる",
@@ -9371,9 +9747,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_475",
     "partOfSpeech": "動",
-    "englishMeaning": "",
+    "englishMeaning": "to pass",
     "romaji": "sugiru",
-    "hanViet": "QUÁ"
+    "hanViet": "QUÁ",
+    "englishExampleTranslation": "Once it passed A Station, the train emptied."
   },
   {
     "kanji": "開く",
@@ -9391,9 +9768,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_476",
     "partOfSpeech": "動",
-    "englishMeaning": "",
+    "englishMeaning": "to open",
     "romaji": "aku",
-    "hanViet": "KHAI"
+    "hanViet": "KHAI",
+    "englishExampleTranslation": "Doors on the right side will open at the next stop."
   },
   {
     "kanji": "開ける",
@@ -9411,10 +9789,11 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_477",
     "partOfSpeech": "動",
-    "englishMeaning": "",
+    "englishMeaning": "to open, to make open",
     "relatedWords": "驚く (おどろく) to be surprised / ngạc nhiên",
     "romaji": "akeru",
-    "hanViet": "KHAI"
+    "hanViet": "KHAI",
+    "englishExampleTranslation": "It's hot, so let's open a window."
   },
   {
     "kanji": "閉まる",
@@ -9432,9 +9811,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_478",
     "partOfSpeech": "動",
-    "englishMeaning": "",
+    "englishMeaning": "to close",
     "romaji": "shimaru",
-    "hanViet": "BẾ"
+    "hanViet": "BẾ",
+    "englishExampleTranslation": "Doors on the right side will close."
   },
   {
     "kanji": "閉める",
@@ -9452,9 +9832,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_479",
     "partOfSpeech": "動",
-    "englishMeaning": "",
+    "englishMeaning": "to close, to make close, to shut",
     "romaji": "shimeru",
-    "hanViet": "BẾ"
+    "hanViet": "BẾ",
+    "englishExampleTranslation": "It's cold, so please shut the window."
   },
   {
     "kanji": "運転手",
@@ -9472,9 +9853,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_480",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "driver",
     "romaji": "untenshu",
-    "hanViet": "VẬN CHUYỂN THỦ"
+    "hanViet": "VẬN CHUYỂN THỦ",
+    "englishExampleTranslation": "When I was a child, I wanted to be a bus driver."
   },
   {
     "kanji": "お客さん",
@@ -9492,9 +9874,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_481",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "passenger, customer",
     "romaji": "okyakusan",
-    "hanViet": "KHÁCH"
+    "hanViet": "KHÁCH",
+    "englishExampleTranslation": "There are many foreign passengers on this bus."
   },
   {
     "kanji": "席",
@@ -9512,9 +9895,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_482",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "seat",
     "romaji": "seki",
-    "hanViet": "TỊCH"
+    "hanViet": "TỊCH",
+    "englishExampleTranslation": "Are there still seats on this plane."
   },
   {
     "kanji": "おとな",
@@ -9532,10 +9916,11 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_483",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "adult",
     "relatedWords": "髪の毛 (かみのけ) hair (on head) / tóc",
     "romaji": "otona",
-    "hanViet": "ĐẠI NHÂN"
+    "hanViet": "ĐẠI NHÂN",
+    "englishExampleTranslation": "Please give me two adult tickets and two children's tickets."
   },
   {
     "kanji": "お年より",
@@ -9553,9 +9938,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_484",
     "partOfSpeech": "名",
-    "englishMeaning": "",
+    "englishMeaning": "senior citizen, elderly person",
     "romaji": "toshiyori",
-    "hanViet": "NIÊN"
+    "hanViet": "NIÊN",
+    "englishExampleTranslation": "These seats are for elderly people."
   },
   {
     "id": "tango_n4_485",
@@ -9574,7 +9960,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 運転する (Lái xe) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 485,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to proceed, to move forward",
+    "englishExampleTranslation": "The road is congested, so the cars can't move forward."
   },
   {
     "id": "tango_n4_486",
@@ -9593,7 +9981,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 運転する (Lái xe) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 486,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to head to",
+    "englishExampleTranslation": "I'm heading to the airport in a car now."
   },
   {
     "id": "tango_n4_487",
@@ -9612,7 +10002,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 運転する (Lái xe) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 487,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to stop, to make stop",
+    "englishExampleTranslation": "You mustn't park your car near a bus stop."
   },
   {
     "id": "tango_n4_488",
@@ -9631,7 +10023,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 運転する (Lái xe) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 488,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to stop, to come to a stop",
+    "englishExampleTranslation": "There is a big bus parked in the street."
   },
   {
     "id": "tango_n4_489",
@@ -9650,7 +10044,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 運転する (Lái xe) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 489,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to carry",
+    "englishExampleTranslation": "Please carry this luggage along, too."
   },
   {
     "id": "tango_n4_490",
@@ -9669,7 +10065,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 運転する (Lái xe) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 490,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "operation",
+    "englishExampleTranslation": "The car doors are operated by a remote control."
   },
   {
     "id": "tango_n4_491",
@@ -9688,7 +10086,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 運転する (Lái xe) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 491,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to turn",
+    "englishExampleTranslation": "I turn the wheel of the car."
   },
   {
     "id": "tango_n4_492",
@@ -9707,7 +10107,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 運転する (Lái xe) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 492,
-    "partOfSpeech": "名"
+    "partOfSpeech": "名",
+    "englishMeaning": "accident",
+    "englishExampleTranslation": "Yesterday, I saw an accident on the street."
   },
   {
     "id": "tango_n4_493",
@@ -9726,7 +10128,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 運転する (Lái xe) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 493,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to get into an accident",
+    "englishExampleTranslation": "I got into an accident at an intersection."
   },
   {
     "id": "tango_n4_494",
@@ -9745,7 +10149,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonName": "Sec 4: 運転する (Lái xe) · Phần 4: 出かけよう！",
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "originalNumber": 494,
-    "partOfSpeech": "動"
+    "partOfSpeech": "動",
+    "englishMeaning": "to bump into something, to hit",
+    "englishExampleTranslation": "Two taxis hit each other at the traffic light."
   },
   {
     "kanji": "すべる",
@@ -9763,9 +10169,10 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "出かけよう！ (Hãy đi ra ngoài nào!)",
     "id": "tango_n4_495",
     "partOfSpeech": "動",
-    "englishMeaning": "",
+    "englishMeaning": "to slip",
     "romaji": "suberu",
-    "hanViet": "HOẠT"
+    "hanViet": "HOẠT",
+    "englishExampleTranslation": "It's easy to slip on snowy days."
   },
   {
     "kanji": "安全〈な〉",
@@ -11741,7 +12148,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "kanji": "いじめる",
     "hiragana": "いじめる",
-    "meaning": "chơi xấu, quấy nhiễu, chọc phá, bắt nạt",
+    "meaning": "chơi xấu, quấy nhiễu, chọc phá",
     "exampleSentence": "動物を いじめないで ください。",
     "exampleTranslation": "Xin đừng chọc phá động vật.",
     "originalNumber": 599,
@@ -11785,7 +12192,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "kanji": "ふむ",
     "hiragana": "ふむ",
-    "meaning": "dẫm, giậm",
+    "meaning": "dẫm, giẫm",
     "exampleSentence": "電車で となりの 人に 足を ふまれました。",
     "exampleTranslation": "Trên tàu điện tôi bị người bên cạnh giẫm trúng chân.",
     "originalNumber": 601,
@@ -11988,10 +12395,9 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   },
   {
     "id": "tango_n4_610",
-    "kanji": "釣り",
+    "kanji": "つり",
     "hiragana": "つり",
     "meaning": "việc câu (cá)",
-    "hanViet": "ĐIẾU",
     "exampleSentence": "休みの 日、よく つりに 行きます。",
     "exampleTranslation": "Ngày nghỉ tôi thường đi câu.",
     "level": "N4",
@@ -12003,11 +12409,6 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "lessonTitleJp": "人と人との関係 (Quan hệ giữa người với người)",
     "originalNumber": 610,
     "partOfSpeech": "名",
-    "type": "Danh từ",
-    "meaningEn": "fishing",
-    "exampleSentenceReading": "やすみの ひ、よく つりに いきます。",
-    "exampleSentenceMeaning": "Ngày nghỉ tôi thường đi câu.",
-    "exampleSentenceMeaningEn": "I often go fishing on my days off.",
     "englishMeaning": "fishing",
     "englishExampleTranslation": "I often go fishing on my days off."
   },
@@ -12128,7 +12529,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_616",
     "kanji": "ゲーム",
     "hiragana": "ゲーム",
-    "meaning": "game, trò chơi điện tử",
+    "meaning": "game",
     "hanViet": "",
     "exampleSentence": "夜おそくまで ゲームを していて、ねぼうしました。",
     "exampleTranslation": "Tôi chơi game đến tối khuya nên ngủ dậy trễ.",
@@ -12240,7 +12641,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "kanji": "俳優",
     "hiragana": "はいゆう",
-    "meaning": "nam diễn viên, diễn viên",
+    "meaning": "nam diễn viên",
     "exampleSentence": "好きな 俳優が 出る 映画を 見に 行きます。",
     "exampleTranslation": "Tôi đi xem phim có diễn viên yêu thích xuất hiện.",
     "originalNumber": 621,
@@ -12315,7 +12716,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   {
     "kanji": "コンサート",
     "hiragana": "コンサート",
-    "meaning": "hòa nhạc, buổi hòa nhạc",
+    "meaning": "hòa nhạc",
     "exampleSentence": "明日、コンサートに 行きます。",
     "exampleTranslation": "Ngày mai tôi đi xem hòa nhạc.",
     "originalNumber": 624,
@@ -12611,7 +13012,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n4_637",
     "kanji": "伸ばす",
     "hiragana": "のばす",
-    "meaning": "duỗi, vươn",
+    "meaning": "duỗi",
     "hanViet": "THÂN",
     "exampleSentence": "ジョギングの 前に 体を 伸ばしましょう。",
     "exampleTranslation": "Trước khi chạy bộ, hãy vươn duỗi cơ thể.",
@@ -14208,7 +14609,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "ぐあい",
     "partOfSpeech": "名",
     "type": "Danh từ",
-    "meaning": "tình trạng (sức khỏe)",
+    "meaning": "cảm giác",
     "meaningEn": "condition, status",
     "englishMeaning": "condition, status",
     "hanViet": "CỤ CÁP",
@@ -14454,19 +14855,13 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
   },
   {
     "id": "tango_n4_711",
-    "kanji": "［お］見舞い",
+    "kanji": "［お］見まい",
     "hiragana": "おみまい",
     "partOfSpeech": "名",
-    "type": "Danh từ",
     "meaning": "thăm bệnh",
-    "meaningEn": "sick visit, visit someone in the hospital",
     "englishMeaning": "sick visit, visit someone in the hospital",
-    "hanViet": "KIẾN VŨ",
-    "exampleSentence": "友だちの お見舞いに 行きました。",
-    "exampleSentenceReading": "友だちの お見舞いに 行きました。",
+    "exampleSentence": "友だちの お見まいに 行きました。",
     "exampleTranslation": "Tôi đã đi thăm bệnh người bạn.",
-    "exampleSentenceMeaning": "Tôi đã đi thăm bệnh người bạn.",
-    "exampleSentenceMeaningEn": "I went to visit my friend in the hospital.",
     "englishExampleTranslation": "I went to visit my friend in the hospital.",
     "level": "N4",
     "curriculum": "tango",
@@ -18133,7 +18528,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "けっして",
     "partOfSpeech": "副",
     "type": "Phó từ",
-    "meaning": "tuyệt đối (không)",
+    "meaning": "nhất định (không)",
     "meaningEn": "never, absolutely (not)",
     "englishMeaning": "never, absolutely (not)",
     "hanViet": "",
@@ -18433,7 +18828,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "たしか",
     "partOfSpeech": "副",
     "type": "Phó từ",
-    "meaning": "hình như, nếu tôi nhớ không nhầm",
+    "meaning": "đúng là",
     "meaningEn": "certainly, surely",
     "englishMeaning": "certainly, surely",
     "hanViet": "",
@@ -18558,7 +18953,7 @@ export const TANGO_N4_VOCABULARY: VocabularyItem[] = [
     "hiragana": "どんどん",
     "partOfSpeech": "副",
     "type": "Phó từ",
-    "meaning": "ngày càng, liên tục, nhanh chóng",
+    "meaning": "dần dần, đều",
     "meaningEn": "steadily, rapidly",
     "englishMeaning": "steadily, rapidly",
     "hanViet": "",
