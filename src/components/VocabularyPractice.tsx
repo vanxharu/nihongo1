@@ -2905,26 +2905,56 @@ if (loading) {
           </div>
 
           {/* Right Controls */}
-          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-            <button
-              type="button"
-              onClick={() => {
-                const lessonNum = currentLesson.lessonNumber || parseInt(currentLesson.id.match(/\d+/)?.[0] || '1', 10);
-                window.dispatchEvent(new CustomEvent('navigate_to_reading', {
-                  detail: { 
-                    level: selectedCurriculum === 'tango' ? 'N4' : (levelFilter === 'ALL' ? 'N5' : levelFilter), 
-                    lessonNumber: lessonNum,
-                    curriculum: selectedCurriculum,
-                    lessonId: currentLesson.id
-                  }
-                }));
-              }}
-              className="hidden lg:flex px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/40 text-indigo-200 text-[10px] sm:text-xs font-bold transition-all items-center gap-1 active:scale-95 cursor-pointer shadow-sm"
-              title="Luyện đọc hiểu AI theo từ vựng & ngữ pháp bài này"
-            >
-              <BookOpen className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Đọc hiểu AI</span>
-            </button>
+          <div className="fc-toolbar flex items-center gap-1 sm:gap-1.5 shrink-0">
+            {selectedMode === 'flashcard' && (
+              <>
+                {/* View switcher (Từ đơn / Ví dụ) */}
+                <div className="flex items-center gap-0.5 bg-[#121626] p-0.5 rounded-lg border border-[#2b3353]">
+                  <button 
+                    onClick={() => setFlashcardView('word')}
+                    className={`px-2 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer whitespace-nowrap ${flashcardView === 'word' ? 'bg-[#00c975] text-white shadow-xs' : 'text-slate-400 hover:text-white'}`}
+                  >
+                    Từ đơn
+                  </button>
+                  <button 
+                    onClick={() => setFlashcardView('example')}
+                    className={`px-2 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer whitespace-nowrap ${flashcardView === 'example' ? 'bg-[#00c975] text-white shadow-xs' : 'text-slate-400 hover:text-white'}`}
+                  >
+                    Ví dụ
+                  </button>
+                </div>
+
+                {/* Sub-toolbar Controls (Right) */}
+                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                  {/* Direction Switcher */}
+                  <button 
+                    onClick={() => setFlashcardDirection(p => p === 'JP_VI' ? 'VI_JP' : 'JP_VI')}
+                    className="text-[10px] sm:text-[11px] font-mono font-bold border border-[#343d5f] text-slate-300 bg-[#242b45] px-1.5 sm:px-2 py-1 rounded-lg hover:bg-[#2e3758] hover:text-white transition-all cursor-pointer whitespace-nowrap"
+                    title="Đổi chiều học"
+                  >
+                    {flashcardDirection === 'JP_VI' ? 'JP➔VI' : 'VI➔JP'}
+                  </button>
+
+                  {/* Shuffle Button */}
+                  <button 
+                    onClick={() => setIsShuffle(!isShuffle)}
+                    className={`p-1 px-1.5 sm:px-2 rounded-lg border text-[11px] font-bold cursor-pointer transition-all ${isShuffle ? 'bg-slate-700 border-slate-500 text-white' : 'bg-[#242b45] border-[#343d5f] text-slate-400 hover:text-white'}`}
+                    title="Đổi thứ tự ngẫu nhiên"
+                  >
+                    🔀
+                  </button>
+
+                  {/* Autoplay Button */}
+                  <button 
+                    onClick={() => setIsAutoplay(!isAutoplay)}
+                    className={`p-1 px-1.5 sm:px-2 rounded-lg border text-[11px] font-bold cursor-pointer transition-all ${isAutoplay ? 'bg-amber-950/80 border-amber-500 text-amber-300 animate-pulse' : 'bg-[#242b45] border-[#343d5f] text-slate-400 hover:text-white'}`}
+                    title="Tự động lật thẻ"
+                  >
+                    ▶️
+                  </button>
+                </div>
+              </>
+            )}
             {selectedMode === 'dokkai' && (
               <>
                 <button
@@ -3354,55 +3384,6 @@ if (loading) {
                   <span>Đã thuộc</span>
                   <span className="hidden sm:inline text-xs font-mono opacity-80">(Z)</span>
                 </button>
-              </div>
-
-              {/* Sub-toolbar Controls: View Switcher & Study Tools */}
-              <div className="flex items-center justify-between gap-1 sm:gap-2 w-full mt-2 p-1 sm:p-1.5 bg-[#1a1f33]/90 border border-[#343d5f] rounded-xl sm:rounded-2xl overflow-x-auto no-scrollbar">
-                {/* View switcher (Từ đơn / Ví dụ) */}
-                <div className="flex items-center gap-0.5 bg-[#121626] p-0.5 rounded-lg border border-[#2b3353]">
-                  <button 
-                    onClick={() => setFlashcardView('word')}
-                    className={`px-2 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer whitespace-nowrap ${flashcardView === 'word' ? 'bg-[#00c975] text-white shadow-xs' : 'text-slate-400 hover:text-white'}`}
-                  >
-                    Từ đơn
-                  </button>
-                  <button 
-                    onClick={() => setFlashcardView('example')}
-                    className={`px-2 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer whitespace-nowrap ${flashcardView === 'example' ? 'bg-[#00c975] text-white shadow-xs' : 'text-slate-400 hover:text-white'}`}
-                  >
-                    Ví dụ
-                  </button>
-                </div>
-
-                {/* Sub-toolbar Controls (Right) */}
-                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                  {/* Direction Switcher */}
-                  <button 
-                    onClick={() => setFlashcardDirection(p => p === 'JP_VI' ? 'VI_JP' : 'JP_VI')}
-                    className="text-[10px] sm:text-[11px] font-mono font-bold border border-[#343d5f] text-slate-300 bg-[#242b45] px-1.5 sm:px-2 py-1 rounded-lg hover:bg-[#2e3758] hover:text-white transition-all cursor-pointer whitespace-nowrap"
-                    title="Đổi chiều học"
-                  >
-                    {flashcardDirection === 'JP_VI' ? 'JP➔VI' : 'VI➔JP'}
-                  </button>
-
-                  {/* Shuffle Button */}
-                  <button 
-                    onClick={() => setIsShuffle(!isShuffle)}
-                    className={`p-1 px-1.5 sm:px-2 rounded-lg border text-[11px] font-bold cursor-pointer transition-all ${isShuffle ? 'bg-slate-700 border-slate-500 text-white' : 'bg-[#242b45] border-[#343d5f] text-slate-400 hover:text-white'}`}
-                    title="Đổi thứ tự ngẫu nhiên"
-                  >
-                    🔀
-                  </button>
-
-                  {/* Autoplay Button */}
-                  <button 
-                    onClick={() => setIsAutoplay(!isAutoplay)}
-                    className={`p-1 px-1.5 sm:px-2 rounded-lg border text-[11px] font-bold cursor-pointer transition-all ${isAutoplay ? 'bg-amber-950/80 border-amber-500 text-amber-300 animate-pulse' : 'bg-[#242b45] border-[#343d5f] text-slate-400 hover:text-white'}`}
-                    title="Tự động lật thẻ"
-                  >
-                    ▶️
-                  </button>
-                </div>
               </div>
             </div>
           )}
