@@ -2177,7 +2177,6 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     const oldStatus = typeof status[item.id] === 'object' ? (status[item.id] as any) : null;
     status[item.id] = calculateSRS(oldStatus, mastered ? 5 : 2);
     updateProfile({ vocabStatus: status });
-    setReactionState(mastered ? 'correct' : 'wrong');
     if (mastered) {
       playCorrectSound();
     } else {
@@ -2187,7 +2186,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     markTimerRef.current = window.setTimeout(() => {
       markTimerRef.current = null;
       handleNext();
-    }, 1400);
+    }, 250);
   }, [updateProfile, onEarnXp, handleNext]);
 
   const normalizeCramStr = (str: string) => {
