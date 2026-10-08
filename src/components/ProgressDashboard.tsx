@@ -171,7 +171,7 @@ export default function ProgressDashboard({
           <div className="pd-kpi">
             <div className="pd-kpi-icon"><Flame size={16} /></div>
             <div className="pd-kpi-num">{profile.streak || 0}</div>
-            <div className="pd-kpi-label">Chuỗi ngày 🔥</div>
+            <div className="pd-kpi-label">Chuỗi ngày</div>
           </div>
           <div className="pd-kpi">
             <div className="pd-kpi-icon pd-kpi-icon--blue">📅</div>
@@ -208,7 +208,7 @@ export default function ProgressDashboard({
                         >
                           {skill.name}
                         </span>
-                        <span className="pd-skill-pct">{skill.percent}%</span>
+                        <span className="pd-skill-pct">{skill.percent}% <small className="pd-skill-sub">· {skill.practiced}/{skill.total}</small></span>
                         <Link to={skill.href} className="pd-skill-link">
                           Tiếp tục <ArrowRight size={11} />
                         </Link>
@@ -218,9 +218,6 @@ export default function ProgressDashboard({
                           className="pd-track-fill"
                           style={{ width: `${skill.percent}%`, background: skill.color }}
                         />
-                      </div>
-                      <div className="pd-skill-sub">
-                        {skill.practiced} / {skill.total} mục
                       </div>
                     </div>
                   ))}
