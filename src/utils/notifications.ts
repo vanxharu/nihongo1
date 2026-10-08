@@ -470,9 +470,12 @@ export const getAllVocabPool = (): VocabNotificationPayload[] => {
     const rawJp = item.exampleSentence || item.exampleJp || item.example || item.sentence;
     const rawVi = item.exampleTranslation || item.exampleVi || item.translation;
     if (rawJp && String(rawJp).trim().length > 0) {
+      // keep only the first example line and drop the book's trailing "(めい)"-style tag
+      const multi = String(rawJp).trim().includes('\n');
+      const first = (t: string) => { const l = t.trim().split('\n')[0]; return l.replace(multi ? /\s*[（(][^)）]*[)）]\s*$/ : /\s*[（(](?:めい|ナがた|イがた)[)）]\s*$/, '').trim(); };
       return {
-        exJp: String(rawJp).trim(),
-        exVi: rawVi ? String(rawVi).trim() : ''
+        exJp: first(String(rawJp)),
+        exVi: rawVi ? first(String(rawVi)) : ''
       };
     }
     const k = cleanKanji || '';
@@ -1942,7 +1945,7 @@ export const sendFloatingVocabNotification = (
   triggerVocabToast(word);
 
   // Send to native Windows notification system
-  if (Notification.permission === 'granted') {
+  if (isNotificationSupported() && Notification.permission === 'granted') {
     const hideText = settings.hideNotificationText !== false;
     let title = BRAND_NAME;
     let body = '';
@@ -2030,7 +2033,7 @@ export const startBackgroundVocabTicker = (
       const handleMessage = (e: MessageEvent) => {
         if (e.data && (e.data === 'tick' || e.data.type === 'tick')) {
           const currentSettings = getDefaultReminderSettings();
-          if (currentSettings.vocabEnabled && Notification.permission === 'granted') {
+          if (currentSettings.vocabEnabled) { // in-app toast works without native permission
             const now = Date.now();
             const lastTime = currentSettings.lastVocabNotifiedTime || 0;
             const intervalMs = (currentSettings.vocabInterval || 15) * 60 * 1000;
@@ -2063,7 +2066,7 @@ export const startBackgroundVocabTicker = (
   // Fallback to setInterval if Web Worker unavailable
   const interval = setInterval(() => {
     const currentSettings = getDefaultReminderSettings();
-    if (currentSettings.vocabEnabled && Notification.permission === 'granted') {
+    if (currentSettings.vocabEnabled) { // in-app toast works without native permission
       const now = Date.now();
       const lastTime = currentSettings.lastVocabNotifiedTime || 0;
       const intervalMs = (currentSettings.vocabInterval || 15) * 60 * 1000;

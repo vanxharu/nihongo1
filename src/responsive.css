@@ -90,6 +90,7 @@
  #sidebar-nav a{min-height:44px}
  #app-root-container .chat-msg-actions button{min-height:28px!important;min-width:0!important}
  #app-root-container .fc-toolbar button{min-height:32px!important;min-width:0!important}
+ #app-root-container .vocab-toast-speak{min-height:0!important;min-width:0!important}
 }
 @media(min-width:640px){#app-main-view{padding:1.25rem 1.25rem var(--app-bottom-space)!important}}
 @media(min-width:768px){#app-main-view{padding:1.5rem 1.5rem var(--app-bottom-space)!important}}

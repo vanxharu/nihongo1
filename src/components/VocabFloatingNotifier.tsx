@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Volume2 } from 'lucide-react';
-import { speakJapanese } from '../utils/audio';
+import { speakJapanese, playTangoClip } from '../utils/audio';
+import { TANGO_CLIP_NUMBERS, TANGO_SPLIT_CLIPS } from '../data/tangoN4AudioClips';
 import JapaneseFuriganaText from './JapaneseFuriganaText';
 import {
   ReminderSettings,
@@ -20,6 +21,7 @@ interface VocabFloatingNotifierProps {
 export default function VocabFloatingNotifier({ onEarnXp }: VocabFloatingNotifierProps) {
   const [activeWord, setActiveWord] = useState<VocabNotificationPayload | null>(null);
   const vocabPool = useMemo(() => getAllVocabPool(), []);
+  const [speaking, setSpeaking] = useState<'word' | 'example' | null>(null);
 
   useEffect(() => {
     const handleVocabEvent = (e: CustomEvent<VocabNotificationPayload>) => {
@@ -30,11 +32,13 @@ export default function VocabFloatingNotifier({ onEarnXp }: VocabFloatingNotifie
   }, []);
 
   useEffect(() => {
-    if (activeWord) {
+    if (activeWord && !speaking) { // keep the card open while audio is playing
       const timer = setTimeout(() => setActiveWord(null), 6000);
       return () => clearTimeout(timer);
     }
-  }, [activeWord]);
+  }, [activeWord, speaking]);
+
+  useEffect(() => { setSpeaking(null); }, [activeWord]);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -59,15 +63,23 @@ export default function VocabFloatingNotifier({ onEarnXp }: VocabFloatingNotifie
     return () => { if (stopTicker) stopTicker(); };
   }, []);
 
-  const handleSpeakWord = () => {
+  // Tango words play the recorded clip (same audio as the flashcards); others fall back to TTS.
+  const speak = (kind: 'word' | 'example') => {
     if (!activeWord) return;
-    speakJapanese(activeWord.kanji || activeWord.reading);
+    const text = kind === 'word' ? (activeWord.kanji || activeWord.reading) : activeWord.exampleJp;
+    if (!text) return;
+    const done = () => setSpeaking(null);
+    setSpeaking(kind);
+    const n = Number(activeWord.wordNumber);
+    if (activeWord.curriculum === 'tango' && TANGO_CLIP_NUMBERS.has(n)) {
+      playTangoClip(n, TANGO_SPLIT_CLIPS.has(n) ? (kind === 'example' ? 's' : 'w') : '', done);
+    } else {
+      speakJapanese(kind === 'word' ? (activeWord.reading || text) : text, undefined, done, { isSentence: kind === 'example' });
+    }
+    window.setTimeout(done, 15000); // safety net if no end event fires
   };
-
-  const handleSpeakExample = () => {
-    if (!activeWord?.exampleJp) return;
-    speakJapanese(activeWord.exampleJp, undefined, undefined, { isSentence: true });
-  };
+  const handleSpeakWord = () => speak('word');
+  const handleSpeakExample = () => speak('example');
 
   const handleCollectXp = () => {
     if (onEarnXp) onEarnXp(5);
@@ -159,13 +171,14 @@ export default function VocabFloatingNotifier({ onEarnXp }: VocabFloatingNotifie
                   )}
                   <button
                     onClick={handleSpeakWord}
+                    className={`vocab-toast-speak${speaking === 'word' ? ' animate-pulse' : ''}`}
                     style={{
-                      background: '#f1f5f9', border: 'none', borderRadius: 4,
-                      padding: '2px 5px', cursor: 'pointer', display: 'flex', alignItems: 'center',
+                      background: speaking === 'word' ? '#d1fae5' : '#f1f5f9', border: 'none', borderRadius: 6,
+                      width: 26, height: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     }}
                     title="Phát âm"
                   >
-                    <Volume2 size={10} color="#64748b" />
+                    <Volume2 size={13} color={speaking === 'word' ? '#059669' : '#64748b'} />
                   </button>
                 </div>
               </div>
@@ -196,14 +209,15 @@ export default function VocabFloatingNotifier({ onEarnXp }: VocabFloatingNotifie
                 </div>
                 <button
                   onClick={handleSpeakExample}
+                  className={`vocab-toast-speak${speaking === 'example' ? ' animate-pulse' : ''}`}
                   style={{
-                    background: '#e2e8f0', border: 'none', borderRadius: 5, padding: '4px 6px',
-                    cursor: 'pointer', display: 'flex', alignItems: 'center', flexShrink: 0,
+                    background: speaking === 'example' ? '#d1fae5' : '#e2e8f0', border: 'none', borderRadius: 6,
+                    width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                     marginTop: 4,
                   }}
                   title="Đọc câu ví dụ"
                 >
-                  <Volume2 size={11} color="#64748b" />
+                  <Volume2 size={14} color={speaking === 'example' ? '#059669' : '#64748b'} />
                 </button>
               </div>
               {activeWord.exampleVi && (
