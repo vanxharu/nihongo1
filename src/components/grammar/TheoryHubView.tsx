@@ -170,10 +170,10 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
 
   return (
     <div style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
-      className="w-full max-w-xl mx-auto px-4 pt-4 pb-28 text-slate-100 select-none">
+      className="w-full max-w-xl mx-auto px-4 pt-2 pb-28 text-slate-100 select-none">
 
       {/* ── Level pills ── */}
-      <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-0.5 no-scrollbar">
+      <div className="flex items-center gap-2 mb-2 overflow-x-auto pb-0.5 no-scrollbar">
         {JLPT_LEVELS.map(lvl => {
           const active = lvl === selectedLevel;
           return (
@@ -208,7 +208,7 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
       </div>
 
       {/* ── Overall progress bar ── */}
-      <div className="mb-5">
+      <div className="mb-3">
         <div className="flex items-end justify-between mb-1.5">
           <span className="text-[11px] text-slate-400 font-medium">Tổng tiến độ {selectedLevel}</span>
           <span className="text-[11px] font-bold text-slate-300">{overallPct}%</span>
@@ -225,7 +225,7 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
       </div>
 
       {/* ── Search bar ── */}
-      <div className="relative mb-5" ref={searchContainerRef}>
+      <div className="relative mb-3" ref={searchContainerRef}>
         <div
           className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl transition-all"
           style={{
@@ -287,10 +287,10 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
       <button
         type="button"
         onClick={onContinueStudy}
-        className="w-full mb-5 cursor-pointer group"
+        className="w-full mb-3 cursor-pointer group"
       >
         <div
-          className="relative rounded-2xl p-4 flex items-center gap-4 overflow-hidden transition-all"
+          className="relative rounded-2xl p-3 flex items-center gap-3 overflow-hidden transition-all"
           style={{
             background: 'linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.12) 100%)',
             border: '1px solid rgba(99,102,241,0.30)',
@@ -322,7 +322,7 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
       </button>
 
       {/* ── 3 Subject cards ── */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         {SUBJECTS.map(({ key, label, sub, Icon, accent, bg, border, glow }) => {
           const done = completedMap[key] ?? 0;
           const total = totalMap[key] ?? 1;
@@ -337,7 +337,7 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
               className="w-full text-left cursor-pointer group"
             >
               <div
-                className="relative rounded-2xl p-4 flex items-center gap-4 overflow-hidden transition-all duration-200"
+                className="relative rounded-2xl p-3 flex items-center gap-3 overflow-hidden transition-all duration-200"
                 style={{
                   background: bg,
                   border: `1px solid ${border}`,
@@ -349,7 +349,7 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
 
                 {/* icon */}
                 <div
-                  className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform"
+                  className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform"
                   style={{ background: `rgba(${accent.slice(1).match(/.{2}/g)!.map(x => parseInt(x,16)).join(',')},0.18)` }}
                 >
                   <Icon size={22} style={{ color: accent }} />
@@ -357,11 +357,11 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
 
                 {/* text + progress */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center justify-between mb-0.5">
                     <span className="text-[15px] font-bold text-white">{label}</span>
-                    <span className="text-xs font-semibold" style={{ color: accent }}>{pct}%</span>
+                    <span className="text-xs font-semibold" style={{ color: accent }}>{done}/{total} · {pct}%</span>
                   </div>
-                  <div className="text-xs text-slate-400 mb-2 truncate">{sub}</div>
+                  <div className="text-xs text-slate-400 mb-1.5 truncate">{sub}</div>
                   {/* thin progress bar */}
                   <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
                     <div
@@ -369,7 +369,6 @@ export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
                       style={{ width: `${pct}%`, background: accent }}
                     />
                   </div>
-                  <div className="mt-1 text-[10px] text-slate-500">{done} / {total}</div>
                 </div>
 
                 <ChevronRight size={16} className="shrink-0 text-slate-600 group-hover:text-slate-300 group-hover:translate-x-0.5 transition-all" />
