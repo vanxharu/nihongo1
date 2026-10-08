@@ -4,7 +4,6 @@
  */
 
 import { TANGO_N4_VOCABULARY } from '../data/tangoN4Vocab';
-import { ADVANCED_VOCABULARY } from '../data/advancedVocab';
 import {
   getHanViet,
   getSentenceHiraganaReading,
@@ -566,7 +565,6 @@ export const getAllVocabPool = (): VocabNotificationPayload[] => {
   };
 
   processList(TANGO_N4_VOCABULARY, 'N4', 'tango', 'Tango 1500');
-  processList(ADVANCED_VOCABULARY, 'N3', 'advanced', 'JLPT N3');
 
   // Load user custom imported vocabularies from localStorage
   try {

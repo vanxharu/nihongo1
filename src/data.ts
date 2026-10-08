@@ -5,13 +5,11 @@
 
 import type { VocabularyItem, GrammarItem, KanjiItem, DailyExam, LeaderboardUser } from './types';
 import { TANGO_N4_VOCABULARY } from './data/tangoN4Vocab.js';
-import { ADVANCED_VOCABULARY } from './data/advancedVocab.js';
 
-export { TANGO_N4_VOCABULARY, ADVANCED_VOCABULARY };
+export { TANGO_N4_VOCABULARY };
 
 export const VOCABULARY_DATA: VocabularyItem[] = [
-  ...TANGO_N4_VOCABULARY,
-  ...ADVANCED_VOCABULARY
+  ...TANGO_N4_VOCABULARY
 ];
 
 export const GRAMMAR_DATA: GrammarItem[] = [

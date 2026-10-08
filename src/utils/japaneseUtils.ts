@@ -1,7 +1,6 @@
 import { EXAMPLE_FURIGANA } from '../data/exampleFurigana';
 import { KANJI_DICTIONARY } from '../data/kanjiDictionary';
 import { TANGO_N4_VOCABULARY } from '../data/tangoN4Vocab';
-import { ADVANCED_VOCABULARY } from '../data/advancedVocab';
 
 /**
  * Auto-generated comprehensive Kanji to Hán Việt dictionary
@@ -3510,8 +3509,7 @@ const baseKeywordsMap: Record<string, string> = { ...COMMON_KANJI_READINGS };
 
 // Add all standard vocab datasets (N5, N4, Tango N4, N3, N2, N1) and extract verb/adjective stems & inflections
 const staticVocabSources = [
-  ...(Array.isArray(TANGO_N4_VOCABULARY) ? TANGO_N4_VOCABULARY : []),
-  ...(Array.isArray(ADVANCED_VOCABULARY) ? ADVANCED_VOCABULARY : [])
+  ...(Array.isArray(TANGO_N4_VOCABULARY) ? TANGO_N4_VOCABULARY : [])
 ];
 
 function registerKeyword(k: string, r: string) {
