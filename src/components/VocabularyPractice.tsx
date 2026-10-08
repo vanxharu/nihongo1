@@ -3164,7 +3164,7 @@ if (loading) {
                     setShowFlashcardAnswer(prev => !prev);
                   }
                 }}
-                className="responsive-flashcard w-full bg-[#1e243b]/90 border border-[#343d5f] hover:border-[#4a5682] focus:border-emerald-500/70 focus:outline-none rounded-xl sm:rounded-2xl h-[240px] xs:h-[260px] sm:h-[290px] md:h-[320px] cursor-pointer transition-all shadow-md relative overflow-hidden flex flex-col"
+                className="responsive-flashcard w-full bg-[#1e243b]/90 border border-[#343d5f] hover:border-[#4a5682] focus:border-emerald-500/70 focus:outline-none rounded-xl sm:rounded-2xl h-[190px] xs:h-[200px] sm:h-[260px] md:h-[300px] cursor-pointer transition-all shadow-md relative overflow-hidden flex flex-col"
               >
                 <div className="absolute top-2 right-2.5 z-20 text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase bg-[#141828]/80 px-2 py-0.5 rounded-md border border-[#343d5f]/60 tracking-wider">
                   {showFlashcardAnswer ? 'Mặt sau' : (
@@ -3402,20 +3402,6 @@ if (loading) {
                   >
                     ▶️
                   </button>
-
-                  {/* Settings Toggle */}
-                  <button
-                    id="flashcard-display-settings-toggle"
-                    onClick={() => setShowOptions(!showOptions)}
-                    className={`p-1 px-1.5 sm:px-2 rounded-lg border transition-all cursor-pointer shrink-0 ${
-                      showOptions 
-                        ? 'bg-slate-700 text-white border-slate-600 shadow-xs' 
-                        : 'bg-[#242b45] text-slate-300 border-[#343d5f] hover:bg-[#2e3758] hover:text-white'
-                    }`}
-                    title="Thiết lập hiển thị"
-                  >
-                    <Settings className={`w-3.5 h-3.5 ${showOptions ? 'animate-spin-slow text-amber-400' : 'text-slate-400'}`} />
-                  </button>
                 </div>
               </div>
             </div>
@@ -3510,18 +3496,6 @@ if (loading) {
                       </>
                     )}
                   </div>
-
-                  <button
-                    onClick={() => setShowOptions(prev => !prev)}
-                    className={`p-1.5 rounded-lg transition-all cursor-pointer ${
-                      showOptions 
-                        ? 'bg-slate-700 text-white' 
-                        : 'text-slate-400 hover:text-white hover:bg-[#1a1f33]'
-                    }`}
-                    title="Cài đặt & Tùy chọn"
-                  >
-                    <Settings className={`w-4 h-4 ${showOptions ? 'animate-spin-slow text-amber-400' : ''}`} />
-                  </button>
                 </div>
               </div>
 
@@ -4203,14 +4177,11 @@ if (loading) {
 
       {/* Responsive Cohesive Mode Selectors Bar */}
       <div className="w-full max-w-[780px] space-y-1.5 pt-1">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Chế độ học:</span>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-1 p-1 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
+        <div className="grid grid-cols-5 gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
           <button 
             type="button"
             onClick={() => handleSwitchMode('flashcard')} 
-            className={`py-2 px-1 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 transition-all text-[11px] sm:text-xs font-bold cursor-pointer ${
+            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
               selectedMode === 'flashcard' 
                 ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/50' 
                 : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
@@ -4223,7 +4194,7 @@ if (loading) {
           <button 
             type="button"
             onClick={() => handleSwitchMode('quiz')} 
-            className={`py-2 px-1 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 transition-all text-[11px] sm:text-xs font-bold cursor-pointer ${
+            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
               selectedMode === 'quiz' 
                 ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-1 ring-emerald-400/50' 
                 : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
@@ -4236,7 +4207,7 @@ if (loading) {
           <button 
             type="button"
             onClick={() => handleSwitchMode('cram')} 
-            className={`py-2 px-1 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 transition-all text-[11px] sm:text-xs font-bold cursor-pointer ${
+            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
               selectedMode === 'cram' 
                 ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30 ring-1 ring-amber-400/50' 
                 : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
@@ -4249,7 +4220,7 @@ if (loading) {
           <button 
             type="button"
             onClick={() => handleSwitchMode('dokkai')} 
-            className={`py-2 px-1 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 transition-all text-[11px] sm:text-xs font-bold cursor-pointer ${
+            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
               selectedMode === 'dokkai' 
                 ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-1 ring-purple-400/50' 
                 : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
@@ -4262,7 +4233,7 @@ if (loading) {
           <button 
             type="button"
             onClick={() => handleSwitchMode('shadowing')} 
-            className={`py-2 px-1 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-1 transition-all text-[11px] sm:text-xs font-bold cursor-pointer ${
+            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
               selectedMode === 'shadowing' 
                 ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30 ring-1 ring-rose-400/50' 
                 : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
