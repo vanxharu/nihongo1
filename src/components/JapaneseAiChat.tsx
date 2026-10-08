@@ -1213,7 +1213,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
 
                       {/* Action Footer */}
                       {isAi && (
-                        <div className="flex items-center justify-between gap-1 pt-2 mt-2 border-t border-slate-700/50 text-[11px]">
+                        <div className="chat-msg-actions flex items-center justify-between gap-1 pt-2 mt-2 border-t border-slate-700/50 text-[11px]">
                           <div className="flex items-center gap-1 flex-wrap">
                             {/* Audio Speak */}
                             <button

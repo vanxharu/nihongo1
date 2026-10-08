@@ -404,3 +404,9 @@
     font-size: 10px;
   }
 }
+
+@media (max-width: 760px) {
+  .collection-hero { padding: 16px !important; min-height: 0 !important; }
+  .collection-hero > .relative, .collection-hero > svg, .collection-hero > img, .collection-hero p, .collection-top > span { display: none !important; }
+  .collection-hero h1 { font-size: 1.5rem !important; line-height: 1.15 !important; margin: 4px 0 8px !important; }
+}

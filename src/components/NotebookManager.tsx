@@ -323,43 +323,43 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
       </div>
 
       {/* Stats Summary Bar - Compact Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs flex items-center justify-between">
+      <div className="grid grid-cols-4 gap-1.5">
+        <div className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Tổng từ vựng</span>
+            <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">Tổng</span>
             <div className="flex items-baseline gap-1 mt-0.5">
               <span className="text-lg font-bold text-slate-800 dark:text-white">{totalInActive}</span>
-              <span className="text-[10px] text-slate-400">từ</span>
+              
             </div>
           </div>
-          <span className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 text-xs">📚</span>
+          <span className="hidden sm:inline p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 text-xs">📚</span>
         </div>
 
-        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs flex items-center justify-between">
+        <div className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">Đã ghi nhớ</span>
+            <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">Đã ghi nhớ</span>
             <div className="flex items-baseline gap-1 mt-0.5">
               <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{masteredInActive}</span>
-              <span className="text-[10px] text-emerald-500">từ</span>
+              
             </div>
           </div>
-          <span className="p-1.5 bg-emerald-50 dark:bg-emerald-950/50 rounded-lg text-emerald-600 dark:text-emerald-400 text-xs">✓</span>
+          <span className="hidden sm:inline p-1.5 bg-emerald-50 dark:bg-emerald-950/50 rounded-lg text-emerald-600 dark:text-emerald-400 text-xs">✓</span>
         </div>
 
-        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs flex items-center justify-between">
+        <div className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-medium text-amber-600 dark:text-amber-400">Cần ôn tập</span>
+            <span className="text-[10px] font-medium text-amber-600 dark:text-amber-400">Cần ôn tập</span>
             <div className="flex items-baseline gap-1 mt-0.5">
               <span className="text-lg font-bold text-amber-600 dark:text-amber-400">{totalInActive - masteredInActive}</span>
-              <span className="text-[10px] text-amber-500">từ</span>
+              
             </div>
           </div>
-          <span className="p-1.5 bg-amber-50 dark:bg-amber-950/50 rounded-lg text-amber-600 dark:text-amber-400 text-xs">⚡</span>
+          <span className="hidden sm:inline p-1.5 bg-amber-50 dark:bg-amber-950/50 rounded-lg text-amber-600 dark:text-amber-400 text-xs">⚡</span>
         </div>
 
-        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
+        <div className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-indigo-600 dark:text-indigo-400">Tỷ lệ thuộc</span>
+            <span className="text-[10px] font-medium text-indigo-600 dark:text-indigo-400">Thuộc</span>
             <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{masteryPercentage}%</span>
           </div>
           <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-1.5">
