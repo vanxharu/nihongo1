@@ -1108,6 +1108,9 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const [shadowingSelectedIndices, setShadowingSelectedIndices] = useState<number[]>([]);
   const [shadowingIsCorrect, setShadowingIsCorrect] = useState<boolean | null>(null);
   const [isPlayingWave, setIsPlayingWave] = useState(false);
+  // Text currently being spoken (null = silent): drives the 'playing' highlight on speaker buttons.
+  const [speakingText, setSpeakingText] = useState<string | null>(null);
+  const speakCls = speakingText ? ' !text-emerald-400 !border-emerald-500 !bg-emerald-950/70 animate-pulse' : '';
 
   const [reactionState, setReactionState] = useState<'neutral' | 'correct' | 'wrong' | 'surrender'>('neutral');
   const [showMascotBubble, setShowMascotBubble] = useState(false);
@@ -2062,6 +2065,12 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     }
   }, [selectedMode, currentIndex, currentLessonIndex]);
 
+  const speakTimer = useRef<number | null>(null);
+  const markSpeaking = (text: string) => {
+    setSpeakingText(text);
+    if (speakTimer.current !== null) clearTimeout(speakTimer.current);
+    speakTimer.current = window.setTimeout(() => setSpeakingText(null), 15000); // safety net if no end event fires
+  };
   const handleSpeak = useCallback((text: string, isSentence?: boolean, sourceItem: VocabularyItem | undefined = currentItem) => {
     if (!text.trim()) return;
     const matchesExample = !!sourceItem?.exampleSentence?.trim() && text.trim() === sourceItem.exampleSentence.trim();
@@ -2073,7 +2082,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     if (sourceItem?.curriculum === 'tango' && sourceItem.originalNumber && (isWord || (wantSentence && matchesExample))) {
       const n = sourceItem.originalNumber;
       if (TANGO_CLIP_NUMBERS.has(n)) {
-        playTangoClip(n, TANGO_SPLIT_CLIPS.has(n) ? (wantSentence ? 's' : 'w') : '');
+        markSpeaking(text);
+        playTangoClip(n, TANGO_SPLIT_CLIPS.has(n) ? (wantSentence ? 's' : 'w') : '', () => setSpeakingText(null));
         if (selectedMode === 'shadowing') {
           setIsPlayingWave(true);
           setTimeout(() => setIsPlayingWave(false), wantSentence ? 4000 : 1500);
@@ -2083,7 +2093,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     }
     // Từ riêng: đọc theo cách đọc (hiragana) để không đọc sai kanji; câu ví dụ đọc nguyên câu.
     const spoken = isWord && sourceItem?.hiragana ? sourceItem.hiragana : text;
-    speakJapanese(spoken, undefined, undefined, { isSentence: wantSentence });
+    markSpeaking(text);
+    speakJapanese(spoken, undefined, () => setSpeakingText(null), { isSentence: wantSentence });
 
     // Animate wave if shadowing
     if (selectedMode === 'shadowing') {
@@ -2813,7 +2824,7 @@ if (loading) {
       <div className={`w-full mx-auto mt-0 sm:mt-1 transition-all duration-300 flex flex-col items-center ${isExpanded ? 'max-w-5xl' : 'max-w-[780px]'}`}>
         <div className="w-full">
           {/* Main Study Card Stage */}
-          <div className="bg-[#242b45] text-white border border-[#343d5f] shadow-2xl shadow-slate-950/40 rounded-2xl sm:rounded-3xl p-3 sm:p-5 md:p-6 relative overflow-hidden min-h-[220px] sm:min-h-[280px] md:min-h-[340px] flex flex-col justify-between transition-all duration-300 w-full">
+          <div onClick={e => (e.target as HTMLElement).closest('button')?.blur()} /* keep Space/shortcuts on the card, not on the last-clicked button */ className="bg-[#242b45] text-white border border-[#343d5f] shadow-2xl shadow-slate-950/40 rounded-2xl sm:rounded-3xl p-3 sm:p-5 md:p-6 relative overflow-hidden min-h-[220px] sm:min-h-[280px] md:min-h-[340px] flex flex-col justify-between transition-all duration-300 w-full">
         <ReactionOverlay state={reactionState} mode={selectedMode === 'flashcard' ? 'flashcard' : 'quiz'} />
         {/* Top Header Inside Card Frame: Integrated Lesson Navigator & Study Controls */}
         <div className="vocab-study-toolbar flex flex-row items-center justify-between gap-1 sm:gap-2 mb-2.5 sm:mb-3.5 pb-2 sm:pb-2.5 border-b border-[#343d5f]/80 relative z-10 w-full flex-nowrap">
@@ -2838,7 +2849,7 @@ if (loading) {
                     handleSpeak(currentItem.kanji || currentItem.hiragana);
                   }
                 }}
-                className="w-7 h-7 sm:w-8 sm:h-8 bg-[#1a1f33]/90 border border-[#343d5f] rounded-lg sm:rounded-xl flex items-center justify-center hover:bg-[#2b3353] text-slate-300 hover:text-white cursor-pointer transition-colors shadow-2xs shrink-0"
+                className={`w-7 h-7 sm:w-8 sm:h-8 bg-[#1a1f33]/90 border border-[#343d5f] rounded-lg sm:rounded-xl flex items-center justify-center hover:bg-[#2b3353] text-slate-300 hover:text-white cursor-pointer transition-colors shadow-2xs shrink-0${speakCls}`}
                 title={flashcardView === 'example' ? 'Phát âm câu ví dụ' : 'Phát âm từ vựng'}
               >
                 <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -3394,7 +3405,7 @@ if (loading) {
               <div className="flex flex-wrap items-center justify-between pb-2 border-b border-[#343d5f]/60 gap-2">
                 <button 
                   onClick={() => currentItem && handleSpeak(currentItem.kanji || currentItem.hiragana)}
-                  className="flex items-center gap-1.5 text-slate-400 hover:text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer"
+                  className={`flex items-center gap-1.5 text-slate-400 hover:text-white text-xs sm:text-sm font-medium transition-colors cursor-pointer${speakCls}`}
                   title="Phát âm từ vựng (Phím R)"
                 >
                   <Volume2 className="w-4 h-4 text-slate-300 group-hover:text-white shrink-0" />
@@ -3507,7 +3518,7 @@ if (loading) {
                           </span>
                           <button
                             onClick={() => currentItem && handleSpeak(currentItem.kanji || currentItem.hiragana)}
-                            className="p-1 rounded-md bg-[#1a1f33] hover:bg-[#2b3353] text-slate-300 hover:text-white transition-colors"
+                            className={`p-1 rounded-md bg-[#1a1f33] hover:bg-[#2b3353] text-slate-300 hover:text-white transition-colors${speakCls}`}
                             title="Nghe phát âm"
                           >
                             <Volume2 className="w-4 h-4 text-emerald-400" />
@@ -3634,7 +3645,7 @@ if (loading) {
                           <span className="font-bold uppercase text-[10px] text-sky-400">Ví dụ minh họa:</span>
                           <button 
                             onClick={() => handleSpeak(ex.exampleSentence, true)}
-                            className="text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer"
+                            className={`text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer${speakCls}`}
                           >
                             <Volume2 className="w-3 h-3 text-sky-400" />
                             <span>Nghe câu</span>
@@ -4031,7 +4042,7 @@ if (loading) {
                 <div className="flex items-center gap-3">
                   <button 
                     onClick={() => handleSpeak(currentItem.exampleSentence)}
-                    className="w-10 h-10 bg-slate-600 hover:bg-slate-500 text-white rounded-full flex items-center justify-center shadow-sm"
+                    className={`w-10 h-10 bg-slate-600 hover:bg-slate-500 text-white rounded-full flex items-center justify-center shadow-sm${speakCls}`}
                   >
                     🔊
                   </button>
@@ -4302,6 +4313,7 @@ if (loading) {
                 onToggleStar={toggleStar}
                 onToggleMastered={toggleMastered}
                 onSpeak={(text, isSentence) => handleSpeak(text, isSentence, v)}
+                speakingText={speakingText}
                 onSelectKanji={handleSelectKanji}
               />
             );

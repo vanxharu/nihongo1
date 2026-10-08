@@ -23,6 +23,7 @@ interface VocabListItemCardProps {
   onToggleStar: (id: string) => void;
   onToggleMastered?: (id: string) => void;
   onSpeak: (text: string, isSentence: boolean) => void;
+  speakingText?: string | null;
   onSelectKanji?: (kanji: string) => void;
 }
 
@@ -266,6 +267,7 @@ function VocabListItemCardComponent({
   onToggleStar,
   onToggleMastered,
   onSpeak,
+  speakingText,
   onSelectKanji,
 }: VocabListItemCardProps) {
   const hanViet = v.hanViet || getHanViet(v.kanji);
@@ -321,7 +323,7 @@ function VocabListItemCardComponent({
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onSpeak(v.kanji || v.hiragana, false); }}
-              className="text-slate-400 hover:text-white p-1 rounded cursor-pointer"
+              className={`text-slate-400 hover:text-white p-1 rounded cursor-pointer${speakingText && speakingText === (v.kanji || v.hiragana) ? ' animate-pulse !text-emerald-400' : ''}`}
               title="Phát âm từ vựng"
             >
               <Volume2 className="w-4 h-4" />
@@ -345,7 +347,7 @@ function VocabListItemCardComponent({
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onSpeak(ex.exampleSentence, true); }}
-            className="text-slate-400 hover:text-white transition-colors p-1 shrink-0 cursor-pointer"
+            className={`text-slate-400 hover:text-white transition-colors p-1 shrink-0 cursor-pointer${speakingText && speakingText === ex.exampleSentence ? ' animate-pulse !text-emerald-400' : ''}`}
             title="Nghe phát âm câu ví dụ"
           >
             <Volume2 className="w-4 h-4" />
