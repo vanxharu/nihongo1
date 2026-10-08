@@ -81,8 +81,11 @@ export default function PwaInstallPrompt({ onDismiss, initialTab }: PwaInstallPr
 
     // Check if user previously dismissed banner in localStorage
     const dismissed = localStorage.getItem('jpstudy_pwa_banner_dismissed');
-    if (dismissed && Date.now() - parseInt(dismissed, 10) < 3 * 24 * 60 * 60 * 1000) {
+    if (dismissed) {
       setShowBanner(false);
+    } else {
+      // show once: mark as seen on first display
+      localStorage.setItem('jpstudy_pwa_banner_dismissed', Date.now().toString());
     }
 
     // Listen for beforeinstallprompt event
