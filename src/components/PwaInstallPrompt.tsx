@@ -80,10 +80,11 @@ export default function PwaInstallPrompt({ onDismiss, initialTab }: PwaInstallPr
     setActiveTab(initialTab || resolvedPlatform);
 
     // Check if user previously dismissed banner in localStorage
-    const dismissed = localStorage.getItem('jpstudy_pwa_banner_dismissed');
+    // opened on purpose from the header (onDismiss given): always show it
+    const dismissed = !onDismiss && !!localStorage.getItem('jpstudy_pwa_banner_dismissed');
     if (dismissed) {
       setShowBanner(false);
-    } else {
+    } else if (!onDismiss) {
       // show once: mark as seen on first display
       localStorage.setItem('jpstudy_pwa_banner_dismissed', Date.now().toString());
     }
@@ -92,7 +93,8 @@ export default function PwaInstallPrompt({ onDismiss, initialTab }: PwaInstallPr
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      if (!isAppInstalled()) {
+      // beforeinstallprompt fires on every load in Chrome/Edge: never re-open a banner already seen/dismissed
+      if (!isAppInstalled() && !dismissed) {
         setShowBanner(true);
       }
     };
@@ -122,7 +124,7 @@ export default function PwaInstallPrompt({ onDismiss, initialTab }: PwaInstallPr
       window.removeEventListener('appinstalled', handleAppInstalled);
       window.removeEventListener('jpstudy_installed_state_changed', handleStateChanged);
     };
-  }, [initialTab]);
+  }, [initialTab, !!onDismiss]);
 
   const handleInstallClick = async () => {
     if (deferredPrompt) {
