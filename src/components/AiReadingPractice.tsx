@@ -1318,18 +1318,17 @@ export default function AiReadingPractice({
   };
 
   return (
-    <div id="ai-reading-container" className={`study-reading w-full space-y-5 ${readingData ? 'pb-20 sm:pb-24' : ''}`}>
+    <div id="ai-reading-container" className={`study-reading w-full space-y-3 ${readingData ? 'pb-20 sm:pb-24' : ''}`}>
       {/* Top Navigation & Controls Bar: Unified, sleek & zero wasted whitespace */}
       {!readingData ? (
         <>
           <StudyExperienceHero kind="reading" level={userProfile?.targetLevel || 'N4'} count={savedHistory.length} completed={savedHistory.length} onHistory={() => setShowHistoryModal(true)} />
-          <div className="study-reading-toolbar"><h2>Hôm nay bạn muốn đọc gì?</h2><button className="study-history-button" onClick={() => setShowHistoryModal(true)}><History size={15} /> Lịch sử</button></div>
           <nav className="study-nav" aria-label="Nguồn bài đọc">{[
             { id: 'todai', title: 'Tin tức Todaii', note: 'Luyện đọc qua tin tức mỗi ngày', icon: Newspaper },
             { id: 'watanoc', title: 'Văn hóa Watanoc', note: 'Khám phá cuộc sống tại Nhật', icon: Globe },
             { id: 'custom', title: 'Bài đọc của bạn', note: 'Nhập văn bản hoặc chọn bài mẫu', icon: PenTool }
           ].map(item => <button key={item.id} id={`btn-mode-${item.id}`} aria-pressed={readingSourceMode === item.id} onClick={() => setReadingSourceMode(item.id as typeof readingSourceMode)}><span className="study-nav-icon"><item.icon size={20} /></span><span><strong>{item.title}</strong><small>{item.note}</small></span></button>)}</nav>
-          {readingSourceMode !== 'custom' && <div className="study-reading-toolbar"><span className="text-xs text-slate-400">Chọn bài bên dưới để bắt đầu đọc và làm câu hỏi.</span><button className="study-history-button" onClick={() => readingSourceMode === 'todai' ? setShowTodaiLinkInput(v => !v) : setShowWatanocLinkInput(v => !v)}><Plus size={15} />Thêm link bài viết</button></div>}
+          {readingSourceMode !== 'custom' && <div className="study-reading-toolbar"><span className="text-xs text-slate-400">Chọn bài bên dưới để bắt đầu.</span><button className="study-history-button" onClick={() => readingSourceMode === 'todai' ? setShowTodaiLinkInput(v => !v) : setShowWatanocLinkInput(v => !v)}><Plus size={15} />Thêm link bài viết</button></div>}
         </>      ) : (
         <div className="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-2xl bg-slate-900/95 border border-slate-800/90 shadow-md backdrop-blur-md">
           {/* Left: Change article back button */}
