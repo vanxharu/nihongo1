@@ -54,10 +54,18 @@
  .pwa-install-banner p,.pwa-install-banner .space-y-0\.5>div{display:none}
  .pwa-install-banner>div:last-child{margin-top:4px;padding-top:4px}
  #app-main-view :is(.jlpt-journey,.progress-studio){padding:12px 0 28px}
- #app-main-view .study-hero{padding:22px 18px;grid-template-columns:minmax(0,1fr)}
- #app-main-view .study-hero h1{font-size:clamp(1.5rem,7vw,2rem)}
- #app-main-view .study-hero-stats{gap:8px}
- #app-main-view .study-nav{grid-template-columns:minmax(0,1fr)}
+ #app-main-view .study-hero{padding:14px;margin-bottom:12px;border-radius:20px;grid-template-columns:minmax(0,1fr)}
+ #app-main-view .study-hero h1{font-size:1.2rem;margin:4px 0}
+ #app-main-view .study-hero p,#app-main-view .study-hero-mascot{display:none}
+ #app-main-view .study-hero-copy{padding-right:0}
+ #app-main-view .study-hero-stats{gap:6px;margin-top:8px}
+ #app-main-view .study-nav{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:12px}
+ #app-main-view .study-nav button{min-height:64px;padding:8px 4px;gap:4px}
+ #app-main-view .study-nav small{display:none}
+ #app-main-view .study-skill-strip{margin-bottom:10px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+ #app-main-view .study-skill-strip>span{display:none}
+ #app-main-view .study-skill-strip button{flex-shrink:0;white-space:nowrap;min-height:30px;padding:4px 10px}
+ #app-main-view .study-filter-panel{padding:10px!important;margin-bottom:12px}
  #app-main-view .study-exam-grid{grid-template-columns:minmax(0,1fr)}
  #app-main-view .study-exam-actions{flex-wrap:wrap}
  #app-main-view .study-exam-actions button{flex:1 1 130px}
