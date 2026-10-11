@@ -124,11 +124,11 @@
 #app-root-container .vocab-reference-flip>.vocab-flashcard-content{min-height:0;height:auto;overflow:visible;padding:0}
 .vocab-flashcard-audio{margin-top:16px}
 .vocab-audio-playing{
-  position:relative;
   color:var(--ui-accent, #E89A3C)!important;
   background:transparent!important;
   isolation:isolate;
 }
+.vocab-audio-playing:not(.absolute){position:relative}
 .vocab-audio-playing::after{
   content:'';
   position:absolute;
