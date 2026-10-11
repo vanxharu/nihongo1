@@ -48,10 +48,11 @@ import ShibaMascot, { MascotEmptyState } from './mascot/ShibaMascot';
 import { useEscape } from '../hooks/useEscape';
 
 interface NotebookManagerProps {
+  onStudyReward?: (activity: string, amount: number) => boolean;
   onNavigateToTab?: (tab: string, extra?: any) => void;
 }
 
-export default function NotebookManager({ onNavigateToTab }: NotebookManagerProps) {
+export default function NotebookManager({ onNavigateToTab, onStudyReward }: NotebookManagerProps) {
   const [notebooks, setNotebooks] = useState<NotebookFolder[]>([]);
   const [words, setWords] = useState<NotebookWord[]>([]);
   const [selectedNotebookId, setSelectedNotebookId] = useState<string>('all');
@@ -90,6 +91,7 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
   // Quiz Mode State
   const [quizIndex, setQuizIndex] = useState(0);
   const [quizScore, setQuizScore] = useState(0);
+  const [quizReward, setQuizReward] = useState('');
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
@@ -212,10 +214,12 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
 
   const handleAnswerSubmit = (index: number) => {
     if (isAnswerSubmitted) return;
+    setQuizReward('');
     setSelectedAnswer(index);
     setIsAnswerSubmitted(true);
     if (index === currentQuiz.correctIndex) {
       setQuizScore(prev => prev + 1);
+      if (onStudyReward?.(`notebook-quiz:${currentQuiz.word.id}`, 10)) setQuizReward('+10 XP · Nhớ thêm một từ rồi!');
     }
   };
 
@@ -628,6 +632,7 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
                       id={`toggle-mastered-${word.id}`}
                       type="button"
                       onClick={() => {
+                        if (!word.mastered) onStudyReward?.(`notebook-mastered:${word.id}`, 10);
                         toggleWordMastered(word.id);
                         loadData();
                       }}
@@ -881,6 +886,7 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
                     type="button"
                     onClick={() => {
                       if (!currentCard?.mastered) {
+                        onStudyReward?.(`notebook-mastered:${currentCard.id}`, 10);
                         toggleWordMastered(currentCard.id);
                         loadData();
                       }
@@ -1007,6 +1013,7 @@ export default function NotebookManager({ onNavigateToTab }: NotebookManagerProp
               </div>
 
               {/* Next Question Button */}
+              {isAnswerSubmitted && quizReward && <p role="status" className="text-sm font-bold text-emerald-600 text-center">{quizReward}</p>}
               {isAnswerSubmitted && (
                 <div className="flex justify-end pt-2">
                   <button

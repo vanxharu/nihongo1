@@ -1,3 +1,4 @@
+import './aiChat.css';
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { 
   Send, 
@@ -443,6 +444,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   
   // Mobile virtual keyboard & focus optimization
   const [isKeyboardOpen, setIsKeyboardOpen] = useState<boolean>(false);
+  const [chatViewport, setChatViewport] = useState(() => ({ height: window.visualViewport?.height || window.innerHeight, top: window.visualViewport?.offsetTop || 0 }));
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
   
   const recognitionRef = useRef<any>(null);
@@ -625,6 +627,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
     if (typeof window === 'undefined') return;
 
     const handleViewportChange = () => {
+      setChatViewport({ height: window.visualViewport?.height || window.innerHeight, top: window.visualViewport?.offsetTop || 0 });
       if (!window.visualViewport) return;
       // On mobile devices, opening the keyboard significantly reduces visualViewport.height
       const isKeyboard = window.visualViewport.height < window.innerHeight * 0.78;
@@ -636,11 +639,14 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
       }
     };
 
+    handleViewportChange();
+    window.addEventListener('resize', handleViewportChange);
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', handleViewportChange);
       window.visualViewport.addEventListener('scroll', handleViewportChange);
     }
     return () => {
+      window.removeEventListener('resize', handleViewportChange);
       if (window.visualViewport) {
         window.visualViewport.removeEventListener('resize', handleViewportChange);
         window.visualViewport.removeEventListener('scroll', handleViewportChange);
@@ -900,7 +906,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   };
 
   return (
-    <div className="w-full h-full flex-1 flex flex-col min-h-0 overflow-hidden bg-[#0A0E1A] text-slate-100">
+    <div className="ai-messenger w-full h-full flex-1 flex flex-col min-h-0 overflow-hidden bg-[#0A0E1A] text-slate-100" style={{ '--chat-height': `${chatViewport.height}px`, '--chat-top': `${chatViewport.top}px` } as React.CSSProperties}>
       <div className="flex h-full w-full min-h-0 overflow-hidden">
         
         {/* Left Sidebar (Desktop Only: lg: >= 1024px) - Messenger Contacts List Style */}
@@ -1141,12 +1147,12 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
           </header>
 
           {/* 2. Messenger Message Feed Area */}
-          <div className={`flex-1 overflow-y-auto px-3 sm:px-6 min-h-0 bg-[#0A0E1A] overscroll-contain transition-all ${
+          <div className={`ai-message-feed flex-1 overflow-y-auto px-3 sm:px-6 min-h-0 bg-[#0A0E1A] overscroll-contain transition-all ${
             (isKeyboardOpen || isInputFocused) ? 'py-2 space-y-2' : 'py-3.5 space-y-3'
           }`}>
             
             {/* Minimalist Chat Intro Badge - Ultra space-efficient & responsive */}
-            <div className="flex items-center justify-center py-1 select-none">
+            <div className="ai-chat-intro flex items-center justify-center py-1 select-none">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#141A2E]/80 border border-slate-800/80 text-[11px] text-slate-400 shadow-xs">
                 <span className="text-xs">{selectedPersona.id === 'nihon-shiba' ? '🐕' : selectedPersona.avatar}</span>
                 <span className="font-bold text-slate-200 font-jp">{selectedPersona.japaneseName}</span>
@@ -1183,12 +1189,12 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                   )}
 
                   {/* Message Bubble */}
-                  <div className={`max-w-[85%] sm:max-w-[75%] space-y-1.5 ${isAi ? 'items-start' : 'items-end'}`}>
+                  <div className={`ai-message-content max-w-[85%] sm:max-w-[75%] space-y-1.5 ${isAi ? 'items-start' : 'items-end'}`}>
                     <div
                       className={`p-3 sm:p-3.5 shadow-sm transition-all ${
                         isAi
-                          ? 'bg-[#1B223C] text-slate-100 rounded-2xl rounded-tl-xs border border-[#2B355A]/60'
-                          : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl rounded-tr-xs shadow-md'
+                          ? 'ai-bubble ai-bubble-incoming bg-[#1B223C] text-slate-100 rounded-2xl rounded-tl-xs border border-[#2B355A]/60'
+                          : 'ai-bubble ai-bubble-outgoing bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl rounded-tr-xs shadow-md'
                       }`}
                     >
                       {/* Japanese Text */}
@@ -1349,7 +1355,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
 
           {/* 3. Quick Suggestions Strip - Hidden when keyboard or input is focused to maximize vertical conversation area */}
           {hints.length > 0 && !isKeyboardOpen && !isInputFocused && (
-            <div className="px-3 py-1.5 bg-[#0F1424]/95 border-t border-slate-800/80 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-none transition-all duration-150">
+            <div className="ai-chat-hints px-3 py-1.5 bg-[#0F1424]/95 border-t border-slate-800/80 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-none transition-all duration-150">
               <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider shrink-0 flex items-center gap-1">
                 <Lightbulb className="w-3 h-3 text-amber-400" />
                 <span>Gợi ý:</span>
@@ -1433,7 +1439,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
           </AnimatePresence>
 
           {/* 5. Messenger Bottom Input Bar */}
-          <footer className={`bg-[#0F1424]/98 border-t border-slate-800/80 flex items-center gap-1.5 sm:gap-2 shrink-0 z-20 select-none transition-all duration-150 ${
+          <footer className={`ai-composer bg-[#0F1424]/98 border-t border-slate-800/80 flex items-center gap-1.5 sm:gap-2 shrink-0 z-20 select-none transition-all duration-150 ${
             (isKeyboardOpen || isInputFocused) ? 'p-1.5 sm:p-2' : 'p-2 sm:p-2.5'
           }`}>
             {/* Topic Starters Button */}
@@ -1480,7 +1486,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                 onBlur={() => {
                   setIsInputFocused(false);
                 }}
-                placeholder={isListening ? 'Đang lắng nghe tiếng Nhật...' : 'Nhắn tin bằng tiếng Nhật (日本語)...'}
+                aria-label="Tin nhắn tiếng Nhật" placeholder={isListening ? 'Đang lắng nghe tiếng Nhật...' : 'Nhắn tin bằng tiếng Nhật (日本語)...'}
                 className={`w-full ${(isKeyboardOpen || isInputFocused) ? 'py-1.5 px-3.5 text-xs sm:text-sm' : 'py-2 sm:py-2.5 px-4 text-xs sm:text-sm'} bg-slate-900/90 border border-slate-700/80 focus:border-blue-500 rounded-full font-medium text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500/40 font-jp transition-all`}
               />
               {inputText && (

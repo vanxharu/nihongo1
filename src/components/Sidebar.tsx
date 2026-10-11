@@ -12,7 +12,6 @@ import {
   BookOpen,
   ShieldCheck,
   X,
-  Coins,
   Bookmark,
   Award,
   Route,
@@ -33,7 +32,6 @@ import { readGuestRoadmap } from '../data/jlptRoadmap';
 interface SidebarProps {
   currentTab: string;
   setCurrentTab: (tab: string) => void;
-  userCoins: number;
   isOpen: boolean;
   onClose: () => void;
   userProfile?: UserProfile;
@@ -101,7 +99,7 @@ function NavLink({ item, isActive, onClick }: { item: NavItem; isActive: boolean
 }
 
 // ── Sidebar ──────────────────────────────────────────────────────────────────
-export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, onClose, userProfile }: SidebarProps) {
+export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, userProfile }: SidebarProps) {
   const location = useLocation();
   const drawerRef = useDialogFocus<HTMLElement>(isOpen, onClose);
 
@@ -214,11 +212,11 @@ export default function Sidebar({ currentTab, setCurrentTab, userCoins, isOpen, 
           <div className="flex items-center justify-between px-3 py-2 rounded-xl"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
 
-            {/* Coin */}
+            {/* Learning XP */}
             <div className="flex items-center gap-1.5">
-              <Coins size={14} className="text-amber-400" />
-              <span className="text-[13px] font-bold text-amber-300">{userCoins.toLocaleString()}</span>
-              <span className="text-[11px] text-slate-500">Yên</span>
+              <Award size={14} className="text-amber-400" />
+              <span className="text-[13px] font-bold text-amber-300">{(userProfile?.xp || 0).toLocaleString()}</span>
+              <span className="text-[11px] text-slate-500">XP</span>
             </div>
 
             <div className="flex items-center gap-2">

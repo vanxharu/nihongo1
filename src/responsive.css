@@ -197,3 +197,56 @@
  .vocab-flashcard-tools{gap:0}
  #app-root-container .vocab-flashcard-tools button:has(>svg:only-child){width:40px;min-width:40px}
 }
+.vocab-dokkai-block{min-height:390px;overflow:hidden}
+.vocab-dokkai-prompt{min-height:140px}
+.vocab-dokkai-choice{background:var(--ui-raised);border-color:var(--ui-line);color:var(--ui-ink);min-height:54px}
+.vocab-dokkai-choice:hover:not(:disabled){border-color:var(--ui-accent);background:var(--ui-soft)}
+.vocab-dokkai-choice.correct{background:var(--ui-success-soft);border-color:var(--ui-success);color:var(--ui-success)}
+.vocab-dokkai-choice.incorrect{background:var(--ui-error-soft);border-color:var(--ui-error);color:var(--ui-error)}
+.vocab-dokkai-choice.inactive{opacity:.5}
+.vocab-dokkai-progress{height:3px;position:absolute;bottom:0;left:0;right:0;background:var(--ui-soft)}
+.vocab-dokkai-progress>span{display:block;height:100%;background:var(--ui-success);transition:width .25s}
+@media(max-width:639px){.vocab-dokkai-block{min-height:360px}.vocab-dokkai-prompt{min-height:130px}.vocab-dokkai-choice{gap:7px;padding:12px 8px}.vocab-dokkai-bottom{padding-top:14px}}
+/* Reserve the exercise frame across unanswered, answered and flipped states. */
+#app-root-container .vocab-fixed-stage{
+ height:640px;min-height:640px;max-height:640px;
+ overflow-y:auto;overflow-x:hidden;justify-content:flex-start;
+ scrollbar-gutter:stable;transition:none;
+}
+#app-root-container .vocab-fixed-stage>.vocab-flashcard-lesson-nav,
+#app-root-container .vocab-fixed-stage>.vocab-study-toolbar{flex-shrink:0}
+#app-root-container .vocab-fixed-stage .vocab-flashcard-block{flex-shrink:0}
+#app-root-container .vocab-fixed-stage .vocab-reference-flip{
+ height:440px!important;min-height:440px;max-height:440px;
+ overflow:hidden;padding:24px 48px;
+}
+#app-root-container .vocab-fixed-stage .vocab-reference-flip>.vocab-flashcard-content{
+ max-height:100%;overflow-y:auto;overflow-x:hidden;flex-shrink:1;
+ scrollbar-gutter:stable;
+}
+#app-root-container .vocab-fixed-stage .vocab-reference-flip>.vocab-flashcard-audio{flex-shrink:0}
+#app-root-container .vocab-fixed-stage .vocab-quiz-block{
+ height:540px;min-height:540px;max-height:540px;flex-shrink:0;
+ overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;
+}
+#app-root-container .vocab-fixed-stage .vocab-quiz-prompt{height:150px;min-height:150px;flex-shrink:0;overflow-y:auto}
+#app-root-container .vocab-fixed-stage .vocab-dokkai-prompt{height:150px;min-height:150px;flex-shrink:0;overflow-y:auto}
+#app-root-container .vocab-fixed-stage .vocab-quiz-choices{flex-shrink:0}
+#app-root-container .vocab-fixed-stage .vocab-quiz-choices>button{height:78px;min-height:78px;overflow-y:auto}
+#app-root-container .vocab-fixed-stage .vocab-quiz-footer{flex-shrink:0;min-height:44px}
+#app-root-container .vocab-fixed-stage .vocab-cram-exercise,
+#app-root-container .vocab-fixed-stage .vocab-shadowing-exercise{
+ height:530px;min-height:530px;max-height:530px;flex-shrink:0;overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;
+}
+@media(max-width:639px){
+ #app-root-container .vocab-fixed-stage{height:700px;min-height:700px;max-height:700px}
+ #app-root-container .vocab-fixed-stage .vocab-reference-flip{height:440px!important;min-height:440px;max-height:440px;padding:20px 40px}
+ #app-root-container .vocab-fixed-stage .vocab-quiz-block{height:590px;min-height:590px;max-height:590px}
+ #app-root-container .vocab-fixed-stage .vocab-quiz-choices>button{height:88px;min-height:88px}
+ #app-root-container .vocab-fixed-stage .vocab-cram-exercise,
+ #app-root-container .vocab-fixed-stage .vocab-shadowing-exercise{height:580px;min-height:580px;max-height:580px}
+}
+.badge-locked .badge-illustration{filter:saturate(.65);opacity:.85}
+.shiba-feedback-bubble{max-width:min(420px,calc(100vw - 24px));white-space:normal!important;line-height:1.5}
+.feedback-xp .shiba-feedback-bubble{border-color:var(--ui-accent)!important;color:var(--ui-accent)!important;background:var(--ui-surface)!important}
+.feedback-xp .shiba-feedback-bubble [role=status]{font-weight:750}

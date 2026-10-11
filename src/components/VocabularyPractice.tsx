@@ -44,7 +44,7 @@ import {
   FastForward,
   RotateCcw
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { VocabularyItem, UserProfile, LearningPosition, JLPTLevel } from '../types';
 import { VOCABULARY_DATA } from '../data';
 import { 
@@ -731,6 +731,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
 
   // App States
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [cardSlideDirection, setCardSlideDirection] = useState(1);
+  const reduceCardMotion = useReducedMotion();
   const [selectedMode, setSelectedMode] = useState<'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing'>(() => {
     const urlMode = URL_VOCAB_MODE();
     if (urlMode) return urlMode;
@@ -1105,7 +1107,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const [dokkaiOptions, setDokkaiOptions] = useState<string[]>([]);
   const [selectedDokkaiIndex, setSelectedDokkaiIndex] = useState<number | null>(null);
   const [dokkaiHasAnswered, setDokkaiHasAnswered] = useState(false);
-  const [showDokkaiTranslation, setShowDokkaiTranslation] = useState(false);
+  const [showDokkaiTranslation, setShowDokkaiTranslation] = useState(true);
 
   const [shadowingChips, setShadowingChips] = useState<string[]>([]);
   const [shadowingSelectedIndices, setShadowingSelectedIndices] = useState<number[]>([]);
@@ -1810,7 +1812,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     const chosenText = selectedIdx !== null ? options[selectedIdx] : '';
 
     return (
-      <div className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-3 leading-relaxed text-xl sm:text-2xl md:text-3xl font-bold font-sans tracking-wide text-slate-900">
+      <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-2 leading-relaxed text-lg sm:text-2xl font-medium font-sans text-slate-900">
         {/* Phần đầu câu */}
         {prefix && (
           <span className="inline-flex items-center">
@@ -1820,8 +1822,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
 
         {/* Vị trí đục lỗ cần điền */}
         {!answered ? (
-          <span className="inline-flex items-center justify-center min-w-[90px] sm:min-w-[120px] px-3.5 sm:px-5 py-1 sm:py-1.5 mx-1.5 rounded-2xl border-2 border-dashed border-indigo-400 bg-indigo-50/80 text-indigo-700 font-mono font-black text-sm sm:text-lg shadow-inner select-none animate-pulse">
-            （&nbsp;？&nbsp;）
+          <span className="inline-flex items-center justify-center mx-1 text-current select-none">
+            {'＿'.repeat(Math.max(2, Array.from(target.replace(/\s/g, '')).length))}
           </span>
         ) : isCorrect ? (
           <motion.span
@@ -2046,7 +2048,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     setDokkaiOptions(shuffled([correctDokkai, ...pickDistractors(dokkaiPool, correctDokkai)]));
     setSelectedDokkaiIndex(null);
     setDokkaiHasAnswered(false);
-    setShowDokkaiTranslation(false);
+    setShowDokkaiTranslation(true);
 
     // Cram setup
     setCramInput('');
@@ -2165,6 +2167,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   };
 
   const handlePrev = useCallback(() => {
+    setCardSlideDirection(-1);
     setCurrentIndex(prev => (prev > 0 ? prev - 1 : 0));
   }, []);
 
@@ -2172,6 +2175,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     const { currentItem: item, currentIndex: idx, lessonItems: items, currentLesson: lesson, userProfile: profile } = stateRef.current;
     if (!item) return;
     if (idx < items.length - 1) {
+      setCardSlideDirection(1);
       setCurrentIndex(prev => prev + 1);
     } else {
       const firstCompletion = lesson?.id === 'SRS_REVIEW' || !profile.completedLessons.includes(lesson?.id as string);
@@ -2834,11 +2838,11 @@ if (loading) {
       <div className={`w-full mx-auto mt-0 sm:mt-1 transition-all duration-300 flex flex-col items-center ${isExpanded ? 'max-w-5xl' : 'max-w-[780px]'}`}>
         <div className="w-full">
           {/* Main Study Card Stage */}
-          <div onClick={e => (e.target as HTMLElement).closest('button')?.blur()} /* keep Space/shortcuts on the card, not on the last-clicked button */ className={`relative flex flex-col justify-between transition-all duration-300 w-full ${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? 'vocab-flashcard-stage text-white' : 'bg-[#242b45] text-white border border-[#343d5f] shadow-2xl shadow-slate-950/40 rounded-2xl sm:rounded-3xl p-3 sm:p-5 md:p-6 overflow-hidden min-h-[220px] sm:min-h-[280px] md:min-h-[340px]'}`}>
+          <div onClick={e => (e.target as HTMLElement).closest('button')?.blur()} /* keep Space/shortcuts on the card, not on the last-clicked button */ data-vocab-mode={selectedMode} className={`vocab-fixed-stage relative flex flex-col justify-between transition-all duration-300 w-full ${(selectedMode === 'flashcard' || selectedMode === 'quiz' || selectedMode === 'dokkai') ? 'vocab-flashcard-stage text-white' : 'bg-[#242b45] text-white border border-[#343d5f] shadow-2xl shadow-slate-950/40 rounded-2xl sm:rounded-3xl p-3 sm:p-5 md:p-6 overflow-hidden min-h-[220px] sm:min-h-[280px] md:min-h-[340px]'}`}>
         {/* Top Header Inside Card Frame: Integrated Lesson Navigator & Study Controls */}
-        <div className={`${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? 'vocab-flashcard-lesson-nav' : 'vocab-study-toolbar'} flex flex-row items-center justify-between gap-1 sm:gap-2 mb-2.5 sm:mb-3.5 pb-2 sm:pb-2.5 border-b border-[#343d5f]/80 relative z-10 w-full flex-nowrap`}>
+        <div className={`${(selectedMode === 'flashcard' || selectedMode === 'quiz' || selectedMode === 'dokkai') ? 'vocab-flashcard-lesson-nav' : 'vocab-study-toolbar'} flex flex-row items-center justify-between gap-1 sm:gap-2 mb-2.5 sm:mb-3.5 pb-2 sm:pb-2.5 border-b border-[#343d5f]/80 relative z-10 w-full flex-nowrap`}>
           {/* Left Controls */}
-          <div className={`${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? 'hidden' : 'flex'} items-center gap-1 sm:gap-1.5 shrink-0`}>
+          <div className={`${(selectedMode === 'flashcard' || selectedMode === 'quiz' || selectedMode === 'dokkai') ? 'hidden' : 'flex'} items-center gap-1 sm:gap-1.5 shrink-0`}>
             {selectedMode === 'dokkai' ? (
               <button 
                 onClick={() => currentItem && handleSpeak(currentItem.exampleSentence)}
@@ -2924,7 +2928,7 @@ if (loading) {
           </div>
 
           {/* Right Controls */}
-          <div className={`fc-toolbar ${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? 'hidden' : 'flex'} items-center gap-1 sm:gap-1.5 shrink-0`}>
+          <div className={`fc-toolbar ${(selectedMode === 'flashcard' || selectedMode === 'quiz' || selectedMode === 'dokkai') ? 'hidden' : 'flex'} items-center gap-1 sm:gap-1.5 shrink-0`}>
             {selectedMode === 'dokkai' && (
               <>
                 <button
@@ -3148,7 +3152,7 @@ if (loading) {
         </AnimatePresence>
 
         {/* Dynamic Mode Render Space */}
-        <div className={`flex-1 flex flex-col justify-center relative ${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? '' : 'py-1 sm:py-2'}`}>
+        <div className={`flex-1 flex flex-col justify-center relative ${(selectedMode === 'flashcard' || selectedMode === 'quiz' || selectedMode === 'dokkai') ? '' : 'py-1 sm:py-2'}`}>
           {selectedMode === 'flashcard' && currentItem && (
             <div className="vocab-flashcard-block w-full min-w-0 bg-[#242b45] border border-[#343d5f] rounded-lg overflow-hidden shadow-md">
               <div className="vocab-flashcard-face relative">
@@ -3158,7 +3162,17 @@ if (loading) {
                 <button type="button" onClick={handlePrev} aria-label="Thẻ trước" title="Thẻ trước (←)" className="vocab-flashcard-arrow vocab-flashcard-arrow-prev absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-[#1a1f33]/90 text-slate-400 hover:text-white p-2"><ChevronLeft className="w-4 h-4" /></button>
                 <button type="button" onClick={handleNext} aria-label="Thẻ tiếp theo" title="Thẻ tiếp theo (→)" className="vocab-flashcard-arrow vocab-flashcard-arrow-next absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-[#1a1f33]/90 text-slate-400 hover:text-white p-2"><ChevronRight className="w-4 h-4" /></button>
               {/* Main Card Flip Area - Fixed Height so it never changes size when flipping */}
-              <div 
+              <AnimatePresence initial={false} mode="wait" custom={cardSlideDirection}>
+              <motion.div
+                key={currentItem.id + '-' + currentIndex}
+                custom={cardSlideDirection}
+                variants={{
+                  enter: (direction: number) => ({ x: reduceCardMotion ? 0 : direction * 100, opacity: reduceCardMotion ? 1 : 0 }),
+                  center: { x: 0, opacity: 1 },
+                  leave: (direction: number) => ({ x: reduceCardMotion ? 0 : direction * -100, opacity: reduceCardMotion ? 1 : 0 }),
+                }}
+                initial="enter" animate="center" exit="leave"
+                transition={{ duration: reduceCardMotion ? 0 : 0.2, ease: 'easeOut' }}
                 tabIndex={0}
                 role="button"
                 aria-label="Lật thẻ Flashcard (Space)"
@@ -3172,14 +3186,15 @@ if (loading) {
                 }}
                 className={`responsive-flashcard vocab-reference-flip w-full bg-[#1e243b]/90 focus:outline-none cursor-pointer relative flex flex-col ${showFlashcardAnswer && flashcardView === 'word' ? 'vocab-word-answer-face' : ''}`}
               >
-                <AnimatePresence mode="wait">
+                <AnimatePresence initial={false} mode="wait">
                   {!showFlashcardAnswer ? (
                     <motion.div 
                       key={`front-${flashcardView}`} 
-                      initial={{ opacity: 0, scale: 0.96 }} 
-                      animate={{ opacity: 1, scale: 1 }} 
-                      exit={{ opacity: 0, scale: 0.96 }}
-                      transition={{ duration: 0.15 }}
+                      initial={{ rotateY: reduceCardMotion ? 0 : -90 }}
+                      animate={{ rotateY: 0 }}
+                      exit={{ rotateY: reduceCardMotion ? 0 : 90 }}
+                      transition={{ duration: reduceCardMotion ? 0 : 0.18, ease: 'easeInOut' }}
+                      style={{ transformPerspective: 1200, backfaceVisibility: 'hidden' }}
                 className="vocab-flashcard-content w-full flex flex-col items-center justify-center text-center space-y-2"
                     >
                       {flashcardView === 'word' ? (
@@ -3223,10 +3238,11 @@ if (loading) {
                   ) : (
                     <motion.div 
                       key={`back-${flashcardView}`} 
-                      initial={{ opacity: 0, scale: 0.96 }} 
-                      animate={{ opacity: 1, scale: 1 }} 
-                      exit={{ opacity: 0, scale: 0.96 }}
-                      transition={{ duration: 0.15 }}
+                      initial={{ rotateY: reduceCardMotion ? 0 : -90 }}
+                      animate={{ rotateY: 0 }}
+                      exit={{ rotateY: reduceCardMotion ? 0 : 90 }}
+                      transition={{ duration: reduceCardMotion ? 0 : 0.18, ease: 'easeInOut' }}
+                      style={{ transformPerspective: 1200, backfaceVisibility: 'hidden' }}
                       className="vocab-flashcard-content w-full flex flex-col justify-center items-center text-center space-y-2"
                     >
                       {flashcardView === 'word' ? (
@@ -3257,7 +3273,8 @@ if (loading) {
                   )}
                 </AnimatePresence>
                 {!(showFlashcardAnswer && flashcardView === 'word') && <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(flashcardView === 'example' && !showFlashcardAnswer ? ensureVocabExample(currentItem).exampleSentence : currentItem.kanji || currentItem.hiragana, flashcardView === 'example' && !showFlashcardAnswer); }} onKeyDown={e => e.stopPropagation()} aria-label={flashcardView === 'example' && !showFlashcardAnswer ? 'Phát âm câu ví dụ' : 'Phát âm từ vựng'} title="Nghe âm thanh (R)" className={`vocab-flashcard-audio self-center p-2 text-slate-400 hover:text-white rounded-lg${speakClassFor(flashcardView === 'example' && !showFlashcardAnswer ? ensureVocabExample(currentItem).exampleSentence : currentItem.kanji || currentItem.hiragana)}`}><Volume2 className="w-5 h-5" /></button>}
-              </div>
+              </motion.div>
+              </AnimatePresence>
               </div>
 
               <div className="vocab-flashcard-shortcuts bg-[#242b45] text-slate-400" aria-label="Phím tắt học từ vựng">
@@ -3506,7 +3523,7 @@ if (loading) {
           )}
 
           {selectedMode === 'cram' && currentItem && (
-            <div className="w-full max-w-lg mx-auto space-y-5 relative">
+            <div className="vocab-cram-exercise w-full max-w-lg mx-auto space-y-5 relative">
               {/* Mascot decoration */}
               <div className="absolute left-[-100px] top-4 opacity-10 select-none pointer-events-none hidden lg:flex flex-col items-center">
                 <span className="text-7xl">🦉</span>
@@ -3689,138 +3706,39 @@ if (loading) {
           )}
 
           {selectedMode === 'dokkai' && currentItem && (
-            <div className="space-y-6 w-full max-w-3xl mx-auto relative z-10">
-              
-              {/* Question Header & Sentence Stage */}
-              <div className="text-center py-3 sm:py-5 space-y-4">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/80 border border-slate-200/60 text-[11px] font-bold text-slate-600 uppercase tracking-wider">
-                  <span>📖</span>
-                  <span>Đọc hiểu ngữ cảnh &amp; Chọn từ điền vào chỗ trống</span>
-                </div>
-
-                {/* Example sentence with smart blanks */}
-                <div className="py-2 px-2 sm:px-4">
-                  {renderDokkaiSentenceWithCloze(
-                    currentItem.exampleSentence,
-                    currentItem,
-                    dokkaiHasAnswered,
-                    selectedDokkaiIndex,
-                    dokkaiOptions
-                  )}
-                </div>
-
-                {/* Translation toggle & Mnemonic Content */}
-                <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
-                  {!dokkaiHasAnswered ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => setShowDokkaiTranslation(prev => !prev)}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer shadow-3xs"
-                      >
-                        {showDokkaiTranslation ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                        <span>{showDokkaiTranslation ? 'Ẩn gợi ý dịch' : 'Gợi ý nghĩa tiếng Việt'}</span>
-                      </button>
-                    </>
-                  ) : (
-                    <div className="w-full max-w-xl mx-auto p-3.5 bg-sky-50/90 border border-sky-200/80 rounded-2xl text-center space-y-1.5 shadow-xs">
-                      <span className="text-[11px] font-bold text-sky-700 uppercase tracking-wider block">
-                        🇻🇳 Dịch nghĩa câu hoàn chỉnh
-                      </span>
-                      <p className="text-sm sm:text-base font-bold text-sky-950 leading-relaxed">
-                        {currentItem.exampleTranslation}
-                      </p>
-                      {currentItem.meaning && (
-                        <p className="text-xs text-slate-600 font-medium pt-1.5 border-t border-sky-100">
-                          <span className="font-bold text-slate-800">{currentItem.kanji || currentItem.hiragana}</span>: {currentItem.meaning}
-                        </p>
-                      )}
-                    </div>
-                  )}
-
-                  {!dokkaiHasAnswered && showDokkaiTranslation && (
-                    <div className="text-xs sm:text-sm text-slate-600 italic bg-amber-50/90 border border-amber-200/80 rounded-xl px-4 py-2 max-w-lg shadow-3xs">
-                      <span className="font-semibold not-italic text-amber-800 mr-1">Gợi ý:</span>
-                      {currentItem.exampleTranslation}
-                    </div>
-                  )}
+            <div className="vocab-quiz-block vocab-dokkai-block border rounded-lg p-4 sm:p-5 w-full relative z-10 flex flex-col">
+              <div className="flex items-center justify-between gap-3 text-xs text-slate-400">
+                <button type="button" onClick={() => handleSpeak(currentItem.exampleSentence, true)} className={`flex items-center gap-2 py-1${speakClassFor(currentItem.exampleSentence)}`} aria-label="Nghe câu đọc hiểu"><Volume2 className="w-4 h-4" /><span>Bí quá thì nghe</span></button>
+                <div className="flex items-center gap-2">
+                  <button type="button" onClick={() => setShowDokkaiTranslation(value => !value)} aria-pressed={showDokkaiTranslation} aria-label="Hiện nghĩa tiếng Việt" title="Ẩn / hiện nghĩa tiếng Việt" className="p-2 rounded">{showDokkaiTranslation ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}</button>
+                  <button type="button" onClick={() => setShowOptions(value => !value)} aria-label="Cài đặt đọc hiểu" className="p-2"><Settings className="w-4 h-4" /></button>
                 </div>
               </div>
-
-              {/* 4 choices options */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div className="vocab-dokkai-prompt flex flex-col items-center justify-center text-center gap-3 px-2">
+                <div className="w-full text-lg sm:text-2xl leading-relaxed">{renderDokkaiSentenceWithCloze(currentItem.exampleSentence, currentItem, dokkaiHasAnswered, selectedDokkaiIndex, dokkaiOptions)}</div>
+                {(showDokkaiTranslation || dokkaiHasAnswered) && <p className="text-xs sm:text-sm text-slate-400">{currentItem.exampleTranslation}</p>}
+              </div>
+              <div className="vocab-quiz-choices grid grid-cols-2 gap-2 my-3">
                 {dokkaiOptions.map((option, idx) => {
-                  const isSelected = selectedDokkaiIndex === idx;
-                  const correctVal = currentItem.kanji || currentItem.hiragana;
-                  const isCorrect = option === correctVal;
-
-                  // Find vocab details for supplementary translation
-                  const optVocab = vocabData.find(v => (v.kanji && v.kanji === option) || v.hiragana === option);
-
-                  let btnStyle = 'bg-white border-slate-200/90 text-slate-900 hover:bg-slate-50 hover:border-slate-300 hover:shadow-xs';
-                  if (dokkaiHasAnswered) {
-                    if (isCorrect) {
-                      btnStyle = 'bg-emerald-50/90 border-emerald-400 text-emerald-900 font-bold ring-2 ring-emerald-500/20';
-                    } else if (isSelected) {
-                      btnStyle = 'bg-rose-50/90 border-rose-400 text-rose-900 font-bold ring-2 ring-rose-500/20';
-                    } else {
-                      btnStyle = 'bg-slate-50/60 border-slate-200/60 text-slate-400 opacity-50';
-                    }
-                  }
-
-                  return (
-                    <button
-                      key={idx}
-                      disabled={dokkaiHasAnswered}
-                      onClick={() => handleSelectDokkai(idx)}
-                      className={`px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl border text-left flex items-center justify-between text-sm sm:text-base transition-all group cursor-pointer active:scale-98 ${btnStyle}`}
-                    >
-                      <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-                        <span className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl flex items-center justify-center text-xs sm:text-sm font-mono font-bold shrink-0 transition-colors ${
-                          dokkaiHasAnswered && isCorrect 
-                            ? 'bg-emerald-500 text-white' 
-                            : dokkaiHasAnswered && isSelected 
-                            ? 'bg-rose-500 text-white' 
-                            : 'bg-slate-100 text-slate-600 group-hover:bg-slate-200'
-                        }`}>
-                          {idx + 1}
-                        </span>
-                        <div className="flex flex-col min-w-0">
-                          <span className="font-bold tracking-wide text-base sm:text-lg text-slate-950">
-                            {renderColorizedKanjiWord(option, false, true)}
-                          </span>
-                          {/* Display meaning annotation when answered */}
-                          {dokkaiHasAnswered && optVocab && (
-                            <span className="text-[11px] sm:text-xs text-slate-500 font-medium truncate mt-0.5">
-                              {optVocab.hiragana !== option ? `${optVocab.hiragana} • ` : ''}{optVocab.meaning}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      {dokkaiHasAnswered && isCorrect && <Check className="w-5 h-5 text-emerald-600 shrink-0 ml-2" />}
-                      {dokkaiHasAnswered && isSelected && !isCorrect && <X className="w-5 h-5 text-rose-500 shrink-0 ml-2" />}
-                    </button>
-                  );
+                  const correct = option === (currentItem.kanji || currentItem.hiragana);
+                  const selected = selectedDokkaiIndex === idx;
+                  const state = dokkaiHasAnswered ? correct ? 'correct' : selected ? 'incorrect' : 'inactive' : '';
+                  return <button type="button" key={idx} disabled={dokkaiHasAnswered} onClick={() => handleSelectDokkai(idx)} className={`vocab-dokkai-choice ${state} flex items-center gap-3 text-left px-4 py-3 rounded-md border`}>
+                    <span className="text-xs text-slate-400 shrink-0">{idx + 1}</span><span className="flex-1 text-base sm:text-lg break-words">{option}</span>
+                    {dokkaiHasAnswered && correct && <Check className="w-4 h-4 shrink-0" />}{dokkaiHasAnswered && selected && !correct && <X className="w-4 h-4 shrink-0" />}
+                  </button>;
                 })}
               </div>
-
-              {/* Dynamic desktop/mobile continue button */}
-              {dokkaiHasAnswered && (
-                <div className="flex justify-center pt-2">
-                  <button 
-                    onClick={handleNext}
-                    className="px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transform active:scale-95 transition-all flex items-center gap-2 cursor-pointer animate-fade-in"
-                  >
-                    <span>{autoAdvance ? '⏳ Đang tự chuyển câu (1.5s)... hoặc bấm Tiếp tục (Enter / Space)' : 'Tiếp tục (Enter / Space)'}</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
+              <div className="vocab-quiz-footer flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 mt-2">
+                <div className="flex-1 text-center">Nhấn <kbd>1–4</kbd> để chọn, <kbd>Space</kbd> để tiếp tục, <kbd>R</kbd> nghe audio</div>
+                <button type="button" disabled={dokkaiHasAnswered} onClick={handleDokkaiBỏTay} className="py-2 disabled:opacity-40">♡ Câu này bó tay</button>
+              </div>
+              <div className="vocab-dokkai-bottom flex items-center justify-between gap-3 mt-auto pt-5 text-xs text-slate-400"><span>{currentIndex + 1} / {lessonItems.length}</span>{dokkaiHasAnswered && <button type="button" onClick={handleNext} className="flex items-center gap-1 py-2 text-emerald-400">Tiếp tục <ChevronRight className="w-4 h-4" /></button>}</div>
+              <div className="vocab-dokkai-progress"><span style={{width: `${((currentIndex + (dokkaiHasAnswered ? 1 : 0)) / Math.max(1, lessonItems.length)) * 100}%`}} /></div>
             </div>
           )}
-
           {selectedMode === 'shadowing' && currentItem && (
-            <div className="space-y-6 w-full max-w-3xl mx-auto relative">
+            <div className="vocab-shadowing-exercise space-y-6 w-full max-w-3xl mx-auto relative">
               {/* Mascot decoration */}
               <div className="absolute right-0 bottom-0 opacity-10 select-none pointer-events-none hidden lg:flex flex-col items-center">
                 <span className="text-7xl">🦉</span>
@@ -3940,7 +3858,7 @@ if (loading) {
 
         {/* Dynamic mascot message bottom status bar */}
         {selectedMode === 'dokkai' ? (
-          <div className="border-t border-slate-100 pt-4 flex flex-row items-center justify-between gap-4 mt-6 relative z-10">
+          <div className="hidden">
             {/* Left side: Current slide number fraction */}
             <div className="flex items-center gap-2 select-none">
               <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />

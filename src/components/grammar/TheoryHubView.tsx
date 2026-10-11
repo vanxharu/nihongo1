@@ -1,7 +1,9 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { JLPTLevel, UserProfile, GrammarItem } from '../../types';
-import { Search, ChevronRight, Play, BookOpen, PenTool, Layers, X, Flame, Zap } from 'lucide-react';
+import { Search, ChevronRight, Play, BookOpen, PenTool, Layers, X, Flame, CheckCircle2 } from 'lucide-react';
 import ShibaStudyMascot from './ShibaStudyMascot';
+import { getGrammarStatusWithAliases } from '../../utils/grammarDeduplicator';
+import './TheoryHubView.css';
 
 interface TheoryHubViewProps {
   userProfile: UserProfile;
@@ -15,370 +17,59 @@ interface TheoryHubViewProps {
   levelStats?: Record<string, { lessons: number; grammars: number; completed: number }>;
   onSelectGrammarItem?: (grammar: GrammarItem) => void;
 }
-
-const JLPT_LEVELS: JLPTLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
-
-const BENCHMARK_TOTALS: Record<string, { vocab: number; grammar: number; kanji: number }> = {
-  N5: { vocab: 511, grammar: 120, kanji: 103 },
-  N4: { vocab: 511, grammar: 539, kanji: 167 },
-  N3: { vocab: 850, grammar: 140, kanji: 367 },
-  N2: { vocab: 1200, grammar: 150, kanji: 367 },
-  N1: { vocab: 2000, grammar: 180, kanji: 1130 },
-};
-
-// Subject card config
+const LEVELS: JLPTLevel[] = ['N5', 'N4', 'N3', 'N2', 'N1'];
+const LEVEL_LABELS = { N5: 'Bắt đầu từ nền tảng', N4: 'Vững vàng giao tiếp cơ bản', N3: 'Kết nối những kiến thức đã học', N2: 'Hiểu sâu và diễn đạt tự nhiên', N1: 'Khám phá sắc thái tiếng Nhật' };
 const SUBJECTS = [
-  {
-    key: 'vocab',
-    label: 'Từ vựng',
-    sub: 'Flashcard & ôn theo ngữ cảnh',
-    Icon: Layers,
-    accent: '#3B82F6',      // blue
-    bg: 'rgba(59,130,246,0.10)',
-    border: 'rgba(59,130,246,0.22)',
-    glow: 'rgba(59,130,246,0.18)',
-  },
-  {
-    key: 'grammar',
-    label: 'Ngữ pháp',
-    sub: 'Cấu trúc câu & ví dụ thực tế',
-    Icon: BookOpen,
-    accent: '#A855F7',      // purple
-    bg: 'rgba(168,85,247,0.10)',
-    border: 'rgba(168,85,247,0.22)',
-    glow: 'rgba(168,85,247,0.18)',
-  },
-  {
-    key: 'kanji',
-    label: 'Hán tự',
-    sub: 'Nhận diện & tra nghĩa nhanh',
-    Icon: PenTool,
-    accent: '#14B8A6',      // teal
-    bg: 'rgba(20,184,166,0.10)',
-    border: 'rgba(20,184,166,0.22)',
-    glow: 'rgba(20,184,166,0.18)',
-  },
+  { key: 'vocab', title: 'Từ vựng', ja: 'ことば', description: 'Học từ, nghe phát âm và nhớ qua ví dụ.', Icon: Layers },
+  { key: 'kanji', title: 'Kanji', ja: '漢字', description: 'Tra cách đọc, ý nghĩa và luyện nét viết.', Icon: PenTool },
+  { key: 'grammar', title: 'Ngữ pháp', ja: '文法', description: 'Hiểu cấu trúc và cách dùng trong ngữ cảnh.', Icon: BookOpen },
 ] as const;
+const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').toLowerCase();
 
-export const TheoryHubView: React.FC<TheoryHubViewProps> = ({
-  userProfile,
-  selectedLevel,
-  onChangeLevel,
-  onOpenGrammar,
-  onOpenVocab,
-  onOpenKanji,
-  onContinueStudy,
-  grammars,
-  onSelectGrammarItem,
-}) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const searchContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
-        setIsSearchFocused(false);
-      }
-    };
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, []);
-
-  const benchmarks = BENCHMARK_TOTALS[selectedLevel] || BENCHMARK_TOTALS.N4;
-
-  const vocabCompleted = useMemo(() => {
-    const statusMap = userProfile.vocabStatus || {};
-    let count = 0;
-    Object.entries(statusMap).forEach(([key, st]) => {
-      if (key.toLowerCase().includes(selectedLevel.toLowerCase()) || key.startsWith('v_')) {
-        if (st === 'mastered' || (typeof st === 'object' && ((st as any).repetitions >= 1 || (st as any).state === 'mastered'))) {
-          count++;
-        }
-      }
-    });
-    return count;
-  }, [userProfile.vocabStatus, selectedLevel]);
-
-  const grammarCompleted = useMemo(() => {
-    const statusMap = userProfile.grammarStatus || {};
-    let count = 0;
-    const levelGrammars = grammars.filter(g => g.level === selectedLevel);
-    const ids = new Set(levelGrammars.map(g => g.id));
-    Object.entries(statusMap).forEach(([id, st]) => {
-      if (ids.has(id) || (ids.size === 0 && id.includes(selectedLevel))) {
-        if (st && (st === true || (typeof st === 'object' && ((st as any).correctCount > 0 || (st as any).state === 'learned' || (st as any).state === 'mastered')))) {
-          count++;
-        }
-      }
-    });
-    return count;
-  }, [userProfile.grammarStatus, grammars, selectedLevel]);
-
-  const kanjiCompleted = useMemo(() => {
-    const statusMap = userProfile.kanjiStatus || {};
-    let count = 0;
-    Object.entries(statusMap).forEach(([id, st]) => {
-      if (id.toLowerCase().includes(selectedLevel.toLowerCase())) {
-        if (st && (st === true || (typeof st === 'object' && ((st as any).repetitions >= 1 || (st as any).state === 'mastered')))) {
-          count++;
-        }
-      }
-    });
-    return count;
-  }, [userProfile.kanjiStatus, selectedLevel]);
-
-  const completedMap: Record<string, number> = {
-    vocab: vocabCompleted,
-    grammar: grammarCompleted,
-    kanji: kanjiCompleted,
+export default function TheoryHubView({ userProfile, selectedLevel, onChangeLevel, onOpenGrammar, onOpenVocab, onOpenKanji, onContinueStudy, grammars, onSelectGrammarItem }: TheoryHubViewProps) {
+  const [query, setQuery] = useState('');
+  const [filter, setFilter] = useState<'all' | 'new' | 'learned'>('all');
+  const [visibleCount, setVisibleCount] = useState(8);
+  const learned = (item: GrammarItem) => {
+    const status = getGrammarStatusWithAliases(userProfile.grammarStatus, item);
+    return status === true || (typeof status === 'object' && status !== null && ((status as any).correctCount > 0 || ['learned', 'mastered'].includes((status as any).state)));
   };
-  const totalMap: Record<string, number> = {
-    vocab: benchmarks.vocab,
-    grammar: benchmarks.grammar,
-    kanji: benchmarks.kanji,
-  };
+  const levelItems = useMemo(() => grammars.filter(item => item.level === selectedLevel), [grammars, selectedLevel]);
+  const done = levelItems.filter(learned).length;
+  const percent = levelItems.length ? Math.round(done / levelItems.length * 100) : 0;
+  const next = levelItems.find(item => !learned(item)) || levelItems[0];
+  const results = levelItems.filter(item => {
+    const match = normalize([item.structure, item.meaning, item.lessonName || '', item.exampleSentence].join(' ')).includes(normalize(query.trim()));
+    return match && (filter === 'all' || (filter === 'learned' ? learned(item) : !learned(item)));
+  });
+  const openItem = (item: GrammarItem) => onSelectGrammarItem ? onSelectGrammarItem(item) : onContinueStudy();
+  const handlers = { vocab: onOpenVocab, kanji: onOpenKanji, grammar: onOpenGrammar };
+  const changeLevel = (level: JLPTLevel) => { onChangeLevel(level); setQuery(''); setVisibleCount(8); };
 
-  const subjectHandlers: Record<string, () => void> = {
-    vocab: onOpenVocab,
-    grammar: onOpenGrammar,
-    kanji: onOpenKanji,
-  };
-
-  const continueLabel = useMemo(() => {
-    if (selectedLevel === 'N4') return `${selectedLevel} · Bài 1 · Từ vựng`;
-    if (selectedLevel === 'N5') return `${selectedLevel} · Bài 1 · Từ vựng`;
-    return `${selectedLevel} · Bài 1 · Lý thuyết`;
-  }, [selectedLevel]);
-
-  const searchResults = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    if (!q) return [];
-    return grammars
-      .filter(g =>
-        g.structure.toLowerCase().includes(q) ||
-        g.meaning.toLowerCase().includes(q) ||
-        (g.lessonName && g.lessonName.toLowerCase().includes(q))
-      )
-      .slice(0, 8);
-  }, [searchQuery, grammars]);
-
-  const streak = userProfile.streak || 0;
-  const totalDone = vocabCompleted + grammarCompleted + kanjiCompleted;
-  const totalAll = benchmarks.vocab + benchmarks.grammar + benchmarks.kanji;
-  const overallPct = totalAll ? Math.round((totalDone / totalAll) * 100) : 0;
-
-  return (
-    <div style={{ fontFamily: "'Inter', system-ui, sans-serif" }}
-      className="w-full max-w-xl mx-auto px-4 pt-2 pb-28 text-slate-100 select-none">
-
-      {/* ── Level pills ── */}
-      <div className="flex items-center gap-2 mb-2 overflow-x-auto pb-0.5 no-scrollbar">
-        {JLPT_LEVELS.map(lvl => {
-          const active = lvl === selectedLevel;
-          return (
-            <button
-              key={lvl}
-              type="button"
-              onClick={() => onChangeLevel(lvl)}
-              style={active ? {
-                background: 'linear-gradient(135deg,#6366F1,#8B5CF6)',
-                boxShadow: '0 2px 12px rgba(99,102,241,0.45)',
-              } : {
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.09)',
-              }}
-              className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                active ? 'text-white' : 'text-slate-400 hover:text-slate-200'
-              }`}
-            >
-              {lvl}
-            </button>
-          );
-        })}
-
-        {/* streak chip — right side */}
-        {streak > 0 && (
-          <div className="ml-auto shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-amber-300"
-            style={{ background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.2)' }}>
-            <Flame size={12} className="text-amber-400" />
-            {streak}
-          </div>
-        )}
-      </div>
-
-      {/* ── Overall progress bar ── */}
-      <div className="mb-3">
-        <div className="flex items-end justify-between mb-1.5">
-          <span className="text-[11px] text-slate-400 font-medium">Tổng tiến độ {selectedLevel}</span>
-          <span className="text-[11px] font-bold text-slate-300">{overallPct}%</span>
-        </div>
-        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
-          <div
-            className="h-full rounded-full transition-all duration-700"
-            style={{
-              width: `${overallPct}%`,
-              background: 'linear-gradient(90deg,#6366F1,#A855F7,#14B8A6)',
-            }}
-          />
-        </div>
-      </div>
-
-      {/* ── Search bar ── */}
-      <div className="relative mb-3" ref={searchContainerRef}>
-        <div
-          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl transition-all"
-          style={{
-            background: 'rgba(255,255,255,0.05)',
-            border: isSearchFocused
-              ? '1px solid rgba(99,102,241,0.55)'
-              : '1px solid rgba(255,255,255,0.08)',
-            boxShadow: isSearchFocused ? '0 0 0 3px rgba(99,102,241,0.12)' : 'none',
-          }}
-        >
-          <Search size={16} className="text-slate-400 shrink-0" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            onFocus={() => setIsSearchFocused(true)}
-            placeholder="Tìm ngữ pháp, từ vựng, kanji…"
-            className="w-full bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none"
-          />
-          {searchQuery && (
-            <button type="button" onClick={() => setSearchQuery('')}
-              className="text-slate-500 hover:text-slate-300 transition-colors cursor-pointer">
-              <X size={14} />
-            </button>
-          )}
-        </div>
-
-        {/* Search dropdown */}
-        {isSearchFocused && searchQuery.trim().length > 0 && (
-          <div className="absolute left-0 right-0 top-full mt-2 rounded-2xl shadow-2xl max-h-64 overflow-y-auto z-50 p-2"
-            style={{ background: '#141e30', border: '1px solid rgba(255,255,255,0.1)' }}>
-            {searchResults.length === 0 ? (
-              <p className="py-5 text-center text-xs text-slate-500">
-                Không tìm thấy kết quả cho &quot;{searchQuery}&quot;
-              </p>
-            ) : (
-              <div className="space-y-0.5">
-                {searchResults.map(g => (
-                  <button key={g.id} type="button"
-                    onClick={() => { onSelectGrammarItem?.(g); setIsSearchFocused(false); setSearchQuery(''); }}
-                    className="w-full text-left px-3 py-2.5 hover:bg-white/5 rounded-xl transition-colors cursor-pointer flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="text-sm font-semibold text-violet-400 truncate">{g.structure}</div>
-                      <div className="text-xs text-slate-400 truncate">{g.meaning}</div>
-                    </div>
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md shrink-0"
-                      style={{ background: 'rgba(168,85,247,0.15)', color: '#C084FC' }}>
-                      {g.level}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* ── Continue card ── */}
-      <button
-        type="button"
-        onClick={onContinueStudy}
-        className="w-full mb-3 cursor-pointer group"
-      >
-        <div
-          className="relative rounded-2xl p-3 flex items-center gap-3 overflow-hidden transition-all"
-          style={{
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.18) 0%, rgba(139,92,246,0.12) 100%)',
-            border: '1px solid rgba(99,102,241,0.30)',
-          }}
-        >
-          {/* glow blob */}
-          <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full pointer-events-none"
-            style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%)' }} />
-
-          <div className="shrink-0 group-hover:scale-105 transition-transform">
-            <ShibaStudyMascot size={52} />
-          </div>
-
-          <div className="flex-1 text-left min-w-0">
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <Zap size={11} className="text-violet-400" />
-              <span className="text-[10px] font-black text-violet-400 tracking-widest uppercase">Tiếp tục học</span>
-            </div>
-            <div className="text-[15px] font-bold text-white truncate">{continueLabel}</div>
-          </div>
-
-          <div
-            className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform"
-            style={{ background: '#6366F1', boxShadow: '0 4px 14px rgba(99,102,241,0.45)' }}
-          >
-            <Play size={16} className="fill-white text-white ml-0.5" />
-          </div>
-        </div>
-      </button>
-
-      {/* ── 3 Subject cards ── */}
-      <div className="space-y-2">
-        {SUBJECTS.map(({ key, label, sub, Icon, accent, bg, border, glow }) => {
-          const done = completedMap[key] ?? 0;
-          const total = totalMap[key] ?? 1;
-          const pct = Math.round((done / total) * 100);
-          const handler = subjectHandlers[key];
-
-          return (
-            <button
-              key={key}
-              type="button"
-              onClick={handler}
-              className="w-full text-left cursor-pointer group"
-            >
-              <div
-                className="relative rounded-2xl p-3 flex items-center gap-3 overflow-hidden transition-all duration-200"
-                style={{
-                  background: bg,
-                  border: `1px solid ${border}`,
-                }}
-              >
-                {/* ambient glow */}
-                <div className="absolute -right-4 -bottom-4 w-24 h-24 rounded-full pointer-events-none"
-                  style={{ background: `radial-gradient(circle, ${glow} 0%, transparent 70%)` }} />
-
-                {/* icon */}
-                <div
-                  className="shrink-0 w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform"
-                  style={{ background: `rgba(${accent.slice(1).match(/.{2}/g)!.map(x => parseInt(x,16)).join(',')},0.18)` }}
-                >
-                  <Icon size={22} style={{ color: accent }} />
-                </div>
-
-                {/* text + progress */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-[15px] font-bold text-white">{label}</span>
-                    <span className="text-xs font-semibold" style={{ color: accent }}>{done}/{total} · {pct}%</span>
-                  </div>
-                  <div className="text-xs text-slate-400 mb-1.5 truncate">{sub}</div>
-                  {/* thin progress bar */}
-                  <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                    <div
-                      className="h-full rounded-full transition-all duration-700"
-                      style={{ width: `${pct}%`, background: accent }}
-                    />
-                  </div>
-                </div>
-
-                <ChevronRight size={16} className="shrink-0 text-slate-600 group-hover:text-slate-300 group-hover:translate-x-0.5 transition-all" />
-              </div>
-            </button>
-          );
-        })}
-      </div>
+  return <div className="theory-hub">
+    <header className="theory-heading">
+      <div><span className="theory-eyebrow">THƯ VIỆN TIẾNG NHẬT</span><h1>Mỗi ngày, hiểu thêm một chút.</h1><p>Chọn môn học và khám phá kiến thức theo trình độ của bạn.</p></div>
+      {userProfile.streak > 0 && <span className="theory-streak"><Flame size={16} />{userProfile.streak} ngày học liên tiếp</span>}
+    </header>
+    <div className="theory-levels" role="group" aria-label="Trình độ JLPT">
+      {LEVELS.map(level => <button key={level} type="button" aria-pressed={level === selectedLevel} onClick={() => changeLevel(level)}>{level}<span>{level === 'N5' ? 'Sơ cấp' : level === 'N4' ? 'Cơ bản' : level === 'N3' ? 'Trung cấp' : level === 'N2' ? 'Nâng cao' : 'Chuyên sâu'}</span></button>)}
     </div>
-  );
-};
-
-export default TheoryHubView;
+    <section className="theory-subject-section" aria-labelledby="theory-subject-title">
+      <div className="theory-section-title"><h2 id="theory-subject-title">Bạn muốn học gì?</h2><span>Trình độ {selectedLevel}</span></div>
+      <div className="theory-subjects">{SUBJECTS.map(({ key, title, ja, description, Icon }) => <button key={key} type="button" onClick={handlers[key]} className={`theory-subject theory-subject-${key}`}><div className="theory-subject-top"><span className="theory-subject-icon"><Icon size={23} /></span><span lang="ja">{ja}</span></div><h3>{title}</h3><p>{description}</p><span className="theory-subject-action">Khám phá <ChevronRight size={16} /></span></button>)}</div>
+    </section>
+    <div className="theory-dashboard">
+      <section className="theory-continue" aria-labelledby="theory-continue-title">
+        <div className="theory-continue-copy"><span className="theory-eyebrow">{done === levelItems.length && done > 0 ? 'ÔN LẠI KIẾN THỨC' : done > 0 ? 'TIẾP TỤC KHÁM PHÁ' : 'BẮT ĐẦU TỪ ĐÂY'}</span><h2 id="theory-continue-title">{next?.structure || `Ngữ pháp ${selectedLevel}`}</h2><p>{next?.meaning || LEVEL_LABELS[selectedLevel]}</p><button type="button" className="theory-primary" onClick={() => next ? openItem(next) : onOpenGrammar()}><Play size={16} />{done > 0 ? 'Mở bài học' : 'Học ngay'}</button></div><div className="theory-mascot"><ShibaStudyMascot size={100} /><span>Shiba học cùng bạn!</span></div>
+      </section>
+      <section className="theory-progress" aria-label={`Tiến độ ngữ pháp ${selectedLevel}`}><div className="theory-section-title"><h2>Ngữ pháp {selectedLevel}</h2><CheckCircle2 size={19} /></div><strong>{percent}<small>%</small></strong><div className="theory-progress-track" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100} aria-label="Tiến độ ngữ pháp"><span style={{ width: `${percent}%` }} /></div><p><b>{done}</b> / {levelItems.length} mẫu đã học</p><span className="theory-muted">{LEVEL_LABELS[selectedLevel]}</span></section>
+    </div>
+    <section className="theory-library" aria-labelledby="theory-library-title">
+      <div className="theory-section-title"><div><h2 id="theory-library-title">Khám phá ngữ pháp</h2><p>Tìm một mẫu câu, đọc cách dùng và ví dụ.</p></div><button type="button" className="theory-text-button" onClick={onOpenGrammar}>Xem theo bài <ChevronRight size={16} /></button></div>
+      <div className="theory-search"><Search size={19} /><input aria-label="Tìm mẫu ngữ pháp" value={query} onChange={e => { setQuery(e.target.value); setVisibleCount(8); }} placeholder="Tìm cấu trúc, ý nghĩa hoặc câu ví dụ…" />{query && <button type="button" aria-label="Xóa tìm kiếm" onClick={() => setQuery('')}><X size={17} /></button>}</div>
+      <div className="theory-filters" role="group" aria-label="Lọc trạng thái học">{([{ key: 'all', label: 'Tất cả', count: levelItems.length }, { key: 'new', label: 'Chưa học', count: levelItems.length - done }, { key: 'learned', label: 'Đã học', count: done }] as const).map(item => <button type="button" key={item.key} aria-pressed={filter === item.key} onClick={() => { setFilter(item.key); setVisibleCount(8); }}>{item.label}<span>{item.count}</span></button>)}</div>
+      <div className="theory-results" aria-live="polite">{results.length === 0 ? <div className="theory-empty"><BookOpen size={30} /><h3>{query ? 'Chưa tìm thấy mẫu phù hợp' : filter === 'learned' ? 'Trang đầu tiên đang chờ bạn' : 'Bạn đã học hết các mẫu ở đây!'}</h3><p>{query ? 'Thử từ khóa ngắn hơn hoặc đổi trình độ nhé.' : filter === 'learned' ? 'Mở một bài học để bắt đầu tích lũy kiến thức.' : 'Đổi bộ lọc để ôn lại kiến thức.'}</p><button type="button" className="theory-text-button" onClick={() => { setQuery(''); setFilter('all'); }}>Xem tất cả</button></div> : results.slice(0, visibleCount).map(item => <button type="button" key={item.id} className="theory-grammar-card" onClick={() => openItem(item)}><div className="theory-card-meta"><span>{selectedLevel}{item.lessonNumber ? ` · Bài ${item.lessonNumber}` : ''}</span>{learned(item) ? <span className="theory-learned"><CheckCircle2 size={13} />Đã học</span> : <span>Chưa học</span>}</div><h3>{item.structure}</h3><p>{item.meaning}</p><div className="theory-card-bottom"><span>{item.lessonName || 'Cấu trúc & ví dụ'}</span><ChevronRight size={17} /></div></button>)}</div>
+      {results.length > visibleCount && <button type="button" className="theory-load-more" onClick={() => setVisibleCount(count => count + 8)}>Xem thêm {Math.min(8, results.length - visibleCount)} mẫu <ChevronRight size={16} /></button>}
+    </section>
+  </div>;
+}

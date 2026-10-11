@@ -3,7 +3,7 @@ import { UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
 import { Database, Users, Settings, Activity, Server, AlertCircle, 
-  Search, Shield, Trash2, Edit3, UserCheck, Award, Flame, Coins, Calendar, X, HelpCircle,
+  Search, Shield, Trash2, Edit3, UserCheck, Award, Flame, Calendar, X, HelpCircle,
   FileSpreadsheet, UploadCloud, Download
 } from 'lucide-react';
 import AdminDataPanel from "./AdminDataPanel";
@@ -40,7 +40,6 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
   const [editName, setEditName] = useState('');
   const [editRole, setEditRole] = useState<'user' | 'admin'>('user');
   const [editXp, setEditXp] = useState(0);
-  const [editCoins, setEditCoins] = useState(0);
   const [editStreak, setEditStreak] = useState(0);
   const [editVip, setEditVip] = useState(false);
 
@@ -99,7 +98,6 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
           name: editName,
           role: editRole,
           xp: editXp,
-          coins: editCoins,
           streak: editStreak,
           isVip: editVip
         })
@@ -164,7 +162,6 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
     setEditName(user.name || '');
     setEditRole(user.role || 'user');
     setEditXp(user.xp || 0);
-    setEditCoins(user.coins || 0);
     setEditStreak(user.streak || 0);
     setEditVip(user.isVip || false);
   };
@@ -334,7 +331,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
               </h3>
             </div>
           </div>
-          
+
           {/* Quick Action: Excel Import */}
           <div className="bg-slate-900 text-white rounded-xl p-3.5 border border-slate-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="space-y-1 z-10 max-w-xl">
@@ -381,7 +378,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
               <h3 className="text-base font-bold text-slate-950">Danh sách học viên học trực tuyến</h3>
               <p className="text-xs text-slate-500 mt-1">Truy vấn thời gian thực từ cơ sở dữ liệu Cloud SQL PostgreSQL</p>
             </div>
-            
+
             <div className="relative w-full sm:w-72">
               <input 
                 type="text" 
@@ -413,7 +410,6 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                     <th className="px-6 py-4 font-bold">Lĩnh vực</th>
                     <th className="px-6 py-4 font-bold text-center">Chuỗi Streak</th>
                     <th className="px-6 py-4 font-bold text-center">XP</th>
-                    <th className="px-6 py-4 font-bold text-center">Yên (Coins)</th>
                     <th className="px-6 py-4 font-bold">Vai trò</th>
                     <th className="px-6 py-4 font-bold text-center">Thao tác</th>
                   </tr>
@@ -453,11 +449,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center font-bold text-slate-950">{u.xp || 0}</td>
-                      <td className="px-6 py-4 text-center font-bold text-slate-950">
-                        <div className="flex items-center justify-center gap-1 text-amber-600">
-                          🪙 {u.coins || 0}
-                        </div>
-                      </td>
+
                       <td className="px-6 py-4">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${
                           u.role === 'admin' 
@@ -578,20 +570,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                       <Award className="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" />
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tiền Yên (Coins)</label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        value={editCoins}
-                        onChange={(e) => setEditCoins(parseInt(e.target.value) || 0)}
-                        className="w-full pl-8 pr-3 py-2 border border-slate-100 rounded-xl text-sm bg-slate-50/50"
-                        min="0"
-                        required
-                      />
-                      <Coins className="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" />
-                    </div>
-                  </div>
+
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>

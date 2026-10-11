@@ -473,6 +473,17 @@ export default function App() {
     }
   };
 
+  const handleStudyXp = (activity: string, amount: number) => {
+    const day = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
+    const key = `nihon_study_rewards_v1:${activeProfile.uid || user?.uid || 'guest'}:${day}`;
+    try {
+      const claimed: string[] = JSON.parse(localStorage.getItem(key) || '[]');
+      if (claimed.includes(activity) || claimed.length >= 100) return false;
+      localStorage.setItem(key, JSON.stringify([...claimed, activity]));
+    } catch { return false; }
+    void handleEarnXp(amount);
+    return true;
+  };
   const handleEarnXp = async (amount: number) => {
     const todayStr = localDateStr();
     
@@ -485,8 +496,6 @@ export default function App() {
     // Calculate XP with streak multiplier
     const { totalXp, bonusXp, bonusInfo } = calculateEarnedXp(amount, activeProfile.streak);
 
-    // Earn coin reward proportional to XP earned (e.g. 1 Yen per 2 total XP)
-    const coinsEarned = Math.ceil(totalXp / 2);
 
     // Track daily goal progress
     const storedXp = Number(localStorage.getItem(`nhai_kanji_today_xp_v1_${todayStr}`) || '0');
@@ -515,7 +524,6 @@ export default function App() {
 
     const updatedFields = {
       xp: newXpTotal,
-      coins: activeProfile.coins + coinsEarned,
       studyDays: updatedStudyDays,
       streak: updatedStreak
     };
@@ -530,26 +538,12 @@ export default function App() {
       saveProfile(newProfile);
     }
 
-    if (isLevelUp) {
-      playMilestoneChime();
-      celebrationRef.current?.triggerCelebration();
-      setToast({
-        message: `🎉 CHÚC MỪNG LÊN CẤP ${newLevelInfo.level}! Danh hiệu: ${newLevelInfo.title}`,
-        visible: true
-      });
-    } else if (justCompleted) {
-      playMilestoneChime();
-      setToast({
-        message: `🎯 Hoàn thành xuất sắc mục tiêu 50 XP hôm nay! (+1 Streak)`,
-        visible: true
-      });
-    } else if (bonusXp > 0) {
-      setToast({
-        message: `⚡ +${totalXp} XP (Thưởng chuỗi ${bonusInfo.badge} +${bonusXp} XP)`,
-        visible: true
-      });
-    }
-
+    if (isLevelUp || justCompleted) playMilestoneChime();
+    const message = isLevelUp
+      ? `Lên cấp ${newLevelInfo.level}! Shiba mở tiệc mochi 🍡`
+      : justCompleted ? 'Đủ 50 XP hôm nay! Shiba vẫy đuôi ăn mừng 🐕'
+      : bonusXp > 0 ? `Có thêm ${bonusXp} XP thưởng chuỗi ngày! 🐾` : '';
+    window.dispatchEvent(new CustomEvent('nihongo:xp-earned', { detail: { amount: totalXp, message } }));
     if (justCompleted) {
       setTimeout(() => {
         const el = document.getElementById('header-stat-goal');
@@ -596,7 +590,7 @@ export default function App() {
     const parsedLesson = lessonId ? parseInt(lessonId, 10) : undefined;
 
     return (
-      <GrammarPractice
+      <GrammarPractice onStudyReward={handleStudyXp}
         userProfile={routeLevel ? { ...activeProfile, targetLevel:routeLevel } : activeProfile}
         updateProfile={updateProfile}
         onEarnXp={handleEarnXp}
@@ -711,7 +705,7 @@ export default function App() {
       <Route path="/cong-dong" element={<Kaiwa />} />
 
       {/* 12. Sổ tay từ vựng */}
-      <Route path="/so-tay" element={<NotebookManager />} />
+      <Route path="/so-tay" element={<NotebookManager onStudyReward={handleStudyXp} />} />
 
       {/* 13. Thành tựu */}
       <Route 
@@ -740,7 +734,7 @@ export default function App() {
 
       {/* 15. Từ điển Jisho */}
       <Route path="/tu-dien" element={<DictionaryLookup />} />
-      <Route path="/shadowing" element={<ShadowingHub />} />
+      <Route path="/shadowing" element={<ShadowingHub onStudyReward={handleStudyXp} />} />
 
       {/* Trang Bài học Minna đã gỡ: chuyển về Tango */}
       <Route path="/bai-hoc" element={<Navigate to="/tango" replace />} />
@@ -834,7 +828,6 @@ export default function App() {
       <Sidebar 
         currentTab={currentTab} 
         setCurrentTab={handleTabChange} 
-        userCoins={activeProfile.coins} 
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         userProfile={activeProfile}

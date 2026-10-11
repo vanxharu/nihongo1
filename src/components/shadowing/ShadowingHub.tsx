@@ -21,7 +21,7 @@ const button = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-x
 // Shrink long sentences so the playing line always fits its fixed frame.
 const fitSize = (n: number) => n <= 18 ? '1.5rem' : n <= 30 ? '1.3rem' : n <= 45 ? '1.12rem' : n <= 65 ? '1rem' : '.9rem';
 
-export default function ShadowingHub() {
+export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activity: string, amount: number) => boolean }) {
   const [params, setParams] = useSearchParams();
   const reduceMotion = useReducedMotion();
   const lyricRef = useRef<HTMLDivElement>(null);
@@ -283,7 +283,7 @@ export default function ShadowingHub() {
 
         <div className="max-lg:contents lg:space-y-4">
           {insightCue && (mode === 'shadowing' || revealed) && <SentenceInsights key={videoId + insightCue.text} videoId={videoId || ''} cue={insightCue} cached={cache.current.get(insightCue.text)} onClose={() => setInsightCue(null)} onResult={(text, data) => { cache.current.set(text, data); refreshAnalysis(n => n + 1); }} />}
-          {mode === 'dictation' && <DictationPanel key={`${videoId}:${selected}:${sentence}`} sentence={sentence} autoPause={autoPause} onAutoPause={value => { playerRef.current?.pause(); setAutoPause(value); }} onPlay={() => playerRef.current?.playSentence(parseShadowingTime(start), parseShadowingTime(end), autoPause) || false} onReveal={setRevealed} onPrevious={() => jumpCue(selected - 1)} onNext={() => jumpCue(selected + 1)} hasPrevious={selected > 0} hasNext={selected < cues.length - 1} />}
+          {mode === 'dictation' && <DictationPanel onCorrect={() => onStudyReward?.(`dictation:${videoId}:${start}:${sentence}`, 20) ?? false} key={`${videoId}:${selected}:${sentence}`} sentence={sentence} autoPause={autoPause} onAutoPause={value => { playerRef.current?.pause(); setAutoPause(value); }} onPlay={() => playerRef.current?.playSentence(parseShadowingTime(start), parseShadowingTime(end), autoPause) || false} onReveal={setRevealed} onPrevious={() => jumpCue(selected - 1)} onNext={() => jumpCue(selected + 1)} hasPrevious={selected > 0} hasNext={selected < cues.length - 1} />}
           {(mode === 'shadowing' || revealed) && <section className="rounded-xl bg-[#101010] p-3 max-lg:hidden">
             <div className="mb-3 flex items-center justify-between gap-2">
               <h2 className="text-sm font-bold">BẢN CHÉP{displayed ? ` · Câu ${displayedIndex + 1} / ${cues.length}` : ` · ${cues.length} câu`}</h2>

@@ -12,6 +12,7 @@ import GrammarPracticeView from './grammar/GrammarPracticeView';
 import fallbackAiContents from '../data/grammarAiContents.json';
 
 interface GrammarPracticeProps {
+  onStudyReward?: (activity: string, amount: number) => boolean;
   userProfile: UserProfile;
   updateProfile: (updated: Partial<UserProfile>) => void;
   onEarnXp: (amount: number) => void;
@@ -25,7 +26,7 @@ type GrammarViewMode = 'overview' | 'lesson-list' | 'lesson-detail' | 'grammar-d
 export default function GrammarPractice({ 
   userProfile, 
   updateProfile, 
-  onEarnXp, 
+  onEarnXp, onStudyReward,
   onNavigateTab,
   initialViewMode = 'overview',
   initialLessonNumber
@@ -321,6 +322,7 @@ export default function GrammarPractice({
           grammars={grammars}
           levelStats={levelStats}
           onSelectGrammarItem={(grammar) => {
+            setSelectedLessonNumber(grammar.lessonNumber || grammar.lessonId || (grammar.level === 'N4' ? 26 : 1));
             setSelectedGrammar(grammar);
             setViewMode('grammar-detail');
           }}
@@ -367,7 +369,7 @@ export default function GrammarPractice({
 
       {/* 4. GRAMMAR POINT DETAIL SCREEN (Screen 4) */}
       {viewMode === 'grammar-detail' && selectedGrammar && (
-        <GrammarPointDetailView
+        <GrammarPointDetailView onCompleteReading={() => onStudyReward?.(`grammar-reading:${selectedGrammar.id}`, 5) ?? false}
           grammar={selectedGrammar}
           aiContent={currentAiContent}
           allGrammarsInLesson={allGrammarsInCurrentLesson}

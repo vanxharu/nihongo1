@@ -95,6 +95,7 @@ export default function ShibaAssistantFloating({
   const [feedback, setFeedback] = useState('');
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastFeedbackLine = useRef<Partial<Record<ShibaFeedbackKind, string>>>({});
+  const latestXp = useRef({ amount: 0, time: 0 });
   useEffect(() => {
     setFeedback('');
     const handle = (event: Event) => {
@@ -107,11 +108,24 @@ export default function ShibaAssistantFloating({
       const lines = SHIBA_FEEDBACK_LINES[feedbackKind].filter(line => line !== lastFeedbackLine.current[feedbackKind]);
       const line = lines[Math.floor(Math.random() * lines.length)];
       lastFeedbackLine.current[feedbackKind] = line;
-      setBubbleText(line);
+      setBubbleText(Date.now() - latestXp.current.time < 1200 && kind !== 'incorrect' ? `+${latestXp.current.amount} XP · ${line}` : line);
       feedbackTimer.current = setTimeout(() => { setFeedback(''); setIsDismissed(true); }, 2600);
     };
     window.addEventListener('nihongo:learning-feedback', handle);
-    return () => { window.removeEventListener('nihongo:learning-feedback', handle); if (feedbackTimer.current) clearTimeout(feedbackTimer.current); };
+    const handleXp = (event: Event) => {
+      const { amount, message } = (event as CustomEvent).detail || {};
+      if (!Number.isFinite(amount) || amount <= 0) return;
+      latestXp.current = { amount, time: Date.now() };
+      if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+      const lines = SHIBA_FEEDBACK_LINES.correct.filter(line => line !== lastFeedbackLine.current.correct);
+      const line = lines[Math.floor(Math.random() * lines.length)];
+      lastFeedbackLine.current.correct = line;
+      setFeedback('xp'); setIsDismissed(false); setCurrentPose('celebration');
+      setBubbleText(`+${amount} XP · ${message || line}`);
+      feedbackTimer.current = setTimeout(() => { setFeedback(''); setIsDismissed(true); }, 4200);
+    };
+    window.addEventListener('nihongo:xp-earned', handleXp);
+    return () => { window.removeEventListener('nihongo:learning-feedback', handle); window.removeEventListener('nihongo:xp-earned', handleXp); if (feedbackTimer.current) clearTimeout(feedbackTimer.current); };
   }, [currentTab]);
 
   // Synchronize pose based on current tab

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -21,6 +21,7 @@ import JapaneseFuriganaText from '../JapaneseFuriganaText';
 import { deduplicateGrammars, getGrammarStatusWithAliases } from '../../utils/grammarDeduplicator';
 
 interface GrammarPointDetailViewProps {
+  onCompleteReading?: () => boolean;
   grammar: GrammarItem;
   aiContent?: any;
   allGrammarsInLesson: GrammarItem[];
@@ -37,6 +38,7 @@ interface GrammarPointDetailViewProps {
 
 export const GrammarPointDetailView: React.FC<GrammarPointDetailViewProps> = ({
   grammar,
+  onCompleteReading,
   aiContent,
   allGrammarsInLesson,
   userProfile,
@@ -49,6 +51,15 @@ export const GrammarPointDetailView: React.FC<GrammarPointDetailViewProps> = ({
   onToggleBookmark,
   onToggleSrsReview
 }) => {
+  const [readingSeconds, setReadingSeconds] = useState(0);
+  const [readingReward, setReadingReward] = useState<string>('');
+  useEffect(() => {
+    setReadingSeconds(0); setReadingReward('');
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === 'visible') setReadingSeconds(seconds => Math.min(30, seconds + 1));
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [grammar.id]);
   const grammarStatusItem = getGrammarStatusWithAliases(userProfile.grammarStatus, grammar);
   const isBookmarked = typeof grammarStatusItem === 'object' ? Boolean(grammarStatusItem?.isBookmarked) : false;
   const srsStage = typeof grammarStatusItem === 'object' ? Number(grammarStatusItem?.srsStage || 0) : 0;
@@ -366,6 +377,12 @@ export const GrammarPointDetailView: React.FC<GrammarPointDetailViewProps> = ({
       )}
 
       {/* Bottom Next Link */}
+      {onCompleteReading && <div className="pt-4 border-t border-[#21262d] text-center space-y-2">
+        <button type="button" disabled={readingSeconds < 30 || !!readingReward} onClick={() => setReadingReward(onCompleteReading() ? 'Đã hoàn thành đọc bài · +5 XP' : 'Bạn đã nhận XP cho mẫu này hôm nay.')} className="px-5 py-3 rounded-xl bg-amber-500/15 text-amber-400 font-bold text-sm disabled:opacity-50">
+          {readingReward || (readingSeconds < 30 ? `Đọc cấu trúc và ví dụ · ${30 - readingSeconds}s` : 'Đã đọc và hiểu · Nhận 5 XP')}
+        </button>
+        <p className="text-xs text-slate-400">Mỗi mẫu nhận XP một lần mỗi ngày. Làm bài tập để luyện chắc hơn.</p>
+      </div>}
       {nextGrammar && onSelectNextGrammar && (
         <div className="flex justify-end pt-4 border-t border-[#21262d]">
           <button
