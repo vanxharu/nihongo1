@@ -65,7 +65,6 @@ import KanjiDetailModal from './KanjiDetailModal';
 import PitchAccentDisplay from './PitchAccentDisplay';
 import { SelectiveFuriganaWord } from './JapaneseFuriganaText';
 import VocabListItemCard from './VocabListItemCard';
-import ReactionOverlay from './ReactionOverlay';
 import { playCorrectSound, playIncorrectSound, speakJapanese, playTangoClip } from '../utils/audio';
 import { TANGO_SPLIT_CLIPS, TANGO_CLIP_NUMBERS } from '../data/tangoN4AudioClips';
 import { useAuth } from '../contexts/AuthContext';
@@ -1114,7 +1113,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const [isPlayingWave, setIsPlayingWave] = useState(false);
   // Text currently being spoken (null = silent): drives the 'playing' highlight on speaker buttons.
   const [speakingText, setSpeakingText] = useState<string | null>(null);
-  const speakCls = speakingText ? ' !text-emerald-400 !border-emerald-500 !bg-emerald-950/70 animate-pulse' : '';
+  const speakCls = speakingText ? ' vocab-audio-playing' : '';
+  const speakClassFor = (text: string) => speakingText === text ? speakCls : '';
 
   const [reactionState, setReactionState] = useState<'neutral' | 'correct' | 'wrong' | 'surrender'>('neutral');
   const [showMascotBubble, setShowMascotBubble] = useState(false);
@@ -2835,7 +2835,6 @@ if (loading) {
         <div className="w-full">
           {/* Main Study Card Stage */}
           <div onClick={e => (e.target as HTMLElement).closest('button')?.blur()} /* keep Space/shortcuts on the card, not on the last-clicked button */ className={`relative flex flex-col justify-between transition-all duration-300 w-full ${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? 'vocab-flashcard-stage text-white' : 'bg-[#242b45] text-white border border-[#343d5f] shadow-2xl shadow-slate-950/40 rounded-2xl sm:rounded-3xl p-3 sm:p-5 md:p-6 overflow-hidden min-h-[220px] sm:min-h-[280px] md:min-h-[340px]'}`}>
-        <ReactionOverlay state={reactionState} mode={selectedMode === 'flashcard' ? 'flashcard' : 'quiz'} />
         {/* Top Header Inside Card Frame: Integrated Lesson Navigator & Study Controls */}
         <div className={`${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? 'vocab-flashcard-lesson-nav' : 'vocab-study-toolbar'} flex flex-row items-center justify-between gap-1 sm:gap-2 mb-2.5 sm:mb-3.5 pb-2 sm:pb-2.5 border-b border-[#343d5f]/80 relative z-10 w-full flex-nowrap`}>
           {/* Left Controls */}
@@ -3236,11 +3235,11 @@ if (loading) {
                           {(currentItem.hanViet || (currentItem.kanji && getHanViet(currentItem.kanji))) && <p className="vocab-answer-hanviet text-sm font-semibold uppercase text-emerald-400">{currentItem.hanViet || getHanViet(currentItem.kanji)}</p>}
                           <h3 className="text-base sm:text-lg font-bold text-emerald-400">{currentItem.meaning}</h3>
                           {renderFlashcardWordTypes(currentItem)}
-                          <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(currentItem.kanji || currentItem.hiragana); }} onKeyDown={e => e.stopPropagation()} aria-label="Phát âm từ vựng" className={`p-1 text-slate-400 hover:text-white rounded${speakCls}`}><Volume2 className="w-4 h-4" /></button>
+                          <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(currentItem.kanji || currentItem.hiragana); }} onKeyDown={e => e.stopPropagation()} aria-label="Phát âm từ vựng" className={`p-1 text-slate-400 hover:text-white rounded${speakClassFor(currentItem.kanji || currentItem.hiragana)}`}><Volume2 className="w-4 h-4" /></button>
                           {(() => {
                             const ex = ensureVocabExample(currentItem);
                             return <div className="vocab-word-example w-full max-w-lg mt-2 pt-3 text-left relative border-t border-[#343d5f]/40">
-                              <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(ex.exampleSentence, true); }} onKeyDown={e => e.stopPropagation()} aria-label="Phát âm câu ví dụ" className={`absolute right-0 top-3 p-1 text-slate-400 hover:text-white rounded${speakCls}`}><Volume2 className="w-3 h-3" /></button>
+                              <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(ex.exampleSentence, true); }} onKeyDown={e => e.stopPropagation()} aria-label="Phát âm câu ví dụ" className={`absolute right-0 top-3 p-1 text-slate-400 hover:text-white rounded${speakClassFor(ex.exampleSentence)}`}><Volume2 className="w-3 h-3" /></button>
                               <div className="pr-8 text-base sm:text-lg text-slate-100 leading-relaxed">{renderExampleSentenceWithFurigana(ex.exampleSentence, currentItem)}</div>
                               {ex.exampleTranslation && <p className="mt-2 text-xs text-slate-400 leading-relaxed">{ex.exampleTranslation}</p>}
                             </div>;
@@ -3257,7 +3256,7 @@ if (loading) {
                     </motion.div>
                   )}
                 </AnimatePresence>
-                {!(showFlashcardAnswer && flashcardView === 'word') && <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(flashcardView === 'example' && !showFlashcardAnswer ? ensureVocabExample(currentItem).exampleSentence : currentItem.kanji || currentItem.hiragana, flashcardView === 'example' && !showFlashcardAnswer); }} onKeyDown={e => e.stopPropagation()} aria-label={flashcardView === 'example' && !showFlashcardAnswer ? 'Phát âm câu ví dụ' : 'Phát âm từ vựng'} title="Nghe âm thanh (R)" className={`vocab-flashcard-audio self-center p-2 text-slate-400 hover:text-white rounded-lg${speakCls}`}><Volume2 className="w-5 h-5" /></button>}
+                {!(showFlashcardAnswer && flashcardView === 'word') && <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(flashcardView === 'example' && !showFlashcardAnswer ? ensureVocabExample(currentItem).exampleSentence : currentItem.kanji || currentItem.hiragana, flashcardView === 'example' && !showFlashcardAnswer); }} onKeyDown={e => e.stopPropagation()} aria-label={flashcardView === 'example' && !showFlashcardAnswer ? 'Phát âm câu ví dụ' : 'Phát âm từ vựng'} title="Nghe âm thanh (R)" className={`vocab-flashcard-audio self-center p-2 text-slate-400 hover:text-white rounded-lg${speakClassFor(flashcardView === 'example' && !showFlashcardAnswer ? ensureVocabExample(currentItem).exampleSentence : currentItem.kanji || currentItem.hiragana)}`}><Volume2 className="w-5 h-5" /></button>}
               </div>
               </div>
 
@@ -3458,16 +3457,6 @@ if (loading) {
               {/* Feedback & Continue Button when Answered */}
               {hasAnswered && (
                 <div className="space-y-2 pt-1">
-                  {quizFeedbackMessage && (
-                    <div className={`p-2 sm:p-2.5 rounded-xl text-center text-xs sm:text-sm font-bold border transition-all ${
-                      reactionState === 'correct' 
-                        ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300' 
-                        : 'bg-rose-500/15 border-rose-500/30 text-rose-300'
-                    }`}>
-                      {quizFeedbackMessage}
-                    </div>
-                  )}
-
                   {/* Supplementary example sentence */}
                   {(() => {
                     const ex = ensureVocabExample(currentItem);

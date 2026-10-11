@@ -24,6 +24,45 @@ interface ShibaAssistantFloatingProps {
   onNavigate: (tab: string) => void;
 }
 
+const SHIBA_FEEDBACK_LINES = {
+  correct: [
+    'Đúng rồi! Tiếp tục nhé!',
+    'Chuẩn luôn! Shiba vẫy đuôi nè 🐕',
+    'Chính xác! Thêm một từ nhớ chắc rồi.',
+    'Bạn nhớ tốt đấy! Sang câu tiếp nào.',
+    'Đúng rồi, làm tốt lắm!',
+    'Giỏi quá! Cứ giữ nhịp này nhé.',
+    'Chuẩn rồi! Tặng bạn một cái đập tay 🐾',
+    'Chính xác! Shiba vui cùng bạn nè.',
+    'Đúng đáp án rồi! Tiến thêm một bước nhé.',
+    'Tốt lắm! Cùng chinh phục câu tiếp theo.',
+    'Đúng rồi! Cố gắng của bạn có kết quả đó.',
+    'Chuẩn luôn! Học tiếp cùng Shiba nha.',
+  ],
+  incorrect: [
+    'Chưa đúng rồi, xem lại đáp án nhé.',
+    'Không sao! Cùng nhớ lại từ này nào.',
+    'Nhầm một chút thôi, thử lại nhé!',
+    'Câu này khó nhỉ! Shiba học cùng bạn.',
+    'Chưa đúng, mình ôn lại một lần nha.',
+    'Đừng vội nhé, nhìn kỹ đáp án nào.',
+    'Không sao đâu! Sai rồi sẽ nhớ lâu hơn.',
+    'Mình xem lại nghĩa của từ này nhé.',
+    'Chưa chính xác! Cùng thử ở câu sau nha.',
+    'Shiba vẫn cổ vũ bạn! Ôn lại từ này nhé 🐾',
+    'Nhầm rồi nè! Ghi nhớ đáp án đúng nha.',
+    'Hít thở chút nào, rồi mình học tiếp nhé!',
+  ],
+  milestone: [
+    'Tuyệt vời! Một cột mốc mới!',
+    'Thêm một cột mốc rồi! Shiba vui quá 🐕',
+    'Bạn đã tiến xa hơn rồi! Cùng tiếp tục nhé.',
+    'Chúc mừng bạn! Tặng một cái đập tay 🐾',
+  ],
+};
+
+type ShibaFeedbackKind = keyof typeof SHIBA_FEEDBACK_LINES;
+
 const SHIBA_DAILY_QUOTES = [
   { ja: '七転び八起き。何度でも挑戦しよう！', vi: 'Ngã 7 lần, đứng dậy 8 lần. Hãy luôn thử sức nhé!', romaji: 'Nanakorobi yaoki.' },
   { ja: '継続は力なり。今日の積み重ねが未来を創る！', vi: 'Kiên trì là sức mạnh. Tích lũy hôm nay tạo dựng tương lai!', romaji: 'Keizoku wa chikara nari.' },
@@ -55,6 +94,7 @@ export default function ShibaAssistantFloating({
   const dragged = useRef(false);
   const [feedback, setFeedback] = useState('');
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastFeedbackLine = useRef<Partial<Record<ShibaFeedbackKind, string>>>({});
   useEffect(() => {
     setFeedback('');
     const handle = (event: Event) => {
@@ -63,7 +103,11 @@ export default function ShibaAssistantFloating({
       if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
       setFeedback(kind); setIsDismissed(false);
       setCurrentPose(kind === 'incorrect' ? 'warning' : kind === 'milestone' ? 'celebration' : 'encourage');
-      setBubbleText(kind === 'incorrect' ? 'Không sao, cùng xem lại cách giải nhé!' : kind === 'milestone' ? 'Tuyệt vời! Một cột mốc mới!' : 'Đúng rồi! Bạn đang tiến bộ đấy!');
+      const feedbackKind = kind as ShibaFeedbackKind;
+      const lines = SHIBA_FEEDBACK_LINES[feedbackKind].filter(line => line !== lastFeedbackLine.current[feedbackKind]);
+      const line = lines[Math.floor(Math.random() * lines.length)];
+      lastFeedbackLine.current[feedbackKind] = line;
+      setBubbleText(line);
       feedbackTimer.current = setTimeout(() => { setFeedback(''); setIsDismissed(true); }, 2600);
     };
     window.addEventListener('nihongo:learning-feedback', handle);
@@ -148,7 +192,7 @@ export default function ShibaAssistantFloating({
                 <motion.div 
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="hidden sm:flex items-center gap-1.5 mr-2 px-3 py-1.5 bg-[#1B223C] border border-[#E89A3C]/40 rounded-full shadow-lg shadow-black/40 text-xs font-bold text-amber-200 backdrop-blur-md whitespace-nowrap"
+                  className={`${feedback ? 'shiba-feedback-bubble flex' : 'hidden sm:flex'} items-center gap-1.5 mr-2 px-3 py-1.5 bg-[#1B223C] border border-[#E89A3C]/40 rounded-full shadow-lg shadow-black/40 text-xs font-bold text-amber-200 backdrop-blur-md whitespace-nowrap`}
                 >
                   <Lightbulb className="w-3.5 h-3.5 text-[#E89A3C] shrink-0" />
                   <span role={feedback ? 'status' : undefined}>{bubbleText}</span>

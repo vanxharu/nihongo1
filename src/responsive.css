@@ -1,4 +1,7 @@
 /* Shared layout contract: children shrink, pages scroll vertically, media keeps its ratio. */
+@media(max-width:1279px){
+ #app-root-container .shiba-floating-anchor [role=button]>.shiba-feedback-bubble{display:flex!important;position:absolute;right:0;top:calc(100% + 8px);width:max-content;max-width:min(360px,calc(100vw - 24px));white-space:normal;margin-right:0;border-radius:14px}
+}
 :root{--app-bottom-space:calc(6rem + env(safe-area-inset-bottom,0px))}
 #app-root-container{height:100dvh;position:relative}
 #app-content-panel,#app-main-view{min-width:0;min-height:0}
@@ -120,6 +123,40 @@
 #app-root-container .vocab-reference-flip{min-height:304px;height:auto!important;justify-content:center;padding:44px 48px;background:var(--ui-surface)!important}
 #app-root-container .vocab-reference-flip>.vocab-flashcard-content{min-height:0;height:auto;overflow:visible;padding:0}
 .vocab-flashcard-audio{margin-top:16px}
+.vocab-audio-playing{
+  position:relative;
+  color:var(--ui-accent, #E89A3C)!important;
+  background:transparent!important;
+  isolation:isolate;
+}
+.vocab-audio-playing::after{
+  content:'';
+  position:absolute;
+  width:30px;
+  height:30px;
+  left:50%;
+  top:50%;
+  margin:-15px 0 0 -15px;
+  border:1.5px solid currentColor;
+  border-radius:50%;
+  pointer-events:none;
+  animation:vocab-audio-ripple 1.1s ease-out infinite;
+}
+.vocab-audio-playing>svg{
+  animation:vocab-audio-speaker .55s ease-in-out infinite alternate;
+}
+@keyframes vocab-audio-ripple{
+  from{transform:scale(.7);opacity:.6}
+  to{transform:scale(1.35);opacity:0}
+}
+@keyframes vocab-audio-speaker{
+  from{transform:scale(1)}
+  to{transform:scale(1.1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .vocab-audio-playing::after{animation:none;opacity:.45}
+  .vocab-audio-playing>svg{animation:none}
+}
 #app-root-container .vocab-reference-flip.vocab-word-answer-face{padding-block:24px}
 .vocab-word-example{border-color:var(--ui-line)!important}
 .vocab-word-type{background:var(--ui-soft);color:var(--ui-muted)!important}

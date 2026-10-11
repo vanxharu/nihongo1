@@ -13,6 +13,10 @@ export default function LearningMotion() {
       const kind = (event as CustomEvent).detail?.kind;
       if (!["correct", "incorrect", "milestone"].includes(kind)) return;
       clearTimeout(timer);
+      if (window.location.pathname.startsWith('/tango')) {
+        setFeedback(null);
+        return;
+      }
       setFeedback({ kind, id: Date.now() });
       timer = setTimeout(() => setFeedback(null), 1000);
     };

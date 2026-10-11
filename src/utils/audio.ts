@@ -1,5 +1,5 @@
 /**
- * Utility for synthesizing feedback sound effects (correct "ting" and incorrect "buzz")
+ * Utility for synthesizing feedback sound effects (correct and incorrect answer cues)
  * using the Web Audio API without needing external static file assets.
  */
 
@@ -28,104 +28,51 @@ export function setSoundEnabled(enabled: boolean): void {
   window.dispatchEvent(new Event('jlpt_sound_setting_changed'));
 }
 
-/**
- * Plays a pleasant double chime "ting" sound for correct answers
- */
+/** Soft sine notes with smooth edges to avoid clicks. */
+function playFeedbackNote(ctx: AudioContext, frequency: number, start: number, duration: number, volume: number) {
+  const oscillator = ctx.createOscillator();
+  const gain = ctx.createGain();
+  oscillator.type = 'sine';
+  oscillator.frequency.setValueAtTime(frequency, start);
+  gain.gain.setValueAtTime(0, start);
+  gain.gain.linearRampToValueAtTime(volume, start + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, start + duration - 0.02);
+  gain.gain.linearRampToValueAtTime(0, start + duration);
+  oscillator.connect(gain);
+  gain.connect(ctx.destination);
+  oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
+  oscillator.start(start);
+  oscillator.stop(start + duration);
+}
+
+/** Bright three-note ascending chime for a correct answer. */
 export function playCorrectSound() {
   showLearningFeedback('correct');
   if (!isSoundEnabled()) return;
   try {
     const ctx = getAudioContext();
     const now = ctx.currentTime;
-
-    // First tone (pleasant sine)
-    const osc1 = ctx.createOscillator();
-    const gain1 = ctx.createGain();
-    
-    osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(1046.50, now); // C6
-    osc1.frequency.exponentialRampToValueAtTime(1318.51, now + 0.15); // E6
-    
-    gain1.gain.setValueAtTime(0, now);
-    gain1.gain.linearRampToValueAtTime(0.15, now + 0.02);
-    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-
-    osc1.connect(gain1);
-    gain1.connect(ctx.destination);
-    
-    osc1.start(now);
-    osc1.stop(now + 0.35);
-
-    // Second delayed tone for the chime effect (E6 to G6)
-    const osc2 = ctx.createOscillator();
-    const gain2 = ctx.createGain();
-
-    osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(1318.51, now + 0.08); // E6
-    osc2.frequency.exponentialRampToValueAtTime(1567.98, now + 0.23); // G6
-
-    gain2.gain.setValueAtTime(0, now + 0.08);
-    gain2.gain.linearRampToValueAtTime(0.12, now + 0.1);
-    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-
-    osc2.connect(gain2);
-    gain2.connect(ctx.destination);
-
-    osc2.start(now + 0.08);
-    osc2.stop(now + 0.45);
+    [659.25, 880, 1108.73].forEach((frequency, index) => {
+      playFeedbackNote(ctx, frequency, now + index * 0.075, 0.23, 0.09);
+    });
   } catch (e) {
     console.warn('Web Audio API not allowed or supported yet:', e);
   }
 }
 
-/**
- * Plays a descending low "buzz" sound for incorrect answers
- */
+/** Gentle two-note descending cue for an incorrect answer. */
 export function playIncorrectSound() {
   showLearningFeedback('incorrect');
   if (!isSoundEnabled()) return;
   try {
     const ctx = getAudioContext();
     const now = ctx.currentTime;
-
-    const osc1 = ctx.createOscillator();
-    const osc2 = ctx.createOscillator();
-    const gainNode = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
-
-    // Use dual oscillators (one triangle, one sawtooth) for a rich "buzz" sound
-    osc1.type = 'triangle';
-    osc2.type = 'sawtooth';
-
-    // Slide down in frequency
-    osc1.frequency.setValueAtTime(130.81, now); // C3
-    osc1.frequency.linearRampToValueAtTime(98.00, now + 0.25); // G2
-
-    osc2.frequency.setValueAtTime(131.5, now); // slightly detuned for chorus effect
-    osc2.frequency.linearRampToValueAtTime(98.5, now + 0.25);
-
-    // Soften the harshness of the sawtooth with a lowpass filter
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(350, now);
-
-    gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(0.12, now + 0.04);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-
-    osc1.connect(filter);
-    osc2.connect(filter);
-    filter.connect(gainNode);
-    gainNode.connect(ctx.destination);
-
-    osc1.start(now);
-    osc1.stop(now + 0.35);
-    osc2.start(now);
-    osc2.stop(now + 0.35);
+    playFeedbackNote(ctx, 440, now, 0.18, 0.075);
+    playFeedbackNote(ctx, 349.23, now + 0.11, 0.22, 0.065);
   } catch (e) {
     console.warn('Web Audio API not allowed or supported yet:', e);
   }
 }
-
 /**
  * Plays a cute, high-pitched Japanese spirit bell chime for the Kitsune Mascot
  */
