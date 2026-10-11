@@ -5,6 +5,7 @@
 
 import { useParams } from 'react-router-dom';
 import { calculateSRS } from '../utils/srs';
+import { maskVocabularyInExample } from '../utils/vocabularyCloze';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Volume2, 
@@ -20,6 +21,9 @@ import {
   Check, 
   BookOpen, 
   Play, 
+  Pause,
+  Shuffle,
+  ArrowLeftRight,
   TrendingUp,
   Download,
   MessageSquare,
@@ -1646,6 +1650,12 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     );
   };
 
+  const renderFlashcardWordTypes = (item: VocabularyItem) => {
+    const labels: Record<string, string> = { '名': 'Danh từ', '名詞': 'Danh từ', noun: 'Danh từ', '副': 'Phó từ', '副詞': 'Phó từ', adverb: 'Phó từ', '動': 'Động từ', '動詞': 'Động từ', verb: 'Động từ', '形': 'Tính từ', '形容詞': 'Tính từ', adjective: 'Tính từ' };
+    const types = (item.partOfSpeech || item.wordType || '').split(/[、,;/・]+/).map(type => type.trim()).filter(Boolean);
+    return <div className="flex flex-wrap justify-center gap-1">{types.map(type => <span key={type} className="vocab-word-type px-1.5 py-0.5 rounded text-[10px] text-slate-300">{labels[type] || type}</span>)}</div>;
+  };
+
   const renderExampleSentenceWithFurigana = (sentence: string, currentItem?: any, disableClick = false, forceDark = false) => {
     if (!sentence) return null;
 
@@ -2510,7 +2520,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
         e.stopImmediatePropagation?.();
         if (item) {
           if (mode === 'flashcard') {
-            if (fView === 'example') {
+            if (fView === 'example' && !showAns) {
               handleSpeak(item.exampleSentence, true);
             } else {
               handleSpeak(item.kanji || item.hiragana);
@@ -2824,12 +2834,12 @@ if (loading) {
       <div className={`w-full mx-auto mt-0 sm:mt-1 transition-all duration-300 flex flex-col items-center ${isExpanded ? 'max-w-5xl' : 'max-w-[780px]'}`}>
         <div className="w-full">
           {/* Main Study Card Stage */}
-          <div onClick={e => (e.target as HTMLElement).closest('button')?.blur()} /* keep Space/shortcuts on the card, not on the last-clicked button */ className="bg-[#242b45] text-white border border-[#343d5f] shadow-2xl shadow-slate-950/40 rounded-2xl sm:rounded-3xl p-3 sm:p-5 md:p-6 relative overflow-hidden min-h-[220px] sm:min-h-[280px] md:min-h-[340px] flex flex-col justify-between transition-all duration-300 w-full">
+          <div onClick={e => (e.target as HTMLElement).closest('button')?.blur()} /* keep Space/shortcuts on the card, not on the last-clicked button */ className={`relative flex flex-col justify-between transition-all duration-300 w-full ${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? 'vocab-flashcard-stage text-white' : 'bg-[#242b45] text-white border border-[#343d5f] shadow-2xl shadow-slate-950/40 rounded-2xl sm:rounded-3xl p-3 sm:p-5 md:p-6 overflow-hidden min-h-[220px] sm:min-h-[280px] md:min-h-[340px]'}`}>
         <ReactionOverlay state={reactionState} mode={selectedMode === 'flashcard' ? 'flashcard' : 'quiz'} />
         {/* Top Header Inside Card Frame: Integrated Lesson Navigator & Study Controls */}
-        <div className="vocab-study-toolbar flex flex-row items-center justify-between gap-1 sm:gap-2 mb-2.5 sm:mb-3.5 pb-2 sm:pb-2.5 border-b border-[#343d5f]/80 relative z-10 w-full flex-nowrap">
+        <div className={`${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? 'vocab-flashcard-lesson-nav' : 'vocab-study-toolbar'} flex flex-row items-center justify-between gap-1 sm:gap-2 mb-2.5 sm:mb-3.5 pb-2 sm:pb-2.5 border-b border-[#343d5f]/80 relative z-10 w-full flex-nowrap`}>
           {/* Left Controls */}
-          <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          <div className={`${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? 'hidden' : 'flex'} items-center gap-1 sm:gap-1.5 shrink-0`}>
             {selectedMode === 'dokkai' ? (
               <button 
                 onClick={() => currentItem && handleSpeak(currentItem.exampleSentence)}
@@ -2915,56 +2925,7 @@ if (loading) {
           </div>
 
           {/* Right Controls */}
-          <div className="fc-toolbar flex items-center gap-1 sm:gap-1.5 shrink-0">
-            {selectedMode === 'flashcard' && (
-              <>
-                {/* View switcher (Từ đơn / Ví dụ) */}
-                <div className="flex items-center gap-0.5 bg-[#121626] p-0.5 rounded-lg border border-[#2b3353]">
-                  <button 
-                    onClick={() => setFlashcardView('word')}
-                    className={`px-2 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer whitespace-nowrap ${flashcardView === 'word' ? 'bg-[#00c975] text-white shadow-xs' : 'text-slate-400 hover:text-white'}`}
-                  >
-                    Từ đơn
-                  </button>
-                  <button 
-                    onClick={() => setFlashcardView('example')}
-                    className={`px-2 py-1 rounded-md text-[10px] sm:text-[11px] font-bold transition-all cursor-pointer whitespace-nowrap ${flashcardView === 'example' ? 'bg-[#00c975] text-white shadow-xs' : 'text-slate-400 hover:text-white'}`}
-                  >
-                    Ví dụ
-                  </button>
-                </div>
-
-                {/* Sub-toolbar Controls (Right) */}
-                <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-                  {/* Direction Switcher */}
-                  <button 
-                    onClick={() => setFlashcardDirection(p => p === 'JP_VI' ? 'VI_JP' : 'JP_VI')}
-                    className="text-[10px] sm:text-[11px] font-mono font-bold border border-[#343d5f] text-slate-300 bg-[#242b45] px-1.5 sm:px-2 py-1 rounded-lg hover:bg-[#2e3758] hover:text-white transition-all cursor-pointer whitespace-nowrap"
-                    title="Đổi chiều học"
-                  >
-                    {flashcardDirection === 'JP_VI' ? 'JP➔VI' : 'VI➔JP'}
-                  </button>
-
-                  {/* Shuffle Button */}
-                  <button 
-                    onClick={() => setIsShuffle(!isShuffle)}
-                    className={`p-1 px-1.5 sm:px-2 rounded-lg border text-[11px] font-bold cursor-pointer transition-all ${isShuffle ? 'bg-slate-700 border-slate-500 text-white' : 'bg-[#242b45] border-[#343d5f] text-slate-400 hover:text-white'}`}
-                    title="Đổi thứ tự ngẫu nhiên"
-                  >
-                    🔀
-                  </button>
-
-                  {/* Autoplay Button */}
-                  <button 
-                    onClick={() => setIsAutoplay(!isAutoplay)}
-                    className={`p-1 px-1.5 sm:px-2 rounded-lg border text-[11px] font-bold cursor-pointer transition-all ${isAutoplay ? 'bg-amber-950/80 border-amber-500 text-amber-300 animate-pulse' : 'bg-[#242b45] border-[#343d5f] text-slate-400 hover:text-white'}`}
-                    title="Tự động lật thẻ"
-                  >
-                    ▶️
-                  </button>
-                </div>
-              </>
-            )}
+          <div className={`fc-toolbar ${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? 'hidden' : 'flex'} items-center gap-1 sm:gap-1.5 shrink-0`}>
             {selectedMode === 'dokkai' && (
               <>
                 <button
@@ -3188,9 +3149,15 @@ if (loading) {
         </AnimatePresence>
 
         {/* Dynamic Mode Render Space */}
-        <div className="flex-1 flex flex-col justify-center py-1 sm:py-2 relative">
+        <div className={`flex-1 flex flex-col justify-center relative ${(selectedMode === 'flashcard' || selectedMode === 'quiz') ? '' : 'py-1 sm:py-2'}`}>
           {selectedMode === 'flashcard' && currentItem && (
-            <div className="flex flex-col items-center justify-center w-full max-w-full sm:max-w-lg min-w-0 mx-auto px-1 sm:px-3">
+            <div className="vocab-flashcard-block w-full min-w-0 bg-[#242b45] border border-[#343d5f] rounded-lg overflow-hidden shadow-md">
+              <div className="vocab-flashcard-face relative">
+                <button type="button" onClick={() => toggleStar(currentItem.id)} aria-label={isStarred[currentItem.id] ? 'Bỏ lưu từ vựng' : 'Lưu từ vựng'} aria-pressed={!!isStarred[currentItem.id]} title={isStarred[currentItem.id] ? 'Bỏ lưu' : 'Lưu từ vựng'} className="vocab-flashcard-star absolute top-3 right-3 z-20 p-2 text-slate-400 hover:text-amber-400 rounded-lg">
+                  <Star className={`w-4 h-4 ${isStarred[currentItem.id] ? 'fill-amber-400 text-amber-400' : ''}`} />
+                </button>
+                <button type="button" onClick={handlePrev} aria-label="Thẻ trước" title="Thẻ trước (←)" className="vocab-flashcard-arrow vocab-flashcard-arrow-prev absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-[#1a1f33]/90 text-slate-400 hover:text-white p-2"><ChevronLeft className="w-4 h-4" /></button>
+                <button type="button" onClick={handleNext} aria-label="Thẻ tiếp theo" title="Thẻ tiếp theo (→)" className="vocab-flashcard-arrow vocab-flashcard-arrow-next absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-[#1a1f33]/90 text-slate-400 hover:text-white p-2"><ChevronRight className="w-4 h-4" /></button>
               {/* Main Card Flip Area - Fixed Height so it never changes size when flipping */}
               <div 
                 tabIndex={0}
@@ -3204,14 +3171,8 @@ if (loading) {
                     setShowFlashcardAnswer(prev => !prev);
                   }
                 }}
-                className="responsive-flashcard w-full bg-[#1e243b]/90 border border-[#343d5f] hover:border-[#4a5682] focus:border-emerald-500/70 focus:outline-none rounded-xl sm:rounded-2xl h-[190px] xs:h-[200px] sm:h-[260px] md:h-[300px] cursor-pointer transition-all shadow-md relative overflow-hidden flex flex-col"
+                className={`responsive-flashcard vocab-reference-flip w-full bg-[#1e243b]/90 focus:outline-none cursor-pointer relative flex flex-col ${showFlashcardAnswer && flashcardView === 'word' ? 'vocab-word-answer-face' : ''}`}
               >
-                <div className="absolute top-2 right-2.5 z-20 text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase bg-[#141828]/80 px-2 py-0.5 rounded-md border border-[#343d5f]/60 tracking-wider">
-                  {showFlashcardAnswer ? 'Mặt sau' : (
-                    <span>Lật thẻ<span className="hidden sm:inline"> (Space)</span></span>
-                  )}
-                </div>
-
                 <AnimatePresence mode="wait">
                   {!showFlashcardAnswer ? (
                     <motion.div 
@@ -3220,7 +3181,7 @@ if (loading) {
                       animate={{ opacity: 1, scale: 1 }} 
                       exit={{ opacity: 0, scale: 0.96 }}
                       transition={{ duration: 0.15 }}
-                      className="w-full h-full flex flex-col items-center justify-center p-3 sm:p-5 text-center space-y-2 overflow-y-auto custom-scrollbar"
+                className="vocab-flashcard-content w-full flex flex-col items-center justify-center text-center space-y-2"
                     >
                       {flashcardView === 'word' ? (
                         flashcardDirection === 'JP_VI' ? (
@@ -3246,26 +3207,15 @@ if (loading) {
                           </h3>
                         )
                       ) : (
-                        // Example Sentence Mode Front
+                        // Prompt: cloze sentence with its Vietnamese translation.
                         (() => {
                           const ex = ensureVocabExample(currentItem);
-                          return flashcardDirection === 'JP_VI' ? (
-                            <div className="space-y-2 max-w-md mx-auto px-2">
-                              <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider bg-amber-950/40 border border-amber-800/60 px-2 py-0.5 rounded-full inline-block">
-                                Câu ví dụ
-                              </span>
+                          return (
+                            <div className="space-y-4 w-full max-w-md mx-auto px-2">
                               <div className="text-base sm:text-xl font-medium text-slate-100 leading-relaxed break-words whitespace-normal">
-                                {renderExampleSentenceWithFurigana(ex.exampleSentence, currentItem)}
+                                {renderExampleSentenceWithFurigana(maskVocabularyInExample(ex.exampleSentence, currentItem), currentItem)}
                               </div>
-                            </div>
-                          ) : (
-                            <div className="space-y-2 max-w-md mx-auto px-2">
-                              <span className="text-[10px] text-sky-400 font-bold uppercase tracking-wider bg-sky-950/40 border border-sky-800/60 px-2 py-0.5 rounded-full inline-block">
-                                Dịch câu ví dụ
-                              </span>
-                              <p className="text-base sm:text-xl font-extrabold text-sky-300 leading-relaxed break-words whitespace-normal">
-                                {ex.exampleTranslation || currentItem.meaning}
-                              </p>
+                              {ex.exampleTranslation && <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">{ex.exampleTranslation}</p>}
                             </div>
                           );
                         })()
@@ -3278,129 +3228,85 @@ if (loading) {
                       animate={{ opacity: 1, scale: 1 }} 
                       exit={{ opacity: 0, scale: 0.96 }}
                       transition={{ duration: 0.15 }}
-                      className="w-full h-full flex flex-col justify-center items-center p-3 sm:p-4 text-center overflow-y-auto custom-scrollbar space-y-2"
+                      className="vocab-flashcard-content w-full flex flex-col justify-center items-center text-center space-y-2"
                     >
                       {flashcardView === 'word' ? (
-                        // Word Mode: Clean single word display (No example clutter)
-                        flashcardDirection === 'JP_VI' ? (
-                          <div className="space-y-2 flex flex-col items-center w-full my-auto">
-                            <SelectiveFuriganaWord
-                              kanji={currentItem.kanji}
-                              hiragana={currentItem.hiragana}
-                              showFurigana={true}
-                              sizeClassName="text-2xl sm:text-3xl md:text-4xl"
-                            />
-                            {showPitchAccent && (
-                              <div className="text-center max-w-full scale-90 sm:scale-100 origin-center">
-                                <PitchAccentDisplay 
-                                  kanji={currentItem.kanji} 
-                                  reading={currentItem.hiragana} 
-                                />
-                              </div>
-                            )}
-                            <h3 className="text-lg sm:text-2xl font-black text-emerald-400 break-words whitespace-normal leading-tight mt-1">
-                              {currentItem.meaning}
-                            </h3>
-
-                            {currentItem.kanji && (
-                              <div className="pt-1 w-full text-center flex justify-center">
-                                {renderKanjiColoredBreakdown(currentItem.kanji, 'sm')}
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="space-y-2 flex flex-col items-center w-full my-auto">
-                            <SelectiveFuriganaWord
-                              kanji={currentItem.kanji}
-                              hiragana={currentItem.hiragana}
-                              showFurigana={true}
-                              sizeClassName="text-2xl sm:text-3xl md:text-4xl"
-                            />
-                            {showPitchAccent && (
-                              <div className="text-center max-w-full scale-90 sm:scale-100 origin-center">
-                                <PitchAccentDisplay 
-                                  kanji={currentItem.kanji} 
-                                  reading={currentItem.hiragana} 
-                                />
-                              </div>
-                            )}
-                            <h3 className="text-lg sm:text-2xl font-black text-sky-400 break-words whitespace-normal leading-tight mt-1">
-                              {currentItem.meaning}
-                            </h3>
-                            {currentItem.kanji && (
-                              <div className="pt-1 text-center w-full flex justify-center">
-                                {renderKanjiColoredBreakdown(currentItem.kanji, 'sm')}
-                              </div>
-                            )}
-                          </div>
-                        )
+                        <div className="vocab-word-answer w-full flex flex-col items-center gap-2">
+                          <PitchAccentDisplay kanji={currentItem.kanji} reading={currentItem.hiragana} variant="transparent" className="vocab-answer-reading" />
+                          {(currentItem.hanViet || (currentItem.kanji && getHanViet(currentItem.kanji))) && <p className="vocab-answer-hanviet text-sm font-semibold uppercase text-emerald-400">{currentItem.hanViet || getHanViet(currentItem.kanji)}</p>}
+                          <h3 className="text-base sm:text-lg font-bold text-emerald-400">{currentItem.meaning}</h3>
+                          {renderFlashcardWordTypes(currentItem)}
+                          <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(currentItem.kanji || currentItem.hiragana); }} onKeyDown={e => e.stopPropagation()} aria-label="Phát âm từ vựng" className={`p-1 text-slate-400 hover:text-white rounded${speakCls}`}><Volume2 className="w-4 h-4" /></button>
+                          {(() => {
+                            const ex = ensureVocabExample(currentItem);
+                            return <div className="vocab-word-example w-full max-w-lg mt-2 pt-3 text-left relative border-t border-[#343d5f]/40">
+                              <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(ex.exampleSentence, true); }} onKeyDown={e => e.stopPropagation()} aria-label="Phát âm câu ví dụ" className={`absolute right-0 top-3 p-1 text-slate-400 hover:text-white rounded${speakCls}`}><Volume2 className="w-3 h-3" /></button>
+                              <div className="pr-8 text-base sm:text-lg text-slate-100 leading-relaxed">{renderExampleSentenceWithFurigana(ex.exampleSentence, currentItem)}</div>
+                              {ex.exampleTranslation && <p className="mt-2 text-xs text-slate-400 leading-relaxed">{ex.exampleTranslation}</p>}
+                            </div>;
+                          })()}
+                        </div>
                       ) : (
-                        // Example Sentence Mode Back
-                        (() => {
-                          const ex = ensureVocabExample(currentItem);
-                          return (
-                            <div className="space-y-3 w-full max-w-md mx-auto my-auto flex flex-col items-center">
-                              <div className="space-y-1 w-full">
-                                <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider bg-amber-950/40 border border-amber-800/60 px-2 py-0.5 rounded-full inline-block">
-                                  Câu ví dụ
-                                </span>
-                                <div className="text-base sm:text-lg font-medium text-slate-100 leading-relaxed break-words whitespace-normal text-center">
-                                  {renderExampleSentenceWithFurigana(ex.exampleSentence, currentItem)}
-                                </div>
-                                {ex.exampleTranslation && (
-                                  <p className="text-sm sm:text-base text-emerald-400 font-bold break-words whitespace-normal mt-1">
-                                    {ex.exampleTranslation}
-                                  </p>
-                                )}
-                              </div>
-
-                              <div className="border-t border-[#343d5f]/80 pt-2 w-full flex items-center justify-center gap-2 text-xs">
-                                <span className="font-bold text-sky-300">{currentItem.kanji || currentItem.hiragana}</span>
-                                <span className="text-slate-400">({currentItem.hiragana}):</span>
-                                <span className="text-slate-200">{currentItem.meaning}</span>
-                              </div>
-                            </div>
-                          );
-                        })()
+                        <div className="space-y-2 flex flex-col items-center w-full">
+                          <PitchAccentDisplay kanji={currentItem.kanji} reading={currentItem.hiragana} variant="transparent" className="vocab-answer-reading" />
+                          {(currentItem.hanViet || (currentItem.kanji && getHanViet(currentItem.kanji))) && <p className="vocab-answer-hanviet text-sm font-semibold uppercase text-emerald-400">{currentItem.hanViet || getHanViet(currentItem.kanji)}</p>}
+                          <h3 className="text-base sm:text-lg font-bold text-emerald-400">{currentItem.meaning}</h3>
+                          {renderFlashcardWordTypes(currentItem)}
+                        </div>
                       )}
                     </motion.div>
                   )}
                 </AnimatePresence>
+                {!(showFlashcardAnswer && flashcardView === 'word') && <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(flashcardView === 'example' && !showFlashcardAnswer ? ensureVocabExample(currentItem).exampleSentence : currentItem.kanji || currentItem.hiragana, flashcardView === 'example' && !showFlashcardAnswer); }} onKeyDown={e => e.stopPropagation()} aria-label={flashcardView === 'example' && !showFlashcardAnswer ? 'Phát âm câu ví dụ' : 'Phát âm từ vựng'} title="Nghe âm thanh (R)" className={`vocab-flashcard-audio self-center p-2 text-slate-400 hover:text-white rounded-lg${speakCls}`}><Volume2 className="w-5 h-5" /></button>}
+              </div>
               </div>
 
-              {/* Big thumb-friendly Mastery Actions (Chưa thuộc / Đã thuộc) */}
-              <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full mt-3 sm:mt-4">
+              <div className="vocab-flashcard-shortcuts bg-[#242b45] text-slate-400" aria-label="Phím tắt học từ vựng">
+                <span>Phím tắt:</span><span><kbd>Space</kbd> lật</span><span><kbd>Z</kbd> biết</span><span><kbd>X</kbd> chưa biết</span><span><kbd>←</kbd><kbd>→</kbd> chuyển thẻ</span><span><kbd>R</kbd> nghe</span>
+              </div>
+              <div className="vocab-flashcard-controls bg-[#1a1f33]/90 border-t border-[#343d5f]">
+                <div className="vocab-flashcard-tabs flex items-center gap-1" role="group" aria-label="Nội dung thẻ">
+                  <button type="button" onClick={() => { setFlashcardView('word'); setShowFlashcardAnswer(false); }} aria-pressed={flashcardView === 'word'} className={`px-2 py-1 rounded-md text-xs transition-colors ${flashcardView === 'word' ? 'bg-[#00c975] text-white' : 'text-slate-400 hover:text-white'}`}>Từ đơn</button>
+                  <button type="button" onClick={() => { setFlashcardView('example'); setShowFlashcardAnswer(false); }} aria-pressed={flashcardView === 'example'} className={`px-2 py-1 rounded-md text-xs transition-colors ${flashcardView === 'example' ? 'bg-[#00c975] text-white' : 'text-slate-400 hover:text-white'}`}>Ví dụ</button>
+                </div>
+                <div className="vocab-flashcard-review flex items-center justify-center gap-3">
                 <button
                   type="button"
                   id="btn-flashcard-fail"
                   onClick={() => handleFlashcardMark(false)}
-                  className="h-11 sm:h-12 px-3 bg-rose-950/70 hover:bg-rose-900/80 active:scale-[0.98] border-2 border-rose-500 text-rose-200 font-extrabold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md touch-manipulation"
+                  className="vocab-flashcard-mark bg-rose-950/70 hover:bg-rose-900/80 text-rose-400 rounded-lg flex items-center justify-center transition-colors touch-manipulation"
                   title="Chưa thuộc (Phím tắt: X)"
                   aria-label="Chưa thuộc (Phím tắt: X)"
                 >
                   <X className="w-5 h-5 text-rose-400 stroke-[2.5] shrink-0" />
-                  <span>Chưa thuộc</span>
-                  <span className="hidden sm:inline text-xs font-mono opacity-80">(X)</span>
                 </button>
+                <span className="text-xs font-semibold tabular-nums whitespace-nowrap text-slate-200" aria-live="polite">{currentIndex + 1} / {lessonItems.length}</span>
                 <button
                   type="button"
                   id="btn-flashcard-pass"
                   onClick={() => handleFlashcardMark(true)}
-                  className="h-11 sm:h-12 px-3 bg-emerald-950/70 hover:bg-emerald-900/80 active:scale-[0.98] border-2 border-emerald-500 text-emerald-200 font-extrabold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md touch-manipulation"
+                  className="vocab-flashcard-mark bg-emerald-950/70 hover:bg-emerald-900/80 text-emerald-400 rounded-lg flex items-center justify-center transition-colors touch-manipulation"
                   title="Đã thuộc (Phím tắt: Z)"
                   aria-label="Đã thuộc (Phím tắt: Z)"
                 >
                   <Check className="w-5 h-5 text-emerald-400 stroke-[2.5] shrink-0" />
-                  <span>Đã thuộc</span>
-                  <span className="hidden sm:inline text-xs font-mono opacity-80">(Z)</span>
                 </button>
+                </div>
+                <button type="button" onClick={() => { setFlashcardDirection(p => p === 'JP_VI' ? 'VI_JP' : 'JP_VI'); setShowFlashcardAnswer(false); }} className="vocab-flashcard-direction flex items-center justify-center gap-1 text-slate-300 hover:text-white text-[11px] whitespace-nowrap rounded-md" title="Đổi chiều học" aria-label="Đổi chiều học"><ArrowLeftRight className="w-3 h-3" />{flashcardDirection === 'JP_VI' ? 'JP–VI' : 'VI–JP'}</button>
+                <div className="vocab-flashcard-tools flex items-center justify-end gap-1" role="group" aria-label="Công cụ học">
+                  <button type="button" onClick={() => { setIsAutoplay(false); setCurrentIndex(0); setShowFlashcardAnswer(false); setReactionState('neutral'); }} title="Học lại từ đầu" aria-label="Học lại từ đầu"><RotateCcw className="w-4 h-4" /></button>
+                  <button type="button" onClick={() => setIsAutoplay(p => !p)} title={isAutoplay ? 'Dừng tự động lật thẻ' : 'Tự động lật thẻ'} aria-label={isAutoplay ? 'Dừng tự động lật thẻ' : 'Tự động lật thẻ'} aria-pressed={isAutoplay} className={isAutoplay ? 'text-amber-400' : ''}>{isAutoplay ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}</button>
+                  <button type="button" onClick={() => setIsShuffle(p => !p)} title="Đổi thứ tự ngẫu nhiên" aria-label="Đổi thứ tự ngẫu nhiên" aria-pressed={isShuffle} className={isShuffle ? 'text-emerald-400' : ''}><Shuffle className="w-4 h-4" /></button>
+                  <button type="button" onClick={() => setIsExpanded(p => !p)} title={isExpanded ? 'Thu nhỏ giao diện' : 'Phóng to giao diện'} aria-label={isExpanded ? 'Thu nhỏ giao diện' : 'Phóng to giao diện'} aria-pressed={isExpanded}>{isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}</button>
+                  <button type="button" onClick={() => setShowOptions(p => !p)} title="Tùy chọn hiển thị & Cài đặt" aria-label="Tùy chọn hiển thị & Cài đặt" aria-expanded={showOptions} className={showOptions ? 'text-amber-400' : ''}><Settings className="w-4 h-4" /></button>
+                </div>
               </div>
             </div>
           )}
 
           {/* QUIZ MODE - Clean, Compact, Scalable & Dual Direction */}
           {selectedMode === 'quiz' && currentItem && (
-            <div className="w-full relative z-10 flex flex-col justify-between">
+            <div className="vocab-quiz-block bg-[#242b45] border border-[#343d5f] rounded-lg p-4 sm:p-5 w-full relative z-10 flex flex-col justify-between">
               {/* Quiz Header Bar: Audio on Left, Direction Toggle & Pills & Settings on Right */}
               <div className="flex flex-wrap items-center justify-between pb-2 border-b border-[#343d5f]/60 gap-2">
                 <button 
@@ -3413,85 +3319,17 @@ if (loading) {
                 </button>
 
                 <div className="flex items-center gap-1.5 sm:gap-2">
-                  {/* Direction Switcher Button */}
-                  <button
-                    onClick={toggleStudyDirection}
-                    className={`flex items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg border text-[11px] sm:text-xs font-bold transition-all cursor-pointer ${
-                      studyDirection === 'VI_JP'
-                        ? 'bg-purple-950/80 border-purple-500 text-purple-300 shadow-3xs'
-                        : 'bg-sky-950/80 border-sky-500 text-sky-300 shadow-3xs'
-                    }`}
-                    title="Đổi chiều học: Nhật - Việt hoặc Việt - Nhật (Phím D)"
-                  >
-                    <span>{studyDirection === 'VI_JP' ? '🇻🇳➔🇯🇵 Việt-Nhật' : '🇯🇵➔🇻🇳 Nhật-Việt'}</span>
-                    <span className="text-[10px] font-mono bg-black/40 px-1 py-0.2 rounded text-slate-300">D</span>
-                  </button>
-
-                  {/* Mode Pills */}
-                  <div className="flex items-center gap-0.5 bg-[#1a1f33]/70 p-0.5 rounded-lg border border-[#343d5f]">
-                    {studyDirection === 'VI_JP' ? (
-                      <>
-                        <button 
-                          onClick={() => setQuizQueryType('kanji')} 
-                          className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-bold transition-all cursor-pointer ${
-                            quizQueryType === 'kanji' || quizQueryType === 'meaning'
-                              ? 'bg-[#00c975] text-white shadow-xs' 
-                              : 'text-slate-400 hover:text-slate-200'
-                          }`}
-                        >
-                          Kanji / Từ
-                        </button>
-                        <button 
-                          onClick={() => setQuizQueryType('reading')} 
-                          className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-bold transition-all cursor-pointer ${
-                            quizQueryType === 'reading' 
-                              ? 'bg-[#00c975] text-white shadow-xs' 
-                              : 'text-slate-400 hover:text-slate-200'
-                          }`}
-                        >
-                          Cách đọc
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <button 
-                          onClick={() => setQuizQueryType('meaning')} 
-                          className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-bold transition-all cursor-pointer ${
-                            quizQueryType === 'meaning' 
-                              ? 'bg-[#00c975] text-white shadow-xs' 
-                              : 'text-slate-400 hover:text-slate-200'
-                          }`}
-                        >
-                          Ý nghĩa
-                        </button>
-                        <button 
-                          onClick={() => setQuizQueryType('reading')} 
-                          className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-bold transition-all cursor-pointer ${
-                            quizQueryType === 'reading' 
-                              ? 'bg-[#00c975] text-white shadow-xs' 
-                              : 'text-slate-400 hover:text-slate-200'
-                          }`}
-                        >
-                          Cách đọc
-                        </button>
-                        <button 
-                          onClick={() => setQuizQueryType('kanji')} 
-                          className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs font-bold transition-all cursor-pointer ${
-                            quizQueryType === 'kanji' 
-                              ? 'bg-[#00c975] text-white shadow-xs' 
-                              : 'text-slate-400 hover:text-slate-200'
-                          }`}
-                        >
-                          Kanji
-                        </button>
-                      </>
-                    )}
+                  <div className="flex items-center gap-0.5 bg-[#1a1f33]/70 p-0.5 rounded-md" role="group" aria-label="Kiểu câu hỏi">
+                    {([['reading', 'Cách đọc'], ['kanji', 'Kanji'], ['meaning', 'Ý nghĩa']] as const).map(([type, label]) => (
+                      <button key={type} type="button" onClick={() => setQuizQueryType(type)} aria-pressed={quizQueryType === type} className={`px-2 py-1 rounded text-[11px] transition-colors ${quizQueryType === type ? 'bg-[#00c975] text-white' : 'text-slate-400 hover:text-white'}`}>{label}</button>
+                    ))}
                   </div>
+                  <button type="button" onClick={() => setShowOptions(p => !p)} aria-label="Cài đặt trắc nghiệm" aria-expanded={showOptions} className="p-1 text-slate-400 hover:text-white rounded"><Settings className="w-3.5 h-3.5" /></button>
                 </div>
               </div>
 
               {/* Question Center: Adapts to studyDirection */}
-              <div className="text-center py-2 sm:py-4 flex flex-col items-center justify-center min-h-[85px] sm:min-h-[120px]">
+              <div className="vocab-quiz-prompt text-center py-4 flex flex-col items-center justify-center min-h-[140px] sm:min-h-[150px]">
                 {studyDirection === 'VI_JP' ? (
                   // VIETNAMESE -> JAPANESE MODE
                   <div className="space-y-1 sm:space-y-2">
@@ -3537,22 +3375,16 @@ if (loading) {
                   // JAPANESE -> VIETNAMESE MODE
                   <div className="space-y-0.5 sm:space-y-1">
                     <div className="flex justify-center my-0.5 sm:my-1">
-                      {quizQueryType === 'kanji' && !hasAnswered && !showFurigana ? (
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-wide font-display text-center">
-                          {currentItem.hiragana}
+                      <div className="space-y-2">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-medium text-white tracking-wide text-center">
+                          {quizQueryType === 'kanji' && !hasAnswered ? currentItem.hiragana : currentItem.kanji || currentItem.hiragana}
                         </h2>
-                      ) : (
-                        <SelectiveFuriganaWord
-                          kanji={currentItem.kanji}
-                          hiragana={currentItem.hiragana}
-                          showFurigana={showFurigana || hasAnswered}
-                          sizeClassName="text-2xl sm:text-3xl md:text-4xl"
-                        />
-                      )}
+                        {(quizQueryType === 'meaning' || hasAnswered || (showFurigana && quizQueryType === 'reading')) && currentItem.kanji && <p className="text-sm text-slate-300">{currentItem.hiragana}</p>}
+                      </div>
                     </div>
 
                     {/* Sino-Vietnamese (Hán Việt) in sky blue */}
-                    {currentItem.kanji && (
+                    {currentItem.kanji && (quizQueryType !== 'meaning' || hasAnswered) && (
                       <p className="text-xs sm:text-sm font-bold text-[#38bdf8] uppercase tracking-wider text-center mt-0.5">
                         {currentItem.hanViet || getHanViet(currentItem.kanji)}
                       </p>
@@ -3566,7 +3398,7 @@ if (loading) {
                     )}
 
                     {/* Pitch Accent Display if enabled */}
-                    {showPitchAccent && (
+                    {showPitchAccent && hasAnswered && (
                       <div className="mt-1 scale-85 sm:scale-95 origin-center">
                         <PitchAccentDisplay 
                           kanji={currentItem.kanji} 
@@ -3579,7 +3411,7 @@ if (loading) {
               </div>
 
               {/* 4 Choices Grid (2x2) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3.5 my-2 sm:my-3">
+              <div className="vocab-quiz-choices grid grid-cols-2 gap-2 my-2 sm:my-3">
                 {quizOptions.map((option, idx) => {
                   const isSelected = selectedAnswerIndex === idx;
                   const correctVal = studyDirection === 'VI_JP'
@@ -3607,13 +3439,13 @@ if (loading) {
                       key={idx}
                       disabled={hasAnswered}
                       onClick={() => handleSelectAnswer(idx)}
-                      className={`px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl border text-left flex items-center justify-between transition-all group cursor-pointer ${btnStyle}`}
+                      className={`px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-md border text-left flex items-center justify-between transition-all group cursor-pointer ${btnStyle}`}
                     >
                       <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
                         <span className="text-slate-400 text-xs sm:text-sm font-mono font-bold shrink-0">
                           {idx + 1}
                         </span>
-                        <span className="font-semibold tracking-wide text-sm sm:text-base truncate">
+                        <span className="font-medium tracking-wide text-sm sm:text-base whitespace-normal break-words">
                           {option}
                         </span>
                       </div>
@@ -3675,38 +3507,12 @@ if (loading) {
                 </div>
               )}
 
-              {/* Bottom Footer Inside Card with Windows / Desktop Keyboard Shortcut Reminder */}
-              <div className="border-t border-[#343d5f]/60 pt-2.5 flex flex-wrap items-center justify-between gap-2 mt-2 text-xs text-slate-400 relative z-10">
-                <div className="flex items-center gap-1.5">
-                  <div className="flex items-center text-sm opacity-80 select-none">
-                    <span>🦉</span>
-                    <span className="text-xs -ml-1">🎯</span>
-                  </div>
-                  <span className="font-semibold text-slate-300 text-xs">
-                    {currentIndex + 1} / {lessonItems.length}
-                  </span>
-                </div>
-
-                {/* Windows Keyboard Shortcuts Helper */}
-                <div className="flex flex-wrap items-center gap-1.5 text-[11px] sm:text-xs text-slate-300 font-medium">
-                  <span className="inline-flex items-center gap-1 bg-[#1a1f33] px-1.5 py-0.5 rounded border border-[#343d5f]">
-                    <kbd className="font-mono text-[10px] text-sky-300 font-bold">1 - 4</kbd>
-                    <span className="text-slate-400 text-[10px]">chọn</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1 bg-[#1a1f33] px-1.5 py-0.5 rounded border border-[#343d5f]">
-                    <kbd className="font-mono text-[10px] text-emerald-300 font-bold">Enter / Space</kbd>
-                    <span className="text-slate-400 text-[10px]">tiếp</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1 bg-[#1a1f33] px-1.5 py-0.5 rounded border border-[#343d5f]">
-                    <kbd className="font-mono text-[10px] text-amber-300 font-bold">R</kbd>
-                    <span className="text-slate-400 text-[10px]">nghe</span>
-                  </span>
-                  <span className="inline-flex items-center gap-1 bg-[#1a1f33] px-1.5 py-0.5 rounded border border-[#343d5f]">
-                    <kbd className="font-mono text-[10px] text-purple-300 font-bold">D</kbd>
-                    <span className="text-slate-400 text-[10px]">đổi chiều</span>
-                  </span>
-                </div>
+              <div className="vocab-quiz-footer flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 mt-2">
+                <div className="flex-1 text-center">Nhấn <kbd>1–4</kbd> để chọn · <kbd>Space</kbd> để tiếp tục · <kbd>R</kbd> nghe audio</div>
+                <button type="button" onClick={handleSurrender} disabled={hasAnswered} className="inline-flex items-center gap-1 text-slate-400 hover:text-white disabled:opacity-40"><Heart className="w-3 h-3" /> Câu này bó tay</button>
               </div>
+              <div className="mt-5 text-xs text-slate-400">{currentIndex + 1} / {lessonItems.length}</div>
+              <div className="absolute bottom-0 left-0 h-0.5 bg-[#00c975]" style={{ width: `${((currentIndex + 1) / lessonItems.length) * 100}%` }} />
             </div>
           )}
 
