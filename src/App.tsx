@@ -11,6 +11,8 @@ import { UserProfile, JLPTLevel } from './types';
 import { useAuth } from './contexts/AuthContext';
 import AuthModal from './components/AuthModal';
 import LearningMotion from './components/LearningMotion';
+import LottieIcon from './components/LottieIcon';
+import astronautAnim from './assets/lottie/shiba-astronaut.json'; // LottieFiles "Astronaut Dog" by Margarita Ivanchikova (Lottie Simple License)
 import { ParticleCelebration, ParticleCelebrationRef } from './components/ParticleCelebration';
 import { playMilestoneChime } from './utils/audio';
 import { motion, AnimatePresence, useReducedMotion, MotionConfig } from 'motion/react';
@@ -872,7 +874,7 @@ export default function App() {
             >
               <Suspense fallback={
                 <div className="flex-1 flex flex-col items-center justify-center p-12 min-h-[400px]">
-                  <ShibaMascot pose="study" size={72} animated={true} />
+                  <LottieIcon data={astronautAnim} size={96} fallback={<ShibaMascot pose="study" size={72} animated={true} />} />
                   <p className="text-xs font-black text-amber-400 tracking-wider uppercase mt-4 animate-pulse">
                     Nihon Shiba đang tải dữ liệu...
                   </p>

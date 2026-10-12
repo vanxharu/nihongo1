@@ -5,12 +5,12 @@ const Lottie = lazy(() => import('lottie-react'));
 
 const reducedMotion = () => typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-/** Small looping (or one-shot) Lottie animation; renders nothing under reduced-motion. Accepts any Lottie JSON, e.g. a free LottieFiles download. */
-export default function LottieIcon({ data, size = 32, loop = true, className = '' }: { data: object; size?: number; loop?: boolean; className?: string }) {
-  if (reducedMotion()) return null;
+/** Small looping (or one-shot) Lottie animation; renders `fallback` (default nothing) under reduced-motion. Accepts any Lottie JSON, e.g. a free LottieFiles download. */
+export default function LottieIcon({ data, size = 32, loop = true, className = '', fallback = null }: { data: object; size?: number; loop?: boolean; className?: string; fallback?: React.ReactNode }) {
+  if (reducedMotion()) return <>{fallback}</>;
   return (
     <span className={`inline-block shrink-0 pointer-events-none ${className}`} style={{ width: size, height: size }} aria-hidden="true">
-      <Suspense fallback={null}>
+      <Suspense fallback={fallback}>
         <Lottie animationData={data} loop={loop} style={{ width: size, height: size }} />
       </Suspense>
     </span>

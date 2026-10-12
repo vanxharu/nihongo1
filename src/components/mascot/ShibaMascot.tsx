@@ -1,5 +1,7 @@
 import React from 'react';
 import { Mascot, MascotProps, MascotState } from './Mascot';
+import LottieIcon from '../LottieIcon';
+import peekAnim from '../../assets/lottie/shiba-love.json'; // LottieFiles "Flirting Dog" by Margarita Ivanchikova (Lottie Simple License)
 
 export type ShibaPose = 
   | 'idle'
@@ -93,13 +95,13 @@ export function MascotEmptyState({
 }: MascotEmptyStateProps) {
   return (
     <div className={`flex flex-col items-center justify-center p-8 text-center bg-white/70 backdrop-blur-xs border border-[#EADFCF] rounded-2xl shadow-xs ${className}`}>
-      <Mascot
-        state="thinking"
-        size="lg"
-        animated={true}
-        speechBubble="Chưa có dữ liệu ở đây nè!"
-        speechSub="Nihon Shiba đang tìm kiếm cùng bạn 🔍"
+      <LottieIcon
+        data={peekAnim}
+        size={140}
+        fallback={<Mascot state="thinking" size="lg" animated={true} />}
       />
+      <p className="mt-1 text-sm font-bold text-[#1F2639]">Chưa có dữ liệu ở đây nè!</p>
+      <p className="text-xs text-[#786D5E]">Nihon Shiba đang tìm kiếm cùng bạn 🔍</p>
       <h4 className="mt-4 text-base sm:text-lg font-black text-[#1F2639]">
         {title}
       </h4>

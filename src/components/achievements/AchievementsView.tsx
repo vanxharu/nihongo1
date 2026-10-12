@@ -9,6 +9,8 @@ import {
 } from "../../data/achievementsData";
 import { AchievementMascotIcon } from "./AchievementMascotIcon";
 import ShibaMascot from "../mascot/ShibaMascot";
+import LottieIcon from "../LottieIcon";
+import unicornAnim from "../../assets/lottie/shiba-unicorn.json"; // LottieFiles "Happy Unicorn Dog" by Margarita Ivanchikova (Lottie Simple License)
 import "./achievements.css";
 import { readGuestRoadmap } from "../../data/jlptRoadmap";
 interface Props {
@@ -96,7 +98,7 @@ export const AchievementsView: React.FC<Props> = ({ userProfile, onBack }) => {
               </div>
             </div>
           </div>
-          <ShibaMascot pose="trophy" size={180} animated={false} />
+          <LottieIcon data={unicornAnim} size={180} fallback={<ShibaMascot pose="trophy" size={180} animated={false} />} />
         </section>
         {next && (
           <button className="collection-next" onClick={() => setSelected(next)}>
