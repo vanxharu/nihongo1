@@ -2098,7 +2098,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     if (sourceItem?.curriculum === 'tango' && sourceItem.originalNumber && (isWord || (wantSentence && matchesExample))) {
       const n = sourceItem.originalNumber;
       if (TANGO_CLIP_NUMBERS.has(n)) {
-        playTangoClip(n, TANGO_SPLIT_CLIPS.has(n) ? (wantSentence ? 's' : 'w') : '', () => setSpeakingText(null));
+        playTangoClip(n, TANGO_SPLIT_CLIPS.has(n) ? (wantSentence ? 's' : 'w') : '', () => setSpeakingText(null),
+          () => speakJapanese(isWord && sourceItem.hiragana ? sourceItem.hiragana : text, undefined, () => setSpeakingText(null), { isSentence: wantSentence }));
         markSpeaking(text); // after play: starting a clip fires the interrupted one's end callback
         if (selectedMode === 'shadowing') {
           setIsPlayingWave(true);

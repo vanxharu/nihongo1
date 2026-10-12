@@ -69,12 +69,11 @@ export default function VocabFloatingNotifier({ onEarnXp }: VocabFloatingNotifie
     const text = kind === 'word' ? (activeWord.kanji || activeWord.reading) : activeWord.exampleJp;
     if (!text) return;
     const done = () => setSpeaking(null);
+    const tts = () => speakJapanese(kind === 'word' ? (activeWord.reading || text) : text, undefined, done, { isSentence: kind === 'example' });
     const n = Number(activeWord.wordNumber);
     if (activeWord.curriculum === 'tango' && TANGO_CLIP_NUMBERS.has(n)) {
-      playTangoClip(n, TANGO_SPLIT_CLIPS.has(n) ? (kind === 'example' ? 's' : 'w') : '', done);
-    } else {
-      speakJapanese(kind === 'word' ? (activeWord.reading || text) : text, undefined, done, { isSentence: kind === 'example' });
-    }
+      playTangoClip(n, TANGO_SPLIT_CLIPS.has(n) ? (kind === 'example' ? 's' : 'w') : '', done, tts);
+    } else tts();
     setSpeaking(kind);
     window.setTimeout(done, 8000); // safety net if no end event fires
   };

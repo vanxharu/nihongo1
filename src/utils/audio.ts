@@ -447,7 +447,8 @@ function getTangoClip(n: number, part: '' | 'w' | 's') {
 export function preloadTangoClips(n: number, split: boolean): void {
   (split ? ['w', 's'] as const : [''] as const).forEach(p => getTangoClip(n, p));
 }
-export function playTangoClip(n: number, part: '' | 'w' | 's', onEnd?: () => void): void {
+/** onFail: the clip is missing/undecodable (e.g. the deploy served index.html for it): speak via TTS instead of staying silent. */
+export function playTangoClip(n: number, part: '' | 'w' | 's', onEnd?: () => void, onFail?: () => void): void {
   stopTangoAudio();
   const audio = getTangoClip(n, part);
   const clip = audio;
@@ -460,9 +461,10 @@ export function playTangoClip(n: number, part: '' | 'w' | 's', onEnd?: () => voi
   };
   tangoEnd = done;
   clip.currentTime = 0;
+  const fail = () => { if (!onFail) return done(); onEnd = undefined; done(); onFail(); };
   clip.onended = done;
-  clip.onerror = done;
-  clip.play().catch(e => { if (e?.name !== 'AbortError') done(); }); // AbortError = replaced by a newer clip, whose state must stay
+  clip.onerror = fail;
+  clip.play().catch(e => { if (e?.name !== 'AbortError') fail(); }); // AbortError = replaced by a newer clip, whose state must stay
 }
 
 export { cleanJapaneseTextForSpeech };
