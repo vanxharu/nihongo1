@@ -726,22 +726,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     return userProfile?.targetLevel || 'N4';
   });
 
-  // Giáo trình: Tango 1500 (mặc định) hoặc Minna no Nihongo — hai bộ từ vựng tách riêng.
-  const [selectedCurriculum, setSelectedCurriculum] = useState<'tango' | 'minna'>(() => {
-    try { return localStorage.getItem('vocabCurriculum') === 'minna' ? 'minna' : 'tango'; } catch { return 'tango'; }
-  });
-  const [minnaData, setMinnaData] = useState<VocabularyItem[]>([]);
-  useEffect(() => {
-    if (selectedCurriculum !== 'minna' || minnaData.length) return;
-    import('../data/minnaVocab').then(m => setMinnaData(m.MINNA_VOCABULARY.map(v => sanitizeVocabItem(v))));
-  }, [selectedCurriculum, minnaData.length]);
-  const switchCurriculum = (c: 'tango' | 'minna') => {
-    if (c === selectedCurriculum) return;
-    try { localStorage.setItem('vocabCurriculum', c); } catch { /* ignore */ }
-    setSelectedCurriculum(c);
-    setCurrentLessonIndex(0);
-    setCurrentIndex(0);
-  };
+  // Chỉ còn giáo trình Tango 1500
+  const selectedCurriculum = 'tango' as const;
 
   // App States
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -760,8 +746,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
 
   // Filter vocab by selected level & selected curriculum
   const filteredVocab = useMemo(() => {
-    const list = (selectedCurriculum === 'minna' ? minnaData : vocabData).filter(v => {
-      const matchLevel = levelFilter === 'ALL' || selectedCurriculum === 'minna' ? true : v.level === levelFilter;
+    const list = vocabData.filter(v => {
+      const matchLevel = levelFilter === 'ALL' ? true : v.level === levelFilter;
       const matchCurriculum = v.curriculum 
         ? v.curriculum === selectedCurriculum 
         : (selectedCurriculum === 'tango' ? v.id.startsWith('v_tango') : !v.id.startsWith('v_tango'));
@@ -792,7 +778,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       const idB = parseInt(String(b.id || '').replace(/\D/g, '') || '0', 10);
       return idA - idB;
     });
-  }, [vocabData, minnaData, levelFilter, selectedCurriculum]);
+  }, [vocabData, levelFilter, selectedCurriculum]);
   
   // Lessons group
   // SRS due items should include any studied item within the allowed target levels
@@ -4078,7 +4064,7 @@ if (loading) {
                   <div>
                     <h3 className="text-sm sm:text-base font-extrabold text-white tracking-tight">Chọn bài học nhanh</h3>
                     <p className="text-[11px] text-slate-400">
-                      {selectedCurriculum === 'minna' ? '📘 Minna no Nihongo I・II' : '📗 Tango 1500 N4'} • {lessons.length} bài
+                      📗 Tango 1500 N4 • {lessons.length} bài
                     </p>
                   </div>
                 </div>
@@ -4089,24 +4075,6 @@ if (loading) {
                 >
                   <X className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
-              </div>
-
-              {/* Curriculum switch */}
-              <div className="px-3 sm:px-4 pt-3 sm:pt-4 shrink-0 flex gap-1.5" role="tablist" aria-label="Giáo trình">
-                {([['tango', '📗 Tango 1500'], ['minna', '📘 Minna no Nihongo']] as const).map(([id, label]) => (
-                  <button
-                    key={id}
-                    type="button"
-                    role="tab"
-                    aria-selected={selectedCurriculum === id}
-                    onClick={() => switchCurriculum(id)}
-                    className={`flex-1 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                      selectedCurriculum === id
-                        ? 'bg-sky-500/20 border-sky-500/70 text-sky-200'
-                        : 'bg-[#121626] border-[#2b3353] text-slate-400 hover:text-white'
-                    }`}
-                  >{label}</button>
-                ))}
               </div>
 
               {/* Search input */}
