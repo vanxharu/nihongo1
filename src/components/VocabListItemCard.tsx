@@ -323,7 +323,7 @@ function VocabListItemCardComponent({
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onSpeak(v.kanji || v.hiragana, false); }}
-              className={`text-slate-400 hover:text-white p-1 rounded cursor-pointer${speakingText && speakingText === (v.kanji || v.hiragana) ? ' animate-pulse !text-emerald-400' : ''}`}
+              className={`text-slate-400 hover:text-white p-1 rounded cursor-pointer${speakingText && speakingText === (v.kanji || v.hiragana) ? ' vocab-audio-playing' : ''}`}
               title="Phát âm từ vựng"
             >
               <Volume2 className="w-4 h-4" />
@@ -347,7 +347,7 @@ function VocabListItemCardComponent({
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onSpeak(ex.exampleSentence, true); }}
-            className={`text-slate-400 hover:text-white transition-colors p-1 shrink-0 cursor-pointer${speakingText && speakingText === ex.exampleSentence ? ' animate-pulse !text-emerald-400' : ''}`}
+            className={`text-slate-400 hover:text-white transition-colors p-1 shrink-0 cursor-pointer${speakingText && speakingText === ex.exampleSentence ? ' vocab-audio-playing' : ''}`}
             title="Nghe phát âm câu ví dụ"
           >
             <Volume2 className="w-4 h-4" />

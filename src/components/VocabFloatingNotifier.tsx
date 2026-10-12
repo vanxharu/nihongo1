@@ -171,7 +171,7 @@ export default function VocabFloatingNotifier({ onEarnXp }: VocabFloatingNotifie
                   )}
                   <button
                     onClick={handleSpeakWord}
-                    className={`vocab-toast-speak${speaking === 'word' ? ' animate-pulse' : ''}`}
+                    className={`vocab-toast-speak${speaking === 'word' ? ' vocab-audio-playing' : ''}`}
                     style={{
                       background: speaking === 'word' ? '#d1fae5' : '#f1f5f9', border: 'none', borderRadius: 6,
                       width: 26, height: 22, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -209,7 +209,7 @@ export default function VocabFloatingNotifier({ onEarnXp }: VocabFloatingNotifie
                 </div>
                 <button
                   onClick={handleSpeakExample}
-                  className={`vocab-toast-speak${speaking === 'example' ? ' animate-pulse' : ''}`}
+                  className={`vocab-toast-speak${speaking === 'example' ? ' vocab-audio-playing' : ''}`}
                   style={{
                     background: speaking === 'example' ? '#d1fae5' : '#e2e8f0', border: 'none', borderRadius: 6,
                     width: 28, height: 28, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
