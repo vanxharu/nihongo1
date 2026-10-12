@@ -32,11 +32,7 @@ export const GrammarLessonDetailView: React.FC<GrammarLessonDetailViewProps> = (
 }) => {
   const isN4 = level === 'N4';
   const isN5 = level === 'N5';
-  const levelTitle = isN4
-    ? 'Minna no Nihongo II (第26〜50課)'
-    : isN5
-    ? 'Minna no Nihongo I (第1〜25課)'
-    : `Ngữ pháp ${level}`;
+  const levelTitle = `Ngữ pháp ${level}`;
 
   const themesForLevel = LESSON_THEMES_MAP[level] || {};
   const currentTheme = themesForLevel[lessonNumber] || `Bài ${lessonNumber}`;

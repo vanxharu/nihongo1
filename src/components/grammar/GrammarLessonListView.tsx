@@ -28,11 +28,7 @@ export const GrammarLessonListView: React.FC<GrammarLessonListViewProps> = ({
   const totalLessons = endLesson - startLesson + 1;
 
   // Level info titles
-  const levelTitle = isN4
-    ? 'Minna no Nihongo II (第26〜50課)'
-    : isN5
-    ? 'Minna no Nihongo I (第1〜25課)'
-    : `Ngữ pháp ${level} chuyên sâu`;
+  const levelTitle = `Ngữ pháp ${level}`;
 
   // Filter and deduplicate grammars belonging to this level
   const levelGrammars = useMemo(() => {

@@ -335,7 +335,7 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
       </button>
 
       <div className="text-xs text-slate-400 mb-2">
-        Minna no Nihongo II (第26〜50課) · 第{grammar.lessonNumber || 26}課 – Bài {grammar.lessonNumber || 26}
+        第{grammar.lessonNumber || 26}課 – Bài {grammar.lessonNumber || 26}
       </div>
 
       {/* Header Info */}
