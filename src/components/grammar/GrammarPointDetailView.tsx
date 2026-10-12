@@ -34,6 +34,8 @@ interface GrammarPointDetailViewProps {
   onSelectNextGrammar?: (nextGrammar: GrammarItem) => void;
   onToggleBookmark: (grammarId: string) => void;
   onToggleSrsReview: (grammarId: string) => void;
+  /** Desktop master-detail: hide back link, drop page width/padding. */
+  embedded?: boolean;
 }
 
 export const GrammarPointDetailView: React.FC<GrammarPointDetailViewProps> = ({
@@ -49,7 +51,8 @@ export const GrammarPointDetailView: React.FC<GrammarPointDetailViewProps> = ({
   onSelectRelatedGrammar,
   onSelectNextGrammar,
   onToggleBookmark,
-  onToggleSrsReview
+  onToggleSrsReview,
+  embedded
 }) => {
   const [readingSeconds, setReadingSeconds] = useState(0);
   const [readingReward, setReadingReward] = useState<string>('');
@@ -134,13 +137,13 @@ export const GrammarPointDetailView: React.FC<GrammarPointDetailViewProps> = ({
   ];
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 animate-fadeIn font-sans text-slate-100">
+    <div className={embedded ? "w-full px-5 py-4 animate-fadeIn font-sans text-slate-100" : "w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 animate-fadeIn font-sans text-slate-100"}>
       {/* Top Bar Navigation */}
       <div className="flex items-center justify-between gap-2 mb-4">
         <button
           type="button"
           onClick={onBackToLesson}
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-blue-400 hover:text-blue-300 font-medium cursor-pointer transition-colors"
+          className={`${embedded ? "!hidden " : ""}inline-flex items-center gap-1.5 text-xs sm:text-sm text-blue-400 hover:text-blue-300 font-medium cursor-pointer transition-colors`}
         >
           <ChevronLeft className="w-4 h-4" />
           <span>第{grammar.lessonNumber || 26}課 – Bài {grammar.lessonNumber || 26}</span>

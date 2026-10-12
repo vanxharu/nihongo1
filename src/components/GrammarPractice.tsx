@@ -5,6 +5,7 @@ import { safeFetchJson } from '../utils/safeApi';
 import { deduplicateGrammars, getGrammarStatusWithAliases } from '../utils/grammarDeduplicator';
 import TheoryHubView from './grammar/TheoryHubView';
 import GrammarMindmapOverview from './grammar/GrammarMindmapOverview';
+import GrammarMasterDetail from './grammar/GrammarMasterDetail';
 import GrammarLessonListView from './grammar/GrammarLessonListView';
 import GrammarLessonDetailView from './grammar/GrammarLessonDetailView';
 import GrammarPointDetailView from './grammar/GrammarPointDetailView';
@@ -32,6 +33,13 @@ export default function GrammarPractice({
   initialLessonNumber
 }: GrammarPracticeProps) {
   // Navigation state - Show TheoryHubView (overview) by default
+  const [isDesktop, setIsDesktop] = useState(() => window.matchMedia('(min-width: 1024px)').matches);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const on = () => setIsDesktop(mq.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
   const [viewMode, setViewMode] = useState<GrammarViewMode>(initialViewMode);
   const [selectedLevel, setSelectedLevel] = useState<JLPTLevel>((userProfile.targetLevel as JLPTLevel) || 'N4');
   const [selectedLessonNumber, setSelectedLessonNumber] = useState<number>(
@@ -330,7 +338,37 @@ export default function GrammarPractice({
       )}
 
       {/* 2. LESSON LIST SCREEN (Screen 2) */}
-      {viewMode === 'lesson-list' && (
+      {isDesktop && (viewMode === 'lesson-list' || viewMode === 'lesson-detail' || viewMode === 'grammar-detail') ? (
+        <GrammarMasterDetail
+          level={selectedLevel}
+          userProfile={userProfile}
+          grammars={grammars}
+          lessonNumber={selectedLessonNumber}
+          selectedGrammar={selectedGrammar}
+          onBack={() => setViewMode('overview')}
+          onSelectLesson={setSelectedLessonNumber}
+          onSelectGrammar={setSelectedGrammar}
+          onPractice={(g) => { setSelectedGrammar(g); setViewMode('practice'); }}
+          detail={selectedGrammar && (
+            <GrammarPointDetailView embedded onCompleteReading={() => onStudyReward?.(`grammar-reading:${selectedGrammar.id}`, 5) ?? false}
+              grammar={selectedGrammar}
+              aiContent={currentAiContent}
+              allGrammarsInLesson={allGrammarsInCurrentLesson}
+              userProfile={userProfile}
+              showFurigana={showFurigana}
+              onToggleFurigana={toggleFurigana}
+              onBackToLesson={() => {}}
+              onStartPractice={() => setViewMode('practice')}
+              onSelectRelatedGrammar={setSelectedGrammar}
+              onSelectNextGrammar={setSelectedGrammar}
+              onToggleBookmark={handleToggleBookmark}
+              onToggleSrsReview={handleToggleSrsReview}
+            />
+          )}
+        />
+      ) : null}
+
+      {!isDesktop && viewMode === 'lesson-list' && (
         <GrammarLessonListView
           level={selectedLevel}
           userProfile={userProfile}
@@ -344,7 +382,7 @@ export default function GrammarPractice({
       )}
 
       {/* 3. LESSON DETAIL SCREEN (Screen 3) */}
-      {viewMode === 'lesson-detail' && (
+      {!isDesktop && viewMode === 'lesson-detail' && (
         <GrammarLessonDetailView
           level={selectedLevel}
           lessonNumber={selectedLessonNumber}
@@ -368,7 +406,7 @@ export default function GrammarPractice({
       )}
 
       {/* 4. GRAMMAR POINT DETAIL SCREEN (Screen 4) */}
-      {viewMode === 'grammar-detail' && selectedGrammar && (
+      {!isDesktop && viewMode === 'grammar-detail' && selectedGrammar && (
         <GrammarPointDetailView onCompleteReading={() => onStudyReward?.(`grammar-reading:${selectedGrammar.id}`, 5) ?? false}
           grammar={selectedGrammar}
           aiContent={currentAiContent}
