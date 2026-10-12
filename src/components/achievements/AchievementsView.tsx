@@ -62,7 +62,7 @@ export const AchievementsView: React.FC<Props> = ({ userProfile, onBack }) => {
       type={item.character}
       poseIndex={item.poseIndex}
       badgeNumber={item.number}
-      tier={item.tier}
+      tier={item.tier} metric={item.metric} rank={item.rank} threshold={item.threshold}
       isUnlocked={earned.has(item.id)}
       size={size}
     />

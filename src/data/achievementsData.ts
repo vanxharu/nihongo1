@@ -22,6 +22,7 @@ export interface AchievementItem {
   threshold: number;
   poseIndex: number;
   tier: number;
+  rank: number;
 }
 const tracks: {
   metric: string;
@@ -145,6 +146,7 @@ export const ACHIEVEMENTS_LIST: AchievementItem[] = tracks.flatMap(
       threshold,
       poseIndex: (index * 2 + Math.floor(tier / 5) + (tier % 5) * 4) % 20,
       tier: tier % 5,
+      rank: tier,
       unlockedByDefault: threshold === 0,
     })),
 );
