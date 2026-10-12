@@ -6,12 +6,14 @@
 import type { VocabularyItem, GrammarItem, KanjiItem, DailyExam, LeaderboardUser } from './types';
 import { TANGO_N4_VOCABULARY } from './data/tangoN4Vocab.js';
 import { TANGO_N5_VOCABULARY } from './data/tangoN5Vocab.js';
+import { TANGO_N3_VOCABULARY } from './data/tangoN3Vocab.js';
 
-export { TANGO_N4_VOCABULARY, TANGO_N5_VOCABULARY };
+export { TANGO_N4_VOCABULARY, TANGO_N5_VOCABULARY, TANGO_N3_VOCABULARY };
 
 export const VOCABULARY_DATA: VocabularyItem[] = [
   ...TANGO_N4_VOCABULARY,
-  ...TANGO_N5_VOCABULARY
+  ...TANGO_N5_VOCABULARY,
+  ...TANGO_N3_VOCABULARY
 ];
 
 export const GRAMMAR_DATA: GrammarItem[] = [];

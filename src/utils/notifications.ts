@@ -5,6 +5,7 @@
 
 import { TANGO_N4_VOCABULARY } from '../data/tangoN4Vocab';
 import { TANGO_N5_VOCABULARY } from '../data/tangoN5Vocab';
+import { TANGO_N3_VOCABULARY } from '../data/tangoN3Vocab';
 import {
   getHanViet,
   getSentenceHiraganaReading,
@@ -533,7 +534,7 @@ export const getAllVocabPool = (): VocabNotificationPayload[] => {
       // Determine curriculum & names
       const curr = item.curriculum || defaultCurriculum;
       const currName = curr === 'tango'
-        ? (item.level === 'N5' ? 'Tango N5 1000' : 'Tango 1500')
+        ? (item.level === 'N5' ? 'Tango N5 1000' : item.level === 'N3' ? 'Tango N3 2000' : 'Tango 1500')
         : defaultCurriculumName;
 
       // Determine word number
@@ -572,6 +573,7 @@ export const getAllVocabPool = (): VocabNotificationPayload[] => {
 
   processList(TANGO_N4_VOCABULARY, 'N4', 'tango', 'Tango 1500');
   processList(TANGO_N5_VOCABULARY, 'N5', 'tango', 'Tango N5 1000');
+  processList(TANGO_N3_VOCABULARY, 'N3', 'tango', 'Tango N3 2000');
 
   // Load user custom imported vocabularies from localStorage
   try {

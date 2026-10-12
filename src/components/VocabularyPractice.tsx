@@ -4064,7 +4064,7 @@ if (loading) {
                   <div>
                     <h3 className="text-sm sm:text-base font-extrabold text-white tracking-tight">Chọn bài học nhanh</h3>
                     <p className="text-[11px] text-slate-400">
-                      📗 Tango 1500 N4 • {lessons.length} bài
+                      📗 Tango {levelFilter || userProfile.targetLevel} • {lessons.length} bài
                     </p>
                   </div>
                 </div>
