@@ -89,7 +89,7 @@ app.set('trust proxy', 1);
 // In-memory, so on serverless hosts it is per instance; it still blunts casual abuse.
 const COST_BEARING_PATHS = [
   '/api/shadowing/analyze', '/api/shadowing/prepare',
-  '/api/listening/extract-frame-ocr', '/api/tts', '/api/furigana',
+  '/api/listening/extract-frame-ocr', '/api/furigana',
   '/api/grammar/evaluate-translation', '/api/grammar/grade', '/api/grammar/analyze',
   '/api/grammar/practice-questions', '/api/grammar/personalized-review',
   '/api/grammar/ai-tutor', '/api/grammar/similar-question',

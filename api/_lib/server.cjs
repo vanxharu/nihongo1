@@ -20616,7 +20616,7 @@ async function synthesizeAzureSpeech(text2, voice = "ja-JP-NanamiNeural", rateRa
   if (audioCache.has(cacheKey)) {
     return audioCache.get(cacheKey);
   }
-  try {
+  const synth = async () => {
     const comm = new import_edge_tts_universal.Communicate(cleanText, {
       voice: targetVoice,
       rate: rateRate || "+0%",
@@ -20624,8 +20624,20 @@ async function synthesizeAzureSpeech(text2, voice = "ja-JP-NanamiNeural", rateRa
     });
     const chunks = [];
     for await (const chunk of comm.stream()) {
-      if (chunk.type === "audio" && chunk.data) {
-        chunks.push(chunk.data);
+      if (chunk.type === "audio" && chunk.data) chunks.push(chunk.data);
+    }
+    return chunks;
+  };
+  try {
+    let chunks = [];
+    for (let attempt = 0; attempt < 2 && chunks.length === 0; attempt++) {
+      try {
+        chunks = await Promise.race([
+          synth(),
+          new Promise((_, rej) => setTimeout(() => rej(new Error("TTS timeout")), 8e3))
+        ]);
+      } catch (e) {
+        if (attempt === 1) throw e;
       }
     }
     if (chunks.length === 0) {
@@ -24411,7 +24423,6 @@ var COST_BEARING_PATHS = [
   "/api/shadowing/analyze",
   "/api/shadowing/prepare",
   "/api/listening/extract-frame-ocr",
-  "/api/tts",
   "/api/furigana",
   "/api/grammar/evaluate-translation",
   "/api/grammar/grade",

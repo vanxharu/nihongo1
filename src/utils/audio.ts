@@ -700,6 +700,11 @@ function speakSingle(
     try {
       current = new Audio(url);
       audio = current;
+      // A hung /api/tts never fires error: give up after 6s without playback and fall back.
+      const stall = setTimeout(() => { if (audio === current && current!.paused) fail(); }, 6000);
+      const clear = () => clearTimeout(stall);
+      current.addEventListener('playing', clear, { once: true });
+      current.addEventListener('error', clear, { once: true });
       // Azure already applies rate while synthesizing; do not multiply it again.
       current.playbackRate = provider === 'azure' ? 1 : (rate ?? (isSentence ? 1 : 0.95));
       current.onplaying = () => { if (audio === current) reportPlaying(); };
@@ -718,6 +723,10 @@ function speakSingle(
   };
 
   if (selectedVoice.startsWith('device:')) runWebSpeech();
-  else playAudio(`/api/tts?text=${encodedText}&voice=${encodeURIComponent(selectedVoice)}&rate=${encodeURIComponent(azureRate)}`, runGoogle);
+  else {
+    const ttsUrl = `/api/tts?text=${encodedText}&voice=${encodeURIComponent(selectedVoice)}&rate=${encodeURIComponent(azureRate)}`;
+    // One retry on the same URL before the weaker fallbacks.
+    playAudio(ttsUrl, () => playAudio(ttsUrl, runGoogle));
+  }
   return handle;
 }

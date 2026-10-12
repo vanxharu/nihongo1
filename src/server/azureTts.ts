@@ -75,17 +75,29 @@ export async function synthesizeAzureSpeech(
     return audioCache.get(cacheKey)!;
   }
 
-  try {
+  // The Edge websocket fails or stalls now and then: retry once, each attempt capped at 8s.
+  const synth = async () => {
     const comm = new Communicate(cleanText, {
       voice: targetVoice,
       rate: rateRate || '+0%',
       pitch: pitch || '+0Hz',
     });
-
     const chunks: Buffer[] = [];
     for await (const chunk of comm.stream()) {
-      if (chunk.type === 'audio' && chunk.data) {
-        chunks.push(chunk.data);
+      if (chunk.type === 'audio' && chunk.data) chunks.push(chunk.data);
+    }
+    return chunks;
+  };
+  try {
+    let chunks: Buffer[] = [];
+    for (let attempt = 0; attempt < 2 && chunks.length === 0; attempt++) {
+      try {
+        chunks = await Promise.race([
+          synth(),
+          new Promise<Buffer[]>((_, rej) => setTimeout(() => rej(new Error('TTS timeout')), 8000)),
+        ]);
+      } catch (e) {
+        if (attempt === 1) throw e;
       }
     }
 
