@@ -70,7 +70,7 @@ export default function VocabFloatingNotifier({ onEarnXp }: VocabFloatingNotifie
     if (!text) return;
     const done = () => setSpeaking(null);
     const tts = () => speakJapanese(kind === 'word' ? (activeWord.reading || text) : text, undefined, done, { isSentence: kind === 'example' });
-    const n = Number(activeWord.wordNumber);
+    const n = activeWord.clipNumber ?? Number(activeWord.wordNumber);
     if (activeWord.curriculum === 'tango' && TANGO_CLIP_NUMBERS.has(n)) {
       playTangoClip(n, TANGO_SPLIT_CLIPS.has(n) ? (kind === 'example' ? 's' : 'w') : '', done, tts);
     } else tts();

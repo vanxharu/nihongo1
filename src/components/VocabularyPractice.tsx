@@ -2084,7 +2084,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     speakTimer.current = window.setTimeout(() => setSpeakingText(null), 8000); // safety net if no end event fires
   };
   useEffect(() => {
-    const n = currentItem?.curriculum === 'tango' ? currentItem.originalNumber : undefined;
+    const n = currentItem?.curriculum === 'tango' ? (currentItem.audioKey ?? currentItem.originalNumber) : undefined;
     if (n && TANGO_CLIP_NUMBERS.has(n)) preloadTangoClips(n, TANGO_SPLIT_CLIPS.has(n));
   }, [currentItem]);
   const handleSpeak = useCallback((text: string, isSentence?: boolean, sourceItem: VocabularyItem | undefined = currentItem) => {
@@ -2095,8 +2095,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       [sourceItem.kanji, sourceItem.hiragana].some(word => word?.trim() === text.trim());
     // Resolve recordings from the clicked row, not the active flashcard.
     // Generated/replaced examples must use their displayed text instead of unrelated audio.
-    if (sourceItem?.curriculum === 'tango' && sourceItem.originalNumber && (isWord || (wantSentence && matchesExample))) {
-      const n = sourceItem.originalNumber;
+    if (sourceItem?.curriculum === 'tango' && (sourceItem.audioKey ?? sourceItem.originalNumber) && (isWord || (wantSentence && matchesExample))) {
+      const n = (sourceItem.audioKey ?? sourceItem.originalNumber) as number;
       if (TANGO_CLIP_NUMBERS.has(n)) {
         playTangoClip(n, TANGO_SPLIT_CLIPS.has(n) ? (wantSentence ? 's' : 'w') : '', () => setSpeakingText(null),
           () => speakJapanese(isWord && sourceItem.hiragana ? sourceItem.hiragana : text, undefined, () => setSpeakingText(null), { isSentence: wantSentence }));

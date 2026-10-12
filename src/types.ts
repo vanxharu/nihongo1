@@ -38,6 +38,8 @@ export interface VocabularyItem {
   wordType?: string;
   type?: string;
   originalNumber?: number;
+  /** Number of the pre-cut audio clip in /audio/tango (N5 = 10000 + word number, so it never collides with N4). */
+  audioKey?: number;
   audio?: string;
   tags?: string[];
   lesson?: string;
