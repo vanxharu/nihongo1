@@ -427,9 +427,12 @@ export function stopJapaneseSpeech(): void {
 }
 
 let tangoAudio: HTMLAudioElement | null = null;
+let tangoEnd: (() => void) | null = null;
 
 function stopTangoAudio() {
   if (tangoAudio) { tangoAudio.pause(); tangoAudio = null; }
+  // Always release the UI "playing" state of an interrupted clip.
+  const end = tangoEnd; tangoEnd = null; end?.();
 }
 
 const tangoClips = new Map<string, HTMLAudioElement>();
@@ -439,10 +442,19 @@ export function playTangoClip(n: number, part: '' | 'w' | 's', onEnd?: () => voi
   const url = `/audio/tango/${n}${part}.mp3`;
   let audio = tangoClips.get(url);
   if (!audio) { audio = new Audio(url); tangoClips.set(url, audio); }
-  tangoAudio = audio;
-  audio.currentTime = 0;
-  audio.onended = () => { tangoAudio = null; onEnd?.(); };
-  audio.play().catch(() => {});
+  const clip = audio;
+  tangoAudio = clip;
+  const done = () => {
+    clip.onended = null; clip.onerror = null;
+    if (tangoAudio === clip) tangoAudio = null;
+    if (tangoEnd === done) tangoEnd = null;
+    onEnd?.();
+  };
+  tangoEnd = done;
+  clip.currentTime = 0;
+  clip.onended = done;
+  clip.onerror = done;
+  clip.play().catch(done);
 }
 
 export { cleanJapaneseTextForSpeech };

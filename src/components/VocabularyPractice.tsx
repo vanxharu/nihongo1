@@ -2081,7 +2081,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const markSpeaking = (text: string) => {
     setSpeakingText(text);
     if (speakTimer.current !== null) clearTimeout(speakTimer.current);
-    speakTimer.current = window.setTimeout(() => setSpeakingText(null), 15000); // safety net if no end event fires
+    speakTimer.current = window.setTimeout(() => setSpeakingText(null), 8000); // safety net if no end event fires
   };
   const handleSpeak = useCallback((text: string, isSentence?: boolean, sourceItem: VocabularyItem | undefined = currentItem) => {
     if (!text.trim()) return;
@@ -2094,8 +2094,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     if (sourceItem?.curriculum === 'tango' && sourceItem.originalNumber && (isWord || (wantSentence && matchesExample))) {
       const n = sourceItem.originalNumber;
       if (TANGO_CLIP_NUMBERS.has(n)) {
-        markSpeaking(text);
         playTangoClip(n, TANGO_SPLIT_CLIPS.has(n) ? (wantSentence ? 's' : 'w') : '', () => setSpeakingText(null));
+        markSpeaking(text); // after play: starting a clip fires the interrupted one's end callback
         if (selectedMode === 'shadowing') {
           setIsPlayingWave(true);
           setTimeout(() => setIsPlayingWave(false), wantSentence ? 4000 : 1500);
@@ -2105,8 +2105,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     }
     // Từ riêng: đọc theo cách đọc (hiragana) để không đọc sai kanji; câu ví dụ đọc nguyên câu.
     const spoken = isWord && sourceItem?.hiragana ? sourceItem.hiragana : text;
-    markSpeaking(text);
     speakJapanese(spoken, undefined, () => setSpeakingText(null), { isSentence: wantSentence });
+    markSpeaking(text);
 
     // Animate wave if shadowing
     if (selectedMode === 'shadowing') {
