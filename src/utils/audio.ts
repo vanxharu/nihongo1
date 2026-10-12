@@ -437,11 +437,19 @@ function stopTangoAudio() {
 
 const tangoClips = new Map<string, HTMLAudioElement>();
 /** Plays a pre-cut Tango clip (/audio/tango/<n>[w|s].mp3). Elements are reused so repeat plays start instantly. */
-export function playTangoClip(n: number, part: '' | 'w' | 's', onEnd?: () => void): void {
-  stopTangoAudio();
+function getTangoClip(n: number, part: '' | 'w' | 's') {
   const url = `/audio/tango/${n}${part}.mp3`;
   let audio = tangoClips.get(url);
-  if (!audio) { audio = new Audio(url); tangoClips.set(url, audio); }
+  if (!audio) { audio = new Audio(); audio.preload = 'auto'; audio.src = url; tangoClips.set(url, audio); }
+  return audio;
+}
+/** Warm the clips of the card on screen so the first tap plays without a network wait. */
+export function preloadTangoClips(n: number, split: boolean): void {
+  (split ? ['w', 's'] as const : [''] as const).forEach(p => getTangoClip(n, p));
+}
+export function playTangoClip(n: number, part: '' | 'w' | 's', onEnd?: () => void): void {
+  stopTangoAudio();
+  const audio = getTangoClip(n, part);
   const clip = audio;
   tangoAudio = clip;
   const done = () => {
@@ -454,7 +462,7 @@ export function playTangoClip(n: number, part: '' | 'w' | 's', onEnd?: () => voi
   clip.currentTime = 0;
   clip.onended = done;
   clip.onerror = done;
-  clip.play().catch(done);
+  clip.play().catch(e => { if (e?.name !== 'AbortError') done(); }); // AbortError = replaced by a newer clip, whose state must stay
 }
 
 export { cleanJapaneseTextForSpeech };

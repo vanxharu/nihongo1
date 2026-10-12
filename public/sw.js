@@ -786,7 +786,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', event => {
   const request = event.request;
   const url = new URL(request.url);
+  // Media bypasses the SW: Range/206 responses can't be cached and the SW hop only adds latency or breaks playback.
   if (request.method !== 'GET' || url.origin !== self.location.origin ||
+      request.destination === 'audio' || request.destination === 'video' || /\.(?:mp3|m4a|wav|ogg|mp4)$/i.test(url.pathname) ||
       /^\/(?:api|__|@|src|node_modules|shadowing-alignments|shadowing-prepared)(?:\/|$)/.test(url.pathname)) return;
   const navigation = request.mode === 'navigate';
   const asset = /\.(?:js|mjs|css)$/.test(url.pathname);

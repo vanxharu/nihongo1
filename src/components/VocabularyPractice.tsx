@@ -65,7 +65,7 @@ import KanjiDetailModal from './KanjiDetailModal';
 import PitchAccentDisplay from './PitchAccentDisplay';
 import { SelectiveFuriganaWord } from './JapaneseFuriganaText';
 import VocabListItemCard from './VocabListItemCard';
-import { playCorrectSound, playIncorrectSound, speakJapanese, playTangoClip } from '../utils/audio';
+import { playCorrectSound, playIncorrectSound, speakJapanese, playTangoClip, preloadTangoClips } from '../utils/audio';
 import { TANGO_SPLIT_CLIPS, TANGO_CLIP_NUMBERS } from '../data/tangoN4AudioClips';
 import { useAuth } from '../contexts/AuthContext';
 import { safeFetchJson } from '../utils/safeApi';
@@ -2083,6 +2083,10 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     if (speakTimer.current !== null) clearTimeout(speakTimer.current);
     speakTimer.current = window.setTimeout(() => setSpeakingText(null), 8000); // safety net if no end event fires
   };
+  useEffect(() => {
+    const n = currentItem?.curriculum === 'tango' ? currentItem.originalNumber : undefined;
+    if (n && TANGO_CLIP_NUMBERS.has(n)) preloadTangoClips(n, TANGO_SPLIT_CLIPS.has(n));
+  }, [currentItem]);
   const handleSpeak = useCallback((text: string, isSentence?: boolean, sourceItem: VocabularyItem | undefined = currentItem) => {
     if (!text.trim()) return;
     const matchesExample = !!sourceItem?.exampleSentence?.trim() && text.trim() === sourceItem.exampleSentence.trim();
