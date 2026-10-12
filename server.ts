@@ -23,7 +23,7 @@ import { db, pool, withDbRetry } from './src/db/index';
 import { GRAMMAR_SYSTEM_PROMPT, buildGrammarContentUserPrompt } from './src/prompts/grammarContentPrompt';
 import { lessons, vocabularies, grammars, kanjis, users } from './src/db/schema';
 import { VOCABULARY_DATA, GRAMMAR_DATA, KANJI_DATA, TANGO_N4_VOCABULARY } from './src/data';
-import { synthesizeAzureSpeech } from './src/server/azureTts';
+import { synthesizeAzureSpeech, ttsParams } from './src/server/azureTts';
 import { shadowingTranscript, shadowingAnalyze } from './src/server/shadowing';
 import { shadowingVideo } from './src/server/shadowingStore';
 import { shadowingPrepare } from './src/server/shadowingPrepare';
@@ -1187,16 +1187,6 @@ export async function generateGeminiContentWithFallback(options: {
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
-
-// Edge-TTS parameters come straight from the client: cap the text and allow only well-formed voice/rate/pitch.
-function ttsParams(text: unknown, voice: unknown, rate: unknown, pitch: unknown) {
-  const t = String(text ?? '').trim();
-  if (t.length > 600) return null;
-  const v = /^[a-z]{2}-[A-Z]{2}-\w{2,30}Neural$/.test(String(voice)) ? String(voice) : 'ja-JP-NanamiNeural';
-  const r = /^[+-]\d{1,3}%$/.test(String(rate)) ? String(rate) : '+0%';
-  const p = /^[+-]\d{1,3}Hz$/.test(String(pitch)) ? String(pitch) : '+0Hz';
-  return { text: t, voice: v, rate: r, pitch: p };
-}
 
 // 1.1 API: Microsoft Azure Neural Text-To-Speech (NanamiNeural 👩 & KeitaNeural 👨)
 app.get("/api/tts", async (req, res) => {

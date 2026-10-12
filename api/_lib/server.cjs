@@ -20655,6 +20655,14 @@ async function synthesizeAzureSpeech(text2, voice = "ja-JP-NanamiNeural", rateRa
     throw error;
   }
 }
+function ttsParams(text2, voice, rate, pitch) {
+  const t = String(text2 ?? "").trim();
+  if (t.length > 600) return null;
+  const v = /^[a-z]{2}-[A-Z]{2}-\w{2,30}Neural$/.test(String(voice)) ? String(voice) : "ja-JP-NanamiNeural";
+  const r = /^[+-]\d{1,3}%$/.test(String(rate)) ? String(rate) : "+0%";
+  const p = /^[+-]\d{1,3}Hz$/.test(String(pitch)) ? String(pitch) : "+0Hz";
+  return { text: t, voice: v, rate: r, pitch: p };
+}
 
 // src/server/shadowing.ts
 var import_youtube_transcript = require("youtube-transcript");
@@ -25360,14 +25368,6 @@ async function generateGeminiContentWithFallback(options) {
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", timestamp: (/* @__PURE__ */ new Date()).toISOString() });
 });
-function ttsParams(text2, voice, rate, pitch) {
-  const t = String(text2 ?? "").trim();
-  if (t.length > 600) return null;
-  const v = /^[a-z]{2}-[A-Z]{2}-\w{2,30}Neural$/.test(String(voice)) ? String(voice) : "ja-JP-NanamiNeural";
-  const r = /^[+-]\d{1,3}%$/.test(String(rate)) ? String(rate) : "+0%";
-  const p = /^[+-]\d{1,3}Hz$/.test(String(pitch)) ? String(pitch) : "+0Hz";
-  return { text: t, voice: v, rate: r, pitch: p };
-}
 app.get("/api/tts", async (req, res) => {
   try {
     const q = ttsParams(req.query.text, req.query.voice, req.query.rate, req.query.pitch);

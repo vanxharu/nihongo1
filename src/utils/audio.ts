@@ -700,8 +700,8 @@ function speakSingle(
     try {
       current = new Audio(url);
       audio = current;
-      // A hung /api/tts never fires error: give up after 6s without playback and fall back.
-      const stall = setTimeout(() => { if (audio === current && current!.paused) fail(); }, 6000);
+      // A hung /api/tts never fires error: give up after 10s without playback and fall back.
+      const stall = setTimeout(() => { if (audio === current && current!.paused) fail(); }, 10000);
       const clear = () => clearTimeout(stall);
       current.addEventListener('playing', clear, { once: true });
       current.addEventListener('error', clear, { once: true });

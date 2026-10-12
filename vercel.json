@@ -5,6 +5,7 @@
     { "source": "/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }] }
   ],
   "functions": {
+    "api/tts.ts": { "maxDuration": 30 },
     "api/reading/generate.ts": { "maxDuration": 60 },
     "api/reading/sync.ts": { "maxDuration": 60 },
     "api/reading/todai/*.ts": { "maxDuration": 60 },
@@ -21,7 +22,7 @@
       "destination": "https://nihongo-fd01e.firebaseapp.com/__/auth/$1"
     },
     {
-      "source": "/api/((?!reading/(?:generate$|sync$|todai/|watanoc/)|shadowing/(?:video|transcript|analyze|prepare)$).*)",
+      "source": "/api/((?!reading/(?:generate$|sync$|todai/|watanoc/)|shadowing/(?:video|transcript|analyze|prepare)$|tts$).*)",
       "destination": "/api/server"
     },
     {

@@ -124,3 +124,14 @@ export async function synthesizeAzureSpeech(
 export const synthesizeNanamiSpeech = (text: string, rate: string = '+0%', pitch: string = '+0Hz') => 
   synthesizeAzureSpeech(text, 'ja-JP-NanamiNeural', rate, pitch);
 
+
+// Edge-TTS parameters come straight from the client: cap the text and allow only well-formed voice/rate/pitch.
+export function ttsParams(text: unknown, voice: unknown, rate: unknown, pitch: unknown) {
+  const t = String(text ?? '').trim();
+  if (t.length > 600) return null;
+  const v = /^[a-z]{2}-[A-Z]{2}-\w{2,30}Neural$/.test(String(voice)) ? String(voice) : 'ja-JP-NanamiNeural';
+  const r = /^[+-]\d{1,3}%$/.test(String(rate)) ? String(rate) : '+0%';
+  const p = /^[+-]\d{1,3}Hz$/.test(String(pitch)) ? String(pitch) : '+0Hz';
+  return { text: t, voice: v, rate: r, pitch: p };
+}
+
