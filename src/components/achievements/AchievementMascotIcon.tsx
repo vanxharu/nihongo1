@@ -62,6 +62,27 @@ function Glyph({ metric }: { metric: string }) {
   }
 }
 
+// Real mascot poses in /mascot/shiba-journey-atlas.webp (5 cols x 4 rows):
+// 0 book+wave 1 writing 2 headphones 3 reading 4 thinking 5 cheer 6 thumbs-up 7 question 8 trophy 9 flag
+// 10 calligraphy 11 cards 12 puzzle 13 running 14 crown 15 hooray 16 sleepy 17 sakura 18 Fuji explorer 19 zen
+// Ten poses per achievement track, ordered by rank: the mascot's gesture changes as the goal gets harder.
+const TRACK_POSES: Record<string, number[]> = {
+  days: [16, 0, 4, 6, 17, 13, 18, 5, 8, 14],
+  streak: [4, 13, 6, 15, 5, 18, 19, 8, 9, 14],
+  vocab: [0, 3, 2, 11, 1, 6, 5, 17, 8, 14],
+  kanji: [4, 1, 3, 10, 6, 11, 5, 8, 19, 14],
+  grammar: [7, 4, 3, 12, 1, 11, 6, 5, 8, 14],
+  tests: [7, 1, 11, 3, 4, 6, 13, 5, 8, 14],
+  perfect: [4, 7, 6, 5, 15, 13, 17, 18, 8, 14],
+  roadmap: [13, 9, 18, 17, 6, 5, 15, 19, 8, 14],
+  notebook: [1, 0, 3, 11, 4, 2, 6, 19, 8, 14],
+  xp: [0, 6, 5, 15, 13, 18, 17, 8, 19, 14],
+};
+const TRACK_TINT: Record<string, string> = {
+  days: '#ffe3c2', streak: '#ffd2b0', vocab: '#d9e8ff', kanji: '#ffd9dc', grammar: '#dfe0ff',
+  tests: '#d6f1e4', perfect: '#fff0b8', roadmap: '#d6efff', notebook: '#e6dcff', xp: '#ffeaa8',
+};
+
 function fmt(n: number) {
   if (n >= 1000000) return `${n / 1000000}M`;
   if (n >= 1000) return `${n / 1000}K`;
@@ -72,29 +93,48 @@ export const AchievementMascotIcon: React.FC<MascotIconProps> = ({
   isUnlocked, size = 64, className = '', badgeNumber, tier = 0, metric = 'days', rank, threshold,
 }) => {
   const r = Math.max(0, Math.min(9, rank ?? tier));
-  const [light, dark, face] = PALETTES[r];
+  const [light, dark] = PALETTES[r];
   const frame = FRAMES[r % 5];
-  const gid = `bg-${metric}-${r}`;
-  // rank pips along the top: rank+1 small dots
-  const pips = Array.from({ length: r + 1 }, (_, i) => {
-    const total = r + 1;
-    const x = 50 + (i - (total - 1) / 2) * Math.min(7, 40 / total);
-    return <circle key={i} cx={x} cy="9" r="2.2" fill={dark} stroke="#fff" strokeWidth="0.8" />;
+  const pose = (TRACK_POSES[metric] || TRACK_POSES.days)[r];
+  const col = pose % 5, row = Math.floor(pose / 5);
+  const CW = 1402 / 5, CH = 1122 / 4, pad = 6;
+  const uid = `${metric}-${r}`;
+  const tint = TRACK_TINT[metric] || '#fff';
+  const stars = r >= 3 ? Math.min(5, r - 1) : 0;
+  const starEls = Array.from({ length: stars }, (_, i) => {
+    const a = Math.PI * (1.15 + (0.7 * i) / Math.max(1, stars - 1 || 1));
+    const x = 50 + 44 * Math.cos(stars === 1 ? Math.PI * 1.5 : a), y = 54 + 44 * Math.sin(stars === 1 ? Math.PI * 1.5 : a);
+    return <path key={i} transform={`translate(${x} ${y}) scale(.34)`} d="M0-9l2.6 6 6.4.6-4.9 4.2 1.5 6.3L0 4.7-5.6 8l1.5-6.3-4.9-4.2 6.4-.6Z" fill="#ffd45e" stroke="#b9770e" strokeWidth="1.4" />;
   });
+  const sparkles = r >= 1 ? [[16, 28], [84, 24], [90, 52], [10, 52], [78, 12]].slice(0, Math.min(5, r + 1)).map(([x, y], i) => (
+    <path key={i} transform={`translate(${x} ${y}) scale(${0.5 + (i % 2) * 0.25})`} d="M0-7C1 -2 2-1 7 0 2 1 1 2 0 7-1 2-2 1-7 0-2-1-1-2 0-7Z" fill="#fff" stroke={dark} strokeWidth="1" />
+  )) : null;
   return (
     <div className={`badge-emblem relative inline-flex items-center justify-center select-none ${isUnlocked ? '' : 'badge-locked'} ${className}`} style={{ width: size, height: size }}>
-      <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={`Huy hiệu ${badgeNumber ?? ''}`} className="badge-illustration" style={{ filter: isUnlocked ? 'none' : 'grayscale(.85) opacity(.6)', display: 'block' }}>
+      <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={`Huy hiệu ${badgeNumber ?? ''}`} className="badge-illustration" style={{ filter: isUnlocked ? 'none' : 'grayscale(.9) opacity(.55)', display: 'block', overflow: 'visible' }}>
         <defs>
-          <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={light} /><stop offset="1" stopColor={dark} /></linearGradient>
+          <linearGradient id={`g-${uid}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={light} /><stop offset="1" stopColor={dark} /></linearGradient>
+          <radialGradient id={`b-${uid}`} cx=".5" cy=".4" r=".7"><stop offset="0" stopColor="#fff" /><stop offset="1" stopColor={tint} /></radialGradient>
+          <clipPath id={`c-${uid}`}><path d={frame} transform="translate(7 7) scale(.86)" /></clipPath>
         </defs>
-        <path d={frame} fill={`url(#${gid})`} />
-        <g transform="translate(9 9) scale(.82)"><path d={frame} fill={face} stroke="#fff" strokeWidth="2" /></g>
-        <g transform="translate(18 14) scale(.64)"><Glyph metric={metric} /></g>
-        {pips}
+        {r >= 8 && <g opacity=".5" stroke={dark} strokeWidth="2">{Array.from({ length: 12 }, (_, i) => <line key={i} x1="50" y1="50" x2={50 + 62 * Math.cos((i * Math.PI) / 6)} y2={50 + 62 * Math.sin((i * Math.PI) / 6)} />)}</g>}
+        <path d={frame} fill={`url(#g-${uid})`} />
+        <path d={frame} transform="translate(7 7) scale(.86)" fill={`url(#b-${uid})`} />
+        <g clipPath={`url(#c-${uid})`}>
+          <g opacity=".22" transform="translate(52 6) scale(.5)"><Glyph metric={metric} /></g>
+          <svg x="12" y="6" width="76" height="76" viewBox={`${col * CW + pad} ${row * CH + pad} ${CW - 2 * pad} ${CH - 2 * pad}`} preserveAspectRatio="xMidYMid meet">
+            <image href="/mascot/shiba-journey-atlas.webp" width="1402" height="1122" />
+          </svg>
+        </g>
+        <path d={frame} transform="translate(7 7) scale(.86)" fill="none" stroke="#fff" strokeWidth="1.6" />
+        {r >= 6 && <g fill="none" stroke={dark} strokeWidth="2.6" strokeLinecap="round"><path d="M14 70c-8-10-8-26-2-38" /><path d="M86 70c8-10 8-26 2-38" /></g>}
+        {starEls}
+        {sparkles}
+        <g transform="translate(5 56)"><circle cx="15" cy="15" r="15" fill="#fff" stroke={dark} strokeWidth="2" /><g transform="translate(3 3) scale(.24)"><Glyph metric={metric} /></g></g>
         {threshold !== undefined && (
           <g>
-            <rect x="26" y="74" width="48" height="16" rx="8" fill={dark} stroke="#fff" strokeWidth="1.5" />
-            <text x="50" y="86" textAnchor="middle" fontSize="11" fontWeight="900" fill="#fff" fontFamily="sans-serif">{threshold === 0 ? 'START' : fmt(threshold)}</text>
+            <rect x="28" y="80" width="44" height="16" rx="8" fill={dark} stroke="#fff" strokeWidth="1.5" />
+            <text x="50" y="92" textAnchor="middle" fontSize="11" fontWeight="900" fill="#fff" fontFamily="sans-serif">{threshold === 0 ? 'START' : fmt(threshold)}</text>
           </g>
         )}
       </svg>

@@ -719,10 +719,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const [levelFilter, setLevelFilter] = useState<string>(() => {
     if (initialLevel) return initialLevel;
     if (!user) return 'N4';
-    const pos = userProfile?.lastPosition;
-    if (pos?.tab === 'vocabulary' && pos.level) {
-      return pos.level;
-    }
+    // The saved target level wins; a lastPosition from another level must not override it.
     return userProfile?.targetLevel || 'N4';
   });
 
@@ -761,11 +758,11 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       if (lvlA !== lvlB) return lvlA - lvlB;
 
       if (selectedCurriculum === 'tango') {
-        const chA = parseInt(a.lessonId?.match(/ch(\d+)/)?.[1] || '0', 10);
-        const chB = parseInt(b.lessonId?.match(/ch(\d+)/)?.[1] || '0', 10);
+        const chA = parseInt(a.lessonId?.match(/(?:ch|_c)(\d+)/)?.[1] || '0', 10);
+        const chB = parseInt(b.lessonId?.match(/(?:ch|_c)(\d+)/)?.[1] || '0', 10);
         if (chA !== chB) return chA - chB;
-        const secA = parseInt(a.lessonId?.match(/sec(\d+)/)?.[1] || '0', 10);
-        const secB = parseInt(b.lessonId?.match(/sec(\d+)/)?.[1] || '0', 10);
+        const secA = parseInt(a.lessonId?.match(/(?:sec|_s)(\d+)/)?.[1] || '0', 10);
+        const secB = parseInt(b.lessonId?.match(/(?:sec|_s)(\d+)/)?.[1] || '0', 10);
         if (secA !== secB) return secA - secB;
         return (a.originalNumber || 0) - (b.originalNumber || 0);
       }
@@ -843,11 +840,11 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       const levelB = levelOrder[b.level] || 99;
       if (levelA !== levelB) return levelA - levelB;
       if (selectedCurriculum === 'tango') {
-        const chA = parseInt(a.id.match(/ch(\d+)/)?.[1] || '0', 10);
-        const chB = parseInt(b.id.match(/ch(\d+)/)?.[1] || '0', 10);
+        const chA = parseInt(a.id.match(/(?:ch|_c)(\d+)/)?.[1] || '0', 10);
+        const chB = parseInt(b.id.match(/(?:ch|_c)(\d+)/)?.[1] || '0', 10);
         if (chA !== chB) return chA - chB;
-        const secA = parseInt(a.id.match(/sec(\d+)/)?.[1] || '0', 10);
-        const secB = parseInt(b.id.match(/sec(\d+)/)?.[1] || '0', 10);
+        const secA = parseInt(a.id.match(/(?:sec|_s)(\d+)/)?.[1] || '0', 10);
+        const secB = parseInt(b.id.match(/(?:sec|_s)(\d+)/)?.[1] || '0', 10);
         return secA - secB;
       }
       if (a.lessonNumber !== null && b.lessonNumber !== null) {
@@ -926,7 +923,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       return;
     }
 
-    const pos = userProfile?.lastPosition?.tab === 'vocabulary' ? userProfile.lastPosition : null;
+    const pos = userProfile?.lastPosition?.tab === 'vocabulary' && (!userProfile.lastPosition.level || userProfile.lastPosition.level === userProfile.targetLevel)
+      ? userProfile.lastPosition : null;
 
     if (pos) {
       if (pos.level && pos.level !== levelFilter) {
@@ -963,9 +961,11 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
 
   // When targetLevel manually changes
   const prevTargetLevelRef = useRef(userProfile.targetLevel);
+  const skipPositionSaveRef = useRef(false);
   useEffect(() => {
     if (prevTargetLevelRef.current !== userProfile.targetLevel) {
       prevTargetLevelRef.current = userProfile.targetLevel;
+      skipPositionSaveRef.current = true;
       setIsSrsReviewActive(false);
       setLevelFilter(userProfile.targetLevel);
       const levelPrefix = userProfile.targetLevel.toLowerCase() + '_';
@@ -986,6 +986,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   // Save the last selected lesson ID and sync learning position (for authenticated users)
   useEffect(() => {
     if (!user || !isRestoredRef.current) return;
+    // Right after a target-level change the lesson is still from the old level; don't save it.
+    if (skipPositionSaveRef.current) { skipPositionSaveRef.current = false; return; }
     if (currentLesson && currentLesson.id && currentLesson.id !== 'SRS_REVIEW' && currentLesson.id !== 'default') {
       const currentLevel = currentLesson.level || levelFilter || userProfile.targetLevel;
       localStorage.setItem(`last_lesson_id_${currentLevel}`, currentLesson.id);
