@@ -14,7 +14,7 @@ import { ExamHistoryModal } from '../ExamHistoryModal';
 import { getExamHistory } from '../../utils/examHistoryStorage';
 import LottieIcon from '../LottieIcon';
 import flameAnim from '../../assets/lottie/flame.json';
-import successAnim from '../../assets/lottie/success.json';
+import shibaSmileAnim from '../../assets/lottie/shiba-smile.json'; // LottieFiles "Smiling Dog" by Margarita Ivanchikova (Lottie Simple License)
 import ShibaMascot from '../mascot/ShibaMascot';
 import { GRAMMAR_DATA, KANJI_DATA } from '../../data';
 
@@ -85,7 +85,7 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
             <circle cx="36" cy="36" r={R} fill="none" stroke="#f43f5e" strokeWidth="7" strokeLinecap="round" strokeDasharray={`${(weekCount / 7) * C} ${C}`} />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
-            {weekCount >= 7 ? <LottieIcon data={successAnim} size={26} loop={false} /> : weekCount > 0 && <LottieIcon data={flameAnim} size={22} className="-mb-0.5" />}
+            {weekCount >= 7 ? <LottieIcon data={shibaSmileAnim} size={30} /> : weekCount > 0 && <LottieIcon data={flameAnim} size={22} className="-mb-0.5" />}
             <span className="text-sm font-black">{weekCount}/7</span>
             <span className="text-[9px] text-slate-400 mt-0.5">tuần này</span>
           </div>
