@@ -841,7 +841,7 @@ export const TANGO_N3_VOCABULARY: VocabularyItem[] = [
     "id": "tango_n3_46",
     "chapter": "Phần 1: 人と人との関係 (Quan hệ giữa người với người)",
     "lessonId": "tango_n3_c1_s2",
-    "kanji": "別々〈な〉",
+    "kanji": "別々(な)",
     "hiragana": "べつべつ",
     "meaning": "sự khác nhau, riêng biệt (riêng lẻ)",
     "exampleSentence": "親友とは別々の大学に進んだ。 / これは別々に入れてください。",
