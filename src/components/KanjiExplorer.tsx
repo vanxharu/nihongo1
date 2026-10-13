@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { KanjiItem, UserProfile, JLPTLevel } from '../types';
-import { KANJI_DATA } from '../data';
+import { KANJI_DATA, VOCABULARY_DATA } from '../data';
 import { useAuth } from '../contexts/AuthContext';
 import PitchAccentDisplay from './PitchAccentDisplay';
 import { playCorrectSound, playIncorrectSound } from '../utils/audio';
@@ -45,9 +45,33 @@ interface KanjiExplorerProps {
   onEarnXp: (amount: number) => void;
 }
 
+// Bổ sung từ ghép cho mỗi chữ Hán từ kho từ vựng Tango (N5/N4/N3) có sẵn.
+const MIN_KANJI_WORDS = 5;
+let kanjiWordIndex: Map<string, { word: string; hiragana: string; meaning: string }[]> | null = null;
+function withVocabWords(char: string, level: string, base: { word: string; hiragana: string; meaning: string }[] = []) {
+  if (!kanjiWordIndex) {
+    kanjiWordIndex = new Map();
+    for (const v of VOCABULARY_DATA) {
+      if (!v.kanji || v.kanji === v.hiragana) continue;
+      for (const ch of new Set(v.kanji)) {
+        if (!/[\u4e00-\u9fff]/.test(ch)) continue;
+        const list = kanjiWordIndex.get(ch) || [];
+        list.push({ word: v.kanji, hiragana: v.hiragana, meaning: v.meaning });
+        kanjiWordIndex.set(ch, list);
+      }
+    }
+  }
+  if (base.length >= MIN_KANJI_WORDS) return base;
+  const seen = new Set(base.map(w => w.word));
+  const extra = (kanjiWordIndex.get(char) || [])
+    .filter(w => !seen.has(w.word) && !/[（(～〜]/.test(w.word))
+    .sort((a, b) => a.word.length - b.word.length);
+  return [...base, ...extra].slice(0, 8);
+}
+
 export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: KanjiExplorerProps) {
   const { token, user } = useAuth();
-  const [dbKanjis, setDbKanjis] = useState<KanjiItem[]>(KANJI_DATA);
+  const [dbKanjis, setDbKanjis] = useState<KanjiItem[]>(() => KANJI_DATA.map(k => ({ ...k, exampleWords: withVocabWords(k.character, k.level, k.exampleWords) })));
   const [loading, setLoading] = useState(false);
 
   // Edit Kanji Modal State
@@ -233,7 +257,7 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
             kunyomi: k.kunyomi || 'Chưa cập nhật',
             strokesCount: strokesCount,
             level: level,
-            exampleWords: exampleWords,
+            exampleWords: withVocabWords(k.kanji, level, exampleWords),
             mnemonic: mnemonic,
             exampleSentence: exampleSentence,
             exampleTranslation: exampleTranslation
