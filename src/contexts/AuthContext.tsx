@@ -466,7 +466,8 @@ const parseDbUser = (dbData: any): UserProfile => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${idToken}`
-        }
+        },
+        signal: AbortSignal.timeout(8000) // a hung server must not keep the header on "Đang kiểm tra..." forever
       });
       const contentType = syncResponse.headers.get('content-type') || '';
       if (syncResponse.ok && contentType.includes('application/json')) {
