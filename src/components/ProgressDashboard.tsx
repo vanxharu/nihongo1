@@ -14,6 +14,7 @@ import { safeFetchJson } from "../utils/safeApi";
 import {
   catalogProgress,
   practiceProjection,
+  scorePrediction,
   studyCalendar,
   validPracticeResult,
 } from "../utils/progressInsights";
@@ -121,6 +122,8 @@ export default function ProgressDashboard({
     correct = recent.reduce((n, t) => n + t.score, 0);
   const accuracy = total ? Math.round((correct / total) * 100) : null;
   const projection = practiceProjection(history, level);
+  const mastery = skills.reduce((n, k) => n + k.percent, 0) / (skills.length * 100);
+  const pred = scorePrediction(history, level, mastery);
   const calendar = studyCalendar(profile.studyDays || [], new Date(), range);
   const learnedDays = calendar.filter((d) => d.active).length;
   const earned = calculateUnlockedAchievements(profile);
@@ -342,61 +345,45 @@ export default function ProgressDashboard({
           /* ── Prediction view ── */
           <section className="pd-card">
             <h2 className="pd-card-title">Dự đoán điểm {level}</h2>
-            {projection.ready ? (
-              <>
-                <div className="pd-score-hero">
-                  <div className="pd-score-num">
-                    {projection.score}
-                    <span className="pd-score-denom">/ 180</span>
-                  </div>
-                  <div>
-                    <div className="pd-score-range">
-                      {projection.low}–{projection.high} điểm tham khảo
-                    </div>
-                    <div className="pd-muted" style={{ fontSize: "11px", marginTop: "4px" }}>
-                      Từ {projection.examCount} đề gần nhất trong 90 ngày
-                    </div>
-                  </div>
+            <div className="pd-score-hero">
+              <div className="pd-score-num">{pred.score}<span className="pd-score-denom">/ 180</span></div>
+              <div>
+                <div className="pd-score-range">{pred.low}–{pred.high} điểm (khoảng tin cậy ~80%)</div>
+                <div className="pd-muted" style={{ fontSize: "11px", marginTop: "4px" }}>
+                  Xác suất đạt (≥{pred.passTotal} điểm, mỗi phần đủ điểm liệt): <strong>{pred.passProbability}%</strong>
                 </div>
-                <div className="pd-sections-grid">
-                  {projection.sections.map((s) => (
-                    <div className="pd-section-card" key={s.name}>
-                      <div className="pd-muted" style={{ fontSize: "11px" }}>{s.name}</div>
-                      <div className="pd-section-score">
-                        {Math.round(s.rate * s.max)}
-                        <span className="pd-muted" style={{ fontSize: "13px" }}> / {s.max}</span>
-                      </div>
-                      <div className="pd-track" style={{ marginTop: "8px" }}>
-                        <div
-                          className="pd-track-fill"
-                          style={{ width: `${s.rate * 100}%` }}
-                        />
-                      </div>
-                      <div className="pd-muted" style={{ fontSize: "9px", marginTop: "5px" }}>
-                        {s.correct}/{s.total} câu · {Math.floor(s.low * s.max)}–{Math.ceil(s.high * s.max)}
-                      </div>
-                    </div>
-                  ))}
+                <div className="pd-muted" style={{ fontSize: "11px", marginTop: "4px" }}>
+                  Độ tin cậy: {pred.confidence} · {pred.examCount} đề đầy đủ · phủ nội dung {Math.round(pred.mastery * 100)}%
+                  {pred.trendPerWeek !== null && <> · xu hướng {pred.trendPerWeek >= 0 ? "+" : ""}{pred.trendPerWeek} điểm/tuần</>}
                 </div>
-              </>
-            ) : (
+              </div>
+            </div>
+            <div className="pd-sections-grid">
+              {pred.sections.map((s) => (
+                <div className="pd-section-card" key={s.name}>
+                  <div className="pd-muted" style={{ fontSize: "11px" }}>{s.name}</div>
+                  <div className="pd-section-score">{Math.round(s.score)}<span className="pd-muted" style={{ fontSize: "13px" }}> / {s.max}</span></div>
+                  <div className="pd-track" style={{ marginTop: "8px" }}><div className="pd-track-fill" style={{ width: `${s.rate * 100}%` }} /></div>
+                  <div className="pd-muted" style={{ fontSize: "9px", marginTop: "5px" }}>{Math.round(s.low)}–{Math.round(s.high)} điểm</div>
+                </div>
+              ))}
+            </div>
+            {pred.examCount < 3 && (
               <div className="pd-not-enough">
                 <div className="pd-not-enough-icon">📊</div>
                 <div>
-                  <div className="pd-not-enough-title">Chưa đủ dữ liệu</div>
+                  <div className="pd-not-enough-title">Dự đoán còn dựa nhiều vào mức độ đã học</div>
                   <p className="pd-muted" style={{ marginTop: "6px", lineHeight: 1.7 }}>
-                    Đã có {projection.examCount}/3 đề đủ điều kiện. Cần 3 đề {level} khác nhau trong 90 ngày, đủ phần và ít nhất 40 câu mỗi đề.
+                    Làm thêm đề {level} đầy đủ (đủ 3 phần) để tăng độ chính xác. {pred.weakest ? `Phần yếu nhất hiện tại: ${pred.weakest}.` : ""}
                   </p>
-                  <Link to={`/jlpt/${level}`} className="pd-cta-link">
-                    Làm thêm đề {level} <ArrowRight size={13} />
-                  </Link>
+                  <Link to={`/jlpt/${level}`} className="pd-cta-link">Làm thêm đề {level} <ArrowRight size={13} /></Link>
                 </div>
               </div>
             )}
             <div className="pd-model-note">
               <strong>Hiểu đúng con số này</strong>
               <p className="pd-muted">
-                Quy đổi tuyến tính tỷ lệ đúng theo thang 180 — không phải mô hình hiệu chuẩn. Điểm JLPT chính thức được chuẩn hóa, không tính trực tiếp bằng số câu đúng.{" "}
+                Ước lượng thống kê từ đề bạn đã làm (đề mới được tính nặng hơn), kết hợp mức độ nội dung đã luyện; không phải điểm chính thức. Điểm JLPT chính thức được chuẩn hóa, không tính trực tiếp bằng số câu đúng.{" "}
                 <a
                   href="https://www.jlpt.jp/e/guideline/results.html"
                   target="_blank"

@@ -11,6 +11,7 @@ import { UserProfile, JLPTLevel } from './types';
 import { useAuth } from './contexts/AuthContext';
 import AuthModal from './components/AuthModal';
 import LearningMotion from './components/LearningMotion';
+import StreakCelebration from './components/StreakCelebration';
 import LottieIcon from './components/LottieIcon';
 import astronautAnim from './assets/lottie/shiba-astronaut.json'; // LottieFiles "Astronaut Dog" by Margarita Ivanchikova (Lottie Simple License)
 import { ParticleCelebration, ParticleCelebrationRef } from './components/ParticleCelebration';
@@ -554,6 +555,7 @@ export default function App() {
       : justCompleted ? 'Đủ 50 XP hôm nay! Shiba vẫy đuôi ăn mừng 🐕'
       : bonusXp > 0 ? `Có thêm ${bonusXp} XP thưởng chuỗi ngày! 🐾` : '';
     window.dispatchEvent(new CustomEvent('nihongo:xp-earned', { detail: { amount: totalXp, message } }));
+    if (justCompleted) window.dispatchEvent(new CustomEvent('nihongo:streak-up', { detail: { streak: updatedStreak } }));
     if (justCompleted) {
       setTimeout(() => {
         const el = document.getElementById('header-stat-goal');
@@ -901,6 +903,7 @@ export default function App() {
 
       <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
       <LearningMotion />
+      <StreakCelebration />
 
       {/* Scroll to Top Button */}
       <AnimatePresence>

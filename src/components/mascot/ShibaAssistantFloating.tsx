@@ -96,20 +96,26 @@ export default function ShibaAssistantFloating({
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastFeedbackLine = useRef<Partial<Record<ShibaFeedbackKind, string>>>({});
   const latestXp = useRef({ amount: 0, time: 0 });
+  const pendingFeedback = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     setFeedback('');
     const handle = (event: Event) => {
       const kind = (event as CustomEvent).detail?.kind;
       if (!['correct', 'incorrect', 'milestone'].includes(kind)) return;
       if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
-      setFeedback(kind); setIsDismissed(false);
-      setCurrentPose(kind === 'incorrect' ? 'warning' : kind === 'milestone' ? 'celebration' : 'encourage');
-      const feedbackKind = kind as ShibaFeedbackKind;
-      const lines = SHIBA_FEEDBACK_LINES[feedbackKind].filter(line => line !== lastFeedbackLine.current[feedbackKind]);
-      const line = lines[Math.floor(Math.random() * lines.length)];
-      lastFeedbackLine.current[feedbackKind] = line;
-      setBubbleText(Date.now() - latestXp.current.time < 1200 && kind !== 'incorrect' ? `+${latestXp.current.amount} XP · ${line}` : line);
-      feedbackTimer.current = setTimeout(() => { setFeedback(''); setIsDismissed(true); }, 2600);
+      if (pendingFeedback.current) clearTimeout(pendingFeedback.current);
+      // Chờ ngắn để sự kiện XP (nếu có) đến cùng lúc → chỉ hiện MỘT bong bóng, không chồng nhau.
+      pendingFeedback.current = setTimeout(() => {
+        pendingFeedback.current = null;
+        setFeedback(kind); setIsDismissed(false);
+        setCurrentPose(kind === 'incorrect' ? 'warning' : kind === 'milestone' ? 'celebration' : 'encourage');
+        const feedbackKind = kind as ShibaFeedbackKind;
+        const lines = SHIBA_FEEDBACK_LINES[feedbackKind].filter(line => line !== lastFeedbackLine.current[feedbackKind]);
+        const line = lines[Math.floor(Math.random() * lines.length)];
+        lastFeedbackLine.current[feedbackKind] = line;
+        setBubbleText(Date.now() - latestXp.current.time < 1200 && kind !== 'incorrect' ? `+${latestXp.current.amount} XP · ${line}` : line);
+        feedbackTimer.current = setTimeout(() => { setFeedback(''); setIsDismissed(true); }, 2600);
+      }, 250);
     };
     window.addEventListener('nihongo:learning-feedback', handle);
     const handleXp = (event: Event) => {
@@ -117,6 +123,7 @@ export default function ShibaAssistantFloating({
       if (!Number.isFinite(amount) || amount <= 0) return;
       latestXp.current = { amount, time: Date.now() };
       if (feedbackTimer.current) clearTimeout(feedbackTimer.current);
+      if (pendingFeedback.current) { clearTimeout(pendingFeedback.current); pendingFeedback.current = null; }
       const lines = SHIBA_FEEDBACK_LINES.correct.filter(line => line !== lastFeedbackLine.current.correct);
       const line = lines[Math.floor(Math.random() * lines.length)];
       lastFeedbackLine.current.correct = line;
@@ -125,7 +132,7 @@ export default function ShibaAssistantFloating({
       feedbackTimer.current = setTimeout(() => { setFeedback(''); setIsDismissed(true); }, 4200);
     };
     window.addEventListener('nihongo:xp-earned', handleXp);
-    return () => { window.removeEventListener('nihongo:learning-feedback', handle); window.removeEventListener('nihongo:xp-earned', handleXp); if (feedbackTimer.current) clearTimeout(feedbackTimer.current); };
+    return () => { window.removeEventListener('nihongo:learning-feedback', handle); window.removeEventListener('nihongo:xp-earned', handleXp); if (feedbackTimer.current) clearTimeout(feedbackTimer.current); if (pendingFeedback.current) clearTimeout(pendingFeedback.current); };
   }, [currentTab]);
 
   // Synchronize pose based on current tab
