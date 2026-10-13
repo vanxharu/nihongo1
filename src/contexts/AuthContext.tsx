@@ -6,6 +6,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signInWithRedirect,
+  getRedirectResult,
   User,
   onAuthStateChanged,
   updateProfile as firebaseUpdateProfile
@@ -292,11 +293,12 @@ const parseDbUser = (dbData: any): UserProfile => {
     clearAuthError();
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
+    const started = Date.now();
     try {
       await signInWithPopup(auth, provider);
     } catch (err: any) {
-      // Popup blocked by the browser: continue with a full-page redirect instead of failing.
-      if (err?.code === 'auth/popup-blocked') {
+      // Popup blocked, or closed within 3s (browsers that cut the popup<->page channel): full-page redirect instead.
+      if (err?.code === 'auth/popup-blocked' || (err?.code === 'auth/popup-closed-by-user' && Date.now() - started < 3000)) {
         try { sessionStorage.setItem('auth_return_url', location.pathname + location.search); } catch { /* ignore */ }
         await signInWithRedirect(auth, provider);
         return;
@@ -528,6 +530,10 @@ const parseDbUser = (dbData: any): UserProfile => {
     let isMounted = true;
     setAuthStatus('INITIALIZING');
 
+    getRedirectResult(auth).catch((e) => {
+      console.error('[AUTH] Redirect sign-in failed:', e?.code, e?.message);
+      if (isMounted) setLastAuthError({ code: e?.code || 'auth/redirect-failed', message: 'Đăng nhập Google thất bại.' });
+    });
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!isMounted) return;
 
