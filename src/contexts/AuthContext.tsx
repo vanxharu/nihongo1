@@ -5,6 +5,7 @@ import {
   signOut,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
   User,
   onAuthStateChanged,
   updateProfile as firebaseUpdateProfile
@@ -291,7 +292,17 @@ const parseDbUser = (dbData: any): UserProfile => {
     clearAuthError();
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: 'select_account' });
-    await signInWithPopup(auth, provider);
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (err: any) {
+      // Popup blocked by the browser: continue with a full-page redirect instead of failing.
+      if (err?.code === 'auth/popup-blocked') {
+        try { sessionStorage.setItem('auth_return_url', location.pathname + location.search); } catch { /* ignore */ }
+        await signInWithRedirect(auth, provider);
+        return;
+      }
+      throw err;
+    }
   };
 
   const login = async (identifier: string, pass: string) => {
