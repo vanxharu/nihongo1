@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { UserProfile, GrammarItem, JLPTLevel } from '../types';
 import { GRAMMAR_DATA } from '../data';
 import { safeFetchJson } from '../utils/safeApi';
@@ -46,6 +46,16 @@ export default function GrammarPractice({
     initialLessonNumber || (userProfile.targetLevel === 'N5' ? 1 : 26)
   );
   const [selectedGrammar, setSelectedGrammar] = useState<GrammarItem | null>(null);
+
+  // Follow the profile's target level when it changes elsewhere (settings/profile)
+  const prevTargetRef = useRef(userProfile.targetLevel);
+  useEffect(() => {
+    if (prevTargetRef.current === userProfile.targetLevel) return;
+    prevTargetRef.current = userProfile.targetLevel;
+    setSelectedLevel(userProfile.targetLevel as JLPTLevel);
+    setSelectedLessonNumber(userProfile.targetLevel === 'N5' ? 1 : 26);
+    setSelectedGrammar(null);
+  }, [userProfile.targetLevel]);
 
   // Sync external initialViewMode or initialLessonNumber when props change
   useEffect(() => {

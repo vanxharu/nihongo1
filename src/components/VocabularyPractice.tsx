@@ -718,7 +718,6 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   // Level filter state - initialized from last saved position if authenticated
   const [levelFilter, setLevelFilter] = useState<string>(() => {
     if (initialLevel) return initialLevel;
-    if (!user) return 'N4';
     // The saved target level wins; a lastPosition from another level must not override it.
     return userProfile?.targetLevel || 'N4';
   });

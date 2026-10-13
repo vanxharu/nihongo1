@@ -53,6 +53,7 @@ import ShibaMascot from './components/mascot/ShibaMascot';
 
 import { localDateStr } from './utils/localDate';
 const LOCAL_STORAGE_KEY = 'nhai_kanji_user_profile_v1';
+const GUEST_STORAGE_KEY = 'nhai_kanji_guest_profile_v1';
 
 const DEFAULT_PROFILE: UserProfile = {
   name: 'Khách',
@@ -210,8 +211,13 @@ export default function App() {
         }
       }
     } else {
-      // Unauthenticated guest starts with clean 0 state at root vocabulary
-      setUserProfile(DEFAULT_PROFILE);
+      // Guest: restore the locally saved guest progress (never the signed-in profile)
+      let guest = DEFAULT_PROFILE;
+      try {
+        const g = localStorage.getItem(GUEST_STORAGE_KEY);
+        if (g) guest = { ...DEFAULT_PROFILE, ...JSON.parse(g) };
+      } catch { /* corrupt guest data: start clean */ }
+      setUserProfile(guest);
     }
 
     // Initialize daily goal tracking from localStorage
@@ -237,14 +243,15 @@ export default function App() {
   // Save profile to localStorage whenever it updates
   const saveProfile = (newProfile: UserProfile) => {
     setUserProfile(newProfile);
-    if (user) {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newProfile));
-    }
+    try {
+      localStorage.setItem(user ? LOCAL_STORAGE_KEY : GUEST_STORAGE_KEY, JSON.stringify(newProfile));
+    } catch { /* storage full/blocked: keep in-memory only */ }
   };
 
   const activeProfile = useMemo<UserProfile>(() => {
     if (!user && !dbUser) {
-      return DEFAULT_PROFILE;
+      // Guests learn with their own local profile; never any elevated role.
+      return { ...userProfile, role: 'user' as const };
     }
     const activeProfileRaw = dbUser || userProfile;
     // STRICT RBAC: Role is authoritatively determined ONLY by the verified database record (dbUser).
