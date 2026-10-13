@@ -1006,12 +1006,13 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
   const renderExamCard = (exam: DailyExam) => {
     const questions = lobbyPracticeMode === 'ALL' ? exam.questions : exam.questions.filter(q => q.section === lobbyPracticeMode);
     const minutes = lobbyPracticeMode === 'ALL' ? exam.durationMinutes : Math.round(getSectionStandardDuration(lobbyPracticeMode, exam.level) / 60);
-    return <article key={exam.id} className="study-exam-card">
+    return <article key={exam.id} className="study-exam-card" data-level={exam.level}>
       {exam.thumbnailUrl && <img src={exam.thumbnailUrl} alt={exam.title} className="w-full h-28 object-cover object-top rounded-t-xl mb-2 -mx-0" style={{marginTop:'-0px'}} />}
-      <div className="study-exam-card-top"><span className="study-level">JLPT {exam.level}</span><small>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</small></div>
+      <div className="study-exam-card-top"><span className="study-level">{exam.level}</span><small>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</small></div>
       <h3>{exam.title}</h3>
       <div className="study-exam-spec"><span><FileText size={15} />{questions.length} câu</span><span><Clock size={15} />{minutes} phút</span></div>
-      <div className="study-exam-skills">{(['moji-goi','bunpou','dokkai','choukai'] as const).map(section => { const n = exam.questions.filter(q => q.section === section).length; return n > 0 && <span key={section}>{JLPT_SECTION_METAS[section].shortName} · {n}</span>; })}</div>
+      <div className="study-exam-mix" aria-hidden="true">{(['moji-goi','bunpou','dokkai','choukai'] as const).map(section => { const n = exam.questions.filter(q => q.section === section).length; return n > 0 && <i key={section} data-s={section} style={{flexGrow:n}} />; })}</div>
+      <div className="study-exam-skills">{(['moji-goi','bunpou','dokkai','choukai'] as const).map(section => { const n = exam.questions.filter(q => q.section === section).length; return n > 0 && <span key={section}><i data-s={section} />{JLPT_SECTION_METAS[section].shortName} {n}</span>; })}</div>
       <div className="study-exam-actions"><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}>Bắt đầu luyện <span aria-hidden="true">↗</span></button><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'booklet_pdf')}>Đề giấy</button></div>
     </article>;
   };
@@ -1168,65 +1169,22 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
           ) : (
             /* TAB 3: EXAM LIBRARY (KHO ĐỀ THI JLPT) */
             <div className="space-y-3 animate-fade-in">
-              <div className="study-filter-panel space-y-4">
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
-                  <div className="relative flex-1">
-                    <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    <input
-                      aria-label="Tìm đề thi"
-                      type="text"
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      placeholder="Tìm kiếm đề thi..."
-                      className="w-full pl-8 pr-6 py-1.5 text-xs border border-slate-700/80 rounded-xl focus:outline-none focus:border-indigo-500 bg-slate-950/60 text-slate-200 placeholder:text-slate-500"
-                    />
-                    {searchQuery && (
-                      <button
-                        onClick={() => setSearchQuery('')}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs cursor-pointer"
-                      >
-                        ✕
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="flex items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 shrink-0 overflow-x-auto">
-                    {['ALL', 'N5', 'N4', 'N3', 'N2', 'N1'].map(lvl => (
-                      <button
-                        key={lvl}
-                        onClick={() => setSelectedLevel(lvl)}
-                        className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap ${
-                          selectedLevel === lvl
-                            ? 'bg-indigo-600 text-white shadow-xs'
-                            : 'text-slate-400 hover:text-slate-200'
-                        }`}
-                      >
-                        {lvl === 'ALL' ? 'Tất cả' : lvl}
-                      </button>
-                    ))}
-                  </div>
+              <div className="study-filter-panel">
+                <label className="study-search">
+                  <Search size={16} aria-hidden="true" />
+                  <input aria-label="Tìm đề thi" type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Tìm đề theo tên, năm, kỳ thi…" />
+                  {searchQuery && <button type="button" aria-label="Xóa tìm kiếm" onClick={() => setSearchQuery('')}>✕</button>}
+                </label>
+                <div className="study-chip-row" role="group" aria-label="Trình độ">
+                  {['ALL', 'N5', 'N4', 'N3', 'N2', 'N1'].map(lvl => <button key={lvl} type="button" aria-pressed={selectedLevel === lvl} onClick={() => setSelectedLevel(lvl)}>{lvl === 'ALL' ? 'Mọi cấp' : lvl}</button>)}
                 </div>
-
-                <div className="flex items-center gap-2 pt-2 border-t border-slate-800 text-xs overflow-x-auto">
-                  <span className="text-slate-400 font-medium text-[11px] shrink-0">Phân loại:</span>
+                <div className="study-chip-row" role="group" aria-label="Loại đề">
                   {[
-                    { id: 'ALL', label: 'Tất cả đề' },
+                    { id: 'ALL', label: 'Tất cả' },
                     { id: 'official_past', label: 'Đề có sẵn' },
-                    { id: 'mock_daily', label: 'Đề thi thử' },
-                    { id: 'ai_generated', label: 'Đề do AI soạn' }
-                  ].map(cat => (
-                    <button
-                      key={cat.id}
-                      onClick={() => setSelectedCategory(cat.id as any)}
-                      className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer whitespace-nowrap text-xs ${
-                        selectedCategory === cat.id
-                          ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/50'
-                          : 'bg-slate-800/50 text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-                      }`}
-                    >
-                      {cat.label}
-                    </button>
-                  ))}
+                    { id: 'mock_daily', label: 'Thi thử' },
+                    { id: 'ai_generated', label: 'AI soạn' }
+                  ].map(cat => <button key={cat.id} type="button" aria-pressed={selectedCategory === cat.id} onClick={() => setSelectedCategory(cat.id as any)}>{cat.label}</button>)}
                 </div>
               </div>
 

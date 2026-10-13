@@ -37,6 +37,7 @@ const Kaiwa = lazyWithRetry(() => import('./components/Kaiwa'));
 const AdminPanel = lazyWithRetry(() => import('./components/AdminPanel'));
 const JapaneseAiChat = lazyWithRetry(() => import('./components/JapaneseAiChat'));
 const AiReadingPractice = lazyWithRetry(() => import('./components/AiReadingPractice'));
+const MyBooks = lazyWithRetry(() => import('./components/MyBooks'));
 const NotebookManager = lazyWithRetry(() => import('./components/NotebookManager'));
 const DictionaryLookup = lazyWithRetry(() => import('./components/DictionaryLookup'));
 const HandwritingPractice = lazyWithRetry(() => import('./components/HandwritingPractice'));
@@ -747,6 +748,8 @@ export default function App() {
 
       {/* Trang Bài học Minna đã gỡ: chuyển về Tango */}
       <Route path="/bai-hoc" element={<Navigate to="/tango" replace />} />
+
+      <Route path="/sach" element={<MyBooks />} />
 
       {/* 17. Luyện viết */}
       <Route 

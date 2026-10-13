@@ -27,6 +27,7 @@ export const APP_ROUTES = {
   PROGRESS: '/xep-hang',
   DICTIONARY: '/tu-dien',
   HANDWRITING: '/luyen-viet',
+  BOOKS: '/sach',
   PROFILE: '/tai-khoan',
   SETTINGS: '/cai-dat',
   ADMIN: '/admin'
@@ -51,6 +52,7 @@ export const TAB_TO_ROUTE_MAP: Record<string, string> = {
   progress: APP_ROUTES.PROGRESS,
   dictionary: APP_ROUTES.DICTIONARY,
   handwriting: APP_ROUTES.HANDWRITING,
+  books: APP_ROUTES.BOOKS,
   profile: APP_ROUTES.PROFILE,
   settings: APP_ROUTES.SETTINGS,
   admin: APP_ROUTES.ADMIN,
@@ -82,6 +84,7 @@ export const ROUTE_TO_TAB_MAP: Record<string, string> = {
   '/tu-dien': 'dictionary',
   '/dictionary': 'dictionary',
   '/luyen-viet': 'handwriting',
+  '/sach': 'books',
   '/handwriting': 'handwriting',
   '/tai-khoan': 'profile',
   '/profile': 'profile',
