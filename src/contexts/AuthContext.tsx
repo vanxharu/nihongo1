@@ -165,6 +165,7 @@ const parseDbUser = (dbData: any): UserProfile => {
 
   const syncProfile = async () => {
     if (!auth.currentUser) return;
+    chosenTargetRef.current = undefined; // server value is authoritative on (re)login
     try {
       const idToken = await auth.currentUser.getIdToken(false);
       setToken(idToken);
@@ -229,8 +230,11 @@ const parseDbUser = (dbData: any): UserProfile => {
 
   // Only the newest save may overwrite state; an older, slower response would revert fields (e.g. targetLevel back to N4).
   const profileSeqRef = useRef(0);
+  // Latest target level the user picked; a concurrent save's response may carry a stale value from before it was written.
+  const chosenTargetRef = useRef<string | undefined>(undefined);
   const updateDbProfileWithToken = async (activeToken: string, updatedFields: Partial<UserProfile>): Promise<UserProfile | null> => {
     const seq = ++profileSeqRef.current;
+    if (updatedFields.targetLevel) chosenTargetRef.current = updatedFields.targetLevel;
     // Optimistically update local state first
     let optimisticProfile: UserProfile | null = null;
     setDbUser((prev) => {
@@ -260,7 +264,7 @@ const parseDbUser = (dbData: any): UserProfile => {
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.user) {
-          const parsed = { ...parseDbUser(data.user), ...updatedFields };
+          const parsed = { ...parseDbUser(data.user), ...(chosenTargetRef.current && { targetLevel: chosenTargetRef.current as any }), ...updatedFields };
           if (seq !== profileSeqRef.current) return parsed;
           setDbUser(parsed);
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
