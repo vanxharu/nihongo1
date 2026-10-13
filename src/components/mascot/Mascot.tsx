@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import './mascotMotion.css';
 import { authHeaders } from '../../utils/authHeaders';
 
 export type MascotState = 
@@ -51,6 +52,14 @@ export function getMascotPoseIndex(pose: string): number {
   return poses[pose] ?? 0;
 }
 
+const MOTION_BY_STATE: Record<string, string> = {
+  celebration: 'hop', celebrating: 'hop', success: 'hop', joy: 'hop', achievement: 'hop', 'level-up': 'hop', trophy: 'hop',
+  thinking: 'sway', curious: 'sway', listening: 'bop', walking: 'walk', adventure: 'walk', flag: 'bop',
+  studying: 'breathe', learning: 'breathe', reading: 'breathe', typing: 'breathe',
+  warning: 'shake', empty: 'shake', empty_state: 'shake', wrong_answer: 'shake',
+};
+const IDLE_GESTURE_STATES = new Set(['default', 'idle', 'welcome', 'waving', 'encourage', 'winking']);
+
 export const Mascot: React.FC<MascotProps> = ({
   id,
   state,
@@ -72,6 +81,59 @@ export const Mascot: React.FC<MascotProps> = ({
   const [hasError, setHasError] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
+
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [override, setOverride] = useState<number | null>(null); // temporary gesture frame
+  const [clicked, setClicked] = useState(0);
+  const [sparks, setSparks] = useState<number[]>([]);
+  const basePose = getMascotPoseIndex(activeState);
+  const poseIdx = override ?? basePose;
+  const motion = MOTION_BY_STATE[activeState] || 'idle';
+
+  // Occasional wink / hello gesture while idle
+  useEffect(() => {
+    if (!animated || !IDLE_GESTURE_STATES.has(activeState)) return;
+    if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
+    let t1: number, t2: number;
+    const loop = () => {
+      t1 = window.setTimeout(() => {
+        if (!document.hidden) setOverride(basePose === 6 ? 5 : 6);
+        t2 = window.setTimeout(() => { setOverride(null); loop(); }, 1000);
+      }, 4500 + Math.random() * 4500);
+    };
+    loop();
+    return () => { clearTimeout(t1); clearTimeout(t2); setOverride(null); };
+  }, [animated, activeState, basePose]);
+
+  // Head/body subtly follows the pointer (desktop only)
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!animated || !el || typeof window === 'undefined') return;
+    if (!window.matchMedia?.('(hover: hover) and (pointer: fine)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let raf = 0;
+    const onMove = (e: PointerEvent) => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = el.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) / 400;
+        const dy = (e.clientY - (r.top + r.height / 2)) / 400;
+        el.style.setProperty('--mx', String(Math.max(-1, Math.min(1, dx))));
+        el.style.setProperty('--my', String(Math.max(-1, Math.min(1, dy))));
+      });
+    };
+    window.addEventListener('pointermove', onMove, { passive: true });
+    return () => { window.removeEventListener('pointermove', onMove); cancelAnimationFrame(raf); };
+  }, [animated]);
+
+  const handleClick = () => {
+    if (animated) {
+      setClicked(c => c + 1);
+      setOverride(5);
+      setSparks(Array.from({ length: 4 }, (_, i) => Date.now() + i));
+      window.setTimeout(() => { setOverride(null); setSparks([]); }, 900);
+    }
+    onClick?.();
+  };
 
   // Dimension mapping
   const pxSize = typeof size === 'number' 
@@ -128,6 +190,7 @@ export const Mascot: React.FC<MascotProps> = ({
   return (
     <div 
       id={id || `mascot-${String(activeState).toLowerCase()}`}
+      ref={rootRef}
       className={`relative inline-flex flex-col items-center select-none group ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -154,7 +217,7 @@ export const Mascot: React.FC<MascotProps> = ({
 
       {/* Main Mascot Visual Container */}
       <div 
-        onClick={onClick}
+        onClick={animated || onClick ? handleClick : undefined}
         className={`relative flex items-center justify-center cursor-pointer transition-transform duration-300 ${
           onClick ? 'hover:scale-105 active:scale-95' : ''
         }`}
@@ -168,16 +231,17 @@ export const Mascot: React.FC<MascotProps> = ({
         )}
 
         {/* The Official Nihon Shiba Mascot Image Asset */}
-        <div className={`relative z-10 w-full h-full flex items-center justify-center ${
-          animated ? 'hover:rotate-2 transition-transform' : ''
-        }`}>
+        {animated && <span className="mascot-shadow" aria-hidden />}
+        {sparks.map((k, i) => <span key={k} className="mascot-spark" style={{ left: `${30 + i * 14}%`, top: '20%', ['--dx' as any]: `${(i - 1.5) * 10}px` }} aria-hidden>{['✨', '🌸', '⭐', '✨'][i]}</span>)}
+        <div className={`relative z-10 w-full h-full flex items-center justify-center`}>
+          <div key={clicked} className={`mascot-motion ${animated ? `mascot-m-${motion}` : ''} ${clicked ? 'mascot-clicked' : ''}`}><div className={`mascot-look ${animated ? "mascot-enter" : ""}`}>
           {!hasError ? (
-            <span className={`shiba-sprite-window ${animated ? 'is-animated' : ''} shiba-pose-${getMascotPoseIndex(activeState)}`} style={{ position:'relative', display:'block', width:'100%', height:'100%', overflow:'hidden' }}><img
+            <span className={`shiba-sprite-window ${animated ? 'is-animated' : ''} shiba-pose-${poseIdx}`} style={{ position:'relative', display:'block', width:'100%', height:'100%', overflow:'hidden' }}><img
               src={imgSrc}
               decoding="async"
               alt={alt}
               className={animated ? 'shiba-sprite-image' : ''}
-              style={imgSrc === '/mascot/shiba-journey-atlas.webp' ? { position:'absolute', width:'500%', height:'400%', maxWidth:'none', left:`${-(getMascotPoseIndex(activeState) % 5) * 100}%`, top:`${-Math.floor(getMascotPoseIndex(activeState) / 5) * 100}%`, objectFit:'fill' } : { width:'100%', height:'100%', objectFit:'contain' }}
+              style={imgSrc === '/mascot/shiba-journey-atlas.webp' ? { position:'absolute', width:'500%', height:'400%', maxWidth:'none', left:`${-(poseIdx % 5) * 100}%`, top:`${-Math.floor(poseIdx / 5) * 100}%`, objectFit:'fill' } : { width:'100%', height:'100%', objectFit:'contain' }}
               onError={handleImageError}
               referrerPolicy="no-referrer"
             /></span>
@@ -189,7 +253,7 @@ export const Mascot: React.FC<MascotProps> = ({
               referrerPolicy="no-referrer"
             />
           )}
-        </div>
+        </div></div></div>
 
         {/* Optional Upload / Sync Helper */}
         {showUploadOption && (
