@@ -1,3 +1,4 @@
+import HeartLike from './ui/HeartLike';
 import React, { useMemo } from 'react';
 import { Star, Volume2, CheckSquare, Square, Plus, ArrowLeftRight, Equal, Info } from 'lucide-react';
 import { VocabularyItem } from '../types';
@@ -312,14 +313,7 @@ function VocabListItemCardComponent({
           </div>
           {/* Action Buttons */}
           <div className="flex flex-row sm:flex-col items-center gap-0.5 sm:gap-2 shrink-0 sm:pt-1 ml-auto">
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onToggleStar(v.id); }}
-              className={`p-1 rounded cursor-pointer ${isWordStarred ? 'text-amber-400' : 'text-slate-400 hover:text-amber-400'}`}
-              title={isWordStarred ? 'Bỏ yêu thích' : 'Yêu thích'}
-            >
-              <Star className={`w-4 h-4 ${isWordStarred ? 'fill-current' : ''}`} />
-            </button>
+            <span onClick={(e) => e.stopPropagation()}><HeartLike size={32} className="text-slate-400" pressed={!!isWordStarred} onToggle={(e) => { e.stopPropagation(); onToggleStar(v.id); }} label={isWordStarred ? 'Bỏ yêu thích' : 'Yêu thích'} /></span>
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onSpeak(v.kanji || v.hiragana, false); }}

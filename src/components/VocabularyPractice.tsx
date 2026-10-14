@@ -6,6 +6,7 @@
 import { useParams } from 'react-router-dom';
 import { calculateSRS } from '../utils/srs';
 import { maskVocabularyInExample } from '../utils/vocabularyCloze';
+import HeartLike from './ui/HeartLike';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Volume2, 
@@ -2968,13 +2969,7 @@ if (loading) {
               </>
             )}
 
-            <button 
-              onClick={() => currentItem && toggleStar(currentItem.id)}
-              className={`p-1 sm:p-1.5 rounded-lg sm:rounded-xl border transition-all cursor-pointer shrink-0 ${isStarred[currentItem?.id || ''] ? 'bg-amber-950/80 border-amber-400 text-amber-400' : 'bg-[#1a1f33]/90 border-[#343d5f] text-slate-300 hover:text-white hover:bg-[#2b3353]'}`}
-              title={isStarred[currentItem?.id || ''] ? 'Bỏ lưu' : 'Lưu từ vựng'}
-            >
-              <Star className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isStarred[currentItem?.id || ''] ? 'fill-amber-400' : ''}`} />
-            </button>
+            <HeartLike size={34} className="shrink-0 text-slate-300" pressed={!!isStarred[currentItem?.id || '']} onToggle={() => currentItem && toggleStar(currentItem.id)} label={isStarred[currentItem?.id || ''] ? 'Bỏ lưu' : 'Lưu từ vựng'} />
             <button
               onClick={() => setShowOptions(prev => !prev)}
               className={`p-1 sm:p-1.5 rounded-lg sm:rounded-xl border transition-all cursor-pointer shrink-0 ${
@@ -3162,9 +3157,7 @@ if (loading) {
           {selectedMode === 'flashcard' && currentItem && (
             <div className="vocab-flashcard-block w-full min-w-0 bg-[#242b45] border border-[#343d5f] rounded-lg overflow-hidden shadow-md">
               <div className="vocab-flashcard-face relative">
-                <button type="button" onClick={() => toggleStar(currentItem.id)} aria-label={isStarred[currentItem.id] ? 'Bỏ lưu từ vựng' : 'Lưu từ vựng'} aria-pressed={!!isStarred[currentItem.id]} title={isStarred[currentItem.id] ? 'Bỏ lưu' : 'Lưu từ vựng'} className="vocab-flashcard-star absolute top-3 right-3 z-20 p-2 text-slate-400 hover:text-amber-400 rounded-lg">
-                  <Star className={`w-4 h-4 ${isStarred[currentItem.id] ? 'fill-amber-400 text-amber-400' : ''}`} />
-                </button>
+                <HeartLike size={40} className="vocab-flashcard-star absolute top-2 right-2 z-20 text-slate-400" pressed={!!isStarred[currentItem.id]} onToggle={() => toggleStar(currentItem.id)} label={isStarred[currentItem.id] ? 'Bỏ lưu từ vựng' : 'Lưu từ vựng'} />
                 <button type="button" onClick={handlePrev} aria-label="Thẻ trước" title="Thẻ trước (←)" className="vocab-flashcard-arrow vocab-flashcard-arrow-prev absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-[#1a1f33]/90 text-slate-400 hover:text-white p-2"><ChevronLeft className="w-4 h-4" /></button>
                 <button type="button" onClick={handleNext} aria-label="Thẻ tiếp theo" title="Thẻ tiếp theo (→)" className="vocab-flashcard-arrow vocab-flashcard-arrow-next absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-[#1a1f33]/90 text-slate-400 hover:text-white p-2"><ChevronRight className="w-4 h-4" /></button>
               {/* Main Card Flip Area - Fixed Height so it never changes size when flipping */}
