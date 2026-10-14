@@ -70,6 +70,7 @@ const EXAM_ROASTS = [
 
 export const renderFormattedQuestion = (text: string) => {
   if (!text) return '';
+  text = text.replace(/[（(][\s\u3000]*[）)]/g, '＿＿＿＿'); // ô trống ( ) → gạch ngang
   // Split using heavy brackets 【 】 or square brackets [ ] as the target highlights
   const parts = text.split(/([【\[][^】\]]+[】\]])/g);
   return (
