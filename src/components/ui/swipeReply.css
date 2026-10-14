@@ -1,0 +1,24 @@
+/* Lucian UX/UI Prompt #078 · MIT License (c) 2026 Seokwoooo — màu --ux-* map sang theme của app */
+.u078-m{--ux-ease:cubic-bezier(.2,.8,.2,1);--ux-spring:cubic-bezier(.34,1.45,.64,1);position:relative;display:flex;align-items:center;touch-action:pan-y;min-width:0}
+.u078-bub{position:relative;z-index:1;min-width:0;transition:transform .4s var(--ux-spring);user-select:none;-webkit-user-select:none}
+.u078-m.drag .u078-bub{transition:none}
+.u078-rep{position:absolute;left:6px;top:50%;width:26px;height:26px;margin-top:-13px;border-radius:50%;display:grid;place-items:center;background:rgba(51,65,85,.9);color:#cbd5e1;opacity:var(--ro,0);transform:scale(calc(.5 + var(--ro,0) * .5))}
+.u078-rep svg,.u078-rb svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.u078-rep.full{background:#3b82f6;color:#fff}
+.u078-rb{width:28px;height:28px;flex:none;margin:0 4px;border:0;padding:0;border-radius:50%;display:grid;place-items:center;background:none;color:#94a3b8;opacity:0;cursor:pointer;transition:opacity .2s,background-color .2s}
+.u078-m:hover .u078-rb,.u078-rb:focus-visible{opacity:1}
+.u078-rb:hover{background:rgba(51,65,85,.9);color:#fff}
+.u078-rb:focus-visible{outline:2px solid #3b82f6;outline-offset:1px}
+@media (hover:none){.u078-rb{display:none}}
+.u078-q{display:block;margin:-2px -4px 6px;padding:6px 8px;border-radius:10px;background:color-mix(in srgb,currentColor 12%,transparent);font-size:12px;line-height:1.35;opacity:.85;border-left:3px solid currentColor}
+.u078-reply{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ux-ease,cubic-bezier(.2,.8,.2,1))}
+.u078-reply.on{grid-template-rows:1fr}
+.u078-reply>div{min-height:0;overflow:hidden}
+.u078-rbox{display:flex;align-items:center;gap:10px;margin:0 12px;padding:8px 6px 8px 12px;border-radius:14px 14px 0 0;background:rgba(30,41,59,.9);border-left:3px solid #3b82f6}
+.u078-rbox span{flex:1;min-width:0;font-size:12.5px;line-height:1.35;color:#cbd5e1}
+.u078-rbox span b{display:block;font-size:11.5px;color:#60a5fa}
+.u078-rbox span em{display:block;font-style:normal;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u078-rx{width:26px;height:26px;border:0;padding:0;border-radius:50%;display:grid;place-items:center;background:none;color:#94a3b8;cursor:pointer}
+.u078-rx svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round}
+.u078-rx:focus-visible{outline:2px solid #3b82f6}
+@media (prefers-reduced-motion:reduce){.u078-bub,.u078-reply{transition-duration:.001ms!important}}

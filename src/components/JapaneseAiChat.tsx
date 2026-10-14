@@ -1,5 +1,7 @@
 import './aiChat.css';
 import AutoGrowInput from './ui/AutoGrowInput';
+import SwipeReply from './ui/SwipeReply';
+import './ui/swipeReply.css';
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { 
   Send, 
@@ -312,7 +314,12 @@ interface ChatMessage {
   correctionAdvice?: string;
   vietnameseTranslation?: string;
   provider?: string;
+  quote?: string;
   timestamp: string;
+}
+
+function SwipeReplyIf({ enabled, onReply, children }: { enabled: boolean; onReply: () => void; children: React.ReactNode }) {
+  return enabled ? <SwipeReply onReply={onReply}>{children}</SwipeReply> : <>{children}</>;
 }
 
 const CHAT_STORAGE_KEY = 'nhai_japanese_ai_chat_session_v2';
@@ -436,6 +443,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
     savedSession.current?.hints || initialGreeting.hints
   );
   const [inputText, setInputText] = useState<string>('');
+  const [replyTo, setReplyTo] = useState<{ text: string; who: string } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Mic state & Dynamic Audio-Frequency Visualizer (Waves)
@@ -815,12 +823,14 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
       id: Date.now(),
       sender: 'user',
       text: text.trim(),
+      quote: replyTo?.text,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
 
     const newHistory = [...messages, userMsg];
     setMessages(newHistory);
     setInputText('');
+    setReplyTo(null);
     setIsLoading(true);
     const controller = new AbortController();
     chatAbortRef.current = controller;
@@ -831,7 +841,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
         signal: controller.signal,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: newHistory.map(m => ({ sender: m.sender, text: m.text || '' })),
+          messages: newHistory.map(m => ({ sender: m.sender, text: m.quote ? `（「${m.quote}」への返信）${m.text || ''}` : (m.text || '') })),
           persona: {
             name: selectedPersona.japaneseName,
             role: selectedPersona.roleJapanese,
@@ -1191,6 +1201,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
 
                   {/* Message Bubble */}
                   <div className={`ai-message-content max-w-[85%] sm:max-w-[75%] space-y-1.5 ${isAi ? 'items-start' : 'items-end'}`}>
+                    <SwipeReplyIf enabled={isAi} onReply={() => setReplyTo({ text: m.text || '', who: selectedPersona.japaneseName })}>
                     <div
                       className={`p-3 sm:p-3.5 shadow-sm transition-all ${
                         isAi
@@ -1198,6 +1209,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                           : 'ai-bubble ai-bubble-outgoing bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl rounded-tr-xs shadow-md'
                       }`}
                     >
+                      {m.quote && <span className="u078-q">{m.quote}</span>}
                       {/* Japanese Text */}
                       <div className="text-[13.5px] sm:text-[15px] font-medium leading-relaxed font-jp">
                         {showFurigana && m.furiganaHtml ? (
@@ -1293,6 +1305,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                         </div>
                       )}
                     </div>
+                    </SwipeReplyIf>
 
                     {/* Correction Advice */}
                     {isAi && m.correctionAdvice && (
@@ -1439,6 +1452,15 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
             )}
           </AnimatePresence>
 
+          {/* Reply preview (swipe-to-reply) */}
+          <div className={`u078-reply${replyTo ? ' on' : ''}`} aria-hidden={!replyTo}>
+            <div>
+              <div className="u078-rbox">
+                <span><b>Trả lời {replyTo?.who}</b><em>{replyTo?.text}</em></span>
+                <button className="u078-rx" type="button" aria-label="Hủy trả lời" tabIndex={replyTo ? 0 : -1} onClick={() => setReplyTo(null)}><svg viewBox="0 0 12 12"><path d="M3 3l6 6M9 3L3 9" /></svg></button>
+              </div>
+            </div>
+          </div>
           {/* 5. Messenger Bottom Input Bar */}
           <footer className={`ai-composer bg-[#0F1424]/98 border-t border-slate-800/80 flex items-center gap-1.5 sm:gap-2 shrink-0 z-20 select-none transition-all duration-150 ${
             (isKeyboardOpen || isInputFocused) ? 'p-1.5 sm:p-2' : 'p-2 sm:p-2.5'
