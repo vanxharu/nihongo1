@@ -1,3 +1,4 @@
+import { PlayPauseMorph, WaveSeek } from './ui/AudioMorph';
 import StudyExperienceHero from './learning/StudyExperienceHero';
 /**
  * @license
@@ -2583,14 +2584,12 @@ export default function AiReadingPractice({
                       -5s
                     </button>
 
-                    <button
-                      type="button"
+                    <PlayPauseMorph
+                      playing={todaiAudioPlaying}
+                      progress={todaiAudioDuration ? todaiAudioCurrentTime / todaiAudioDuration : 0}
                       onClick={handleToggleTodaiAudio}
-                      className="flex items-center justify-center w-9 h-9 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/30 transition cursor-pointer shrink-0"
-                      title={todaiAudioPlaying ? 'Tạm dừng' : 'Phát giọng đọc'}
-                    >
-                      {todaiAudioPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
-                    </button>
+                      playTitle="Phát giọng đọc"
+                    />
 
                     <button
                       type="button"
@@ -2608,20 +2607,16 @@ export default function AiReadingPractice({
 
                   {/* Center: Scrubber Progress Slider */}
                   <div className="flex-1 flex items-center px-1">
-                    <input
-                      type="range"
-                      min={0}
-                      max={todaiAudioDuration || 100}
+                    <WaveSeek
                       value={todaiAudioCurrentTime}
-                      onChange={(e) => {
-                        const val = parseFloat(e.target.value);
+                      max={todaiAudioDuration}
+                      playing={todaiAudioPlaying}
+                      onSeek={(val) => {
                         if (todaiAudioRef.current) {
                           todaiAudioRef.current.currentTime = val;
                           setTodaiAudioCurrentTime(val);
                         }
                       }}
-                      className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500 hover:accent-emerald-400 transition"
-                      title="Kéo để tua nhanh"
                     />
                   </div>
 

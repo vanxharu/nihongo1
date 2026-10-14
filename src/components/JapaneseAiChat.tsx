@@ -1,3 +1,4 @@
+import PlaneSend from './ui/PlaneSend';
 import './aiChat.css';
 import AutoGrowInput from './ui/AutoGrowInput';
 import SwipeReply from './ui/SwipeReply';
@@ -1513,15 +1514,11 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
             </div>
 
             {/* Circular Messenger Blue Send Button */}
-            <button
-              type="button"
+            <PlaneSend
               onClick={() => handleSendMessage()}
               disabled={!inputText.trim() || isLoading || Array.from(inputText).length > 500}
-              className={`${(isKeyboardOpen || isInputFocused) ? 'w-8 h-8 sm:w-9 sm:h-9' : 'w-9 h-9 sm:w-10 sm:h-10'} rounded-full bg-blue-600 hover:bg-blue-500 disabled:opacity-30 disabled:hover:bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-blue-600/30 transition active:scale-95 cursor-pointer`}
-              title="Gửi tin nhắn"
-            >
-              <Send className="w-4 h-4 -mr-0.5" />
-            </button>
+              size={(isKeyboardOpen || isInputFocused) ? 34 : 40}
+            />
           </footer>
         </div>
       </div>

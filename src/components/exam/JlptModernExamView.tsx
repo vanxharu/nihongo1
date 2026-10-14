@@ -31,6 +31,7 @@ import {
 import { DailyExam, ExamQuestion, UserProfile } from '../../types';
 import { JLPT_SECTION_METAS, ExamSectionMode, renderFormattedQuestion } from '../DailyExamQuiz';
 import ShibaMascot from '../mascot/ShibaMascot';
+import LiquidGlassButton from '../ui/LiquidGlassButton';
 
 import { svgDataUri } from '../../utils/sanitizeHtml';
 export interface JlptModernExamViewProps {
@@ -612,21 +613,13 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
               </div>
             )}
 
-            <div className="flex items-center gap-2 pt-2">
+            <div className="flex flex-col items-center gap-1 pt-2">
+              <LiquidGlassButton label="Xác nhận nộp bài" doneLabel="Đã nộp" busyText="Đang nộp bài" onDone={() => { setIsSubmitConfirmOpen(false); onSubmit(); }} />
               <button
                 onClick={() => setIsSubmitConfirmOpen(false)}
-                className="flex-1 py-2.5 rounded-xl border border-[#EADFCF] text-[#1F2639] font-bold text-xs hover:bg-[#F4EDE2] transition cursor-pointer"
+                className="py-2 px-4 rounded-xl text-[#1F2639] font-bold text-xs hover:bg-[#F4EDE2] transition cursor-pointer"
               >
                 Quay lại làm tiếp
-              </button>
-              <button
-                onClick={() => {
-                  setIsSubmitConfirmOpen(false);
-                  onSubmit();
-                }}
-                className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#D82B3A] to-[#B91C1C] hover:opacity-95 text-white font-bold text-xs transition cursor-pointer shadow-md"
-              >
-                Xác nhận nộp bài
               </button>
             </div>
 
