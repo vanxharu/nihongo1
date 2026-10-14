@@ -1,4 +1,5 @@
 import './aiChat.css';
+import AutoGrowInput from './ui/AutoGrowInput';
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { 
   Send, 
@@ -449,7 +450,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   
   const recognitionRef = useRef<any>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
   
   const mediaStreamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -1470,41 +1471,30 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
               {isListening ? <MicOff className="w-4 h-4 text-white" /> : <Mic className="w-4 h-4" />}
             </button>
 
-            {/* Pill Input */}
+            {/* Auto-growing input with character ring */}
             <div className="flex-1 relative min-w-0">
-              <input
-                ref={inputRef}
-                type="text"
+              <AutoGrowInput
+                inputRef={inputRef}
                 value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSendMessage()}
+                onChange={setInputText}
+                onEnter={() => handleSendMessage()}
+                max={500}
+                ariaLabel="Tin nhắn tiếng Nhật"
+                placeholder={isListening ? 'Đang lắng nghe tiếng Nhật...' : 'Nhắn tin bằng tiếng Nhật (日本語)...'}
                 onFocus={() => {
                   setIsInputFocused(true);
                   setTimeout(() => scrollToBottom(false), 120);
                   setTimeout(() => scrollToBottom(true), 320);
                 }}
-                onBlur={() => {
-                  setIsInputFocused(false);
-                }}
-                aria-label="Tin nhắn tiếng Nhật" placeholder={isListening ? 'Đang lắng nghe tiếng Nhật...' : 'Nhắn tin bằng tiếng Nhật (日本語)...'}
-                className={`w-full ${(isKeyboardOpen || isInputFocused) ? 'py-1.5 px-3.5 text-xs sm:text-sm' : 'py-2 sm:py-2.5 px-4 text-xs sm:text-sm'} bg-slate-900/90 border border-slate-700/80 focus:border-blue-500 rounded-full font-medium text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-500/40 font-jp transition-all`}
+                onBlur={() => setIsInputFocused(false)}
               />
-              {inputText && (
-                <button
-                  type="button"
-                  onClick={() => setInputText('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white cursor-pointer"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
             </div>
 
             {/* Circular Messenger Blue Send Button */}
             <button
               type="button"
               onClick={() => handleSendMessage()}
-              disabled={!inputText.trim() || isLoading}
+              disabled={!inputText.trim() || isLoading || Array.from(inputText).length > 500}
               className={`${(isKeyboardOpen || isInputFocused) ? 'w-8 h-8 sm:w-9 sm:h-9' : 'w-9 h-9 sm:w-10 sm:h-10'} rounded-full bg-blue-600 hover:bg-blue-500 disabled:opacity-30 disabled:hover:bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-blue-600/30 transition active:scale-95 cursor-pointer`}
               title="Gửi tin nhắn"
             >

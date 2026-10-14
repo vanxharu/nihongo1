@@ -1,0 +1,19 @@
+/* Lucian UX/UI Prompt #028 · MIT License (c) 2026 Seokwoooo — --ux-* map sang biến theme của app */
+.u028{--ux-ease:cubic-bezier(.2,.8,.2,1);--ux-spring:cubic-bezier(.34,1.45,.64,1);position:relative;width:100%}
+.u028-box{position:relative;display:flex;align-items:flex-end;gap:8px;padding:8px 10px 8px 14px;border-radius:20px;background:rgba(15,23,42,.9);box-shadow:0 0 0 1.5px rgba(148,163,184,.25);transition:box-shadow .3s var(--ux-ease)}
+.u028-box:focus-within{box-shadow:0 0 0 2px #3b82f6,0 0 0 6px rgba(59,130,246,.18)}
+.u028-ta{display:block;flex:1;min-width:0;height:24px;min-height:24px;max-height:144px;padding:0;border:0;outline:0;resize:none;background:none;font:inherit;font-size:14px;line-height:24px;color:#fff;overflow:hidden;transition:height .25s var(--ux-ease)}
+.u028-ta::placeholder{color:rgba(148,163,184,.8)}
+.u028-ring{position:relative;flex-shrink:0;width:26px;height:26px;margin-bottom:-1px;transition:transform .45s var(--ux-spring)}
+.u028-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.u028-ring circle{fill:none;stroke-width:3}
+.u028-ring .bg{stroke:rgba(148,163,184,.25)}
+.u028-ring .fg{stroke:#3b82f6;stroke-linecap:round;stroke-dasharray:75.4;stroke-dashoffset:calc(75.4 * (1 - var(--p,0)));transition:stroke-dashoffset .3s var(--ux-ease),stroke .3s var(--ux-ease)}
+.u028-left{position:absolute;inset:0;display:grid;place-items:center;font-size:9.5px;font-weight:800;font-variant-numeric:tabular-nums;opacity:0;transition:opacity .2s}
+.u028.is-near .u028-ring{transform:scale(1.25)}
+.u028.is-near .u028-ring .fg{stroke:#f59e0b}
+.u028.is-near .u028-left{opacity:1;color:#f59e0b}
+.u028.is-over .u028-ring .fg{stroke:#f43f5e}
+.u028.is-over .u028-left{color:#f43f5e}
+.u028-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.u028,.u028 *{transition-duration:.001ms!important}}
