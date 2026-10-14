@@ -1,0 +1,18 @@
+/* Lucian UX/UI Prompt #040 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#040 — desktop (xl) only */
+.u040-tog { display: none; }
+@media (min-width: 1280px) {
+  .u040 { --ux-ease: cubic-bezier(.2,.8,.2,1); --ux-spring: cubic-bezier(.34,1.45,.64,1); width: 76px !important; transition: width .6s var(--ux-spring); overflow: hidden; }
+  .u040.is-wide { width: 256px !important; }
+  .u040-tog { position: absolute; right: -1px; top: 14px; z-index: 2; width: 28px; height: 36px; border: 0; padding: 0; border-radius: 10px 0 0 10px; background: rgba(255,255,255,.1); color: #e2e8f0; display: grid; place-items: center; cursor: pointer; opacity: 0; transition: opacity .2s; }
+  .u040:hover .u040-tog, .u040-tog:focus-visible, .u040.is-wide .u040-tog { opacity: 1; }
+  .u040-tog:focus-visible { outline: 2px solid #b7a4ff; outline-offset: -2px; }
+  .u040-tog svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; transition: transform .5s var(--ux-spring); }
+  .u040.is-wide .u040-tog svg { transform: rotate(180deg); }
+  .u040-lab { opacity: 0; transform: translateX(-8px); white-space: nowrap; transition: opacity .2s, transform .35s var(--ux-ease); }
+  .u040.is-wide .u040-lab { opacity: 1; transform: none; transition: opacity .3s var(--ux-ease), transform .5s var(--ux-spring); transition-delay: calc(.12s + var(--i, 0) * 35ms); }
+  .u040:not(.is-wide) .u040-fade { display: none; }
+  .u040:not(.is-wide) .u040-link { padding-left: 1.25rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .u040, .u040 * { transition-duration: .001ms !important; transition-delay: 0s !important; }
+}

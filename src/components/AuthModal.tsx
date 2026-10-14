@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { LogIn, UserPlus, Mail, Lock, AlertCircle, User, X, Copy, Check, ExternalLink } from 'lucide-react';
+import { LogIn, UserPlus, Mail, Lock, AlertCircle, X, Copy, Check, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import JpStudyLogo from './JpStudyLogo';
 import { useDialogFocus } from '../hooks/useDialogFocus';
+import { PasswordField, SubmitButton, SignupSteps } from './ui/AuthFx';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -14,13 +15,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const { login, loginWithGoogle, register, lastAuthError, clearAuthError } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [identifier, setIdentifier] = useState('');
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
   const [error, setError] = useState('');
   const [errorCode, setErrorCode] = useState('');
   const [loading, setLoading] = useState(false);
+  const [phase, setPhase] = useState<'idle' | 'loading' | 'ok'>('idle');
   const [copiedDomain, setCopiedDomain] = useState(false);
 
   const currentHostname = typeof window !== 'undefined' ? window.location.hostname : '';
@@ -53,57 +52,43 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     onClose();
   };
 
+  const explain = (err: any) => {
+    if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') return 'Sai thông tin đăng nhập hoặc mật khẩu. Vui lòng kiểm tra lại.';
+    if (err.code === 'auth/user-not-found') return 'Tài khoản không tồn tại. Vui lòng kiểm tra lại tên đăng nhập hoặc email.';
+    if (err.code === 'auth/email-already-in-use') return 'Email này đã được sử dụng bởi một tài khoản khác.';
+    if (err.code === 'auth/invalid-email') return 'Địa chỉ email hoặc tên đăng nhập không hợp lệ.';
+    return err.message || 'Đã xảy ra lỗi. Vui lòng thử lại.';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setErrorCode('');
-    clearAuthError();
-    setLoading(true);
-
-    if (isLogin) {
-      if (!identifier.trim() || !password) {
-        setError('Vui lòng nhập tên đăng nhập hoặc email và mật khẩu.');
-        setLoading(false);
-        return;
-      }
-    } else {
-      if (!email.trim() || !password) {
-        setError('Vui lòng nhập đầy đủ địa chỉ email và mật khẩu.');
-        setLoading(false);
-        return;
-      }
-      if (password.length < 6) {
-        setError('Mật khẩu phải dài ít nhất 6 ký tự.');
-        setLoading(false);
-        return;
-      }
+    setError(''); setErrorCode(''); clearAuthError();
+    if (!identifier.trim() || !password) {
+      setError('Vui lòng nhập tên đăng nhập hoặc email và mật khẩu.');
+      return;
     }
-
+    setPhase('loading');
     try {
-      if (isLogin) {
-        await login(identifier.trim(), password);
-      } else {
-        await register(email.trim(), password, displayName.trim() || undefined, username.trim() || undefined);
-      }
-      handleClose();
+      await login(identifier.trim(), password);
+      setPhase('ok');
+      setTimeout(handleClose, 700);
     } catch (err: any) {
       console.error(err);
-      let vietnameseMsg = 'Đã xảy ra lỗi. Vui lòng thử lại.';
-      if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
-        vietnameseMsg = 'Sai thông tin đăng nhập hoặc mật khẩu. Vui lòng kiểm tra lại.';
-      } else if (err.code === 'auth/user-not-found') {
-        vietnameseMsg = 'Tài khoản không tồn tại. Vui lòng kiểm tra lại tên đăng nhập hoặc email.';
-      } else if (err.code === 'auth/email-already-in-use') {
-        vietnameseMsg = 'Email này đã được sử dụng bởi một tài khoản khác.';
-      } else if (err.code === 'auth/invalid-email') {
-        vietnameseMsg = 'Địa chỉ email hoặc tên đăng nhập không hợp lệ.';
-      } else if (err.message) {
-        vietnameseMsg = err.message;
-      }
+      setPhase('idle');
       setErrorCode(err.code || '');
-      setError(vietnameseMsg);
-    } finally {
-      setLoading(false);
+      setError(explain(err));
+    }
+  };
+
+  const handleRegister = async (v: { username: string; displayName: string; email: string; password: string }) => {
+    clearAuthError();
+    try {
+      await register(v.email, v.password, v.displayName || undefined, v.username || undefined);
+      setTimeout(handleClose, 1400);
+      return '';
+    } catch (err: any) {
+      console.error(err);
+      return explain(err);
     }
   };
 
@@ -235,128 +220,45 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         ) : null}
 
         {/* Input Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {isLogin ? (
-            /* Login Mode: Username or Email */
-            <div>
-              <label htmlFor="auth-identifier" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                Tên đăng nhập hoặc Email
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Nhập username hoặc email..."
-                  id="auth-identifier"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
-                  required
-                  autoComplete="username"
-                />
-                {identifier.includes('@') ? (
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                ) : (
-                  <UserPlus className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                )}
-              </div>
-              <span className="text-[11px] text-slate-400 mt-1 block">
-                💡 Đăng nhập dễ dàng bằng Username (tên người dùng) hoặc Email.
-              </span>
+        {!isLogin ? (
+          <SignupSteps onSubmit={handleRegister} />
+        ) : (
+        <form onSubmit={handleSubmit} className={`space-y-4${error ? ' u062-shake' : ''}`} key={error}>
+          <div>
+            <label htmlFor="auth-identifier" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+              Tên đăng nhập hoặc Email
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Nhập username hoặc email..."
+                id="auth-identifier"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
+                required
+                autoComplete="username"
+              />
+              {identifier.includes('@') ? (
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              ) : (
+                <UserPlus className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+              )}
             </div>
-          ) : (
-            /* Register Mode: Username, Display Name, Email */
-            <>
-              <div>
-                <label htmlFor="auth-username" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Tên đăng nhập (Username)
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Ví dụ: neko_chan, minhn4..."
-                    id="auth-username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                    className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50 font-mono"
-                    required
-                    autoComplete="username"
-                  />
-                  <UserPlus className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                </div>
-                <span className="text-[11px] text-slate-400 mt-1 block">
-                  Dùng để đăng nhập sau này (viết liền không dấu, số, gạch dưới).
-                </span>
-              </div>
-
-              <div>
-                <label htmlFor="auth-display-name" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Tên hiển thị (Nickname)
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Ví dụ: Học viên Chăm chỉ"
-                    id="auth-display-name"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
-                  />
-                  <User className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="auth-email" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Địa chỉ Email
-                </label>
-                <div className="relative">
-                  <input
-                    type="email"
-                    placeholder="email@example.com"
-                    id="auth-email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
-                    required
-                    autoComplete="email"
-                  />
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                </div>
-              </div>
-            </>
-          )}
+            <span className="text-[11px] text-slate-400 mt-1 block">
+              💡 Đăng nhập dễ dàng bằng Username (tên người dùng) hoặc Email.
+            </span>
+          </div>
 
           <div>
             <label htmlFor="auth-password" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Mật khẩu</label>
-            <div className="relative">
-              <input
-                type="password"
-                id="auth-password"
-                placeholder="••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
-                required
-                minLength={6}
-                autoComplete={isLogin ? 'current-password' : 'new-password'}
-              />
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-            </div>
-            {!isLogin && (
-              <span className="text-[11px] text-slate-400 mt-1 block">
-                Tối thiểu 6 ký tự.
-              </span>
-            )}
+            <PasswordField id="auth-password" value={password} onChange={setPassword} autoComplete="current-password"
+              leading={<Lock aria-hidden="true" />} />
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-slate-600 hover:bg-slate-500 active:bg-slate-700 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-slate-600/10 cursor-pointer"
-          >
-            {loading ? 'Đang xử lý...' : isLogin ? 'Đăng nhập' : 'Tạo tài khoản'}
-          </button>
+          <SubmitButton phase={phase} label="Đăng nhập" />
         </form>
+        )}
       </motion.div>
     </div>
   );

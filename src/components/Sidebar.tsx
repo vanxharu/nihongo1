@@ -3,7 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useState } from 'react';
+import './ui/sidebarRail.css';
 import { useDialogFocus } from '../hooks/useDialogFocus';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -65,13 +66,14 @@ const SECONDARY_NAV = (unlockedCount: number, isAdmin: boolean): NavItem[] => [
 ];
 
 // ── Single nav link ──────────────────────────────────────────────────────────
-function NavLink({ item, isActive, onClick }: { item: NavItem; isActive: boolean; onClick: () => void }) {
+function NavLink({ item, isActive, onClick, index }: { item: NavItem; isActive: boolean; onClick: () => void; index: number }) {
   const Icon = item.icon;
   return (
     <Link
       to={item.path}
       onClick={onClick}
-      className={`relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group ${
+      title={item.label}
+      className={`u040-link relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group ${
         isActive
           ? 'bg-white/[0.07] text-white'
           : 'text-slate-500 hover:text-slate-200 hover:bg-white/[0.04]'
@@ -91,7 +93,7 @@ function NavLink({ item, isActive, onClick }: { item: NavItem; isActive: boolean
         size={17}
         className={`shrink-0 transition-colors ${isActive ? item.color : 'text-slate-600 group-hover:text-slate-400'}`}
       />
-      <span className={`text-[13px] leading-none font-semibold truncate flex-1 ${isActive ? 'text-white' : ''}`}>
+      <span style={{ '--i': index } as React.CSSProperties} className={`u040-lab text-[13px] leading-none font-semibold truncate flex-1 ${isActive ? 'text-white' : ''}`}>
         {item.label}
       </span>
     </Link>
@@ -101,6 +103,8 @@ function NavLink({ item, isActive, onClick }: { item: NavItem; isActive: boolean
 // ── Sidebar ──────────────────────────────────────────────────────────────────
 export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, userProfile }: SidebarProps) {
   const location = useLocation();
+  const [wide, setWide] = useState(() => { try { return localStorage.getItem('sidebar-wide') !== '0'; } catch { return true; } });
+  const toggleWide = () => setWide((w) => { try { localStorage.setItem('sidebar-wide', w ? '0' : '1'); } catch { /* ignore */ } return !w; });
   const drawerRef = useDialogFocus<HTMLElement>(isOpen, onClose);
 
   const unlockedCount = calculateUnlockedAchievements(
@@ -131,16 +135,20 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
         aria-modal={isOpen || undefined}
         aria-label="Menu điều hướng"
         id="app-sidebar"
-        className={`fixed inset-y-0 left-0 z-50 xl:static xl:flex flex-col w-64 max-w-[85vw] h-screen shrink-0 select-none transition-transform duration-300 ${
+        className={`u040${wide ? ' is-wide' : ''} fixed inset-y-0 left-0 z-50 xl:static xl:flex flex-col w-64 max-w-[85vw] h-screen shrink-0 select-none transition-transform duration-300 ${
           isOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'
         }`}
         style={{ background: '#0C0E14', borderRight: '1px solid rgba(255,255,255,0.06)' }}
       >
 
+        <button type="button" className="u040-tog" aria-expanded={wide} aria-controls="app-sidebar" aria-label={wide ? 'Thu gọn menu' : 'Mở rộng menu'} onClick={toggleWide}>
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5L10.5 8 6 12.5" /></svg>
+        </button>
+
         {/* ── Brand header ── */}
         <div className="flex items-center justify-between px-4 h-14 shrink-0"
           style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <Link to="/" onClick={onClose} className="outline-none">
+          <Link to="/" onClick={onClose} className="outline-none u040-fade">
             <JpStudyLogo size="md" dark={true} showSubtitle={true} />
           </Link>
           <span className="xl:hidden ml-auto mr-2"><ThemeToggle /></span>
@@ -156,9 +164,10 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
         {/* ── Nav ── */}
         <nav className="flex-1 overflow-y-auto px-2.5 py-3 space-y-0.5">
 
-          {PRIMARY_NAV.map(item => (
+          {PRIMARY_NAV.map((item, i) => (
             <NavLink
               key={item.id}
+              index={i}
               item={item}
               isActive={isItemActive(item)}
               onClick={() => { setCurrentTab(item.id); onClose(); }}
@@ -168,9 +177,10 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
           {/* Divider */}
           <div className="my-2 mx-1" style={{ height: 1, background: 'rgba(255,255,255,0.06)' }} />
 
-          {secondaryNav.map(item => (
+          {secondaryNav.map((item, i) => (
             <NavLink
               key={item.id}
+              index={PRIMARY_NAV.length + i}
               item={item}
               isActive={isItemActive(item)}
               onClick={() => { setCurrentTab(item.id); onClose(); }}
@@ -179,7 +189,7 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
         </nav>
 
         {/* ── Shiba chat card ── */}
-        <div className="px-2.5 pb-2">
+        <div className="px-2.5 pb-2 u040-fade">
           <Link
             to="/chat-ai"
             onClick={() => { setCurrentTab('japanese-chat'); onClose(); }}
@@ -204,10 +214,10 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
         </div>
 
         {/* Windows install card */}
-        <SidebarWindowsInstallCard />
+        <div className="u040-fade"><SidebarWindowsInstallCard /></div>
 
         {/* ── Footer ── */}
-        <div className="px-2.5 pb-3 pt-2 shrink-0"
+        <div className="u040-fade px-2.5 pb-3 pt-2 shrink-0"
           style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="flex items-center justify-between px-3 py-2 rounded-xl"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
