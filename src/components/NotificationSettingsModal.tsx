@@ -1,3 +1,4 @@
+import { Switch, Expand } from './ui/ExpandSwitch';
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   Bell,
@@ -336,19 +337,10 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
                 </div>
               </div>
 
-              <button
-                onClick={() => handleToggleVocabReminder(!settings.vocabEnabled)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shadow-xs ${
-                  settings.vocabEnabled
-                    ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                    : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-300'
-                }`}
-              >
-                {settings.vocabEnabled ? 'Đang Bật ✓' : 'Bật Ngay'}
-              </button>
+              <Switch checked={!!settings.vocabEnabled} onChange={(on) => handleToggleVocabReminder(on)} label="Thông báo nổi từ vựng" />
             </div>
 
-            {settings.vocabEnabled && (
+            <Expand open={!!settings.vocabEnabled}>
               <div className="space-y-3 pt-1 border-t border-indigo-100 dark:border-indigo-900/60 animate-fade-in text-left">
                 {/* 1. CURRICULUM & LESSON SOURCE SELECTION (NEW) */}
                 <div className="space-y-2 bg-indigo-50/80 dark:bg-indigo-950/40 p-3 rounded-2xl border border-indigo-200/80 dark:border-indigo-800/80">
@@ -541,7 +533,7 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
                   </label>
                 </div>
               </div>
-            )}
+            </Expand>
           </div>
 
           {/* SECTION 2: CUSTOMIZE FONT SIZE & COLOR THEME */}
@@ -970,19 +962,10 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
                 <Clock className="w-3.5 h-3.5 text-rose-500" />
                 Nhắc Học Định Kỳ Hàng Ngày:
               </label>
-              <button
-                onClick={() => handleToggleReminder(!settings.enabled)}
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer ${
-                  settings.enabled
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
-                }`}
-              >
-                {settings.enabled ? 'Đang Bật' : 'Đã Tắt'}
-              </button>
+              <Switch checked={!!settings.enabled} onChange={(on) => handleToggleReminder(on)} label="Nhắc nhở học hằng ngày" />
             </div>
 
-            {settings.enabled && (
+            <Expand open={!!settings.enabled}>
               <div className="space-y-2 pt-1 animate-fade-in">
                 <div className="flex items-center gap-3">
                   <input 
@@ -1012,7 +995,7 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
                   ))}
                 </div>
               </div>
-            )}
+            </Expand>
           </div>
 
           {/* SECTION 4: WINDOWS BACKGROUND NOTIFICATION GUIDE */}

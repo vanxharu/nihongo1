@@ -1,0 +1,13 @@
+/* Lucian UX/UI Prompt #023 · MIT License (c) 2026 Seokwoooo — màu --ux-* map sang theme của app */
+.u023-sw{--ux-ease:cubic-bezier(.2,.8,.2,1);--ux-spring:cubic-bezier(.34,1.45,.64,1);position:relative;width:52px;height:32px;flex:none;border:0;padding:0;border-radius:999px;cursor:pointer;background:rgba(148,163,184,.4);transition:background-color .4s var(--ux-ease)}
+.u023-sw::after{content:"";position:absolute;left:3px;top:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 6px -1px rgba(0,0,0,.3);transition:transform .5s var(--ux-spring),width .25s var(--ux-ease)}
+.u023-sw:active::after{width:32px}
+.u023-sw[aria-checked="true"]{background:#119C72}
+.u023-sw[aria-checked="true"]::after{transform:translateX(20px)}
+.u023-sw[aria-checked="true"]:active::after{transform:translateX(14px)}
+.u023-sw:focus-visible{outline:2px solid #6A57F2;outline-offset:3px}
+.u023-sw:disabled{opacity:.5;cursor:not-allowed}
+.u023-more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s cubic-bezier(.2,.8,.2,1)}
+.u023-more.is-open{grid-template-rows:1fr}
+.u023-more>div{overflow:hidden;min-height:0}
+@media (prefers-reduced-motion:reduce){.u023-sw,.u023-sw::after,.u023-more{transition-duration:.001ms!important}}
