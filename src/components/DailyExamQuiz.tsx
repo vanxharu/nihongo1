@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { Link } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   FileText, 
@@ -1000,6 +1001,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
         { id: 'pdf_practice', title: 'Đề PDF của bạn', note: 'Tải đề và luyện trên trang giấy', icon: FileText }
       ].map(item => <button key={item.id} type="button" aria-pressed={mainTab === item.id} onClick={() => { setMainTab(item.id as typeof mainTab); setShowPdfPractice(item.id === 'pdf_practice'); setSelectedCategory(item.id === 'ai_builder' ? 'ai_generated' : 'ALL'); }}><span className="study-nav-icon"><item.icon size={20} /></span><span><strong>{item.title}</strong><small>{item.note}</small></span></button>)}
     </nav>
+    <Link to="/sach" className="study-books-link">📚 Sách của tôi: mở Soumatome N4 và các sách PDF khác (lưu trên máy bạn)</Link>
     {!showPdfPractice && <div className="study-skill-strip" aria-label="Kỹ năng muốn luyện"><span>Luyện theo:</span>{(['ALL', 'moji-goi', 'bunpou', 'dokkai', 'choukai'] as ExamSectionMode[]).map(mode => <button key={mode} aria-pressed={lobbyPracticeMode === mode} onClick={() => setLobbyPracticeMode(mode)}>{mode === 'ALL' ? 'Toàn bộ đề' : JLPT_SECTION_METAS[mode].shortName}</button>)}</div>}
   </>;
 

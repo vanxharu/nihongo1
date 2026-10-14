@@ -119,3 +119,5 @@
 .study-exam-skills span{display:inline-flex;align-items:center;gap:5px;background:none;padding:0;}
 .study-exam-skills i{width:8px;height:8px;border-radius:50%;}
 .study-exam-actions button:first-child{background:var(--ui-ink);border-color:var(--ui-ink);color:var(--ui-canvas);}
+.study-books-link{display:flex;align-items:center;gap:8px;margin:0 0 16px;padding:12px 16px;border:1px dashed var(--ui-line);border-radius:14px;color:var(--ui-ink);font-size:13px;text-decoration:none;}
+.study-books-link:hover{border-color:var(--study-accent);}
