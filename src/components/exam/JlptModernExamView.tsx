@@ -761,9 +761,9 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
             {renderFormattedQuestion(currentQuestion.question)}
           </p>
 
-          {currentQuestion.hint && !isFocusMode && (
+          {currentQuestion.hint && !isFocusMode && currentQuestion.section !== 'dokkai' && (
             <div className="p-3 rounded-xl bg-[#FDF1E2]/70 border border-[#EADFCF] text-xs text-[#7A3E12] flex items-start gap-2">
-              <span className="font-bold shrink-0">💡 Gợi ý:</span>
+              <span className="font-bold shrink-0">Cách làm:</span>
               <span className="leading-relaxed">{currentQuestion.hint}</span>
             </div>
           )}
