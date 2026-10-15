@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSrsAuto } from '../../utils/srsMode';
 import '../ui/todayGoals.css';
 import { localDateStr } from '../../utils/localDate';
+import { readAccuracy } from '../../utils/dailyAccuracy';
 import {
   BookOpen,
   MessagesSquare,
@@ -75,12 +76,23 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
 
   // 014 — mục tiêu hôm nay, tính từ dữ liệu học thật
   const todayStr = localDateStr();
-  const todayXp = Number(localStorage.getItem(`nhai_kanji_today_xp_v1_${todayStr}`) || '0');
   const srsDue = Object.values(userProfile.vocabStatus || {}).filter((v: any) => v && typeof v === 'object' && v.nextReviewDate && new Date(v.nextReviewDate) <= new Date()).length;
+  // Mục tiêu tính theo độ đúng, không chỉ theo việc đã mở bài: đạt khi đúng ≥ PASS và đủ MIN câu.
+  const PASS = 70, MIN = 10;
+  const acc = readAccuracy();
+  const skillGoal = (id: 'vocab' | 'grammar', title: string, to: string) => {
+    const [c, t] = acc[id];
+    const rate = t ? Math.round((c / t) * 100) : 0;
+    const done = t >= MIN && rate >= PASS;
+    const fail = t >= MIN && rate < PASS;
+    return { id, title, done, to, tag: t < MIN ? `${t}/${MIN} câu` : `${rate}%${fail ? ' · làm thêm' : ''}`, k: fail ? 'var(--ui-danger, #f43f5e)' : done ? 'var(--ui-success)' : 'var(--ui-info)' };
+  };
+  const todayExams = examHistory.filter(r => localDateStr(new Date(r.date)) === todayStr);
+  const bestExam = todayExams.reduce((m, r) => Math.max(m, Math.round(r.percentage || 0)), 0);
   const goals = [
-    { id: 'study', title: 'Học một bài hôm nay', done: (userProfile.studyDays || []).includes(todayStr), tag: 'Học', k: 'var(--ui-primary)', to: resumeTab },
-    { id: 'xp', title: 'Đạt 50 XP', done: todayXp >= 50, tag: `${Math.min(todayXp, 50)}/50`, k: 'var(--ui-info)', to: resumeTab },
-    { id: 'exam', title: 'Làm một đề luyện thi', done: examHistory.some(r => localDateStr(new Date(r.date)) === todayStr), tag: 'Thi', k: 'var(--ui-success)', to: 'exam' },
+    skillGoal('vocab', `Từ vựng: đúng ≥ ${PASS}% (${MIN} câu)`, 'vocabulary'),
+    skillGoal('grammar', `Ngữ pháp: đúng ≥ ${PASS}% (${MIN} câu)`, 'grammar'),
+    { id: 'exam', title: `Một đề luyện thi đúng ≥ ${PASS}%`, done: bestExam >= PASS, tag: todayExams.length ? `${bestExam}%` : 'Chưa làm', k: bestExam >= PASS ? 'var(--ui-success)' : todayExams.length ? 'var(--ui-danger, #f43f5e)' : 'var(--ui-info)', to: 'exam' },
   ];
   const goalsDone = goals.filter(g => g.done).length;
   const dateLabel = new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'numeric' });
@@ -119,7 +131,7 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
         <div className="u014-head">
           <div>
             <b>Mục tiêu hôm nay</b>
-            <span className="u014-sub" aria-live="polite"><span>{dateLabel}</span><span>Hoàn thành mục tiêu hôm nay</span></span>
+            <span className="u014-sub" aria-live="polite"><span>{dateLabel}</span><span>Đạt cả 3 mục tiêu 🎉</span></span>
           </div>
           <div className="u014-ring" aria-hidden="true">
             <svg viewBox="0 0 48 48"><circle className="bg" cx="24" cy="24" r="20" /><circle className="fg" cx="24" cy="24" r="20" /></svg>

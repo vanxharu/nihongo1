@@ -4,6 +4,7 @@
  */
 
 import { showLearningFeedback } from './learningMotion';
+import { recordAnswer } from './dailyAccuracy';
 import { cleanJapaneseTextForSpeech, parseDialogueTurns, assignDialogueVoices } from './ttsStatic';
 let audioCtx: AudioContext | null = null;
 
@@ -47,6 +48,7 @@ function playFeedbackNote(ctx: AudioContext, frequency: number, start: number, d
 
 /** Bright three-note ascending chime for a correct answer. */
 export function playCorrectSound() {
+  recordAnswer(true);
   showLearningFeedback('correct');
   if (!isSoundEnabled()) return;
   try {
@@ -62,6 +64,7 @@ export function playCorrectSound() {
 
 /** Gentle two-note descending cue for an incorrect answer. */
 export function playIncorrectSound() {
+  recordAnswer(false);
   showLearningFeedback('incorrect');
   if (!isSoundEnabled()) return;
   try {
