@@ -1,7 +1,9 @@
 import type { Request, Response } from 'express';
 import { analyzeReading } from '../../src/server/readingAnalysis.js';
 import { sourceReadingFromUrl } from '../../src/server/readingCatalog.js';
-export default async function generateReading(req: Request, res: Response) {
+import { withUserLlm } from '../../src/server/freeLlm.js';
+export default withUserLlm(generateReading);
+async function generateReading(req: Request, res: Response) {
   res.setHeader('Cache-Control','no-store');
   if (req.method !== 'POST') return res.status(405).json({ error: 'Chỉ hỗ trợ POST.' });
   const body = req.body || {}; const input = body.customPassage || body.pastedText || body.text;

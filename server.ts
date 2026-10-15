@@ -6,6 +6,7 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { GoogleGenAI, Type } from "@google/genai";
 import OpenAI from "openai";
+import { callFreeLLM, freeGenerate, hasMedia, userLlmMiddleware, getFreeLLMConfig, setFreeLLMConfig, FREE_LLM_DEFAULT_URL, FREE_LLM_DEFAULT_MODEL } from "./src/server/freeLlm.js";
 import Kuroshiro from 'kuroshiro';
 import KuromojiAnalyzer from 'kuroshiro-analyzer-kuromoji';
 // hanviet-pinyin-words is ESM-only; use dynamic import so CJS bundling doesn't break
@@ -73,6 +74,7 @@ function getHanVietWord(word: string) {
 dotenv.config();
 
 const app = express();
+app.use(userLlmMiddleware);
 const PORT = 3000;
 
 // Express middleware
@@ -954,22 +956,17 @@ CRITICAL MANDATES:
 
 // Lazy-initialized Gemini AI client helper
 let aiClient: GoogleGenAI | null = null;
-function getGeminiClient(): GoogleGenAI {
+function getNativeGeminiClient(): GoogleGenAI {
   if (!aiClient) {
     const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      throw new Error("GEMINI_API_KEY is not defined. Please set it in your environment variables via Settings > Secrets.");
-    }
-    aiClient = new GoogleGenAI({
-      apiKey,
-      httpOptions: {
-        headers: {
-          'User-Agent': 'aistudio-build',
-        }
-      }
-    });
+    if (!apiKey) throw new Error("Tính năng đọc ảnh/âm thanh cần GEMINI_API_KEY (model miễn phí chỉ xử lý văn bản).");
+    aiClient = new GoogleGenAI({ apiKey, httpOptions: { headers: { 'User-Agent': 'aistudio-build' } } });
   }
   return aiClient;
+}
+// Văn bản → model miễn phí; chỉ ảnh/âm thanh mới còn dùng Gemini thật.
+function getGeminiClient(): any {
+  return { models: { generateContent: (opts: any) => hasMedia(opts.contents) ? getNativeGeminiClient().models.generateContent(opts) : freeGenerate(opts) } };
 }
 
 // ============================================================================
@@ -1010,6 +1007,8 @@ try {
   console.warn("[AI Config] Could not load ai-config.json:", e);
 }
 
+setFreeLLMConfig({ baseUrl: activeAIConfig.freeBaseUrl, model: activeAIConfig.freeModel, apiKey: activeAIConfig.freeApiKey });
+
 export function getActiveOpenAIApiKey(): string {
   return (activeAIConfig.openaiApiKey || process.env.OPENAI_API_KEY || "").trim();
 }
@@ -1037,6 +1036,7 @@ export function getOpenAIClient(): OpenAI {
   return openaiClientInstance;
 }
 
+// Giữ tên cũ để không phải sửa ~15 nơi gọi: mọi lời gọi "GPT" giờ đi qua model miễn phí.
 export async function callOpenAIGPT(options: {
   prompt: string;
   systemInstruction?: string;
@@ -1044,57 +1044,7 @@ export async function callOpenAIGPT(options: {
   jsonMode?: boolean;
   temperature?: number;
 }) {
-  const client = getOpenAIClient();
-  const modelToUse = options.model || getActiveOpenAIModel();
-  const messages: any[] = [];
-  if (options.systemInstruction) {
-    messages.push({ role: "system", content: options.systemInstruction });
-  }
-  messages.push({ role: "user", content: options.prompt });
-
-  const completion = await client.chat.completions.create({
-    model: modelToUse,
-    messages,
-    response_format: options.jsonMode ? { type: "json_object" } : undefined,
-    temperature: options.temperature ?? 0.7,
-  });
-
-  return completion.choices[0]?.message?.content || "";
-}
-
-
-export const FREE_LLM_DEFAULT_URL = "https://text.pollinations.ai/openai";
-export const FREE_LLM_DEFAULT_MODEL = "openai-fast";
-
-export function getFreeLLMConfig() {
-  return {
-    baseUrl: (activeAIConfig.freeBaseUrl || FREE_LLM_DEFAULT_URL).trim(),
-    model: (activeAIConfig.freeModel || FREE_LLM_DEFAULT_MODEL).trim(),
-    apiKey: (activeAIConfig.freeApiKey || "").trim(),
-  };
-}
-
-// Gọi model miễn phí qua giao thức OpenAI-compatible (mặc định Pollinations, không cần key).
-export async function callFreeLLM(options: { prompt: string; systemInstruction?: string; json?: boolean; maxTokens?: number; override?: { baseUrl?: string; model?: string; apiKey?: string } }): Promise<string> {
-  const cfg = { ...getFreeLLMConfig(), ...(options.override || {}) };
-  const messages: any[] = [];
-  if (options.systemInstruction) messages.push({ role: "system", content: options.systemInstruction });
-  messages.push({ role: "user", content: options.prompt });
-  const r = await fetch(cfg.baseUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", ...(cfg.apiKey ? { Authorization: `Bearer ${cfg.apiKey}` } : {}) },
-    body: JSON.stringify({ model: cfg.model, messages, temperature: 0.7, max_tokens: options.maxTokens || 1500 }),
-    signal: AbortSignal.timeout(45000),
-  });
-  if (!r.ok) throw new Error(`Model miễn phí trả lỗi ${r.status}`);
-  const data: any = await r.json();
-  const text = String(data?.choices?.[0]?.message?.content || "").trim();
-  if (!text) throw new Error("Model miễn phí trả về nội dung rỗng");
-  if (!options.json) return text;
-  const m = text.match(/\{[\s\S]*\}/); // model có thể bọc JSON trong ```
-  if (!m) throw new Error("Model miễn phí không trả JSON hợp lệ");
-  JSON.parse(m[0]);
-  return m[0];
+  return callFreeLLM({ prompt: options.prompt, systemInstruction: options.systemInstruction, json: options.jsonMode });
 }
 
 /**
@@ -1118,7 +1068,7 @@ export async function callUnifiedAI(options: {
   const model = options.model || getActiveOpenAIModel();
   let openAiErrorMsg: string | null = null;
 
-  if (preferred === "chatgpt" && apiKey) {
+  if (false as boolean) {
     try {
       const gptPrompt = options.jsonMode && !options.prompt.includes("JSON")
         ? options.prompt + "\nBẮT BUỘC TRẢ VỀ ĐỊNH DẠNG JSON HỢP LỆ DUY NHẤT."
@@ -1187,7 +1137,8 @@ export async function generateGeminiContentWithFallback(options: {
   model?: string;
   config?: any;
 }) {
-  const client = getGeminiClient();
+  if (!hasMedia(options.contents)) return freeGenerate(options);
+  const client = getNativeGeminiClient();
   const primaryModel = options.model || LATEST_GEMINI_MODEL;
   const fallbackModels = ["gemini-3.1-pro-preview", "gemini-3.1-flash-lite", "gemini-flash-latest"].filter(m => m !== primaryModel);
   const modelsToTry = [primaryModel, ...fallbackModels];
@@ -1449,9 +1400,7 @@ app.post("/api/exam/review-user-notes", async (req, res) => {
       return res.json({ success: true, corrections: [] });
     }
 
-    const hasOpenAI = !!getActiveOpenAIApiKey();
-    const hasGemini = !!process.env.GEMINI_API_KEY;
-    if (!hasOpenAI && !hasGemini) {
+    if (false) {
       const offlineCorrections = notes.map((item: any) => generateOfflineNoteCorrection(item));
       return res.json({ success: true, corrections: offlineCorrections });
     }
@@ -1484,7 +1433,7 @@ QUY TẮC BẮT BUỘC:
 - Nếu học viên ghi chú sai (dịch sai nghĩa, nhầm ngữ pháp, hiểu ngược điều kiện, nhầm trợ từ), PHẢI chỉ ra lỗi sai và đưa ra kiến thức chuẩn ngay lập tức.`;
 
     // 1. Primary: ChatGPT (OpenAI configured model)
-    if (hasOpenAI) {
+    if (true) { // callOpenAIGPT giờ gọi model miễn phí
       try {
         const rawJson = await callOpenAIGPT({
           prompt: prompt + "\nTrả về đúng định dạng JSON hợp lệ duy nhất, không bọc thẻ markdown.",
@@ -1716,7 +1665,7 @@ app.post("/api/grammar/evaluate-translation", async (req, res) => {
       return res.json(EVALUATION_CACHE.get(cacheKey));
     }
 
-    if (!getActiveOpenAIApiKey() && !process.env.GEMINI_API_KEY) {
+    if (false) {
       const fallback = evaluateOfflineTranslation(direction, sourceText, expectedText, userTranslation, grammarStructure);
       return res.json(fallback);
     }
@@ -6140,7 +6089,7 @@ Hãy phân tích và trả về đúng JSON theo schema được chỉ định.`
 
     if (!result) {
       // Check Gemini API key
-      if (!process.env.GEMINI_API_KEY) {
+      if (false) {
         return res.status(500).json({
           success: false,
           error: "Chưa cấu hình API Key (OpenAI hoặc Gemini) trong Cấu hình AI.",
@@ -6351,11 +6300,12 @@ app.post('/api/ai/free-config', requireAuth, requireAdmin, (req, res) => {
   activeAIConfig.freeBaseUrl = baseUrl.trim();
   activeAIConfig.freeModel = model.trim();
   if (typeof apiKey === 'string') activeAIConfig.freeApiKey = apiKey.trim(); // chuỗi rỗng = xóa key
+  setFreeLLMConfig({ baseUrl: activeAIConfig.freeBaseUrl, model: activeAIConfig.freeModel, apiKey: activeAIConfig.freeApiKey });
   activeAIConfig.updatedAt = new Date().toISOString();
   try { fs.writeFileSync(AI_CONFIG_FILE, JSON.stringify(activeAIConfig, null, 2), 'utf-8'); } catch (e) { console.warn("[AI Config] không lưu được:", e); }
   res.json({ success: true });
 });
-app.post('/api/ai/free-test', requireAuth, requireAdmin, async (req, res) => {
+app.post('/api/ai/free-test', requireAuth, async (req, res) => {
   const { baseUrl, model, apiKey } = req.body || {};
   const started = Date.now();
   try {
@@ -7299,7 +7249,7 @@ Hãy trả về JSON:
       systemInstruction: "Bạn là chuyên gia sư phạm tiếng Nhật luyện thi JLPT hàng đầu. Trả về đúng 1 JSON duy nhất.",
       model: "gpt-4o-mini",
       jsonMode: true
-    });
+    }).catch(() => ""); // không có key OpenAI → rơi xuống Gemini
 
     if (!rawResult) {
       const geminiResp = await generateGeminiContentWithFallback({
@@ -7358,7 +7308,7 @@ Hãy trả lời một cách tận tâm, ngắn gọn, chuẩn sư phạm, tập
       systemInstruction,
       model: "gpt-4o-mini",
       jsonMode: false
-    });
+    }).catch(() => ""); // không có key OpenAI → rơi xuống Gemini
 
     if (!replyText) {
       const geminiResp = await generateGeminiContentWithFallback({
@@ -7410,7 +7360,7 @@ Trả về JSON đúng cấu trúc:
       systemInstruction: "Bạn là chuyên gia ra đề thi JLPT. Trả về đúng 1 JSON duy nhất.",
       model: "gpt-4o-mini",
       jsonMode: true
-    });
+    }).catch(() => ""); // không có key OpenAI → rơi xuống Gemini
 
     if (!rawResult) {
       const geminiResp = await generateGeminiContentWithFallback({

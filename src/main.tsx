@@ -12,6 +12,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import { getDefaultReminderSettings, syncRemindersWithServiceWorker } from './utils/notifications';
 import { BRAND_NAME } from './constants/brand';
 import { AppErrorBoundary } from './utils/lazyWithRetry';
+import { installCustomLlmHeaders } from './utils/aiCustomKey';
+installCustomLlmHeaders();
 
 function StartupReady() {
   useEffect(() => { (window as any).nihongoAppStarted?.(); }, []);
