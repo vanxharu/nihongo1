@@ -752,3 +752,12 @@
 .jlpt-journey .journey-bar p { font-size:12px; opacity:.7; }
 .jlpt-journey .journey-bar-actions { display:flex; gap:8px; }
 .jlpt-journey .journey-bar-actions button { display:inline-flex; align-items:center; gap:6px; font-size:13px; padding:7px 12px; border-radius:10px; cursor:pointer; }
+
+/* Kết quả từng ngày: xanh = đạt, đỏ = chưa đạt, vàng = đang làm */
+.trail-stop.stop-pass .trail-stop-medal { background: linear-gradient(145deg,#34d399,#059669); color:#fff; }
+.trail-stop.stop-fail .trail-stop-medal { background: linear-gradient(145deg,#fb7185,#e11d48); color:#fff; }
+.trail-stop.stop-progress .trail-stop-medal { background: linear-gradient(145deg,#fbbf24,#f59e0b); color:#fff; }
+.trail-stop.stop-pass .trail-stop-label > span { color:#059669; }
+.trail-stop.stop-fail .trail-stop-label > span { color:#e11d48; }
+.trail-stop.stop-progress .trail-stop-label > span { color:#b45309; }
+.trail-layout { grid-template-columns: 1fr !important; }

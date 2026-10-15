@@ -223,6 +223,7 @@ export default function JlptRoadmapView({
         )}
         <JourneyTrail
           level={level}
+          storageKey={`${accountPlan}:${plan.durationDays}`}
           plan={plan}
           selectedDay={selected.day}
           celebrate={celebrate}

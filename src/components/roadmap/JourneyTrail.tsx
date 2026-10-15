@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import ShibaMascot from "../mascot/ShibaMascot";
 import { roadmapDay } from "../../data/jlptRoadmap";
+import { dailyExercises } from "../../data/roadmapExercises";
 import type { JLPTLevel, StudyRoadmapConfig } from "../../types";
 import "./journeyTrail.css";
 
@@ -26,8 +27,26 @@ const poses = [
   "encourage",
   "trophy",
 ] as const;
+const PASS_RATE = 0.7; // shortcut: ngưỡng đạt cố định 70%, cho chỉnh khi có yêu cầu
+// Đọc bài làm đã lưu của RoadmapClassroom (cùng khóa localStorage) để hiện kết quả trên ô ngày.
+function dayStat(storageKey: string, level: JLPTLevel, day: number) {
+  const qs = dailyExercises(level, day);
+  let answered = 0, correct = 0, graded = false;
+  try {
+    const v = JSON.parse(localStorage.getItem(`roadmap-exercises-v1:${storageKey}:${level}:${day}`) || "null");
+    if (v?.answers) {
+      for (const q of qs) {
+        if (Number.isInteger(v.answers[q.id])) answered++;
+        if (v.answers[q.id] === q.correctIndex) correct++;
+      }
+      graded = !!v.graded && answered === qs.length && qs.length > 0;
+    }
+  } catch { /* storage blocked: ô ngày hiện như chưa làm */ }
+  return { total: qs.length, answered, correct, graded };
+}
 export default function JourneyTrail({
   level,
+  storageKey,
   plan,
   selectedDay,
   celebrate,
@@ -35,6 +54,7 @@ export default function JourneyTrail({
   onPractice,
 }: {
   level: JLPTLevel;
+  storageKey: string;
   plan: StudyRoadmapConfig;
   selectedDay: number;
   celebrate: boolean;
@@ -143,10 +163,13 @@ export default function JourneyTrail({
             const Icon = day.checkpoint
               ? Trophy
               : icons[(day.day - 1) % icons.length];
+            const st = dayStat(storageKey, level, day.day);
+            const rate = st.total ? st.correct / st.total : 0;
+            const tone = st.graded ? (rate >= PASS_RATE ? "stop-pass" : "stop-fail") : st.answered ? "stop-progress" : "";
             return (
               <button
                 key={`${level}-${day.day}`}
-                className={`trail-stop ${done ? "stop-complete" : ""} ${day.day === plan.currentDay ? "stop-current" : ""} ${day.day === selectedDay ? "stop-selected" : ""}`}
+                className={`trail-stop ${tone} ${done ? "stop-complete" : ""} ${day.day === plan.currentDay ? "stop-current" : ""} ${day.day === selectedDay ? "stop-selected" : ""}`}
                 style={
                   {
                     left: `${points[i][0]}%`,
@@ -156,7 +179,7 @@ export default function JourneyTrail({
                 }
                 aria-label={`Ngày ${day.day}: ${day.chapter.name}, ${done ? "đã hoàn thành" : day.checkpoint ? "kiểm tra cuối chặng" : "chưa hoàn thành"}`}
                 aria-pressed={day.day === selectedDay}
-                onClick={() => onSelect(day.day)}
+                onClick={() => onPractice(day.day)}
               >
                 <span className="trail-stop-orbit" />
                 <span className="trail-stop-medal">
@@ -165,17 +188,12 @@ export default function JourneyTrail({
                 </span>
                 <span className="trail-stop-label">
                   <b>Ngày {day.day}</b>
-                  <small>
-                    {day.checkpoint
-                      ? "Mốc kiểm tra"
-                      : `Bài tập JLPT tổng hợp`}
-                  </small>
                   <span>
-                    {done
-                      ? "Đã hoàn thành"
-                      : day.day === plan.currentDay
-                        ? "Bạn đang ở đây"
-                        : `Chặng ${day.index + 1}`}
+                    {st.graded
+                      ? `Đúng ${Math.round(rate * 100)}% · ${rate >= PASS_RATE ? "Đạt" : "Chưa đạt"}`
+                      : st.answered
+                        ? `Đã làm ${st.answered}/${st.total} câu`
+                        : day.checkpoint ? "Mốc kiểm tra" : "Chưa làm"}
                   </span>
                 </span>
               </button>
@@ -204,46 +222,6 @@ export default function JourneyTrail({
             ✿
           </div>
         </div>
-        <aside
-          className="trail-preview"
-          aria-label="Ngày đang khám phá"
-          key={`${level}-${selectedDay}`}
-        >
-          <div className="trail-preview-mascot">
-            <ShibaMascot pose={poses[selected.index]} size={110} animated />
-          </div>
-          <span className="trail-kicker">
-            CHẶNG {selected.index + 1} · LUYỆN DẠNG ĐỀ
-          </span>
-          <h3>Ngày {selectedDay}</h3>
-          <p>{selected.chapter.name}</p>
-          <div className="trail-preview-goal">
-            <Flag size={18} />
-            <p>
-              {selected.checkpoint
-                ? selected.chapter.checkpoint
-                : selected.chapter.outcome}
-            </p>
-          </div>
-          <ol className="trail-day-tasks">
-            <li><b>文字・語彙</b><span>Cách đọc, từ vựng và ngữ cảnh</span></li>
-            <li><b>文法</b><span>Chọn mẫu câu, sắp xếp ★ và đoạn văn</span></li>
-            <li><b>読解</b><span>Đọc nội dung và tìm thông tin</span></li>
-            <li><b>聴解</b><span>Nghe hội thoại và chọn phản hồi</span></li>
-          </ol>
-          <button
-            className="journey-primary"
-            onClick={() => onPractice(selectedDay)}
-          >
-            {plan.completedDays.includes(selectedDay) ? "Ôn lại" : "Làm bài"} ngày{" "}
-            {selectedDay}
-            <ArrowRight size={16} />
-          </button>
-          <small>
-            Ngày đã học được giữ lại. Bạn có thể chọn bất kỳ ngày nào để học
-            hoặc ôn.
-          </small>
-        </aside>
       </div>
     </section>
   );
