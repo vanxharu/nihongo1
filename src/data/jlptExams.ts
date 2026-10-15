@@ -1,6 +1,6 @@
 import { DailyExam } from '../types';
 
-export const JLPT_PAST_EXAMS: DailyExam[] = [
+const RAW_JLPT_EXAMS: DailyExam[] = [
   {
     id: 'nihongo-challenge-bunpo-n4',
     title: 'にほんごチャレンジ 文法と読む練習 N4',
@@ -1653,3 +1653,19 @@ export const JLPT_PAST_EXAMS: DailyExam[] = [
     ],
   }
 ];
+
+// 合格できる N4 được chia 14 phần luyện tập → gộp thành một đề duy nhất.
+const GK_PRACTICE = /^goukaku-dekiru-n4-practice-/;
+const gkParts = RAW_JLPT_EXAMS.filter(e => GK_PRACTICE.test(e.id));
+export const JLPT_PAST_EXAMS: DailyExam[] = gkParts.length
+  ? [
+      ...RAW_JLPT_EXAMS.filter(e => !GK_PRACTICE.test(e.id)),
+      {
+        ...gkParts[0],
+        id: 'goukaku-dekiru-n4-practice',
+        title: '合格できる N4 — Luyện tập',
+        durationMinutes: gkParts.reduce((n, e) => n + e.durationMinutes, 0),
+        questions: gkParts.flatMap(e => e.questions),
+      },
+    ]
+  : RAW_JLPT_EXAMS;

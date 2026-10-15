@@ -150,7 +150,7 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
         <div className="flex items-center justify-between px-4 h-14 shrink-0"
           style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
           <Link to="/" onClick={onClose} className="outline-none u040-fade">
-            <JpStudyLogo size="md" dark={true} showSubtitle={true} />
+            <JpStudyLogo size="md" dark={true} showHanko={false} />
           </Link>
           <span className="xl:hidden ml-auto mr-2"><ThemeToggle /></span>
           <button

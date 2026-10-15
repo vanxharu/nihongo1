@@ -66817,7 +66817,7 @@ var videos = [
 var SHADOWING_VIDEOS = videos.map(([id, year, seconds], index) => ({
   id: `shadowing-n4-${id}`,
   code: `N4 \u0110\u1EC1 luy\u1EC7n ${index + 1}`,
-  title: `N4 \xB7 \u0110\u1EC1 luy\u1EC7n nghe ${String(index + 1).padStart(2, "0")} \xB7 ${year}`,
+  title: `B\xE0i ${String(index + 1).padStart(2, "0")} \xB7 ${year}`,
   youtube_url: `https://www.youtube.com/watch?v=${id}`,
   youtube_video_id: id,
   level: "N4",

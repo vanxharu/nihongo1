@@ -134,70 +134,10 @@ export default function ProgressDashboard({
     <div className="pd-root">
       <div className="pd-shell">
 
-        {/* ── Top bar ── */}
-        <div className="pd-topbar">
-          <span className="pd-brand">にほんご</span>
-          <div className="pd-level-pills">
-            {LEVELS.map((l) => (
-              <button
-                key={l}
-                className={`pd-level-pill${level === l ? " active" : ""}`}
-                onClick={() => setLevel(l)}
-                aria-pressed={level === l}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* ── View tabs ── */}
-        <div className="pd-tabs">
-          <button
-            className={`pd-tab${view === "overview" ? " active" : ""}`}
-            onClick={() => setView("overview")}
-            aria-pressed={view === "overview"}
-          >
-            Tiến độ
-          </button>
-          <button
-            className={`pd-tab${view === "prediction" ? " active" : ""}`}
-            onClick={() => setView("prediction")}
-            aria-pressed={view === "prediction"}
-          >
-            Dự đoán
-          </button>
-        </div>
-
-        {/* ── KPI row ── */}
-        <div className="pd-kpi-grid">
-          <div className="pd-kpi">
-            <div className="pd-kpi-icon"><Flame size={16} /></div>
-            <div className="pd-kpi-num">{profile.streak || 0}</div>
-            <div className="pd-kpi-label">Chuỗi ngày</div>
-          </div>
-          <div className="pd-kpi">
-            <div className="pd-kpi-icon pd-kpi-icon--blue">📅</div>
-            <div className="pd-kpi-num">{learnedDays}</div>
-            <div className="pd-kpi-label">Ngày đã học</div>
-          </div>
-          <div className="pd-kpi">
-            <div className="pd-kpi-icon pd-kpi-icon--purple"><Award size={16} /></div>
-            <div className="pd-kpi-num">{Math.max(0, todayXp)}</div>
-            <div className="pd-kpi-label">XP hôm nay</div>
-          </div>
-          <div className="pd-kpi">
-            <div className="pd-kpi-icon pd-kpi-icon--green"><Target size={16} /></div>
-            <div className="pd-kpi-num">{scoped.length}</div>
-            <div className="pd-kpi-label">Đề {level}</div>
-          </div>
-        </div>
-
         {view === "overview" ? (
           <>
             {/* ── Skill progress ── */}
             <section className="pd-card">
-              <h2 className="pd-card-title">Kiến thức {level}</h2>
               {loading ? (
                 <p className="pd-muted">Đang tải…</p>
               ) : (
@@ -275,71 +215,6 @@ export default function ProgressDashboard({
               )}
             </section>
 
-            {/* ── Quick actions ── */}
-            <section className="pd-card">
-              <h2 className="pd-card-title">Luyện tập nhanh</h2>
-              {accuracy !== null && (
-                <div className="pd-accuracy-badge">
-                  <span className="pd-accuracy-num">{accuracy}%</span>
-                  <span className="pd-muted">đúng · 10 bài {level} gần nhất</span>
-                </div>
-              )}
-              <div className="pd-actions">
-                <Link to={`/jlpt/${level}`} className="pd-action-card">
-                  <Target size={20} className="pd-action-icon" />
-                  <strong>Luyện đề {level}</strong>
-                  <span>Làm bài rồi xem lại lỗi</span>
-                </Link>
-                <Link to="/shadowing" className="pd-action-card">
-                  <BookOpen size={20} className="pd-action-icon" />
-                  <strong>Nghe &amp; Shadowing</strong>
-                  <span>Luyện với bản chép và câu thật</span>
-                </Link>
-                <Link to="/so-tay" className="pd-action-card">
-                  <RefreshCw size={20} className="pd-action-icon" />
-                  <strong>Ôn sổ lỗi</strong>
-                  <span>Nhắc lại sau 1, 3, 7 ngày</span>
-                </Link>
-              </div>
-            </section>
-
-            {/* ── History ── */}
-            <section className="pd-card">
-              <div className="pd-card-header">
-                <h2 className="pd-card-title">Lịch sử luyện tập</h2>
-                <button
-                  className="pd-accent-link"
-                  onClick={() => onNavigateTab?.("achievements")}
-                >
-                  {earned.size} dấu ấn <ArrowRight size={11} />
-                </button>
-              </div>
-              {history.length ? (
-                <div className="pd-history-list">
-                  {history
-                    .slice(-6)
-                    .reverse()
-                    .map((t, i) => (
-                      <div className="pd-history-row" key={`${t.date}-${i}`}>
-                        <div>
-                          <div className="pd-history-date">{t.date}</div>
-                          <div className="pd-muted" style={{ fontSize: "10px" }}>
-                            {t.level || "—"} · {t.fullExam ? "Đủ phần" : "Bài luyện"}
-                          </div>
-                        </div>
-                        <div className="pd-history-score">
-                          <strong>{t.score}/{t.total}</strong>
-                          <span className="pd-muted">{Math.round((t.score / t.total) * 100)}%</span>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              ) : (
-                <p className="pd-muted">
-                  Chưa có bài kiểm tra. Hoàn thành và nộp bài để kết quả xuất hiện ở đây.
-                </p>
-              )}
-            </section>
           </>
         ) : (
           /* ── Prediction view ── */

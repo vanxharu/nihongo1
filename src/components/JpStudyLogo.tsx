@@ -95,9 +95,6 @@ export default function JpStudyLogo({
               style={{ fontFamily: "'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" }}
             >
               にほんご
-              <span className="block mt-1 text-[11px] text-rose-500 font-black tracking-wide">
-                学ぼう！
-              </span>
             </span>
 
             {/* Authentic Japanese Red Hanko Seal (印鑑) */}

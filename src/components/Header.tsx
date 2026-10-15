@@ -207,40 +207,7 @@ export default function Header({
 
           {/* Right: Quick Streak, Level & Sound Toggle */}
           <div className="flex items-center gap-1.5 shrink-0">
-            {/* Streak & Level Pill - Tap to open profile drawer */}
-            <button
-              type="button"
-              onClick={() => {
-                if (setCurrentTab) {
-                  setCurrentTab('profile');
-                } else {
-                  setTempName(userProfile.name);
-                  setTempTarget(userProfile.targetLevel);
-                  setIsProfileOpen(true);
-                }
-              }}
-              className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-[#1B223C] hover:bg-[#242E52] border border-[#E89A3C]/40 text-[11px] font-bold text-amber-300 active:scale-95 transition-all cursor-pointer shadow-xs"
-              title="Xem hồ sơ & Tiến độ"
-            >
-              <span>🔥 {userProfile.streak || 0}</span>
-              <span className="text-slate-500">•</span>
-              <span className="text-amber-200 font-mono">Lv.{getPlayerLevelInfo(userProfile.xp || 0).level}</span>
-            </button>
-
             <ThemeToggle />
-            {/* Sound FX Toggle */}
-            <button
-              type="button"
-              onClick={handleToggleSound}
-              className={`hidden sm:flex p-1.5 rounded-lg border transition-all cursor-pointer ${
-                soundOn 
-                  ? 'text-[#E89A3C] bg-[#1B223C] border-[#E89A3C]/50' 
-                  : 'text-slate-500 bg-[#12172A] border-slate-800'
-              }`}
-              title={soundOn ? "Đang bật âm thanh" : "Đang tắt âm thanh"}
-            >
-              {soundOn ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
-            </button>
           </div>
         </header>
       )}
@@ -253,9 +220,6 @@ export default function Header({
         {/* Left side: Logo & Breadcrumb and Target Level */}
         <div id="header-pathway" className="flex items-center gap-3 min-w-0">
           <span className="font-bold text-slate-100 tracking-tight truncate">{getTabTitle()}</span>
-          <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-[#1B223C] border border-[#E89A3C]/40 text-amber-300 shrink-0">
-            JLPT {userProfile.targetLevel}
-          </span>
         </div>
 
       {/* Center Spacer */}
@@ -264,33 +228,6 @@ export default function Header({
       {/* Right side: Clean Stats, Audio Toggle, and User Profile Menu */}
       <div id="header-actions" className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <ThemeToggle />
-        {/* Level & Streak Stats Pill */}
-        <LevelProgressBar
-          userProfile={userProfile}
-          todayXp={todayXp}
-          onOpenProfile={() => {
-            setTempName(userProfile.name);
-            setTempTarget(userProfile.targetLevel);
-            setIsProfileOpen(true);
-          }}
-          onTriggerCelebration={onTriggerCelebration}
-          onNavigateTab={setCurrentTab}
-        />
-
-        {/* Sound FX Toggle Button */}
-        <button
-          id="header-sound-toggle"
-          onClick={handleToggleSound}
-          className={`hidden sm:flex p-2 rounded-lg transition-colors items-center justify-center cursor-pointer shrink-0 ${
-            soundOn 
-              ? 'text-[#E89A3C] bg-[#1B223C] border border-[#E89A3C]/40 hover:bg-[#242E52]' 
-              : 'text-slate-400 bg-[#12172A] border border-slate-800 hover:bg-[#1B223C] hover:text-slate-200'
-          }`}
-          title={soundOn ? "Đang bật âm thanh (Bấm để tắt)" : "Đang tắt âm thanh (Bấm để bật)"}
-        >
-          {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-        </button>
-
         {/* User profile button / Login button */}
         {(authStatus === 'AUTH_INITIALIZING' || loading) ? (
           <div 
@@ -433,26 +370,6 @@ export default function Header({
                 </div>
               )}
 
-              {/* Avatar options */}
-              <div className="mb-6">
-                <label className="text-xs text-slate-400 uppercase tracking-wider block mb-2 font-bold">Chọn ảnh đại diện</label>
-                <div className="grid grid-cols-5 gap-2 bg-slate-50/50 p-3 rounded-xl border border-slate-100">
-                  {avatars.map((av) => (
-                    <button
-                      key={av}
-                      id={`avatar-choice-${av}`}
-                      type="button"
-                      onClick={() => updateProfile({ avatar: av })}
-                      className={`text-2xl p-2 rounded-lg transition-transform hover:scale-125 cursor-pointer ${
-                        userProfile.avatar === av ? 'bg-slate-50 border border-slate-400' : 'bg-white border border-slate-50'
-                      }`}
-                    >
-                      {av}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* Profile details form */}
               <form onSubmit={handleSaveProfile} className="space-y-4">
                 <div>
@@ -561,26 +478,6 @@ export default function Header({
                 </span>
               </div>
 
-              <button
-                id="profile-btn-reset"
-                type="button"
-                onClick={() => {
-                  setConfirmDialog({
-                    isOpen: true,
-                    title: 'Đặt lại toàn bộ tiến độ',
-                    message: 'Bạn có chắc chắn muốn xóa hết tất cả tiến độ học tập và điểm XP để học lại từ đầu? Thao tác này không thể hoàn tác!',
-                    onConfirm: () => {
-                      onResetProgress();
-                      setIsProfileOpen(false);
-                    },
-                    isDanger: true
-                  });
-                }}
-                className="w-full py-3 border border-rose-200 hover:bg-rose-50 text-rose-600 hover:text-rose-700 font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                LÀM MỚI TOÀN BỘ TIẾN ĐỘ
-              </button>
             </div>
           </div>
         </div>
