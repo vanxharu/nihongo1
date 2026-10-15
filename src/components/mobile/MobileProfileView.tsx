@@ -26,6 +26,7 @@ import { isSoundEnabled, setSoundEnabled } from '../../utils/audio';
 import ConfirmModal from '../ConfirmModal';
 
 
+import AvatarCropper from '../ui/AvatarCropper';
 import UserAvatar from '../UserAvatar';
 import { getPlayerLevelInfo } from '../../utils/xpSystem';
 import './profile.css';
@@ -54,6 +55,7 @@ export default function MobileProfileView({
   // Profile Details Modal States (for logged-in user)
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [tempName, setTempName] = useState(userProfile.name || (user?.displayName || ''));
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [tempAvatar, setTempAvatar] = useState(userProfile.avatar || '🦊');
   const [tempLevel, setTempLevel] = useState<JLPTLevel>(userProfile.targetLevel || 'N4');
   const [isSavingProfile, setIsSavingProfile] = useState(false);
@@ -195,23 +197,17 @@ export default function MobileProfileView({
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       e.target.value = '';
-                      if (!file) return;
-                      const img = new Image();
-                      const url = URL.createObjectURL(file);
-                      img.onload = () => {
-                        // Cắt vuông giữa, thu về 192px JPEG để lưu gọn (<~15KB) trong hồ sơ.
-                        const s = Math.min(img.width, img.height), N = 192;
-                        const c = document.createElement('canvas');
-                        c.width = c.height = N;
-                        c.getContext('2d')!.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, N, N);
-                        setTempAvatar(c.toDataURL('image/jpeg', 0.85));
-                        URL.revokeObjectURL(url);
-                      };
-                      img.onerror = () => URL.revokeObjectURL(url);
-                      img.src = url;
+                      if (file) setCropSrc(URL.createObjectURL(file));
                     }}
                   />
                 </label>
+                {cropSrc && (
+                  <AvatarCropper
+                    src={cropSrc}
+                    onCancel={() => { URL.revokeObjectURL(cropSrc); setCropSrc(null); }}
+                    onDone={(d) => { setTempAvatar(d); URL.revokeObjectURL(cropSrc); setCropSrc(null); }}
+                  />
+                )}
 
                 <div className="grid grid-cols-6 gap-2 bg-[#12172A] p-2.5 rounded-2xl border border-slate-800">
                   {AVATARS.map((av) => (

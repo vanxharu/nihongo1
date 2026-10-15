@@ -9,6 +9,7 @@ import {
 } from "../../data/achievementsData";
 import { AchievementMascotIcon } from "./AchievementMascotIcon";
 import ShibaMascot from "../mascot/ShibaMascot";
+import SlidingTabs from "../ui/SlidingTabs";
 import "./achievements.css";
 import { readGuestRoadmap } from "../../data/jlptRoadmap";
 interface Props {
@@ -109,21 +110,12 @@ export const AchievementsView: React.FC<Props> = ({ userProfile, onBack }) => {
               onChange={(e) => setSearch(e.target.value)}
             />
           </label>
-          <div aria-label="Trạng thái huy hiệu">
-            {[
-              ["all", "Tất cả"],
-              ["unlocked", "Đã nhận"],
-              ["locked", "Chưa nhận"],
-            ].map(([key, label]) => (
-              <button
-                key={key}
-                aria-pressed={status === key}
-                onClick={() => setStatus(key)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+          <SlidingTabs
+            id="ach-status"
+            value={status}
+            onChange={setStatus}
+            items={[["all", "Tất cả"], ["unlocked", "Đã nhận"], ["locked", "Chưa nhận"]]}
+          />
         </div>
         <nav className="collection-categories" aria-label="Nhóm thành tựu">
           {categories.map(([key, label]) => (

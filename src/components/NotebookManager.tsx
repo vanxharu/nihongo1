@@ -45,6 +45,9 @@ import {
 import { NotebookWord, JLPTLevel } from '../types';
 import { speakJapanese } from '../utils/audio';
 import ShibaMascot, { MascotEmptyState } from './mascot/ShibaMascot';
+import HoldButton from './ui/HoldButton';
+import SlidingTabs from './ui/SlidingTabs';
+import { toast } from './ui/Toasts';
 import { useEscape } from '../hooks/useEscape';
 
 interface NotebookManagerProps {
@@ -400,21 +403,19 @@ export default function NotebookManager({ onNavigateToTab, onStudyReward }: Note
 
         {/* Delete notebook if not default */}
         {selectedNotebookId !== 'all' && !selectedNotebookId.startsWith('default_') && (
-          <button
+          <HoldButton
             id="delete-current-notebook-btn"
-            type="button"
-            onClick={() => {
-              if (confirm(`Bạn có chắc muốn xóa sổ tay "${activeNotebook?.name}"?`)) {
-                deleteNotebook(selectedNotebookId);
-                setSelectedNotebookId('all');
-                loadData();
-              }
+            title="Nhấn giữ để xóa"
+            onConfirm={() => {
+              deleteNotebook(selectedNotebookId);
+              setSelectedNotebookId('all');
+              loadData();
             }}
-            className="text-xs text-rose-500 hover:text-rose-600 hover:underline flex items-center gap-1"
+            className="text-xs text-rose-500 hover:text-rose-600 rounded-lg px-2 py-1"
           >
             <Trash2 className="w-3.5 h-3.5" />
-            Xóa sổ tay này
-          </button>
+            Giữ để xóa sổ tay này
+          </HoldButton>
         )}
       </div>
 
@@ -452,26 +453,22 @@ export default function NotebookManager({ onNavigateToTab, onStudyReward }: Note
               </select>
 
               {/* Status Filter */}
-              <select
-                id="notebook-status-filter"
+              <SlidingTabs<'all' | 'learning' | 'mastered'>
+                id="notebook-status"
                 value={filterStatus}
-                onChange={e => setFilterStatus(e.target.value as any)}
-                className="px-3 py-2 text-xs font-semibold rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              >
-                <option value="all">Tất cả trạng thái</option>
-                <option value="learning">Đang học (Cần ôn lại)</option>
-                <option value="mastered">Đã thuộc (Mastered)</option>
-              </select>
+                onChange={setFilterStatus}
+                items={[['all', 'Tất cả'], ['learning', 'Đang học'], ['mastered', 'Đã thuộc']]}
+              />
             </div>
           </div>
 
           {/* Word List Grid */}
           {filteredWords.length === 0 ? (
             <MascotEmptyState
-              title="Chưa có từ vựng nào trong danh sách này"
+              title={searchQuery || filterStatus !== 'all' || filterLevel !== 'all' ? 'Không có từ nào khớp bộ lọc' : 'Chưa có từ vựng nào trong danh sách này'}
               description="Hãy nhấn nút 'Thêm từ mới' ở trên hoặc tra cứu trong Từ điển / Bài đọc để lưu vào sổ tay cùng Nihon Shiba nhé!"
-              actionText="+ Thêm từ mới vào sổ tay"
-              onAction={() => setIsWordModalOpen(true)}
+              actionText={searchQuery || filterStatus !== 'all' || filterLevel !== 'all' ? 'Xóa bộ lọc' : '+ Thêm từ mới vào sổ tay'}
+              onAction={() => { if (searchQuery || filterStatus !== 'all' || filterLevel !== 'all') { setSearchQuery(''); setFilterStatus('all'); setFilterLevel('all'); } else setIsWordModalOpen(true); }}
               className="py-10"
             />
           ) : (
@@ -592,10 +589,9 @@ export default function NotebookManager({ onNavigateToTab, onStudyReward }: Note
                         id={`delete-word-${word.id}`}
                         type="button"
                         onClick={() => {
-                          if (confirm(`Xóa từ "${word.kanji}" khỏi sổ tay?`)) {
-                            deleteWordFromNotebook(word.id);
-                            loadData();
-                          }
+                          deleteWordFromNotebook(word.id);
+                          loadData();
+                          toast(`Đã xóa "${word.kanji}"`, () => { saveStoredWords([...getStoredWords(), word]); loadData(); });
                         }}
                         className="hover:text-rose-500 transition-colors p-1"
                         title="Xóa từ khỏi sổ"

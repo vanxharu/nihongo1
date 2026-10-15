@@ -49,6 +49,8 @@ const MobileProfileView = lazyWithRetry(() => import('./components/mobile/Mobile
 import SaveToNotebookModal from './components/SaveToNotebookModal';
 import JlptWordDetailModal from './components/JlptWordDetailModal';
 import ShibaMascot from './components/mascot/ShibaMascot';
+import Toasts, { toast } from './components/ui/Toasts';
+import CommandPalette from './components/ui/CommandPalette';
 import OrbitLoader from './components/ui/OrbitLoader';
 
 import { localDateStr } from './utils/localDate';
@@ -115,7 +117,6 @@ export default function App() {
     return () => clearTimeout(t);
   }, []);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
-  const [toast, setToast] = useState<{ message: string; visible: boolean } | null>(null);
 
   // If redirect auth returned with an error, automatically open auth modal with resolution guidance
   useEffect(() => {
@@ -142,19 +143,9 @@ export default function App() {
   // Intercept native browser alert calls and redirect them to our gorgeous custom Toast
   useEffect(() => {
     window.alert = (message: string) => {
-      setToast({ message, visible: true });
+      toast(String(message));
     };
   }, []);
-
-  // Automatically dismiss the custom toast after 4 seconds
-  useEffect(() => {
-    if (toast && toast.visible) {
-      const timer = setTimeout(() => {
-        setToast(prev => prev ? { ...prev, visible: false } : null);
-      }, 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [toast]);
 
   // Scroll to top of main content view
   useEffect(() => {
@@ -367,10 +358,7 @@ export default function App() {
       const tabLabel = tabNames[pos.tab] || pos.tab;
       const detail = pos.lessonName ? `: ${pos.lessonName}` : pos.level ? ` (${pos.level})` : '';
 
-      setToast({
-        message: `✨ Chào mừng trở lại! Đã khôi phục vị trí học gần nhất của bạn tại ${tabLabel}${detail}`,
-        visible: true
-      });
+      toast(`✨ Chào mừng trở lại! Đã khôi phục vị trí học gần nhất của bạn tại ${tabLabel}${detail}`);
     }
   }, [activeProfile.lastPosition, user, location.pathname, navigate]);
 
@@ -481,6 +469,12 @@ export default function App() {
       celebrationRef.current?.triggerCelebration();
     }
   };
+
+  useEffect(() => {
+    const on = () => handleTriggerCelebration();
+    window.addEventListener('app-celebrate', on);
+    return () => window.removeEventListener('app-celebrate', on);
+  });
 
   const handleStudyXp = (activity: string, amount: number) => {
     const day = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh' }).format(new Date());
@@ -918,30 +912,8 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Custom alert Toast notification with Nihon Shiba Mascot */}
-      <AnimatePresence>
-        {toast && toast.visible && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.95 }}
-            className="fixed bottom-20 xl:bottom-6 left-1/2 -translate-x-1/2 z-[120] max-w-sm w-[92%] bg-[#1B223C] border-2 border-[#E89A3C]/60 text-white px-4 py-3 rounded-2xl shadow-2xl shadow-black/80 flex items-center justify-between gap-3 backdrop-blur-xl"
-          >
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-xl bg-[#E89A3C]/20 border border-[#E89A3C]/40 flex items-center justify-center shrink-0">
-                <ShibaMascot pose="happy" size={26} animated={false} />
-              </div>
-              <span className="text-[11px] sm:text-xs font-bold leading-normal text-left text-amber-100">{toast.message}</span>
-            </div>
-            <button
-              onClick={() => setToast({ ...toast, visible: false })}
-              className="px-2.5 py-1 bg-[#242E52] hover:bg-[#E89A3C] active:bg-[#D48628] rounded-lg text-[10px] font-black text-amber-200 hover:text-white transition-colors shrink-0 cursor-pointer"
-            >
-              Đóng
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Toasts />
+      <CommandPalette />
 
       {/* Universal Save to Notebook Modal */}
       <SaveToNotebookModal />

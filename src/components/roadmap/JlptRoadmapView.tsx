@@ -169,6 +169,7 @@ export default function JlptRoadmapView({
     if (complete || !allChecked || saving || preview) return;
     if (await persist(completeRoadmapDay(plan, selected.day), true)) {
       setCelebrate(true);
+      window.dispatchEvent(new Event('app-celebrate'));
       showLearningFeedback("milestone");
     }
   };

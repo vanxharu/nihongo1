@@ -3186,6 +3186,14 @@ if (loading) {
                 }}
                 initial="enter" animate="center" exit="leave"
                 transition={{ duration: reduceCardMotion ? 0 : 0.2, ease: 'easeOut' }}
+                drag={reduceCardMotion ? false : 'x'}
+                dragSnapToOrigin
+                dragElastic={0.5}
+                onDragEnd={(_, info) => {
+                  // Vuốt phải = đã thuộc, vuốt trái = chưa thuộc (cùng logic nút đánh dấu)
+                  if (info.offset.x > 90) handleFlashcardMark(true);
+                  else if (info.offset.x < -90) handleFlashcardMark(false);
+                }}
                 tabIndex={0}
                 role="button"
                 aria-label="Lật thẻ Flashcard (Space)"

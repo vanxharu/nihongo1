@@ -21,6 +21,8 @@ import {
 import {
   calculateUnlockedAchievements,
 } from "../data/achievementsData";
+import ProgressRing from "./ui/ProgressRing";
+import RadarChart from "./ui/RadarChart";
 import "./progressDashboard.css";
 import { readGuestRoadmap } from "../data/jlptRoadmap";
 
@@ -54,7 +56,7 @@ export default function ProgressDashboard({
   ]);
   const [loading, setLoading] = useState(true);
   const [fallback, setFallback] = useState(false);
-  const [range, setRange] = useState<7 | 28>(28);
+  const [range, setRange] = useState<28 | 91>(91);
   const [view, setView] = useState<"overview" | "prediction">("overview");
 
   useEffect(() => {
@@ -144,23 +146,20 @@ export default function ProgressDashboard({
                 <div className="pd-skills">
                   {skills.map((skill) => (
                     <div className="pd-skill-row" key={skill.name}>
-                      <div className="pd-skill-header">
-                        <span
-                          className="pd-skill-pill"
-                          style={{ background: skill.color + "22", color: skill.color }}
-                        >
-                          {skill.name}
-                        </span>
-                        <span className="pd-skill-pct">{skill.percent}% <small className="pd-skill-sub">· {skill.practiced}/{skill.total}</small></span>
+                      <div className="pd-skill-header" style={{ alignItems: "center", gap: 12 }}>
+                        <ProgressRing percent={skill.percent} color={skill.color} />
+                        <div style={{ flex: 1 }}>
+                          <span
+                            className="pd-skill-pill"
+                            style={{ background: skill.color + "22", color: skill.color }}
+                          >
+                            {skill.name}
+                          </span>
+                          <small className="pd-skill-sub" style={{ display: "block", marginTop: 4 }}>{skill.practiced}/{skill.total}</small>
+                        </div>
                         <Link to={skill.href} className="pd-skill-link">
                           Tiếp tục <ArrowRight size={11} />
                         </Link>
-                      </div>
-                      <div className="pd-track">
-                        <div
-                          className="pd-track-fill"
-                          style={{ width: `${skill.percent}%`, background: skill.color }}
-                        />
                       </div>
                     </div>
                   ))}
@@ -176,7 +175,7 @@ export default function ProgressDashboard({
               <div className="pd-card-header">
                 <h2 className="pd-card-title">Nhịp học</h2>
                 <div className="pd-range-pills">
-                  {([7, 28] as const).map((n) => (
+                  {([28, 91] as const).map((n) => (
                     <button
                       key={n}
                       className={`pd-range-pill${range === n ? " active" : ""}`}
@@ -196,7 +195,6 @@ export default function ProgressDashboard({
                     title={`${d.date}: ${d.active ? "Đã học" : "Chưa học"}`}
                     aria-label={`${d.date}: ${d.active ? "đã học" : "chưa ghi nhận"}`}
                   >
-                    {Number(d.date.slice(-2))}
                   </span>
                 ))}
               </div>
@@ -232,6 +230,9 @@ export default function ProgressDashboard({
                   {pred.trendPerWeek !== null && <> · xu hướng {pred.trendPerWeek >= 0 ? "+" : ""}{pred.trendPerWeek} điểm/tuần</>}
                 </div>
               </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center", margin: "8px 0" }}>
+              <RadarChart labels={pred.sections.map((x) => x.name)} values={pred.sections.map((x) => x.rate)} />
             </div>
             <div className="pd-sections-grid">
               {pred.sections.map((s) => (
