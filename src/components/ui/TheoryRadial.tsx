@@ -39,7 +39,7 @@ export default function TheoryRadial({ rect, dir, onPick, onClose }: {
   const cy = dir === 'up' ? rect.top : rect.top + rect.height / 2;
   const clampedX = Math.min(Math.max(cx, 100), window.innerWidth - 100);
   return createPortal(
-    <div ref={root} className="u011" role="menu" aria-label="Lý thuyết" style={{ left: clampedX, top: cy }}>
+    <div ref={root} data-dir={dir} className="u011" role="menu" aria-label="Lý thuyết" style={{ left: clampedX, top: cy }}>
       <div className="u011-halo" />
       {THEORY_ITEMS.map((it, i) => {
         const Icon = it.icon;

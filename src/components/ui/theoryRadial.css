@@ -16,3 +16,6 @@
 @keyframes u011-pop{to{transform:translate(var(--x),var(--y)) scale(1);opacity:1}}
 @keyframes u011-halo{to{transform:scale(1);opacity:1}}
 @media (prefers-reduced-motion:reduce){.u011-item,.u011-halo{animation-duration:.01s;animation-delay:0s}}
+/* fan to the right: label beside the circle so rows don't cover each other */
+.u011[data-dir="right"] .u011-lab{top:50%;left:62px;transform:translateY(-50%)}
+.u011[data-dir="right"] .u011-halo{display:none}
