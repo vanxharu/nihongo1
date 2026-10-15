@@ -186,6 +186,33 @@ export default function MobileProfileView({
                   </button>
                 )}
 
+                <label className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold cursor-pointer bg-[#12172A] border border-slate-700 text-slate-400 hover:text-slate-200">
+                  <span>📷 Tải ảnh từ máy</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      e.target.value = '';
+                      if (!file) return;
+                      const img = new Image();
+                      const url = URL.createObjectURL(file);
+                      img.onload = () => {
+                        // Cắt vuông giữa, thu về 192px JPEG để lưu gọn (<~15KB) trong hồ sơ.
+                        const s = Math.min(img.width, img.height), N = 192;
+                        const c = document.createElement('canvas');
+                        c.width = c.height = N;
+                        c.getContext('2d')!.drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, N, N);
+                        setTempAvatar(c.toDataURL('image/jpeg', 0.85));
+                        URL.revokeObjectURL(url);
+                      };
+                      img.onerror = () => URL.revokeObjectURL(url);
+                      img.src = url;
+                    }}
+                  />
+                </label>
+
                 <div className="grid grid-cols-6 gap-2 bg-[#12172A] p-2.5 rounded-2xl border border-slate-800">
                   {AVATARS.map((av) => (
                     <button

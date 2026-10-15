@@ -474,6 +474,8 @@ const parseDbUser = (dbData: any): UserProfile => {
         const syncData = await syncResponse.json();
         if (syncData.success && syncData.user) {
           const parsed = parseDbUser(syncData.user);
+          // Chưa chọn ảnh riêng (còn emoji mặc định) → dùng ảnh của tài khoản mail.
+          if (firebaseUser.photoURL && (!syncData.user.avatar || parsed.avatar === '🦊')) parsed.avatar = firebaseUser.photoURL;
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
           console.log('[AUTH] Profile: LOADED');
           return parsed;
@@ -492,7 +494,7 @@ const parseDbUser = (dbData: any): UserProfile => {
           console.log('[AUTH] Profile: LOADED');
           return {
             ...parsed,
-            avatar: firebaseUser.photoURL || parsed.avatar,
+            avatar: parsed.avatar && parsed.avatar !== '🦊' ? parsed.avatar : firebaseUser.photoURL || parsed.avatar,
             role: parsed.role || 'user'
           };
         }
