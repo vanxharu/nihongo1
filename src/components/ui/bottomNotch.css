@@ -6,7 +6,7 @@
 .u041-bar{background:var(--ui-surface);box-shadow:0 0 0 1px var(--ui-line);
   -webkit-mask:radial-gradient(circle 38px at calc(var(--x) - 8px) -4px,transparent 96%,#000 100%);mask:radial-gradient(circle 38px at calc(var(--x) - 8px) -4px,transparent 96%,#000 100%)}
 .u041-shadow{box-shadow:0 20px 36px -22px rgba(0,0,0,.5)}
-.u041-bub{position:absolute;left:var(--x);bottom:calc(var(--H) + env(safe-area-inset-bottom,0px) - 30px);width:56px;height:56px;margin-left:-28px;border-radius:50%;
+.u041-bub{position:absolute;left:calc(var(--x) + 8px);bottom:calc(var(--H) + env(safe-area-inset-bottom,0px) - 30px);width:56px;height:56px;margin-left:-28px;border-radius:50%;
   background:linear-gradient(135deg,#e89a3c,#e64556);box-shadow:0 12px 24px -10px rgba(230,69,86,.7)}
 .u041-tabs{position:absolute;left:8px;right:8px;bottom:calc(env(safe-area-inset-bottom,0px));height:var(--H);display:flex;margin:0;padding:0 4px;list-style:none;pointer-events:auto}
 .u041-tabs>li{flex:1;display:flex;min-width:0}

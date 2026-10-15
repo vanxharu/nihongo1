@@ -2,7 +2,7 @@
 @media(max-width:1279px){
  #app-root-container .shiba-floating-anchor [role=button]>.shiba-feedback-bubble{display:flex!important;position:absolute;right:0;top:calc(100% + 8px);width:max-content;max-width:min(360px,calc(100vw - 24px));white-space:normal;margin-right:0;border-radius:14px}
 }
-:root{--app-bottom-space:calc(6rem + env(safe-area-inset-bottom,0px))}
+:root{--app-bottom-space:calc(7rem + env(safe-area-inset-bottom,0px))}
 #app-root-container{height:100dvh;position:relative}
 #app-content-panel,#app-main-view{min-width:0;min-height:0}
 #app-main-view{padding:.75rem .75rem var(--app-bottom-space)!important}
