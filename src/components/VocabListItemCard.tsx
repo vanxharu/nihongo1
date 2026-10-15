@@ -287,18 +287,6 @@ function VocabListItemCardComponent({
             <span className="font-extrabold text-slate-100 font-serif text-lg tracking-tight select-all">
               {numLabel}
             </span>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onToggleMastered?.(v.id); }}
-              className="transition-transform active:scale-90 cursor-pointer flex items-center justify-center"
-              title={isMastered ? 'Đã thuộc' : 'Đánh dấu'}
-            >
-              {isMastered ? (
-                <CheckSquare className="w-6 h-6 text-emerald-400 fill-emerald-950/40" />
-              ) : (
-                <Square className="w-6 h-6 text-slate-400 hover:text-emerald-400" />
-              )}
-            </button>
           </div>
           {/* Word (Kanji & Furigana) */}
           <div className="flex flex-col items-start gap-1 flex-1 min-w-0">
@@ -313,7 +301,7 @@ function VocabListItemCardComponent({
           </div>
           {/* Action Buttons */}
           <div className="flex flex-row sm:flex-col items-center gap-0.5 sm:gap-2 shrink-0 sm:pt-1 ml-auto">
-            <span onClick={(e) => e.stopPropagation()}><HeartLike size={32} className="text-slate-400" pressed={!!isWordStarred} onToggle={(e) => { e.stopPropagation(); onToggleStar(v.id); }} label={isWordStarred ? 'Bỏ yêu thích' : 'Yêu thích'} /></span>
+            <span onClick={(e) => e.stopPropagation()}><HeartLike size={28} className="text-slate-400" pressed={!!isWordStarred} onToggle={(e) => { e.stopPropagation(); onToggleStar(v.id); }} label={isWordStarred ? 'Bỏ yêu thích' : 'Yêu thích'} /></span>
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); onSpeak(v.kanji || v.hiragana, false); }}
@@ -321,6 +309,18 @@ function VocabListItemCardComponent({
               title="Phát âm từ vựng"
             >
               <Volume2 className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onToggleMastered?.(v.id); }}
+              className="transition-transform active:scale-90 cursor-pointer flex items-center justify-center"
+              title={isMastered ? 'Đã thuộc' : 'Đánh dấu'}
+            >
+              {isMastered ? (
+                <CheckSquare className="w-5 h-5 text-emerald-400 fill-emerald-950/40" />
+              ) : (
+                <Square className="w-5 h-5 text-slate-400 hover:text-emerald-400" />
+              )}
             </button>
           </div>
         </div>
