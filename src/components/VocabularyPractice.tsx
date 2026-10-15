@@ -3166,7 +3166,7 @@ if (loading) {
           {selectedMode === 'flashcard' && currentItem && (
             <div className="vocab-flashcard-block w-full min-w-0 bg-[#242b45] border border-[#343d5f] rounded-lg overflow-hidden shadow-md">
               <div className="vocab-flashcard-face relative">
-                <HeartLike size={40} className="vocab-flashcard-star absolute top-2 right-2 z-20 text-slate-400" pressed={!!isStarred[currentItem.id]} onToggle={() => toggleStar(currentItem.id)} label={isStarred[currentItem.id] ? 'Bỏ lưu từ vựng' : 'Lưu từ vựng'} />
+                <div className="vocab-flashcard-star absolute top-2 right-2 z-20"><HeartLike size={40} className="text-slate-400" pressed={!!isStarred[currentItem.id]} onToggle={() => toggleStar(currentItem.id)} label={isStarred[currentItem.id] ? 'Bỏ lưu từ vựng' : 'Lưu từ vựng'} /></div>
                 <button type="button" onClick={handlePrev} aria-label="Thẻ trước" title="Thẻ trước (←)" className="vocab-flashcard-arrow vocab-flashcard-arrow-prev absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-[#1a1f33]/90 text-slate-400 hover:text-white p-2"><ChevronLeft className="w-4 h-4" /></button>
                 <button type="button" onClick={handleNext} aria-label="Thẻ tiếp theo" title="Thẻ tiếp theo (→)" className="vocab-flashcard-arrow vocab-flashcard-arrow-next absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-[#1a1f33]/90 text-slate-400 hover:text-white p-2"><ChevronRight className="w-4 h-4" /></button>
               {/* Main Card Flip Area - Fixed Height so it never changes size when flipping */}
