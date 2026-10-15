@@ -252,10 +252,6 @@ export default function Header({
       >
         {/* Left side: Logo & Breadcrumb and Target Level */}
         <div id="header-pathway" className="flex items-center gap-3 min-w-0">
-          <Link to="/" className="flex items-center gap-2 hover:opacity-95 transition-opacity shrink-0 group" title={`Trang chủ ${BRAND_NAME}`}>
-            <JpStudyLogo size="xs" dark={true} showText={true} showHanko={true} showSubtitle={false} />
-          </Link>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
           <span className="font-bold text-slate-100 tracking-tight truncate">{getTabTitle()}</span>
           <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-[#1B223C] border border-[#E89A3C]/40 text-amber-300 shrink-0">
             JLPT {userProfile.targetLevel}
