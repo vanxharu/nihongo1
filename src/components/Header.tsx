@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { createPortal } from 'react-dom';
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { User, LogIn, ChevronRight, ChevronDown, ChevronLeft, RefreshCw, Trophy, Settings, Menu, Volume2, VolumeX, TrendingUp, BookOpen, CheckCircle2, Bell, Monitor, Flame } from 'lucide-react';
@@ -338,6 +339,8 @@ export default function Header({
         )}
       </div>
 
+      {/* Portal: header có backdrop-blur nên fixed bên trong bị nhốt trong chiều cao header */}
+      {createPortal(<>
       {/* Profile/Settings Drawer overlay */}
       {isProfileOpen && (
         <div 
@@ -612,6 +615,7 @@ export default function Header({
         isDanger={confirmDialog.isDanger}
         onClose={() => setConfirmDialog(p => ({ ...p, isOpen: false }))}
       />
+      </>, document.body)}
 
     </header>
     </>
