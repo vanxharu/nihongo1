@@ -112,10 +112,6 @@ export default function JpStudyLogo({
               <span className={`font-semibold tracking-normal ${subtitleSizes} ${dark ? 'text-slate-400' : 'text-slate-500'}`}>
                 Học tiếng Nhật mỗi ngày
               </span>
-              <span className="hidden sm:inline-block w-1 h-1 rounded-full bg-rose-500/70" />
-              <span className="hidden sm:inline-block text-[10px] font-bold text-amber-400 font-mono">
-                N5—N1
-              </span>
             </div>
           )}
         </div>

@@ -50,7 +50,6 @@ const MobilePracticeHub = lazyWithRetry(() => import('./components/mobile/Mobile
 const MobileProfileView = lazyWithRetry(() => import('./components/mobile/MobileProfileView'));
 import SaveToNotebookModal from './components/SaveToNotebookModal';
 import JlptWordDetailModal from './components/JlptWordDetailModal';
-import ShibaAssistantFloating from './components/mascot/ShibaAssistantFloating';
 import ShibaMascot from './components/mascot/ShibaMascot';
 
 import { localDateStr } from './utils/localDate';
@@ -976,13 +975,6 @@ export default function App() {
 
       {/* Global Floating Vocabulary & Grammar Notifications */}
       <VocabFloatingNotifier onEarnXp={handleEarnXp} />
-
-      {/* Global Floating Nihon Shiba Companion Assistant */}
-      <ShibaAssistantFloating 
-        userProfile={activeProfile} 
-        currentTab={currentTab} 
-        onNavigate={handleTabChange} 
-      />
 
       {/* Modern Mobile & Tablet Bottom Navigation Bar (Visible on mobile/tablet screens < xl) */}
       <MobileBottomNav

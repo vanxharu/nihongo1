@@ -23,7 +23,6 @@ import {
 } from 'lucide-react';
 import JpStudyLogo from './JpStudyLogo';
 import ThemeToggle from './ThemeToggle';
-import ShibaMascot from './mascot/ShibaMascot';
 import { motion } from 'motion/react';
 import { UserProfile } from '../types';
 import { SidebarWindowsInstallCard } from './PwaInstallPrompt';
@@ -187,31 +186,6 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
             />
           ))}
         </nav>
-
-        {/* ── Shiba chat card ── */}
-        <div className="px-2.5 pb-2 u040-fade">
-          <Link
-            to="/chat-ai"
-            onClick={() => { setCurrentTab('japanese-chat'); onClose(); }}
-            className="flex items-center gap-3 p-3 rounded-xl transition-all cursor-pointer group"
-            style={{ background: 'rgba(251,191,36,0.07)', border: '1px solid rgba(251,191,36,0.15)' }}
-          >
-            <div className="w-9 h-9 rounded-lg overflow-hidden shrink-0 flex items-center justify-center"
-              style={{ background: 'rgba(251,191,36,0.12)' }}>
-              <ShibaMascot pose="waving" size={32} animated={false} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[12px] font-bold text-white">Nihon Shiba</span>
-                <span className="text-[9px] font-bold text-amber-400 px-1 py-px rounded"
-                  style={{ background: 'rgba(251,191,36,0.15)' }}>AI</span>
-              </div>
-              <p className="text-[11px] text-slate-400 truncate mt-px group-hover:text-slate-300">
-                Hôm nay cùng học tiếng Nhật nhé!
-              </p>
-            </div>
-          </Link>
-        </div>
 
         {/* Windows install card */}
         <div className="u040-fade"><SidebarWindowsInstallCard /></div>
