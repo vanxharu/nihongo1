@@ -439,7 +439,7 @@ export default function JapaneseLiveVoiceCall({
           },
           level: level,
           responseLength: 'natural',
-          aiProvider: 'chatgpt'
+          
         })
       });
 

@@ -981,6 +981,9 @@ export interface ServerAIConfig {
   openaiApiKey?: string;
   openaiModel?: string; // "gpt-4o-mini", "gpt-4o", "gpt-4.1-turbo", "gpt-3.5-turbo"
   provider?: "chatgpt" | "gemini";
+  freeBaseUrl?: string; // OpenAI-compatible endpoint của model miễn phí
+  freeModel?: string;
+  freeApiKey?: string;
   updatedAt?: string;
 }
 
@@ -1057,6 +1060,41 @@ export async function callOpenAIGPT(options: {
   });
 
   return completion.choices[0]?.message?.content || "";
+}
+
+
+export const FREE_LLM_DEFAULT_URL = "https://text.pollinations.ai/openai";
+export const FREE_LLM_DEFAULT_MODEL = "openai-fast";
+
+export function getFreeLLMConfig() {
+  return {
+    baseUrl: (activeAIConfig.freeBaseUrl || FREE_LLM_DEFAULT_URL).trim(),
+    model: (activeAIConfig.freeModel || FREE_LLM_DEFAULT_MODEL).trim(),
+    apiKey: (activeAIConfig.freeApiKey || "").trim(),
+  };
+}
+
+// Gọi model miễn phí qua giao thức OpenAI-compatible (mặc định Pollinations, không cần key).
+export async function callFreeLLM(options: { prompt: string; systemInstruction?: string; json?: boolean; maxTokens?: number; override?: { baseUrl?: string; model?: string; apiKey?: string } }): Promise<string> {
+  const cfg = { ...getFreeLLMConfig(), ...(options.override || {}) };
+  const messages: any[] = [];
+  if (options.systemInstruction) messages.push({ role: "system", content: options.systemInstruction });
+  messages.push({ role: "user", content: options.prompt });
+  const r = await fetch(cfg.baseUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...(cfg.apiKey ? { Authorization: `Bearer ${cfg.apiKey}` } : {}) },
+    body: JSON.stringify({ model: cfg.model, messages, temperature: 0.7, max_tokens: options.maxTokens || 1500 }),
+    signal: AbortSignal.timeout(45000),
+  });
+  if (!r.ok) throw new Error(`Model miễn phí trả lỗi ${r.status}`);
+  const data: any = await r.json();
+  const text = String(data?.choices?.[0]?.message?.content || "").trim();
+  if (!text) throw new Error("Model miễn phí trả về nội dung rỗng");
+  if (!options.json) return text;
+  const m = text.match(/\{[\s\S]*\}/); // model có thể bọc JSON trong ```
+  if (!m) throw new Error("Model miễn phí không trả JSON hợp lệ");
+  JSON.parse(m[0]);
+  return m[0];
 }
 
 /**
@@ -3930,66 +3968,13 @@ ${conversationHistory}
 Bây giờ, hãy đóng vai ${character?.name || "Đối tác"} và phản hồi lại câu nói cuối cùng của Người học. 
 Hãy nhớ phản hồi tự nhiên, đầy đủ (2-3 câu), tuân thủ đúng trình độ (${difficulty || "N5"}), phong cách nhân vật, và trả về định dạng JSON chính xác.`;
 
-    // 1. Try ChatGPT first for Kaiwa Chat
-    let kaiwaResult: any = null;
-    const activeOpenAIKey = getActiveOpenAIApiKey();
-    const modelToUse = req.body?.model || getActiveOpenAIModel();
-    let kaiwaProvider = `ChatGPT (${modelToUse})`;
-    const reqProvider = req.body?.aiProvider;
-
-    if (reqProvider !== "gemini" && activeOpenAIKey) {
-      try {
-        const rawJson = await callOpenAIGPT({
-          prompt,
-          systemInstruction,
-          model: modelToUse,
-          jsonMode: true
-        });
-        if (rawJson) {
-          kaiwaResult = JSON.parse(rawJson.trim());
-          kaiwaResult.provider = kaiwaProvider;
-          return res.json(kaiwaResult);
-        }
-      } catch (gptErr: any) {
-        console.warn("[Kaiwa Chat] ChatGPT failed, falling back to Gemini:", gptErr?.message || gptErr);
-      }
-    }
-
-    // 2. Fallback to Gemini
     try {
-      const response = await generateGeminiContentWithFallback({
-        model: LATEST_GEMINI_MODEL,
-        contents: prompt,
-        config: {
-          systemInstruction,
-          responseMimeType: "application/json",
-          maxOutputTokens: 1200,
-          temperature: 0.7,
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              japanese: { type: Type.STRING },
-              romaji: { type: Type.STRING },
-              vietnamese: { type: Type.STRING },
-              correction: { type: Type.STRING },
-              hints: { 
-                type: Type.ARRAY,
-                items: { type: Type.STRING }
-              }
-            },
-            required: ["japanese", "romaji", "vietnamese", "correction", "hints"],
-          }
-        }
-      });
-
-      const resultText = response.text;
-      if (resultText) {
-        const aiResponse = JSON.parse(resultText.trim());
-        aiResponse.provider = "Gemini 3.8 Flash";
-        return res.json(aiResponse);
-      }
+      const raw = await callFreeLLM({ prompt, systemInstruction, json: true });
+      const kaiwaResult = JSON.parse(raw);
+      kaiwaResult.provider = getFreeLLMConfig().model;
+      return res.json(kaiwaResult);
     } catch (aiErr) {
-      console.warn("Gemini kaiwa chat fallback:", (aiErr as any)?.message || aiErr);
+      console.warn("[Kaiwa Chat] model miễn phí lỗi:", (aiErr as any)?.message || aiErr);
     }
 
     res.json({
@@ -4070,67 +4055,12 @@ ${conversationHistory}
 必ず単なる1文ではなく、リアクション＋話題の展開＋問いかけを含む2〜4文の豊かな対話を行ってください。`;
 
     let chatData: any = null;
-    const activeOpenAIKey = getActiveOpenAIApiKey();
-    const defaultModel = getActiveOpenAIModel();
-    const selectedModel = (aiProvider && aiProvider.startsWith("gpt-")) ? aiProvider : defaultModel;
-    let usedProviderName = `ChatGPT (${selectedModel})`;
-
-    // Default to ChatGPT unless explicitly specified as 'gemini' or no key configured
-    if (aiProvider !== "gemini" && activeOpenAIKey) {
-      try {
-        const rawJson = await callOpenAIGPT({
-          prompt,
-          systemInstruction,
-          model: selectedModel,
-          jsonMode: true
-        });
-        if (rawJson) {
-          chatData = JSON.parse(rawJson.trim());
-          usedProviderName = `ChatGPT (${selectedModel})`;
-        }
-      } catch (openAiErr: any) {
-        console.warn("[ChatGPT Japanese Chat] Fallback to Gemini due to error:", openAiErr?.message || openAiErr);
-      }
+    try {
+      chatData = JSON.parse(await callFreeLLM({ prompt, systemInstruction, json: true }));
+    } catch (aiErr) {
+      console.warn("[Japanese Chat] model miễn phí lỗi:", (aiErr as any)?.message || aiErr);
     }
-
-    if (!chatData) {
-      usedProviderName = "Gemini 3.8 Flash";
-      try {
-        const response = await generateGeminiContentWithFallback({
-          model: LATEST_GEMINI_MODEL,
-          contents: prompt,
-          config: {
-            systemInstruction,
-            responseMimeType: "application/json",
-            maxOutputTokens: 1500,
-            temperature: 0.7,
-            responseSchema: {
-              type: Type.OBJECT,
-              properties: {
-                japaneseResponse: { type: Type.STRING },
-                furiganaText: { type: Type.STRING },
-                romajiText: { type: Type.STRING },
-                japaneseExplanation: { type: Type.STRING },
-                correctionAdvice: { type: Type.STRING },
-                vietnameseTranslation: { type: Type.STRING },
-                hints: { 
-                  type: Type.ARRAY,
-                  items: { type: Type.STRING }
-                }
-              },
-              required: ["japaneseResponse", "furiganaText", "romajiText", "japaneseExplanation", "correctionAdvice", "vietnameseTranslation", "hints"]
-            }
-          }
-        });
-
-        const resultText = response.text;
-        if (resultText) {
-          chatData = JSON.parse(resultText.trim());
-        }
-      } catch (aiErr) {
-        console.warn("Gemini japanese-chat fallback:", (aiErr as any)?.message || aiErr);
-      }
-    }
+    const usedProviderName = getFreeLLMConfig().model;
 
     if (chatData) {
       chatData.provider = usedProviderName;
@@ -6401,6 +6331,41 @@ app.post('/api/chat-gpt', async (req, res) => {
   } catch (error: any) {
     console.error("Error in /api/chat-gpt:", error);
     res.status(500).json({ error: error.message || "Lỗi xử lý yêu cầu ChatGPT" });
+  }
+});
+
+// Cấu hình model miễn phí cho Chat AI / Kaiwa
+const FREE_LLM_PRESETS = [
+  { id: "pollinations", name: "Pollinations (GPT-OSS 20B)", desc: "Miễn phí, không cần API key. Mặc định.", baseUrl: FREE_LLM_DEFAULT_URL, model: FREE_LLM_DEFAULT_MODEL, needsKey: false },
+  { id: "openrouter", name: "OpenRouter (model :free)", desc: "Cần key miễn phí từ openrouter.ai/keys.", baseUrl: "https://openrouter.ai/api/v1/chat/completions", model: "meta-llama/llama-3.3-70b-instruct:free", needsKey: true },
+  { id: "groq", name: "Groq (Llama 3.3 70B)", desc: "Rất nhanh, key miễn phí từ console.groq.com.", baseUrl: "https://api.groq.com/openai/v1/chat/completions", model: "llama-3.3-70b-versatile", needsKey: true },
+];
+app.get('/api/ai/free-config', requireAuth, requireAdmin, (req, res) => {
+  const c = getFreeLLMConfig();
+  res.json({ ...c, apiKey: undefined, hasKey: !!c.apiKey, presets: FREE_LLM_PRESETS, updatedAt: activeAIConfig.updatedAt });
+});
+app.post('/api/ai/free-config', requireAuth, requireAdmin, (req, res) => {
+  const { baseUrl, model, apiKey } = req.body || {};
+  if (typeof baseUrl !== 'string' || !/^https:\/\//.test(baseUrl.trim())) return res.status(400).json({ error: "Địa chỉ API phải bắt đầu bằng https://" });
+  if (typeof model !== 'string' || !model.trim()) return res.status(400).json({ error: "Thiếu tên model" });
+  activeAIConfig.freeBaseUrl = baseUrl.trim();
+  activeAIConfig.freeModel = model.trim();
+  if (typeof apiKey === 'string') activeAIConfig.freeApiKey = apiKey.trim(); // chuỗi rỗng = xóa key
+  activeAIConfig.updatedAt = new Date().toISOString();
+  try { fs.writeFileSync(AI_CONFIG_FILE, JSON.stringify(activeAIConfig, null, 2), 'utf-8'); } catch (e) { console.warn("[AI Config] không lưu được:", e); }
+  res.json({ success: true });
+});
+app.post('/api/ai/free-test', requireAuth, requireAdmin, async (req, res) => {
+  const { baseUrl, model, apiKey } = req.body || {};
+  const started = Date.now();
+  try {
+    const reply = await callFreeLLM({
+      prompt: "Chào bạn bằng một câu tiếng Nhật ngắn.", maxTokens: 200,
+      override: { ...(baseUrl ? { baseUrl } : {}), ...(model ? { model } : {}), ...(apiKey ? { apiKey } : {}) },
+    });
+    res.json({ success: true, reply, ms: Date.now() - started });
+  } catch (err: any) {
+    res.status(400).json({ success: false, error: err?.message || String(err) });
   }
 });
 

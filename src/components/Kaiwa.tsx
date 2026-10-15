@@ -495,7 +495,7 @@ export default function Kaiwa() {
           context: activeTopic.context,
           difficulty: activeDifficulty,
           character: activeCharacter,
-          aiProvider: 'chatgpt'
+          
         }),
         signal: controller.signal
       });

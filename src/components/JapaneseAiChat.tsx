@@ -382,7 +382,6 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   const [responseLength, setResponseLength] = useState<'natural' | 'detailed' | 'concise'>(
     savedSession.current?.responseLength || 'natural'
   );
-  const [aiProvider, setAiProvider] = useState<'gemini' | 'chatgpt'>('chatgpt');
 
   // UI state
   const [isLiveVoiceOpen, setIsLiveVoiceOpen] = useState<boolean>(false);
@@ -436,7 +435,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
         furigana: initialGreeting.furigana,
         explanation: initialGreeting.explanation,
         vietnameseTranslation: initialGreeting.vietnamese,
-        provider: 'ChatGPT',
+        provider: 'AI',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ];
@@ -874,8 +873,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
             speakingStyle: selectedPersona.speakingStyle
           },
           level: selectedLevel,
-          responseLength,
-          aiProvider
+          responseLength
         })
       });
 
@@ -894,7 +892,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
         explanation: data.japaneseExplanation,
         correctionAdvice: data.correctionAdvice,
         vietnameseTranslation: data.vietnameseTranslation,
-        provider: data.provider || (aiProvider === 'chatgpt' ? 'ChatGPT (GPT-4o)' : 'Gemini 3.8'),
+        provider: data.provider || 'AI',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
 
@@ -1569,35 +1567,6 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
               </div>
 
               <div className="space-y-3.5 text-xs">
-                {/* AI Provider Switcher */}
-                <div className="space-y-1.5">
-                  <span className="text-slate-300 font-bold">Mô hình AI:</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setAiProvider('chatgpt')}
-                      className={`p-2.5 rounded-xl text-xs font-bold border transition cursor-pointer text-center ${
-                        aiProvider === 'chatgpt'
-                          ? 'bg-emerald-950/70 border-emerald-500 text-emerald-300 shadow-xs'
-                          : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
-                      }`}
-                    >
-                      🤖 ChatGPT (GPT-4o)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setAiProvider('gemini')}
-                      className={`p-2.5 rounded-xl text-xs font-bold border transition cursor-pointer text-center ${
-                        aiProvider === 'gemini'
-                          ? 'bg-blue-950/70 border-blue-500 text-blue-300 shadow-xs'
-                          : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
-                      }`}
-                    >
-                      ⚡ Gemini 3.8 Flash
-                    </button>
-                  </div>
-                </div>
-
                 {/* Speed control */}
                 <div className="space-y-1.5">
                   <span className="text-slate-300 font-bold">Tốc độ giọng đọc Nhật:</span>

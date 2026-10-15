@@ -29,7 +29,10 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // server.ts
 var server_exports = {};
 __export(server_exports, {
+  FREE_LLM_DEFAULT_MODEL: () => FREE_LLM_DEFAULT_MODEL,
+  FREE_LLM_DEFAULT_URL: () => FREE_LLM_DEFAULT_URL,
   LATEST_GEMINI_MODEL: () => LATEST_GEMINI_MODEL,
+  callFreeLLM: () => callFreeLLM,
   callOpenAIGPT: () => callOpenAIGPT,
   callUnifiedAI: () => callUnifiedAI,
   default: () => server_default,
@@ -37,6 +40,7 @@ __export(server_exports, {
   getActiveAIProvider: () => getActiveAIProvider,
   getActiveOpenAIApiKey: () => getActiveOpenAIApiKey,
   getActiveOpenAIModel: () => getActiveOpenAIModel,
+  getFreeLLMConfig: () => getFreeLLMConfig,
   getOpenAIClient: () => getOpenAIClient
 });
 module.exports = __toCommonJS(server_exports);
@@ -70949,6 +70953,36 @@ async function callOpenAIGPT(options) {
   });
   return completion.choices[0]?.message?.content || "";
 }
+var FREE_LLM_DEFAULT_URL = "https://text.pollinations.ai/openai";
+var FREE_LLM_DEFAULT_MODEL = "openai-fast";
+function getFreeLLMConfig() {
+  return {
+    baseUrl: (activeAIConfig.freeBaseUrl || FREE_LLM_DEFAULT_URL).trim(),
+    model: (activeAIConfig.freeModel || FREE_LLM_DEFAULT_MODEL).trim(),
+    apiKey: (activeAIConfig.freeApiKey || "").trim()
+  };
+}
+async function callFreeLLM(options) {
+  const cfg = { ...getFreeLLMConfig(), ...options.override || {} };
+  const messages = [];
+  if (options.systemInstruction) messages.push({ role: "system", content: options.systemInstruction });
+  messages.push({ role: "user", content: options.prompt });
+  const r = await fetch(cfg.baseUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...cfg.apiKey ? { Authorization: `Bearer ${cfg.apiKey}` } : {} },
+    body: JSON.stringify({ model: cfg.model, messages, temperature: 0.7, max_tokens: options.maxTokens || 1500 }),
+    signal: AbortSignal.timeout(45e3)
+  });
+  if (!r.ok) throw new Error(`Model mi\u1EC5n ph\xED tr\u1EA3 l\u1ED7i ${r.status}`);
+  const data = await r.json();
+  const text2 = String(data?.choices?.[0]?.message?.content || "").trim();
+  if (!text2) throw new Error("Model mi\u1EC5n ph\xED tr\u1EA3 v\u1EC1 n\u1ED9i dung r\u1ED7ng");
+  if (!options.json) return text2;
+  const m = text2.match(/\{[\s\S]*\}/);
+  if (!m) throw new Error("Model mi\u1EC5n ph\xED kh\xF4ng tr\u1EA3 JSON h\u1EE3p l\u1EC7");
+  JSON.parse(m[0]);
+  return m[0];
+}
 async function callUnifiedAI(options) {
   const preferred = getActiveAIProvider();
   const apiKey = getActiveOpenAIApiKey();
@@ -73569,61 +73603,13 @@ ${conversationHistory}
 
 B\xE2y gi\u1EDD, h\xE3y \u0111\xF3ng vai ${character?.name || "\u0110\u1ED1i t\xE1c"} v\xE0 ph\u1EA3n h\u1ED3i l\u1EA1i c\xE2u n\xF3i cu\u1ED1i c\xF9ng c\u1EE7a Ng\u01B0\u1EDDi h\u1ECDc. 
 H\xE3y nh\u1EDB ph\u1EA3n h\u1ED3i t\u1EF1 nhi\xEAn, \u0111\u1EA7y \u0111\u1EE7 (2-3 c\xE2u), tu\xE2n th\u1EE7 \u0111\xFAng tr\xECnh \u0111\u1ED9 (${difficulty || "N5"}), phong c\xE1ch nh\xE2n v\u1EADt, v\xE0 tr\u1EA3 v\u1EC1 \u0111\u1ECBnh d\u1EA1ng JSON ch\xEDnh x\xE1c.`;
-    let kaiwaResult = null;
-    const activeOpenAIKey = getActiveOpenAIApiKey();
-    const modelToUse = req.body?.model || getActiveOpenAIModel();
-    let kaiwaProvider = `ChatGPT (${modelToUse})`;
-    const reqProvider = req.body?.aiProvider;
-    if (reqProvider !== "gemini" && activeOpenAIKey) {
-      try {
-        const rawJson = await callOpenAIGPT({
-          prompt,
-          systemInstruction,
-          model: modelToUse,
-          jsonMode: true
-        });
-        if (rawJson) {
-          kaiwaResult = JSON.parse(rawJson.trim());
-          kaiwaResult.provider = kaiwaProvider;
-          return res.json(kaiwaResult);
-        }
-      } catch (gptErr) {
-        console.warn("[Kaiwa Chat] ChatGPT failed, falling back to Gemini:", gptErr?.message || gptErr);
-      }
-    }
     try {
-      const response = await generateGeminiContentWithFallback({
-        model: LATEST_GEMINI_MODEL,
-        contents: prompt,
-        config: {
-          systemInstruction,
-          responseMimeType: "application/json",
-          maxOutputTokens: 1200,
-          temperature: 0.7,
-          responseSchema: {
-            type: import_genai3.Type.OBJECT,
-            properties: {
-              japanese: { type: import_genai3.Type.STRING },
-              romaji: { type: import_genai3.Type.STRING },
-              vietnamese: { type: import_genai3.Type.STRING },
-              correction: { type: import_genai3.Type.STRING },
-              hints: {
-                type: import_genai3.Type.ARRAY,
-                items: { type: import_genai3.Type.STRING }
-              }
-            },
-            required: ["japanese", "romaji", "vietnamese", "correction", "hints"]
-          }
-        }
-      });
-      const resultText = response.text;
-      if (resultText) {
-        const aiResponse = JSON.parse(resultText.trim());
-        aiResponse.provider = "Gemini 3.8 Flash";
-        return res.json(aiResponse);
-      }
+      const raw = await callFreeLLM({ prompt, systemInstruction, json: true });
+      const kaiwaResult = JSON.parse(raw);
+      kaiwaResult.provider = getFreeLLMConfig().model;
+      return res.json(kaiwaResult);
     } catch (aiErr) {
-      console.warn("Gemini kaiwa chat fallback:", aiErr?.message || aiErr);
+      console.warn("[Kaiwa Chat] model mi\u1EC5n ph\xED l\u1ED7i:", aiErr?.message || aiErr);
     }
     res.json({
       japanese: "\u3068\u3066\u3082\u4E0A\u624B\u3067\u3059\u306D\uFF01\u305D\u306E\u8ABF\u5B50\u3067\u3069\u3093\u3069\u3093\u8A71\u3057\u307E\u3057\u3087\u3046\u3002\u6B21\u306B\u4F55\u304B\u6C17\u306B\u306A\u308B\u3053\u3068\u306F\u3042\u308A\u307E\u3059\u304B\uFF1F",
@@ -73693,63 +73679,12 @@ ${conversationHistory}
 \u4E0A\u8A18\u306E\u4F1A\u8A71\u3092\u8E0F\u307E\u3048\u3066\u3001\u5B66\u7FD2\u8005\u306E\u6700\u5F8C\u306E\u767A\u8A00\u306B\u3010100%\u65E5\u672C\u8A9E\u3011\u3067\u81EA\u7136\u306B\u8FD4\u7B54\u3057\u3066\u304F\u3060\u3055\u3044\u3002
 \u5FC5\u305A\u5358\u306A\u308B1\u6587\u3067\u306F\u306A\u304F\u3001\u30EA\u30A2\u30AF\u30B7\u30E7\u30F3\uFF0B\u8A71\u984C\u306E\u5C55\u958B\uFF0B\u554F\u3044\u304B\u3051\u3092\u542B\u30802\u301C4\u6587\u306E\u8C4A\u304B\u306A\u5BFE\u8A71\u3092\u884C\u3063\u3066\u304F\u3060\u3055\u3044\u3002`;
     let chatData = null;
-    const activeOpenAIKey = getActiveOpenAIApiKey();
-    const defaultModel = getActiveOpenAIModel();
-    const selectedModel = aiProvider && aiProvider.startsWith("gpt-") ? aiProvider : defaultModel;
-    let usedProviderName = `ChatGPT (${selectedModel})`;
-    if (aiProvider !== "gemini" && activeOpenAIKey) {
-      try {
-        const rawJson = await callOpenAIGPT({
-          prompt,
-          systemInstruction,
-          model: selectedModel,
-          jsonMode: true
-        });
-        if (rawJson) {
-          chatData = JSON.parse(rawJson.trim());
-          usedProviderName = `ChatGPT (${selectedModel})`;
-        }
-      } catch (openAiErr) {
-        console.warn("[ChatGPT Japanese Chat] Fallback to Gemini due to error:", openAiErr?.message || openAiErr);
-      }
+    try {
+      chatData = JSON.parse(await callFreeLLM({ prompt, systemInstruction, json: true }));
+    } catch (aiErr) {
+      console.warn("[Japanese Chat] model mi\u1EC5n ph\xED l\u1ED7i:", aiErr?.message || aiErr);
     }
-    if (!chatData) {
-      usedProviderName = "Gemini 3.8 Flash";
-      try {
-        const response = await generateGeminiContentWithFallback({
-          model: LATEST_GEMINI_MODEL,
-          contents: prompt,
-          config: {
-            systemInstruction,
-            responseMimeType: "application/json",
-            maxOutputTokens: 1500,
-            temperature: 0.7,
-            responseSchema: {
-              type: import_genai3.Type.OBJECT,
-              properties: {
-                japaneseResponse: { type: import_genai3.Type.STRING },
-                furiganaText: { type: import_genai3.Type.STRING },
-                romajiText: { type: import_genai3.Type.STRING },
-                japaneseExplanation: { type: import_genai3.Type.STRING },
-                correctionAdvice: { type: import_genai3.Type.STRING },
-                vietnameseTranslation: { type: import_genai3.Type.STRING },
-                hints: {
-                  type: import_genai3.Type.ARRAY,
-                  items: { type: import_genai3.Type.STRING }
-                }
-              },
-              required: ["japaneseResponse", "furiganaText", "romajiText", "japaneseExplanation", "correctionAdvice", "vietnameseTranslation", "hints"]
-            }
-          }
-        });
-        const resultText = response.text;
-        if (resultText) {
-          chatData = JSON.parse(resultText.trim());
-        }
-      } catch (aiErr) {
-        console.warn("Gemini japanese-chat fallback:", aiErr?.message || aiErr);
-      }
-    }
+    const usedProviderName = getFreeLLMConfig().model;
     if (chatData) {
       chatData.provider = usedProviderName;
     }
@@ -75757,6 +75692,44 @@ app.post("/api/chat-gpt", async (req, res) => {
     res.status(500).json({ error: error.message || "L\u1ED7i x\u1EED l\xFD y\xEAu c\u1EA7u ChatGPT" });
   }
 });
+var FREE_LLM_PRESETS = [
+  { id: "pollinations", name: "Pollinations (GPT-OSS 20B)", desc: "Mi\u1EC5n ph\xED, kh\xF4ng c\u1EA7n API key. M\u1EB7c \u0111\u1ECBnh.", baseUrl: FREE_LLM_DEFAULT_URL, model: FREE_LLM_DEFAULT_MODEL, needsKey: false },
+  { id: "openrouter", name: "OpenRouter (model :free)", desc: "C\u1EA7n key mi\u1EC5n ph\xED t\u1EEB openrouter.ai/keys.", baseUrl: "https://openrouter.ai/api/v1/chat/completions", model: "meta-llama/llama-3.3-70b-instruct:free", needsKey: true },
+  { id: "groq", name: "Groq (Llama 3.3 70B)", desc: "R\u1EA5t nhanh, key mi\u1EC5n ph\xED t\u1EEB console.groq.com.", baseUrl: "https://api.groq.com/openai/v1/chat/completions", model: "llama-3.3-70b-versatile", needsKey: true }
+];
+app.get("/api/ai/free-config", requireAuth, requireAdmin, (req, res) => {
+  const c = getFreeLLMConfig();
+  res.json({ ...c, apiKey: void 0, hasKey: !!c.apiKey, presets: FREE_LLM_PRESETS, updatedAt: activeAIConfig.updatedAt });
+});
+app.post("/api/ai/free-config", requireAuth, requireAdmin, (req, res) => {
+  const { baseUrl, model, apiKey } = req.body || {};
+  if (typeof baseUrl !== "string" || !/^https:\/\//.test(baseUrl.trim())) return res.status(400).json({ error: "\u0110\u1ECBa ch\u1EC9 API ph\u1EA3i b\u1EAFt \u0111\u1EA7u b\u1EB1ng https://" });
+  if (typeof model !== "string" || !model.trim()) return res.status(400).json({ error: "Thi\u1EBFu t\xEAn model" });
+  activeAIConfig.freeBaseUrl = baseUrl.trim();
+  activeAIConfig.freeModel = model.trim();
+  if (typeof apiKey === "string") activeAIConfig.freeApiKey = apiKey.trim();
+  activeAIConfig.updatedAt = (/* @__PURE__ */ new Date()).toISOString();
+  try {
+    import_fs.default.writeFileSync(AI_CONFIG_FILE, JSON.stringify(activeAIConfig, null, 2), "utf-8");
+  } catch (e) {
+    console.warn("[AI Config] kh\xF4ng l\u01B0u \u0111\u01B0\u1EE3c:", e);
+  }
+  res.json({ success: true });
+});
+app.post("/api/ai/free-test", requireAuth, requireAdmin, async (req, res) => {
+  const { baseUrl, model, apiKey } = req.body || {};
+  const started = Date.now();
+  try {
+    const reply = await callFreeLLM({
+      prompt: "Ch\xE0o b\u1EA1n b\u1EB1ng m\u1ED9t c\xE2u ti\u1EBFng Nh\u1EADt ng\u1EAFn.",
+      maxTokens: 200,
+      override: { ...baseUrl ? { baseUrl } : {}, ...model ? { model } : {}, ...apiKey ? { apiKey } : {} }
+    });
+    res.json({ success: true, reply, ms: Date.now() - started });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err?.message || String(err) });
+  }
+});
 app.get("/api/ai/provider-status", (req, res) => {
   const openAiKey = getActiveOpenAIApiKey();
   res.json({
@@ -76752,13 +76725,17 @@ if (process.env.VERCEL) {
 var server_default = app;
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  FREE_LLM_DEFAULT_MODEL,
+  FREE_LLM_DEFAULT_URL,
   LATEST_GEMINI_MODEL,
+  callFreeLLM,
   callOpenAIGPT,
   callUnifiedAI,
   generateGeminiContentWithFallback,
   getActiveAIProvider,
   getActiveOpenAIApiKey,
   getActiveOpenAIModel,
+  getFreeLLMConfig,
   getOpenAIClient
 });
 /**
