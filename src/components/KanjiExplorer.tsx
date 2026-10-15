@@ -17,6 +17,7 @@ import {
   Download,
   BookOpen,
   Play,
+  Shuffle,
   RotateCcw,
   Edit3,
   X,
@@ -849,16 +850,16 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
                   : 'bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-200'
               }`}
             >
-              <span>⏰ Ôn tập ({srsCount})</span>
+              <span>Ôn tập · {srsCount}</span>
             </button>
           )}
 
           <button
             onClick={() => setIsWorksheetModalOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 rounded-xl shadow-xs transition-all cursor-pointer whitespace-nowrap"
+            className="flex items-center gap-1.5 h-9 px-4 text-xs font-bold text-slate-700 border border-slate-200 hover:bg-slate-50 rounded-full transition-all cursor-pointer whitespace-nowrap"
           >
             <Grid className="w-3.5 h-3.5" />
-            <span>Tạo vở luyện viết Genkouyoushi</span>
+            <span>Vở luyện viết</span>
           </button>
         </div>
       </div>
@@ -877,7 +878,7 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
                 setShowFlashcardAnswer(prev => !prev);
               }
             }}
-            className="w-full max-w-[720px] mx-auto min-w-0 bg-white border-2 border-slate-200/90 hover:border-indigo-300 focus:border-indigo-500 focus:outline-none rounded-3xl min-h-[500px] sm:min-h-[540px] text-center cursor-pointer transition-all shadow-md hover:shadow-xl shadow-slate-200/50 relative overflow-hidden flex flex-col select-none group"
+            className="w-full max-w-[720px] mx-auto min-w-0 bg-white border-2 border-slate-200/90 hover:border-indigo-300 focus:border-indigo-500 focus:outline-none rounded-3xl min-h-[420px] sm:min-h-[460px] text-center cursor-pointer transition-all shadow-md hover:shadow-xl shadow-slate-200/50 relative overflow-hidden flex flex-col select-none group"
           >
             {/* Top decorative accent bar */}
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-emerald-400 via-indigo-500 to-amber-400 z-30" />
@@ -888,7 +889,7 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
             </div>
 
             {/* Top Action Bar Header */}
-            <div className="w-full flex items-center justify-between px-3.5 py-2.5 sm:px-5 sm:py-3 shrink-0 relative z-20 border-b border-slate-100 bg-slate-50/50">
+            <div className="w-full flex items-center justify-between px-3.5 py-2.5 sm:px-5 sm:py-3 shrink-0 relative z-20 ">
               <div className="flex items-center gap-2">
                 {userProfile.role === 'admin' && (
                   <button
@@ -902,20 +903,11 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
                     <Edit3 className="w-3.5 h-3.5" />
                   </button>
                 )}
-                <span className={`text-[10px] sm:text-xs font-black uppercase tracking-wider font-mono px-2.5 py-1 rounded-full border shadow-3xs flex items-center gap-1.5 ${
-                  showFlashcardAnswer 
-                    ? 'bg-amber-50 text-amber-900 border-amber-200' 
-                    : 'bg-indigo-50 text-indigo-900 border-indigo-200'
-                }`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${showFlashcardAnswer ? 'bg-amber-500' : 'bg-indigo-500'}`} />
-                  {showFlashcardAnswer ? 'Mặt sau (Mẹo nhớ AI & Chi tiết)' : 'Mặt trước (Hán tự)'}
-                </span>
               </div>
 
               <div className="text-[10px] sm:text-[11px] font-bold text-slate-600 bg-white hover:bg-slate-100 border border-slate-200 px-3 py-1 rounded-full flex items-center gap-1.5 transition-all shadow-3xs group-hover:border-indigo-300">
                 <RotateCcw className="w-3 h-3 text-indigo-500 group-hover:rotate-180 transition-transform duration-300" />
-                <span>Lật thẻ</span>
-                <kbd className="hidden sm:inline px-1 py-0.2 rounded bg-slate-100 border border-slate-200 text-[9px] font-mono text-slate-500">Space</kbd>
+                <span>{showFlashcardAnswer ? 'Mặt trước' : 'Lật thẻ'}</span>
               </div>
             </div>
 
@@ -940,7 +932,7 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
                         const assoc = currentKanji?.character ? getKanjiAssociativeColor(currentKanji.character) : null;
                         return (
                           <div className="relative">
-                            <div className={`w-28 h-28 sm:w-36 sm:h-36 rounded-3xl border-2 flex items-center justify-center font-bold font-display text-5xl sm:text-6xl shadow-lg transition-all hover:scale-105 select-none ${
+                            <div className={`w-36 h-36 sm:w-44 sm:h-44 rounded-[2rem] border flex items-center justify-center font-bold font-display text-7xl sm:text-8xl transition-all hover:scale-105 select-none ${
                               assoc ? `${assoc?.bg || ''} ${assoc?.text || ''} ${assoc?.border || ''}` : 'bg-slate-100 text-slate-800 border-slate-300'
                             }`}>
                               {currentKanji?.character}
@@ -962,28 +954,17 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
                       })()}
 
                       <div className="space-y-2 text-center">
-                        <div className="flex items-center justify-center gap-2 flex-wrap">
-                          <span className="text-xs font-bold text-sky-800 font-mono bg-sky-50 border border-sky-200 px-3 py-1 rounded-full shadow-3xs">
-                            Số nét: <strong className="text-sky-950 font-black">{currentKanji?.strokesCount || '-'}</strong> nét
-                          </span>
-                          {currentKanji && (
-                            <span className="text-xs font-bold text-purple-800 bg-purple-50 border border-purple-200 px-3 py-1 rounded-full shadow-3xs">
-                              Nhóm: {getKanjiCategory(currentKanji.character).name}
-                            </span>
-                          )}
-                          <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full shadow-3xs">
-                            Cấp độ: {userProfile.targetLevel}
-                          </span>
-                        </div>
+                        <p className="text-sm font-semibold text-slate-500">
+                          {currentKanji?.strokesCount || '-'} nét
+                          {currentKanji && <> · {getKanjiCategory(currentKanji.character).name}</>}
+                          {' · '}{userProfile.targetLevel}
+                        </p>
                       </div>
                     </div>
 
                     {/* Bottom Flip Reminder */}
                     <div className="w-full pb-1">
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-500 shadow-3xs">
-                        <Lightbulb className="w-3.5 h-3.5 text-amber-500" />
-                        <span>Chạm vào thẻ để xem Âm Ôn, Âm Khôn & Mẹo nhớ</span>
-                      </div>
+                      <p className="text-xs text-slate-400 mt-8">Chạm để xem âm Ôn, âm Khôn và mẹo nhớ</p>
                     </div>
                   </motion.div>
                 ) : (
@@ -1178,19 +1159,19 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
             <div className="flex items-center gap-1.5">
               <button 
                 onClick={() => setIsShuffle(!isShuffle)}
-                className={`flex items-center gap-1 px-3 py-1.5 border rounded-xl text-xs font-bold transition-all cursor-pointer shadow-3xs ${
+                className={`flex items-center gap-1.5 h-9 px-4 border rounded-full text-xs font-bold transition-all cursor-pointer ${
                   isShuffle ? 'bg-indigo-600 border-indigo-600 text-white shadow-xs' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                 }`}
               >
-                <span>🔀 Ngẫu nhiên</span>
+                <Shuffle className="w-3.5 h-3.5" /><span>Ngẫu nhiên</span>
               </button>
               <button 
                 onClick={() => setIsAutoplay(!isAutoplay)}
-                className={`flex items-center gap-1 px-3 py-1.5 border rounded-xl text-xs font-bold transition-all cursor-pointer shadow-3xs ${
+                className={`flex items-center gap-1.5 h-9 px-4 border rounded-full text-xs font-bold transition-all cursor-pointer ${
                   isAutoplay ? 'bg-amber-500 border-amber-500 text-white shadow-xs animate-pulse' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                 }`}
               >
-                <span>▶️ Tự động</span>
+                <Play className="w-3.5 h-3.5" /><span>Tự động</span>
               </button>
             </div>
           </div>
@@ -1199,10 +1180,10 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
         <div className="w-full max-w-[720px] bg-white border border-slate-200/90 rounded-2xl p-3.5 sm:p-4 shadow-sm space-y-3">
           <div className="flex items-center justify-between border-b border-slate-100 pb-2">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <span>Bảng danh sách Hán tự</span>
+              <span>Danh sách Hán tự</span>
               <span className="text-[10px] text-slate-400 font-normal">({filteredKanji.length} chữ)</span>
             </h3>
-            <span className="text-[10px] text-slate-400">Nhấn để chọn nhanh</span>
+            
           </div>
 
           {/* Kanji Matrix Grid - Compact, denser grid */}
