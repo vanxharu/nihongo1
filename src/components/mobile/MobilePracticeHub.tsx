@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useSrsAuto } from '../../utils/srsMode';
 import '../ui/todayGoals.css';
 import { localDateStr } from '../../utils/localDate';
 import {
@@ -33,6 +34,7 @@ type Tile = { id: string; label: string; to: string; sub: string; pct?: number; 
 const TAB_LABEL: Record<string, string> = { vocabulary: 'Từ vựng', grammar: 'Ngữ pháp', kanji: 'Kanji', reading: 'Đọc hiểu', exam: 'Luyện thi', 'japanese-chat': 'Kaiwa' };
 
 export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePracticeHubProps) {
+  const [srsOn] = useSrsAuto();
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [examHistory, setExamHistory] = useState<ExamHistoryRecord[]>([]);
 
@@ -102,8 +104,8 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
       </div>
 
       {/* SRS tự động: từ đến hạn ôn hôm nay */}
-      {srsDue > 0 && (
-        <Link to="/tango?srs=1" id="btn-srs-auto" className="flex items-center gap-3 rounded-xl bg-[#121927] border border-[#1b253b] px-3 py-2 active:scale-[.99]">
+      {srsOn && srsDue > 0 && (
+        <Link to="/tango" id="btn-srs-auto" className="flex items-center gap-3 rounded-xl bg-[#121927] border border-[#1b253b] px-3 py-2 active:scale-[.99]">
           <div className="flex-1 min-w-0">
             <div className="text-[11px] text-slate-400">Ôn lặp lại ngắt quãng (SRS)</div>
             <div className="text-sm font-bold text-white truncate">{srsDue} từ đến hạn ôn hôm nay</div>

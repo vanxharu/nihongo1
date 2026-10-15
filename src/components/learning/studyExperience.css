@@ -160,3 +160,8 @@
 .study-exam .study-exam-actions button{min-height:32px;padding:4px 12px}
 .study-exam .study-level{flex:none;min-width:40px;text-align:center}
 @media(max-width:600px){.study-exam .study-exam-card{flex-wrap:wrap}.study-exam .study-exam-main{flex-basis:calc(100% - 60px)}.study-exam .study-exam-actions{width:100%}.study-exam .study-exam-actions button:first-child{flex:1}}
+
+.study-srs-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:10px 14px;border-radius:14px;border:1px solid var(--ui-line);background:var(--ui-surface);text-align:left;cursor:pointer}
+.study-srs-bar b{font-size:14px}
+.study-srs-bar span{font-size:12px;font-weight:700;padding:6px 12px;border-radius:10px;background:var(--ui-primary,#e64556);color:#fff}
+.study-exam-head{align-items:center}

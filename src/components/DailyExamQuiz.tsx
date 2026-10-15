@@ -4,7 +4,7 @@
  */
 
 import { Link } from 'react-router-dom';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   FileText, 
   Clock, 
@@ -43,6 +43,9 @@ import { DailyExam, ExamQuestion, UserProfile, ExamHistoryRecord } from '../type
 import { DAILY_EXAMS } from '../data';
 import { JLPT_PAST_EXAMS } from '../data/jlptExams';
 import { ensureFullExamQuestions } from '../data/jlptExamGenerator';
+import SrsSwitch from './ui/SrsSwitch';
+import { calculateSRS } from '../utils/srs';
+import { dueSrsQuestions, readSrsAuto, readSrsQuestions, useSrsAuto, writeSrsQuestions } from '../utils/srsMode';
 import { JlptOfficialScoreReport } from './JlptOfficialScoreReport';
 import { JlptRealBookletExam } from './JlptRealBookletExam';
 import { JlptModernExamView } from './exam/JlptModernExamView';
@@ -861,6 +864,17 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
       }
     });
 
+    // SRS tự động: câu sai vào lịch ôn (SM-2); câu đúng lần ôn sau thì giãn dần, đủ 4 lần đúng thì ra khỏi lịch.
+    if (readSrsAuto()) {
+      const rec = readSrsQuestions();
+      relevantQuestions.forEach(q => {
+        const prev = rec[q.id];
+        if (userAnswers[q.id] !== q.correctIndex) rec[q.id] = { question: q, srs: calculateSRS(prev?.srs ?? null, 2) };
+        else if (prev) { const next = calculateSRS(prev.srs, 5); if (next.repetitions >= 4) delete rec[q.id]; else rec[q.id] = { ...prev, srs: next }; }
+      });
+      writeSrsQuestions(rec);
+    }
+
     const xpEarned = correctCount * 30 + 30; // 30 XP per correct + 30 completion bonus
     onEarnXp(xpEarned);
 
@@ -1012,8 +1026,11 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     : null;
   const isPartTimeUp = currentQuestionPart ? (partTimes[currentQuestionPart] ?? 0) <= 0 : false;
 
+  const [srsOn] = useSrsAuto();
+  const srsDue = useMemo(() => (srsOn ? dueSrsQuestions() : []), [srsOn, isPlaying, isSubmitted]);
   const renderMainTabsHeader = () => <>
-    <div className="study-exam-head"><h1>Luyện thi JLPT</h1><span>{userProfile.targetLevel || 'N4'} · {allExams.length} đề · {userProfile.dailyTestResults?.length || 0} lượt làm</span><button type="button" onClick={() => setShowHistoryModal(true)}><History size={14} />Lịch sử</button></div>
+    <div className="study-exam-head"><h1>Luyện thi JLPT</h1><span>{userProfile.targetLevel || 'N4'} · {allExams.length} đề · {userProfile.dailyTestResults?.length || 0} lượt làm</span><SrsSwitch /><button type="button" onClick={() => setShowHistoryModal(true)}><History size={14} />Lịch sử</button></div>
+    {srsOn && srsDue.length > 0 && <button type="button" className="study-srs-bar" onClick={() => handleStartExam({ id: 'srs-review', title: 'Ôn SRS · câu đã sai', level: userProfile.targetLevel || 'N4', category: 'mock_daily', durationMinutes: 30, questions: srsDue }, 'ALL', 'interactive')}><b>{srsDue.length} câu đến hạn ôn hôm nay</b><span>Ôn SRS ngay</span></button>}
     <nav className="study-nav" aria-label="Cách luyện thi">
       {[
         { id: 'library', title: 'Kho đề luyện', note: 'Chọn đề có sẵn và bắt đầu', icon: BookOpen },

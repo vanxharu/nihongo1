@@ -7,6 +7,8 @@ import { useParams } from 'react-router-dom';
 import { calculateSRS } from '../utils/srs';
 import { maskVocabularyInExample } from '../utils/vocabularyCloze';
 import HeartLike from './ui/HeartLike';
+import SrsSwitch from './ui/SrsSwitch';
+import { useSrsAuto } from '../utils/srsMode';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Volume2, 
@@ -790,14 +792,15 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     });
   }, [filteredVocab, userProfile.vocabStatus]);
 
-  // Từ trang Luyện tập (?srs=1): tự vào phiên ôn SRS khi có từ đến hạn.
+  // SRS tự động (công tắc SRS): bật + có từ đến hạn thì vào phiên ôn một lần mỗi lần mở trang; tắt thì thoát phiên.
+  const [srsOn] = useSrsAuto();
   const srsAutoStarted = useRef(false);
   useEffect(() => {
+    if (!srsOn) { srsAutoStarted.current = false; setIsSrsReviewActive(false); return; }
     if (srsAutoStarted.current || srsDueItems.length === 0) return;
-    if (new URLSearchParams(window.location.search).get('srs') !== '1') return;
     srsAutoStarted.current = true;
     setIsSrsReviewActive(true);
-  }, [srsDueItems.length]);
+  }, [srsOn, srsDueItems.length]);
 
   const QUIZ_PRAISES = [
     '🎉 Đỉnh nóc kịch trần bay phấp phới! Não bộ siêu cấp N1!',
@@ -2942,6 +2945,8 @@ if (loading) {
               <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
+
+          <SrsSwitch className="shrink-0" />
 
           {/* Right Controls */}
           <div className={`fc-toolbar ${(selectedMode === 'flashcard' || selectedMode === 'quiz' || selectedMode === 'dokkai') ? 'hidden' : 'flex'} items-center gap-1 sm:gap-1.5 shrink-0`}>
