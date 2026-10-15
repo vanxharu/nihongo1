@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { LogIn, UserPlus, Mail, Lock, AlertCircle, X, Copy, Check, ExternalLink } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { AlertCircle, X, Copy, Check, ExternalLink } from 'lucide-react';
+import { motion } from 'motion/react';
 import JpStudyLogo from './JpStudyLogo';
 import { useDialogFocus } from '../hooks/useDialogFocus';
-import { PasswordField, SubmitButton, SignupSteps } from './ui/AuthFx';
+import { SignupSteps } from './ui/AuthFx';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -12,14 +12,19 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
-  const { login, loginWithGoogle, register, lastAuthError, clearAuthError } = useAuth();
+  const { user, login, loginWithGoogle, register, lastAuthError, clearAuthError } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [errorCode, setErrorCode] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [gPhase, setGPhase] = useState<'idle' | 'busy' | 'ok'>('idle');
   const [phase, setPhase] = useState<'idle' | 'loading' | 'ok'>('idle');
+  const [showPw, setShowPw] = useState(false);
+  const [caps, setCaps] = useState(false);
+  const [shake, setShake] = useState(0);
+  const [welcome, setWelcome] = useState(false);
+  const [fromGoogle, setFromGoogle] = useState(false);
   const [copiedDomain, setCopiedDomain] = useState(false);
 
   const currentHostname = typeof window !== 'undefined' ? window.location.hostname : '';
@@ -71,14 +76,34 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     try {
       await login(identifier.trim(), password);
       setPhase('ok');
-      setTimeout(handleClose, 700);
+      setTimeout(() => { setWelcome(true); setTimeout(handleClose, 1200); }, 650);
     } catch (err: any) {
       console.error(err);
       setPhase('idle');
       setErrorCode(err.code || '');
       setError(explain(err));
+      setFromGoogle(false);
+      setShake(n => n + 1);
     }
   };
+
+  const handleGoogle = async () => {
+    if (gPhase !== 'idle') return;
+    setGPhase('busy'); setError(''); setErrorCode(''); setFromGoogle(true);
+    try {
+      await loginWithGoogle();
+      setGPhase('ok');
+      setTimeout(() => { setWelcome(true); setTimeout(handleClose, 1200); }, 650);
+    } catch (err: any) {
+      setGPhase('idle');
+      if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
+        setErrorCode(err.code || '');
+        setError(err.code === 'auth/popup-blocked' ? 'Trình duyệt chặn cửa sổ đăng nhập. Cho phép cửa sổ bật lên rồi thử lại.' : err.code === 'auth/operation-not-allowed' ? 'Đăng nhập Google chưa được bật trong Firebase của ứng dụng. Bạn vẫn có thể đăng nhập bằng email.' : err.code === 'auth/unauthorized-domain' ? 'Tên miền này chưa được cấp phép đăng nhập trong Firebase.' : 'Chưa đăng nhập được bằng Google. Hãy thử lại hoặc dùng email.');
+      }
+    }
+  };
+
+  const welcomeName = user?.displayName || identifier.split('@')[0] || 'bạn';
 
   const handleRegister = async (v: { username: string; displayName: string; email: string; password: string }) => {
     clearAuthError();
@@ -98,62 +123,29 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="w-full max-w-md bg-white border border-slate-100 rounded-3xl shadow-2xl p-6 relative overflow-y-auto"
+        className="w-full max-h-[94vh] overflow-y-auto"
+        style={{ maxWidth: 400, borderRadius: 30 }}
       >
-        {/* Top Decoration */}
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-slate-500 via-purple-500 to-pink-500" />
+      <div key={shake} className={`u062${shake ? ' shake' : ''}${welcome ? ' is-in' : ''}`}>
+        <div className="u062-pane u062-login">
+        <button type="button" onClick={handleClose} aria-label="Đóng" className="u062-x"><X className="w-5 h-5" /></button>
 
-        {/* Close Button */}
-        <button
-          onClick={handleClose}
-          className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-50 transition-colors"
-        >
-          <X className="w-5 h-5" />
+        <div className="u062-head">
+          <div className="flex justify-center"><JpStudyLogo size="lg" layout="vertical" dark={false} showSubtitle={false} /></div>
+          <p>{isLogin ? 'Đăng nhập để đồng bộ tiến trình học trên mọi thiết bị.' : 'Tạo tài khoản để lưu từ vựng, ngữ pháp, chữ Hán và tiến độ học.'}</p>
+        </div>
+
+        <div className="u062-tabs" role="tablist">
+          <button type="button" role="tab" aria-selected={isLogin} onClick={() => { setIsLogin(true); setError(''); setErrorCode(''); }}>Đăng nhập</button>
+          <button type="button" role="tab" aria-selected={!isLogin} onClick={() => { setIsLogin(false); setError(''); setErrorCode(''); }}>Đăng ký</button>
+        </div>
+
+        <button type="button" disabled={gPhase === 'busy'} onClick={handleGoogle} className={`u066-b${gPhase === 'busy' ? ' busy' : ''}${gPhase === 'ok' ? ' ok' : ''}`} aria-busy={gPhase === 'busy'}>
+          <span className="u066-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21.6 12.2c0-.7-.1-1.3-.2-1.9H12v3.7h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z" fill="#4285F4"/><path d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z" fill="#34A853"/><path d="M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.4H3.1A10 10 0 0 0 2 12c0 1.6.4 3.1 1.1 4.6z" fill="#FBBC05"/><path d="M12 6c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.4L6.4 10C7.2 7.7 9.4 6 12 6z" fill="#EA4335"/></svg></span>
+          <span className="u066-tx">{gPhase === 'ok' ? 'Đã kết nối Google' : 'Tiếp tục với Google'}</span>
+          <span className="u066-st" aria-hidden="true"><i></i><svg viewBox="0 0 22 22"><path d="M5 11.5l4 4L17 7"/></svg></span>
         </button>
-
-        {/* Header Logo */}
-        <div className="text-center mb-6">
-          <div className="flex justify-center mb-3">
-            <JpStudyLogo size="lg" layout="vertical" dark={false} showSubtitle={true} />
-          </div>
-          <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-            {isLogin 
-              ? 'Đăng nhập để đồng bộ tiến trình học, bài đã thuộc & vị trí trên mọi thiết bị.' 
-              : 'Tạo tài khoản để lưu từ vựng, ngữ pháp, chữ Hán và đồng bộ tiến độ học.'}
-          </p>
-        </div>
-
-        <button type="button" disabled={loading} className="mb-4 flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white py-3 font-bold text-slate-900 disabled:opacity-50" onClick={async () => {
-          setLoading(true); setError(''); setErrorCode('');
-          try { await loginWithGoogle(); handleClose(); }
-          catch (err: any) {
-            if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
-              setErrorCode(err.code || '');
-              setError(err.code === 'auth/popup-blocked' ? 'Trình duyệt chặn cửa sổ đăng nhập. Cho phép cửa sổ bật lên rồi thử lại.' : err.code === 'auth/operation-not-allowed' ? 'Đăng nhập Google chưa được bật trong Firebase của ứng dụng. Bạn vẫn có thể đăng nhập bằng email.' : err.code === 'auth/unauthorized-domain' ? 'Tên miền này chưa được cấp phép đăng nhập trong Firebase.' : 'Chưa đăng nhập được bằng Google. Hãy thử lại hoặc dùng email.');
-            }
-          } finally { setLoading(false); }
-        }}><span aria-hidden="true" className="text-xl text-blue-600">G</span>{loading ? 'Đang đăng nhập…' : 'Tiếp tục với Google'}</button>
-        {/* Tab Selection */}
-        <div className="flex bg-slate-50 p-1.5 rounded-xl mb-4">
-          <button
-            onClick={() => { setIsLogin(true); setError(''); setErrorCode(''); }}
-            className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-1.5 transition-colors ${
-              isLogin ? 'bg-white text-slate-800 shadow-xs' : 'text-slate-500 hover:text-slate-950'
-            }`}
-          >
-            <LogIn className="w-4 h-4" />
-            Đăng nhập
-          </button>
-          <button
-            onClick={() => { setIsLogin(false); setError(''); setErrorCode(''); }}
-            className={`flex-1 py-2 rounded-lg text-sm font-bold flex items-center justify-center gap-1.5 transition-colors ${
-              !isLogin ? 'bg-white text-slate-800 shadow-xs' : 'text-slate-500 hover:text-slate-950'
-            }`}
-          >
-            <UserPlus className="w-4 h-4" />
-            Đăng ký
-          </button>
-        </div>
+        <div className="u066-or">hoặc dùng email</div>
 
         {/* Specialized Help Card for Unauthorized Domain */}
         {errorCode === 'auth/unauthorized-domain' ? (
@@ -208,8 +200,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               )}
             </div>
           </div>
-        ) : error ? (
-          /* General Error Alert */
+        ) : error && fromGoogle ? (
+          /* Lỗi đăng nhập Google */
           <div className="mb-4 bg-rose-50 border border-rose-200 rounded-xl p-3.5 flex items-start gap-3">
             <AlertCircle className="w-4 h-4 text-rose-600 mt-0.5 shrink-0" />
             <div className="text-left">
@@ -223,42 +215,41 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         {!isLogin ? (
           <SignupSteps onSubmit={handleRegister} />
         ) : (
-        <form onSubmit={handleSubmit} className={`space-y-4${error ? ' u062-shake' : ''}`} key={error}>
-          <div>
-            <label htmlFor="auth-identifier" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-              Tên đăng nhập hoặc Email
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Nhập username hoặc email..."
-                id="auth-identifier"
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-slate-100 rounded-xl text-sm focus:outline-hidden focus:border-slate-500 focus:ring-1 focus:ring-slate-500 bg-slate-50/50"
-                required
-                autoComplete="username"
-              />
-              {identifier.includes('@') ? (
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-              ) : (
-                <UserPlus className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-              )}
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="u062-f">
+            <label htmlFor="auth-identifier">Tên đăng nhập hoặc Email</label>
+            <div className="u062-box">
+              <input type="text" id="auth-identifier" placeholder="username hoặc email" value={identifier} onChange={(e) => setIdentifier(e.target.value)} autoComplete="username" required />
             </div>
-            <span className="text-[11px] text-slate-400 mt-1 block">
-              💡 Đăng nhập dễ dàng bằng Username (tên người dùng) hoặc Email.
-            </span>
           </div>
-
-          <div>
-            <label htmlFor="auth-password" className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Mật khẩu</label>
-            <PasswordField id="auth-password" value={password} onChange={setPassword} autoComplete="current-password"
-              leading={<Lock aria-hidden="true" />} />
+          <div className={`u062-f${error && !fromGoogle ? ' bad' : ''}`}>
+            <label htmlFor="auth-password">Mật khẩu</label>
+            <span className={`u062-caps${caps ? ' on' : ''}`} aria-live="polite">Caps Lock đang bật</span>
+            <div className="u062-box">
+              <input id="auth-password" type={showPw ? 'text' : 'password'} placeholder="Nhập mật khẩu" value={password} autoComplete="current-password" required minLength={6}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyUp={(e) => setCaps(e.getModifierState?.('CapsLock') ?? false)}
+                aria-invalid={error && !fromGoogle ? true : undefined} aria-describedby="auth-pw-err" />
+              <button className="u062-eye" type="button" aria-pressed={showPw} aria-label={showPw ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'} onClick={() => setShowPw(v => !v)}>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><g className="u062-lid"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" /><circle cx="12" cy="12" r="3" /></g><path className="u062-slash" d="M4 4l16 16" /></svg>
+              </button>
+            </div>
+            <div className="u062-err"><span id="auth-pw-err" role="alert">{fromGoogle ? '' : error}</span></div>
           </div>
-
-          <SubmitButton phase={phase} label="Đăng nhập" />
+          <button className={`u062-go${phase === 'loading' ? ' busy' : ''}${phase === 'ok' ? ' ok' : ''}`} type="submit" disabled={phase !== 'idle'} aria-label={phase === 'loading' ? 'Đang kiểm tra' : phase === 'ok' ? 'Đã đăng nhập' : undefined}>
+            <span>Đăng nhập</span><i aria-hidden="true"></i>
+            <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M6 13.5l4.5 4.5L20 8.5" /></svg>
+          </button>
         </form>
         )}
+        </div>
+
+        <div className="u062-hi" aria-hidden={!welcome}>
+          <span className="u062-av" aria-hidden="true">{user?.photoURL ? <img src={user.photoURL} alt="" referrerPolicy="no-referrer" /> : welcomeName.charAt(0).toUpperCase()}</span>
+          <h3>Chào mừng, {welcomeName}</h3>
+          <p>Đang đưa bạn vào ứng dụng…</p>
+        </div>
+      </div>
       </motion.div>
     </div>
   );
