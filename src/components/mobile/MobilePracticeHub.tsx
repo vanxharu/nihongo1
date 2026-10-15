@@ -22,6 +22,7 @@ import flameAnim from '../../assets/lottie/flame.json';
 import shibaSmileAnim from '../../assets/lottie/shiba-smile.json'; // LottieFiles "Smiling Dog" by Margarita Ivanchikova (Lottie Simple License)
 import ShibaMascot from '../mascot/ShibaMascot';
 import { GRAMMAR_DATA, KANJI_DATA } from '../../data';
+import ProgressDashboard from '../ProgressDashboard';
 
 interface MobilePracticeHubProps {
   userProfile: UserProfile;
@@ -182,6 +183,10 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
             </button>
         ))}
       </div>
+
+      {/* Tiến độ học tập chi tiết (gộp từ trang Tiến độ cũ) */}
+      <h2 className="text-sm font-bold text-white pt-1">Tiến độ chi tiết</h2>
+      <ProgressDashboard userProfile={userProfile} todayXp={0} embedded />
 
       {/* Lịch sử: one compact card, no tab switcher */}
       <div className="rounded-2xl bg-[#121927] border border-[#1b253b] px-4 py-3 space-y-1.5">

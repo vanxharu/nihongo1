@@ -24,7 +24,7 @@ export const APP_ROUTES = {
   COMMUNITY: '/cong-dong',
   NOTEBOOK: '/so-tay',
   ACHIEVEMENTS: '/thanh-tich',
-  PROGRESS: '/xep-hang',
+  PROGRESS: '/',
   DICTIONARY: '/tu-dien',
   HANDWRITING: '/luyen-viet',
   BOOKS: '/sach',

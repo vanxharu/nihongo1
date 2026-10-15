@@ -547,3 +547,6 @@
   cursor: pointer;
   transition: opacity 0.15s;
 }
+
+.pd-root.pd-embedded { min-height: 0; padding: 0; background: transparent; }
+.pd-embedded .pd-shell { max-width: none; }

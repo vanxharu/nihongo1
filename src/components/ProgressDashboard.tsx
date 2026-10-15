@@ -32,6 +32,7 @@ interface Props {
   updateProfile?: (updated: Partial<UserProfile>) => void;
   onTriggerCelebration?: () => void;
   onNavigateTab?: (tab: string) => void;
+  embedded?: boolean;
 }
 
 const LEVELS: JLPTLevel[] = ["N5", "N4", "N3", "N2", "N1"];
@@ -42,6 +43,7 @@ export default function ProgressDashboard({
   userProfile,
   todayXp,
   onNavigateTab,
+  embedded,
 }: Props) {
   const guestPlan = !userProfile.uid ? readGuestRoadmap() : undefined;
   const profile = guestPlan
@@ -133,7 +135,7 @@ export default function ProgressDashboard({
   const roadmapCount = new Set(roadmap?.completedDays || []).size;
 
   return (
-    <div className="pd-root">
+    <div className={`pd-root${embedded ? " pd-embedded" : ""}`}>
       <div className="pd-shell">
 
         {view === "overview" ? (

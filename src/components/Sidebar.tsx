@@ -61,7 +61,6 @@ const PRIMARY_NAV: NavItem[] = [
 const SECONDARY_NAV = (unlockedCount: number, isAdmin: boolean): NavItem[] => [
   { id: 'notebook',     path: '/so-tay',     label: 'Sổ tay từ vựng',                             icon: Bookmark,   color: 'text-amber-400',  dot: '#FBBF24' },
   { id: 'achievements', path: '/thanh-tich', label: `Thành tựu · ${unlockedCount}/${TOTAL_ACHIEVEMENTS_COUNT}`, icon: Trophy,     color: 'text-amber-400',  dot: '#FBBF24' },
-  { id: 'progress',     path: '/xep-hang',   label: 'Tiến độ & Thống kê',                         icon: BarChart3,  color: 'text-teal-400',   dot: '#2DD4BF' },
   ...(isAdmin ? [{ id: 'admin', path: '/admin', label: 'Quản trị', icon: ShieldCheck, color: 'text-orange-400', dot: '#FB923C' }] : []),
 ];
 

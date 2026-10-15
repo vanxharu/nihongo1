@@ -112,13 +112,6 @@ export default function MobileBottomNav({
       checkActive: (tab: string, pathname: string) => tab === 'roadmap' || pathname.startsWith('/lo-trinh'),
     },
     {
-      id: 'progress',
-      path: '/xep-hang',
-      label: 'Tiến độ',
-      icon: TrendingUp,
-      checkActive: (tab: string, pathname: string) => tab === 'progress' || pathname.startsWith('/xep-hang'),
-    },
-    {
       id: 'profile',
       path: '/tai-khoan',
       label: 'Cá nhân',
@@ -324,7 +317,6 @@ export default function MobileBottomNav({
                   { id: 'japanese-chat', path: '/chat-ai', label: 'Luyện Kaiwa', icon: MessagesSquare, color: 'text-amber-400', desc: 'Hội thoại giao tiếp' },
                   { id: 'notebook', path: '/so-tay', label: 'Sổ tay từ vựng', icon: Bookmark, color: 'text-amber-400', desc: 'Flashcard & Quiz' },
                   { id: 'achievements', path: '/thanh-tich', label: 'Thành tựu', icon: Trophy, color: 'text-amber-400', desc: `Mở khóa ${unlockedCount}/${TOTAL_ACHIEVEMENTS_COUNT}` },
-                  { id: 'progress', path: '/xep-hang', label: 'Tiến độ học tập', icon: BarChart3, color: 'text-teal-400', desc: 'Thống kê & Streak' },
                   ...(userProfile?.role === 'admin' ? [
                     { id: 'admin', path: '/admin', label: 'Quản trị Admin', icon: ShieldCheck, color: 'text-amber-400', desc: 'Cài đặt hệ thống' }
                   ] : [])

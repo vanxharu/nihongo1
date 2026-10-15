@@ -31,7 +31,6 @@ import AdminRoute from './components/AdminRoute';
 
 const KanjiExplorer = lazyWithRetry(() => import('./components/KanjiExplorer'));
 const DailyExamQuiz = lazyWithRetry(() => import('./components/DailyExamQuiz'));
-const ProgressDashboard = lazyWithRetry(() => import('./components/ProgressDashboard'));
 const Kaiwa = lazyWithRetry(() => import('./components/Kaiwa'));
 const AdminPanel = lazyWithRetry(() => import('./components/AdminPanel'));
 const JapaneseAiChat = lazyWithRetry(() => import('./components/JapaneseAiChat'));
@@ -112,7 +111,6 @@ export default function App() {
       import('./components/VocabularyPractice');
       import('./components/KanjiExplorer');
       import('./components/DictionaryLookup');
-      import('./components/ProgressDashboard');
     }, 3000); // wait 3s so it doesn't compete with first paint
     return () => clearTimeout(t);
   }, []);
@@ -722,19 +720,8 @@ export default function App() {
         } 
       />
 
-      {/* 14. Bảng xếp hạng & Tiến độ */}
-      <Route 
-        path="/xep-hang" 
-        element={
-          <ProgressDashboard 
-            userProfile={activeProfile} 
-            todayXp={todayXp}
-            updateProfile={updateProfile}
-            onTriggerCelebration={handleTriggerCelebration}
-            onNavigateTab={handleTabChange}
-          />
-        } 
-      />
+      {/* 14. Tiến độ đã gộp vào Luyện tập (/) */}
+      <Route path="/xep-hang" element={<Navigate to="/" replace />} />
 
       {/* 15. Từ điển Jisho */}
       <Route path="/tu-dien" element={<DictionaryLookup />} />
@@ -804,8 +791,8 @@ export default function App() {
       <Route path="/dictionary" element={<Navigate to="/tu-dien" replace />} />
       <Route path="/roadmap" element={<Navigate to="/lo-trinh" replace />} />
       <Route path="/achievements" element={<Navigate to="/thanh-tich" replace />} />
-      <Route path="/progress" element={<Navigate to="/xep-hang" replace />} />
-      <Route path="/tien-do" element={<Navigate to="/xep-hang" replace />} />
+      <Route path="/progress" element={<Navigate to="/" replace />} />
+      <Route path="/tien-do" element={<Navigate to="/" replace />} />
       <Route path="/profile" element={<Navigate to="/tai-khoan" replace />} />
       <Route path="/settings" element={<Navigate to="/cai-dat" replace />} />
       <Route path="/japanese-chat" element={<Navigate to="/chat-ai" replace />} />

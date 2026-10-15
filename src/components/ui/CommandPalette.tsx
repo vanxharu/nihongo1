@@ -14,7 +14,6 @@ const COMMANDS: [string, string, string][] = [
   ['Sổ tay', '/so-tay', 'notebook so tay'],
   ['Từ điển', '/tu-dien', 'dictionary tu dien'],
   ['Chat AI', '/chat-ai', 'chat ai'],
-  ['Tiến độ', '/xep-hang', 'progress tien do'],
   ['Thành tựu', '/thanh-tich', 'achievements thanh tich'],
   ['Tài khoản', '/tai-khoan', 'profile tai khoan'],
   ['Cài đặt', '/cai-dat', 'settings cai dat'],

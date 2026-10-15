@@ -71,7 +71,7 @@ export const AchievementsView: React.FC<Props> = ({ userProfile, onBack }) => {
       <div className="collection-shell">
         <div className="collection-top">
           <button onClick={onBack}>
-            <ArrowLeft size={16} /> Về tiến độ
+            <ArrowLeft size={16} /> Về luyện tập
           </button>
         </div>
         <section className="collection-hero collection-hero-lite">
