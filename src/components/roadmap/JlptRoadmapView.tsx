@@ -227,22 +227,6 @@ export default function JlptRoadmapView({
             </button>
           ))}
         </nav>
-        <div className="journey-level-heading">
-          <div>
-            <h2>{journey.title}</h2>
-            <p>{journey.japanese}</p>
-          </div>
-          <span className="journey-status">
-            {preview ? "Đang xem trước" : "Lộ trình của bạn"}
-          </span>
-        </div>
-        <p className="journey-prerequisite">
-          <BookOpen size={17} />
-          <span>
-            {journey.prerequisite} Kế hoạch 30／60／90 ngày là nhịp gợi ý, có
-            thể lặp lại ngày khó.
-          </span>
-        </p>
         {error && (
           <p role="alert" className="journey-error">
             {error}

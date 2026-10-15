@@ -21,8 +21,10 @@ export async function sourceArticles(source: ReadingSource, page = 1, force = fa
       batch.set(db.collection('reading_articles').doc(articleKey(item)), json({ summary: item, discoveredAt: Date.now(), ...(old && old.fingerprint !== fingerprint ? { preparedAt: 0, fetchedAt: 0 } : {}) }), { merge: true });
     }
     const feed = { items: json(items.map(({ text, furiganaText, rawTokens, audioMarks, ...item }) => ({ ...item, fingerprint: hash(JSON.stringify([item.titleJp, item.date, text || '', item.originalQuestionText || ''])) }))), checkedAt: Date.now(), stale: false };
-    batch.set(ref, feed); await batch.commit(); return feed;
-  } catch (error) { if (previous?.items?.length) return { ...previous, stale: true }; throw error; }
+    batch.set(ref, feed);
+    // Lưu cache lỗi (Firestore) không được làm hỏng danh sách bài vừa lấy được.
+    await batch.commit().catch(e => console.error('reading feed cache write failed:', e?.message || e)); return feed;
+  } catch (error) { console.error('reading feed fetch failed:', (error as Error)?.message); if (previous?.items?.length) return { ...previous, stale: true }; throw error; }
 }
 export async function sourceArticle(source: ReadingSource, id?: unknown, url?: unknown, force = false): Promise<SourceArticle> {
   const location = sourceLocation(source, id, url); const ref = shadowingDatabase().collection('reading_articles').doc(articleKey(location)); const stored = (await ref.get()).data();
@@ -63,14 +65,14 @@ export function sourceListHandler(source: ReadingSource) { return async (req: Re
     const tag = /^(n[1-5]|listening)$/.test(String(req.query.tag)) ? String(req.query.tag) : 'all';
     const category = /^(meal|sightseeing|event|culture|japan-news|simplejapanese|specialtopic)$/.test(String(req.query.category)) ? String(req.query.category) : 'all';
     const feed = await sourceArticles(source, page, false, tag, category);
-    const stored = await shadowingDatabase().getAll(...feed.items.map((item: SourceArticle) => shadowingDatabase().collection('reading_articles').doc(articleKey(item))));
+    const stored = await shadowingDatabase().getAll(...feed.items.map((item: SourceArticle) => shadowingDatabase().collection('reading_articles').doc(articleKey(item)))).catch(() => []);
     const articles = feed.items.map((item: SourceArticle, i: number) => {
-      const data = stored[i].data(); const flags = { prepared: Boolean(data?.preparedAt), questionOrigin: data?.questionOrigin || null };
+      const data = stored[i]?.data(); const flags = { prepared: Boolean(data?.preparedAt), questionOrigin: data?.questionOrigin || null };
       return source === 'todai' ? { ...item, ...flags, jlptLevel: item.level } : { ...item, ...flags, rawTitle: item.titleJp, titleSub: '', hasAudio: Boolean(item.audio) };
     });
     res.setHeader('Cache-Control', 'no-store');
     return res.json({ success: true, articles, checkedAt: feed.checkedAt, stale: feed.stale });
-  } catch { return res.status(502).json({ success: false, error: 'Nguồn bài đọc tạm thời không phản hồi. Hãy thử lại.' }); }
+  } catch (e) { console.error('reading list failed:', (e as Error)?.message); return res.status(502).json({ success: false, error: 'Nguồn bài đọc tạm thời không phản hồi. Hãy thử lại.' }); }
 }; }
 export function sourceArticleHandler(source: ReadingSource) { return async (req: Request, res: Response) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Chỉ hỗ trợ POST.' });

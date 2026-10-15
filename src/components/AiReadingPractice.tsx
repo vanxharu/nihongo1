@@ -1,5 +1,4 @@
 import { PlayPauseMorph, WaveSeek } from './ui/AudioMorph';
-import StudyExperienceHero from './learning/StudyExperienceHero';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -1323,7 +1322,6 @@ export default function AiReadingPractice({
       {/* Top Navigation & Controls Bar: Unified, sleek & zero wasted whitespace */}
       {!readingData ? (
         <>
-          <StudyExperienceHero kind="reading" level={userProfile?.targetLevel || 'N4'} count={savedHistory.length} completed={savedHistory.length} onHistory={() => setShowHistoryModal(true)} />
           <nav className="study-nav" aria-label="Nguồn bài đọc">{[
             { id: 'todai', title: 'Tin tức Todaii', note: 'Luyện đọc qua tin tức mỗi ngày', icon: Newspaper },
             { id: 'watanoc', title: 'Văn hóa Watanoc', note: 'Khám phá cuộc sống tại Nhật', icon: Globe },

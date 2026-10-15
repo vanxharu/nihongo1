@@ -17,7 +17,7 @@ const videos: [string, number, number][] = [
 
 export const SHADOWING_VIDEOS: YouTubeListeningVideo[] = videos.map(([id, year, seconds], index) => ({
   id: `shadowing-n4-${id}`, code: `N4 Đề luyện ${index + 1}`,
-  title: `N4 · Đề luyện nghe ${String(index + 1).padStart(2, '0')} · ${year}`,
+  title: `Bài ${String(index + 1).padStart(2, '0')} · ${year}`,
   youtube_url: `https://www.youtube.com/watch?v=${id}`, youtube_video_id: id,
   level: 'N4', category: 'Listening Practice', source: 'The Nihongo Nook',
   source_url: `https://www.youtube.com/watch?v=${id}`,
