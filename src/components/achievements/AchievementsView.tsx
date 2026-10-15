@@ -69,13 +69,7 @@ export const AchievementsView: React.FC<Props> = ({ userProfile, onBack }) => {
   return (
     <div className="shiba-collection">
       <div className="collection-shell">
-        <div className="collection-top">
-          <button onClick={onBack}>
-            <ArrowLeft size={16} /> Về luyện tập
-          </button>
-        </div>
         <section className="collection-hero collection-hero-lite">
-          <h1>Thành tựu</h1>
           <div className="collection-total">
             <strong>
               {earned.size}
@@ -101,15 +95,6 @@ export const AchievementsView: React.FC<Props> = ({ userProfile, onBack }) => {
           </button>
         )}
         <div className="collection-tools">
-          <label>
-            <Search size={16} />
-            <input
-              aria-label="Tìm huy hiệu"
-              placeholder="Tìm tên, mục tiêu hoặc số huy hiệu…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </label>
           <SlidingTabs
             id="ach-status"
             value={status}
