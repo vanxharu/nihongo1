@@ -49,7 +49,6 @@ import { ExamHistoryModal } from './ExamHistoryModal';
 import { PrintableExamBooklet } from './PrintableExamBooklet';
 import { showLearningFeedback } from '../utils/learningMotion';
 import { PdfExamBookletViewer } from './PdfExamBookletViewer';
-import StudyExperienceHero from './learning/StudyExperienceHero';
 
 import { localDateStr } from '../utils/localDate';
 const EXAM_PRAISES = [
@@ -994,15 +993,15 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
   const isPartTimeUp = currentQuestionPart ? (partTimes[currentQuestionPart] ?? 0) <= 0 : false;
 
   const renderMainTabsHeader = () => <>
-    <StudyExperienceHero kind="exam" level={userProfile.targetLevel || 'N4'} count={allExams.length} completed={userProfile.dailyTestResults?.length || 0} onHistory={() => setShowHistoryModal(true)} />
+    <div className="study-exam-head"><h1>Luyện thi JLPT</h1><span>{userProfile.targetLevel || 'N4'} · {allExams.length} đề · {userProfile.dailyTestResults?.length || 0} lượt làm</span><button type="button" onClick={() => setShowHistoryModal(true)}><History size={14} />Lịch sử</button></div>
     <nav className="study-nav" aria-label="Cách luyện thi">
       {[
         { id: 'library', title: 'Kho đề luyện', note: 'Chọn đề có sẵn và bắt đầu', icon: BookOpen },
         { id: 'ai_builder', title: 'Tạo đề với AI', note: 'Soạn đề theo cấp độ của bạn', icon: PenTool },
         { id: 'pdf_practice', title: 'Đề PDF của bạn', note: 'Tải đề và luyện trên trang giấy', icon: FileText }
-      ].map(item => <button key={item.id} type="button" aria-pressed={mainTab === item.id} onClick={() => { setMainTab(item.id as typeof mainTab); setShowPdfPractice(item.id === 'pdf_practice'); setSelectedCategory(item.id === 'ai_builder' ? 'ai_generated' : 'ALL'); }}><span className="study-nav-icon"><item.icon size={20} /></span><span><strong>{item.title}</strong><small>{item.note}</small></span></button>)}
+      ].map(item => <button key={item.id} type="button" aria-pressed={mainTab === item.id} onClick={() => { setMainTab(item.id as typeof mainTab); setShowPdfPractice(item.id === 'pdf_practice'); setSelectedCategory(item.id === 'ai_builder' ? 'ai_generated' : 'ALL'); }}><item.icon size={16} /><strong>{item.title}</strong></button>)}
     </nav>
-    <Link to="/sach" className="study-books-link">📚 Sách của tôi: mở Soumatome N4 và các sách PDF khác (lưu trên máy bạn)</Link>
+    <Link to="/sach" className="study-books-link">📚 Sách của tôi (Soumatome N4, sách PDF)</Link>
     {!showPdfPractice && <div className="study-skill-strip" aria-label="Kỹ năng muốn luyện"><span>Luyện theo:</span>{(['ALL', 'moji-goi', 'bunpou', 'dokkai', 'choukai'] as ExamSectionMode[]).map(mode => <button key={mode} aria-pressed={lobbyPracticeMode === mode} onClick={() => setLobbyPracticeMode(mode)}>{mode === 'ALL' ? 'Toàn bộ đề' : JLPT_SECTION_METAS[mode].shortName}</button>)}</div>}
   </>;
 
@@ -1010,13 +1009,9 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     const questions = lobbyPracticeMode === 'ALL' ? exam.questions : exam.questions.filter(q => q.section === lobbyPracticeMode);
     const minutes = lobbyPracticeMode === 'ALL' ? exam.durationMinutes : Math.round(getSectionStandardDuration(lobbyPracticeMode, exam.level) / 60);
     return <article key={exam.id} className="study-exam-card" data-level={exam.level}>
-      {exam.thumbnailUrl && <img src={exam.thumbnailUrl} alt={exam.title} className="w-full h-28 object-cover object-top rounded-t-xl mb-2 -mx-0" style={{marginTop:'-0px'}} />}
-      <div className="study-exam-card-top"><span className="study-level">{exam.level}</span><small>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</small></div>
-      <h3>{exam.title}</h3>
-      <div className="study-exam-spec"><span><FileText size={15} />{questions.length} câu</span><span><Clock size={15} />{minutes} phút</span></div>
-      <div className="study-exam-mix" aria-hidden="true">{(['moji-goi','bunpou','dokkai','choukai'] as const).map(section => { const n = exam.questions.filter(q => q.section === section).length; return n > 0 && <i key={section} data-s={section} style={{flexGrow:n}} />; })}</div>
-      <div className="study-exam-skills">{(['moji-goi','bunpou','dokkai','choukai'] as const).map(section => { const n = exam.questions.filter(q => q.section === section).length; return n > 0 && <span key={section}><i data-s={section} />{JLPT_SECTION_METAS[section].shortName} {n}</span>; })}</div>
-      <div className="study-exam-actions"><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}>Bắt đầu luyện <span aria-hidden="true">↗</span></button><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'booklet_pdf')}>Đề giấy</button></div>
+      <span className="study-level">{exam.level}</span>
+      <div className="study-exam-main"><h3>{exam.title}</h3><div className="study-exam-spec"><span>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</span><span><FileText size={13} />{questions.length} câu</span><span><Clock size={13} />{minutes} phút</span></div></div>
+      <div className="study-exam-actions"><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}>Luyện</button><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'booklet_pdf')}>Đề giấy</button></div>
     </article>;
   };
   return (

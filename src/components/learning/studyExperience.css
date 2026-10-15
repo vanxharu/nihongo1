@@ -121,3 +121,42 @@
 .study-exam-actions button:first-child{background:var(--ui-ink);border-color:var(--ui-ink);color:var(--ui-canvas);}
 .study-books-link{display:flex;align-items:center;gap:8px;margin:0 0 16px;padding:12px 16px;border:1px dashed var(--ui-line);border-radius:14px;color:var(--ui-ink);font-size:13px;text-decoration:none;}
 .study-books-link:hover{border-color:var(--study-accent);}
+
+/* Gọn lại trang Luyện thi: ít màu, ít khoảng trống */
+.study-exam{padding:8px 8px 80px!important}
+.study-exam.space-y-5>*+*{margin-top:12px!important}
+.study-exam-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.study-exam-head h1{font-size:20px;font-weight:800}
+.study-exam-head span{font-size:12px;color:var(--ui-muted);flex:1}
+.study-exam-head button{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:6px 10px;border:1px solid var(--ui-line);border-radius:10px;color:var(--ui-ink);cursor:pointer}
+.study-exam .study-nav{display:flex;gap:4px;margin:0;border-bottom:1px solid var(--ui-line)}
+.study-exam .study-nav button{min-height:0;padding:8px 12px;gap:6px;border:0;border-bottom:2px solid transparent;border-radius:0;background:none;color:var(--ui-muted)}
+.study-exam .study-nav button:hover{transform:none}
+.study-exam .study-nav button[aria-pressed=true]{border-bottom-color:var(--ui-ink);color:var(--ui-ink)}
+.study-exam .study-nav strong{font-size:13px;display:inline}
+.study-exam .study-books-link{display:inline-block;margin:0;padding:0;border:0;font-size:12px;color:var(--ui-muted);text-decoration:underline}
+.study-exam .study-skill-strip{margin:0;gap:6px}
+.study-exam .study-skill-strip button{min-height:28px;padding:3px 10px;font-size:12px}
+.study-exam .study-skill-strip button[aria-pressed=true],.study-exam .study-chip-row button[aria-pressed=true]{background:var(--ui-ink);border-color:var(--ui-ink);color:var(--ui-canvas)}
+.study-exam .study-filter-panel{padding:10px!important;margin-bottom:0;gap:8px}
+.study-exam .study-search{min-height:38px}
+.study-exam .study-chip-row{gap:6px}
+.study-exam .study-chip-row button{min-height:28px;padding:3px 12px;font-size:12px}
+.study-exam .study-exam-grid{gap:10px}
+.study-exam .study-exam-card{gap:10px;padding:14px;--lv:var(--ui-line)!important}
+.study-exam .study-exam-card::before,.study-exam .study-exam-mix{display:none}
+.study-exam .study-level{background:var(--ui-canvas);color:var(--ui-ink);font-size:13px}
+.study-exam .study-exam-skills i{background:var(--ui-muted)!important}
+.study-exam .study-library-heading{margin:8px 0}
+/* Danh sách đề dạng hàng gọn */
+.study-exam .study-filter-panel{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.study-exam .study-search{flex:1 1 220px}
+.study-exam .study-exam-grid{display:flex;flex-direction:column;gap:6px}
+.study-exam .study-exam-card{flex-direction:row;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;transform:none}
+.study-exam .study-exam-main{flex:1;min-width:0}
+.study-exam .study-exam-card h3{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.study-exam .study-exam-spec{gap:12px;font-size:11px;flex-wrap:wrap}
+.study-exam .study-exam-actions{margin:0}
+.study-exam .study-exam-actions button{min-height:32px;padding:4px 12px}
+.study-exam .study-level{flex:none;min-width:40px;text-align:center}
+@media(max-width:600px){.study-exam .study-exam-card{flex-wrap:wrap}.study-exam .study-exam-main{flex-basis:calc(100% - 60px)}.study-exam .study-exam-actions{width:100%}.study-exam .study-exam-actions button:first-child{flex:1}}
