@@ -157,6 +157,16 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
     updateSettingsAndSync(updated);
   };
 
+  const onCount = (settings.vocabEnabled ? 1 : 0) + (settings.enabled ? 1 : 0);
+  // Tắt lần lượt từ trên xuống (spec 023); dùng settings hiện tại cho cả hai bước để bước sau không ghi đè bước trước.
+  const handleTurnAllOff = () => {
+    const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const step = (patch: Partial<ReminderSettings>) => updateSettingsAndSync({ ...settings, ...patch });
+    step({ vocabEnabled: false });
+    setTimeout(() => step({ vocabEnabled: false, enabled: false }), rm ? 0 : 120);
+    setStatusMessage('Đã tắt tất cả thông báo.');
+  };
+
   const handleToggleVocabReminder = async (enable: boolean) => {
     if (enable) {
       const currentPerm = getNotificationPermissionStatus();
@@ -319,11 +329,21 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
             </div>
           </div>
 
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-300" aria-live="polite">
+              {onCount ? `${onCount} đang bật` : 'Đã tắt hết'}
+            </span>
+            <button type="button" onClick={handleTurnAllOff} disabled={!onCount}
+              className="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600 disabled:opacity-40 cursor-pointer transition-colors">
+              Tắt tất cả
+            </button>
+          </div>
+
           {/* SECTION 1: WINDOWS FLOATING VOCABULARY NOTIFICATION (PRIMARY) */}
           <div className="p-4 bg-gradient-to-br from-indigo-50/70 to-purple-50/70 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-2xl border border-indigo-200/80 dark:border-indigo-800/60 space-y-3.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center">
+                <div className={`w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center transition-[filter,opacity] duration-500 ${settings.vocabEnabled ? '' : 'grayscale opacity-45'}`}>
                   <Monitor className="w-4 h-4" />
                 </div>
                 <div>
@@ -625,7 +645,7 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
           <div className="space-y-2.5 p-3.5 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800">
             <div className="flex items-center justify-between">
               <label className="text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-rose-500" />
+                <Clock className={`w-3.5 h-3.5 transition-[filter,opacity] duration-500 ${settings.enabled ? 'text-rose-500' : 'text-slate-400 opacity-60'}`} />
                 Nhắc Học Định Kỳ Hàng Ngày:
               </label>
               <Switch checked={!!settings.enabled} onChange={(on) => handleToggleReminder(on)} label="Nhắc nhở học hằng ngày" />
