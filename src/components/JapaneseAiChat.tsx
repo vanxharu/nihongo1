@@ -3,6 +3,7 @@ import './aiChat.css';
 import AutoGrowInput from './ui/AutoGrowInput';
 import SwipeReply from './ui/SwipeReply';
 import './ui/swipeReply.css';
+import './ui/chatFx.css';
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { 
   Send, 
@@ -316,6 +317,7 @@ interface ChatMessage {
   vietnameseTranslation?: string;
   provider?: string;
   quote?: string;
+  stopped?: boolean;
   timestamp: string;
 }
 
@@ -446,6 +448,11 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   const [inputText, setInputText] = useState<string>('');
   const [replyTo, setReplyTo] = useState<{ text: string; who: string } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // 086: câu trả lời hiện dần từng chữ (id tin đang chạy + số ký tự đã hiện)
+  const [streaming, setStreaming] = useState<{ id: number; n: number } | null>(null);
+  const streamRef = useRef<{ id: number; n: number } | null>(null);
+  streamRef.current = streaming;
+  const aiTextRef = useRef<Record<number, string>>({});
 
   // Mic state & Dynamic Audio-Frequency Visualizer (Waves)
   const [isListening, setIsListening] = useState<boolean>(false);
@@ -458,6 +465,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
   
   const recognitionRef = useRef<any>(null);
+  const micPress = useRef<{ t: number; was: boolean } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   
@@ -465,6 +473,22 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animFrameRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!streaming) return;
+    const total = Array.from(aiTextRef.current[streaming.id] || '').length;
+    if (streaming.n >= total) { const t = setTimeout(() => setStreaming(null), 400); return () => clearTimeout(t); }
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const t = setTimeout(() => setStreaming(c => (c && c.id === streaming.id ? { id: c.id, n: reduce ? total : c.n + 1 + Math.round(Math.random()) } : c)), reduce ? 0 : 45 + Math.random() * 60);
+    return () => clearTimeout(t);
+  }, [streaming]);
+  const stopStream = () => {
+    const cur = streamRef.current;
+    if (!cur) return;
+    const cut = Array.from(aiTextRef.current[cur.id] || '').slice(0, cur.n).join('');
+    setMessages(prev => prev.map(m => m.id === cur.id ? { ...m, text: cut, furigana: undefined, furiganaHtml: undefined, romaji: undefined, vietnameseTranslation: undefined, explanation: undefined, correctionAdvice: undefined, stopped: true } : m));
+    setStreaming(null);
+  };
 
   // Clean up Web Audio API resources
   const stopAudioVisualizer = useCallback(() => {
@@ -874,7 +898,9 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
 
+      aiTextRef.current[aiMsgId] = aiMsg.text || '';
       setMessages(prev => [...prev, aiMsg]);
+      setStreaming({ id: aiMsgId, n: 0 });
       if (data.hints && Array.isArray(data.hints)) {
         setHints(data.hints);
       }
@@ -1213,7 +1239,9 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                       {m.quote && <span className="u078-q">{m.quote}</span>}
                       {/* Japanese Text */}
                       <div className="text-[13.5px] sm:text-[15px] font-medium leading-relaxed font-jp">
-                        {showFurigana && m.furiganaHtml ? (
+                        {streaming?.id === m.id ? (
+                          <span>{Array.from(m.text || '').slice(0, streaming.n).map((ch, k) => <span key={k} className="u086-w">{ch}</span>)}<span className="u086-caret" aria-hidden="true" /></span>
+                        ) : showFurigana && m.furiganaHtml ? (
                           <div 
                             className="inline-block leading-relaxed [&_ruby]:text-[13.5px] sm:[&_ruby]:text-[15px] [&_rt]:text-[10px] [&_rt]:text-amber-300 font-jp" 
                             dangerouslySetInnerHTML={{ __html: sanitizeRubyHtml(m.furiganaHtml) }} 
@@ -1221,10 +1249,11 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                         ) : (
                           <span>{m.text || ''}</span>
                         )}
+                        {m.stopped && <span className="u086-stop">— Đã dừng tại đây</span>}
                       </div>
 
                       {/* Vietnamese Translation */}
-                      {isAi && (isTransExpanded || showVietnamese) && m.vietnameseTranslation && (
+                      {isAi && streaming?.id !== m.id && (isTransExpanded || showVietnamese) && m.vietnameseTranslation && (
                         <div className="mt-2 pt-2 border-t border-slate-700/60 text-xs text-sky-200 font-medium leading-relaxed flex items-start gap-1.5">
                           <Globe className="w-3.5 h-3.5 text-sky-400 shrink-0 mt-0.5" />
                           <span>{m.vietnameseTranslation}</span>
@@ -1232,7 +1261,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                       )}
 
                       {/* Action Footer */}
-                      {isAi && (
+                      {isAi && streaming?.id !== m.id && (
                         <div className="chat-msg-actions flex items-center justify-between gap-1 pt-2 mt-2 border-t border-slate-700/50 text-[11px]">
                           <div className="flex items-center gap-1 flex-wrap">
                             {/* Audio Speak */}
@@ -1353,11 +1382,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                   )}
                 </div>
                 <div className="px-3.5 py-2.5 bg-[#1B223C] border border-[#2B355A]/60 rounded-2xl rounded-tl-xs flex items-center gap-2 text-xs text-slate-400 shadow-sm">
-                  <div className="flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '300ms' }} />
-                  </div>
+                  <span className="u086-dots" aria-hidden="true"><i /><i /><i /></span>
                   <span className="text-[11px] text-slate-300 font-medium">
                     {selectedPersona.japaneseName} đang soạn tin nhắn...
                   </span>
@@ -1401,18 +1426,8 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
               >
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                    <div className="flex items-center gap-0.5 px-2 py-1 bg-slate-900 rounded-lg border border-blue-500/30 shrink-0 h-7">
-                      {audioFrequencies.map((freq, idx) => {
-                        const heightPx = Math.max(4, Math.round((freq / 100) * 20));
-                        return (
-                          <motion.span
-                            key={idx}
-                            animate={{ height: `${heightPx}px` }}
-                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                            className="w-1 rounded-full bg-blue-400"
-                          />
-                        );
-                      })}
+                    <div className="u084-dots shrink-0" aria-hidden="true">
+                      {[0, 1, 2, 3, 4].map(i => <i key={i} style={{ ['--h' as any]: Math.min(1, (audioFrequencies[Math.round((i * 11) / 4)] || 0) / 100).toFixed(2) }} />)}
                     </div>
                     <div className="text-xs text-blue-200 font-jp truncate flex-1">
                       {inputText ? (
@@ -1478,18 +1493,22 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
               <Lightbulb className="w-4 h-4" />
             </button>
 
-            {/* Mic Button */}
+            {/* Mic Button: chạm để bật/tắt, hoặc giữ rồi thả (084) */}
             <button
               type="button"
-              onClick={toggleListening}
-              className={`rounded-full transition active:scale-95 cursor-pointer shrink-0 ${
+              onPointerDown={(e) => { if (e.button !== 0) return; micPress.current = { t: Date.now(), was: isListening || !!recognitionRef.current }; if (!micPress.current.was) toggleListening(); }}
+              onPointerUp={() => { const p = micPress.current; micPress.current = null; if (p && (p.was || Date.now() - p.t > 350) && (isListening || recognitionRef.current)) toggleListening(); }}
+              onClick={(e) => { if (e.detail === 0) toggleListening(); }}
+              style={{ ['--lv' as any]: (audioLevel / 100).toFixed(2) }}
+              className={`u084-mic${isListening ? ' is-on' : ''} rounded-full transition active:scale-95 cursor-pointer shrink-0 ${
                 (isKeyboardOpen || isInputFocused) ? 'p-1.5' : 'p-2'
               } ${
                 isListening
                   ? 'bg-rose-600 text-white shadow-md shadow-rose-600/50 ring-2 ring-rose-400'
                   : 'bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60'
               }`}
-              title={isListening ? 'Dừng thu âm' : 'Nói bằng tiếng Nhật'}
+              title={isListening ? 'Thả hoặc chạm để dừng' : 'Chạm hoặc giữ để nói tiếng Nhật'}
+              aria-pressed={isListening}
             >
               {isListening ? <MicOff className="w-4 h-4 text-white" /> : <Mic className="w-4 h-4" />}
             </button>
@@ -1514,11 +1533,15 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
             </div>
 
             {/* Circular Messenger Blue Send Button */}
-            <PlaneSend
-              onClick={() => handleSendMessage()}
-              disabled={!inputText.trim() || isLoading || Array.from(inputText).length > 500}
-              size={(isKeyboardOpen || isInputFocused) ? 34 : 40}
-            />
+            {streaming ? (
+              <button type="button" className="u086-ctl" onClick={stopStream} aria-label="Dừng câu trả lời"><i aria-hidden="true" />Dừng</button>
+            ) : (
+              <PlaneSend
+                onClick={() => handleSendMessage()}
+                disabled={!inputText.trim() || isLoading || Array.from(inputText).length > 500}
+                size={(isKeyboardOpen || isInputFocused) ? 34 : 40}
+              />
+            )}
           </footer>
         </div>
       </div>
