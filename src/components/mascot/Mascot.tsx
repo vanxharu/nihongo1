@@ -239,6 +239,7 @@ export const Mascot: React.FC<MascotProps> = ({
             <span className={`shiba-sprite-window ${animated ? 'is-animated' : ''} shiba-pose-${poseIdx}`} style={{ position:'relative', display:'block', width:'100%', height:'100%', overflow:'hidden' }}><img
               src={imgSrc}
               decoding="async"
+              draggable={false}
               alt={alt}
               className={animated ? 'shiba-sprite-image' : ''}
               style={imgSrc === '/mascot/shiba-journey-atlas.webp' ? { position:'absolute', width:'500%', height:'400%', maxWidth:'none', left:`${-(poseIdx % 5) * 100}%`, top:`${-Math.floor(poseIdx / 5) * 100}%`, objectFit:'fill' } : { width:'100%', height:'100%', objectFit:'contain' }}

@@ -108,7 +108,7 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
             onClick={() => onNavigate(t.to)}
             className="flex items-center gap-2 rounded-xl bg-[#121927] border border-[#1b253b] px-3 py-2 text-left cursor-pointer active:scale-[0.98] transition-transform"
           >
-            <div className={`w-6 shrink-0 flex items-center justify-center text-slate-300`}>{t.icon}</div>
+            <div className={`min-w-6 shrink-0 flex items-center justify-center whitespace-nowrap text-slate-300`}>{t.icon}</div>
             <div className="flex-1 min-w-0">
               <div className="text-sm font-bold text-white">{t.label}</div>
               <div className="text-[11px] text-slate-400 truncate">{t.sub}{t.pct !== undefined ? ` · ${t.pct}%` : ''}</div>
