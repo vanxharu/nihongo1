@@ -949,26 +949,6 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
         
         {/* Left Sidebar (Desktop Only: lg: >= 1024px) - Messenger Contacts List Style */}
         <aside className="hidden lg:flex w-72 xl:w-80 flex-col border-r border-slate-800/80 bg-[#0F1424] shrink-0 min-h-0 select-none">
-          {/* Sidebar Header */}
-          <div className="p-3.5 border-b border-slate-800/80 flex items-center justify-between">
-            {/* Quick JLPT Level Selector */}
-            <div className="flex w-full items-center justify-between bg-[#12182B] p-0.5 rounded-lg border border-slate-800">
-              {(['N5', 'N4', 'N3', 'N2', 'N1'] as const).map(lvl => (
-                <button
-                  key={lvl}
-                  type="button"
-                  onClick={() => handlePersonaOrLevelChange(selectedPersona, lvl)}
-                  className={`flex-1 py-1 rounded text-[10px] font-bold transition cursor-pointer ${
-                    selectedLevel === lvl
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  {lvl}
-                </button>
-              ))}
-            </div>
-          </div>
 
           {/* Personas Contact List */}
           <div className="flex-1 overflow-y-auto p-2 space-y-1">
@@ -1008,14 +988,6 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
               );
             })}
 
-            <button
-              type="button"
-              onClick={() => setIsLiveVoiceOpen(true)}
-              className="mt-2 w-full flex items-center gap-2 p-2.5 rounded-xl border border-rose-500/30 hover:border-rose-400/60 text-xs font-bold text-rose-300 transition cursor-pointer"
-            >
-              <PhoneCall className="w-4 h-4 text-rose-400" />
-              <span>Gọi thoại Live</span>
-            </button>
           </div>
         </aside>
 
@@ -1148,20 +1120,6 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
             (isKeyboardOpen || isInputFocused) ? 'py-2 space-y-2' : 'py-3.5 space-y-3'
           }`}>
             
-            {/* Minimalist Chat Intro Badge - Ultra space-efficient & responsive */}
-            <div className="ai-chat-intro flex items-center justify-center py-1 select-none">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#141A2E]/80 border border-slate-800/80 text-[11px] text-slate-400 shadow-xs">
-                <span className="text-xs">{selectedPersona.id === 'nihon-shiba' ? '🐕' : selectedPersona.avatar}</span>
-                <span className="font-bold text-slate-200 font-jp">{selectedPersona.japaneseName}</span>
-                <span className="text-slate-600">•</span>
-                <span className={`font-extrabold px-1 py-0.2 rounded text-[9px] border ${getLevelBadgeColor(selectedLevel)}`}>
-                  JLPT {selectedLevel}
-                </span>
-                <span className="text-slate-600">•</span>
-                <span className="text-emerald-400 text-[10px] font-medium">{aiProvider === 'chatgpt' ? 'GPT-4o' : 'Gemini'}</span>
-              </div>
-            </div>
-
             {/* Messages Stream */}
             {messages.map((m) => {
               const isAi = m.sender === 'ai';
@@ -1355,10 +1313,6 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
           {/* 3. Quick Suggestions Strip - Hidden when keyboard or input is focused to maximize vertical conversation area */}
           {hints.length > 0 && !isKeyboardOpen && !isInputFocused && (
             <div className="ai-chat-hints px-3 py-1.5 bg-[#0F1424]/95 border-t border-slate-800/80 flex items-center gap-1.5 overflow-x-auto shrink-0 scrollbar-none transition-all duration-150">
-              <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider shrink-0 flex items-center gap-1">
-                <Lightbulb className="w-3 h-3 text-amber-400" />
-                <span>Gợi ý:</span>
-              </span>
               <div className="flex items-center gap-1.5 flex-nowrap">
                 {hints.map((hint, idx) => (
                   <button
@@ -1440,18 +1394,6 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
           <footer className={`ai-composer bg-[#0F1424]/98 border-t border-slate-800/80 flex items-center gap-1.5 sm:gap-2 shrink-0 z-20 select-none transition-all duration-150 ${
             (isKeyboardOpen || isInputFocused) ? 'p-1.5 sm:p-2' : 'p-2 sm:p-2.5'
           }`}>
-            {/* Topic Starters Button */}
-            <button
-              type="button"
-              onClick={() => setIsTopicModalOpen(true)}
-              className={`rounded-full bg-slate-800/80 hover:bg-slate-700 text-amber-400 border border-slate-700/60 transition active:scale-95 cursor-pointer shrink-0 ${
-                (isKeyboardOpen || isInputFocused) ? 'p-1.5' : 'p-2'
-              }`}
-              title="Xem chủ đề hội thoại gợi ý"
-            >
-              <Lightbulb className="w-4 h-4" />
-            </button>
-
             {/* Mic Button: chạm để bật/tắt, hoặc giữ rồi thả (084) */}
             <button
               type="button"

@@ -30,7 +30,7 @@ export default function PlaneSend({ onClick, disabled, size = 40, title = 'Gửi
         <span className="u005-check" aria-hidden="true"><svg viewBox="0 0 34 34"><path d="M9 17.5l5.5 5.5L25.5 12" /></svg></span>
       </button>
       <span className="u005-dot" aria-hidden="true" /><span className="u005-dot" aria-hidden="true" /><span className="u005-dot" aria-hidden="true" />
-      <span className="u005-plane" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.2 11.1L20.4 3.6c.6-.3 1.2.3.9.9l-7.5 17.2c-.3.7-1.3.6-1.5-.1l-1.8-6.2c-.1-.3-.3-.5-.6-.6L3.7 13c-.7-.2-.8-1.2-.1-1.5z" transform="rotate(45 12 12)" /></svg></span>
+      <span className="u005-plane" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></svg></span>
     </span>
   );
 }
