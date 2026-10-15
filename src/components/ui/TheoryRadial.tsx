@@ -12,7 +12,7 @@ export const THEORY_ITEMS = [
 ];
 const FAN = {
   up: [[-84, -52], [0, -98], [84, -52]],
-  right: [[88, -62], [110, 0], [88, 62]],
+  right: [[64, -54], [84, 0], [64, 54]],
 };
 
 export default function TheoryRadial({ rect, dir, onPick, onClose }: {
@@ -35,7 +35,7 @@ export default function TheoryRadial({ rect, dir, onPick, onClose }: {
     return () => { document.removeEventListener('keydown', key); document.removeEventListener('pointerdown', down); };
   }, [onClose]);
 
-  const cx = dir === 'up' ? rect.left + rect.width / 2 : rect.right;
+  const cx = dir === 'up' ? rect.left + rect.width / 2 : rect.right - 56;
   const cy = dir === 'up' ? rect.top : rect.top + rect.height / 2;
   const clampedX = Math.min(Math.max(cx, 100), window.innerWidth - 100);
   return createPortal(

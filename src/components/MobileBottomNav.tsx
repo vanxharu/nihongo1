@@ -32,7 +32,8 @@ import {
   TrendingUp,
   GraduationCap,
   Trophy,
-  FileText
+  FileText,
+  ChevronUp
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../types';
@@ -180,6 +181,7 @@ export default function MobileBottomNav({
               const inner = (
                 <>
                   <span className="u041-ic" aria-hidden="true"><Icon /></span>
+                  {item.id === 'grammar' && !sel && <ChevronUp className="u041-more" aria-hidden="true" />}
                   <span className="u041-lab">{item.label}</span>
                 </>
               );

@@ -21,6 +21,7 @@ import {
   GraduationCap,
   Headphones,
   Flame,
+  ChevronRight,
 } from 'lucide-react';
 import JpStudyLogo from './JpStudyLogo';
 import ThemeToggle from './ThemeToggle';
@@ -95,6 +96,7 @@ function NavLink({ item, isActive, onClick, index, radial }: { item: NavItem; is
       <span style={{ '--i': index } as React.CSSProperties} className={`u040-lab text-[13px] leading-none font-semibold truncate flex-1 ${isActive ? 'text-white' : ''}`}>
         {item.label}
       </span>
+      {radial && <ChevronRight size={14} className="u040-lab shrink-0 text-slate-500" aria-hidden="true" />}
     </Link>
   );
 }

@@ -697,6 +697,25 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     };
   }, [isPlaying, isSubmitted, partTimes, sectionTimerLeft, selectedSectionMode, currentQuestionIndex, activeSectionFilter, selectedExam]);
 
+  // Lưu tiến độ làm dở (đáp án + câu hiện tại) để nút "Tiếp tục" khôi phục; bộ đếm giờ bắt đầu lại.
+  const PROGRESS_KEY = 'jlpt_exam_progress';
+  const readProgress = (): Record<string, any> => { try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch { return {}; } };
+  const [savedProgress, setSavedProgress] = useState<Record<string, any>>(readProgress);
+  useEffect(() => {
+    if (!isPlaying || !selectedExam || examViewFormat !== 'interactive') return;
+    const all = readProgress();
+    if (isSubmitted) delete all[selectedExam.id];
+    else if (Object.keys(userAnswers).length) all[selectedExam.id] = { mode: selectedSectionMode, answers: userAnswers, flagged: flaggedQuestions, index: currentQuestionIndex };
+    else return;
+    try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(all)); } catch { /* storage blocked */ }
+    setSavedProgress(all);
+  }, [isPlaying, isSubmitted, userAnswers, flaggedQuestions, currentQuestionIndex]);
+  const handleResumeExam = (exam: DailyExam) => {
+    const saved = savedProgress[exam.id]; if (!saved) return;
+    handleStartExam(exam, saved.mode, 'interactive');
+    setUserAnswers(saved.answers || {}); setFlaggedQuestions(saved.flagged || {}); setCurrentQuestionIndex(saved.index || 0);
+  };
+
   const handleStartExam = (
     examToStart?: DailyExam, 
     sectionMode: ExamSectionMode = 'ALL',
@@ -1009,8 +1028,8 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     const minutes = lobbyPracticeMode === 'ALL' ? exam.durationMinutes : Math.round(getSectionStandardDuration(lobbyPracticeMode, exam.level) / 60);
     return <article key={exam.id} className="study-exam-card" data-level={exam.level}>
       <span className="study-level">{exam.level}</span>
-      <div className="study-exam-main"><h3>{exam.title}</h3><div className="study-exam-spec"><span>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</span><span><FileText size={13} />{questions.length} câu</span><span><Clock size={13} />{minutes} phút</span></div></div>
-      <div className="study-exam-actions"><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}>Luyện</button><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'booklet_pdf')}>Đề giấy</button></div>
+      <div className="study-exam-main"><h3>{exam.title}</h3><div className="study-exam-spec"><span>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</span><span><FileText size={13} />{questions.length} câu</span></div></div>
+      <div className="study-exam-actions">{savedProgress[exam.id] && <button onClick={() => handleResumeExam(exam)}>Tiếp tục</button>}<button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}>Luyện</button><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'booklet_pdf')}>Đề giấy</button></div>
     </article>;
   };
   return (

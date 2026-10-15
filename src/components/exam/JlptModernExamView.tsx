@@ -191,11 +191,6 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
                 </h2>
                 <div className="flex items-center gap-1.5 text-[10px] text-[#786D5E]">
                   <span>{activeQuestions.length} câu hỏi</span>
-                  <span>•</span>
-                  <span className="text-[#10B981] font-semibold flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-                    {saveStatus === 'saving' ? 'Đang lưu...' : 'Đã tự động lưu'}
-                  </span>
                 </div>
               </div>
             </div>
@@ -220,66 +215,6 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
           {/* Right: Controls (Font Size, Focus Mode, Palette, Submit) */}
           <div className="flex items-center gap-1.5 sm:gap-2">
             
-            {/* Font Size Selector */}
-            <div className="hidden md:flex items-center bg-[#F4EDE2] p-0.5 rounded-lg border border-[#EADFCF]">
-              <button
-                onClick={() => setFontSize('normal')}
-                className={`px-2 py-0.5 text-xs font-bold rounded ${fontSize === 'normal' ? 'bg-white shadow-2xs text-[#1F2639]' : 'text-[#786D5E] hover:text-[#1F2639]'}`}
-                title="Cỡ chữ tiêu chuẩn"
-              >
-                A
-              </button>
-              <button
-                onClick={() => setFontSize('large')}
-                className={`px-2 py-0.5 text-xs font-bold rounded ${fontSize === 'large' ? 'bg-white shadow-2xs text-[#1F2639]' : 'text-[#786D5E] hover:text-[#1F2639]'}`}
-                title="Cỡ chữ lớn vừa"
-              >
-                A+
-              </button>
-              <button
-                onClick={() => setFontSize('huge')}
-                className={`px-2 py-0.5 text-xs font-bold rounded ${fontSize === 'huge' ? 'bg-white shadow-2xs text-[#1F2639]' : 'text-[#786D5E] hover:text-[#1F2639]'}`}
-                title="Cỡ chữ cực đại"
-              >
-                A++
-              </button>
-            </div>
-
-            {/* Focus Mode Toggle */}
-            <button
-              onClick={() => setIsFocusMode(prev => !prev)}
-              className={`p-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
-                isFocusMode 
-                  ? 'bg-[#1F2639] text-[#F4A643] ring-1 ring-[#F4A643]' 
-                  : 'bg-[#F4EDE2] text-[#786D5E] hover:text-[#1F2639] hover:bg-[#EADFCF]'
-              }`}
-              title={isFocusMode ? 'Tắt chế độ tập trung cao' : 'Bật chế độ tập trung Zen (ẩn yếu tố phụ)'}
-            >
-              <Eye className="w-3.5 h-3.5" />
-              <span className="hidden lg:inline text-[11px]">{isFocusMode ? 'Zen: Bật' : 'Zen'}</span>
-            </button>
-
-            {/* Switch to Authentic Paper Booklet Mode */}
-            {onSwitchViewFormat && (
-              <button
-                onClick={onSwitchViewFormat}
-                className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-bold bg-[#FDF1E2] hover:bg-[#F4EDE2] text-[#7A3E12] border border-[#EADFCF] transition cursor-pointer"
-                title="Chuyển sang chế độ vẽ bút trên Đề Giấy Thi Thật"
-              >
-                <FileText className="w-3.5 h-3.5 text-[#F4A643]" />
-                <span className="hidden xl:inline">Đề Giấy Thi Thật</span>
-              </button>
-            )}
-
-            {/* Fullscreen Toggle */}
-            <button
-              onClick={toggleFullscreen}
-              className="p-2 rounded-xl bg-[#F4EDE2] hover:bg-[#EADFCF] text-[#786D5E] hover:text-[#1F2639] transition cursor-pointer"
-              title="Toàn màn hình phòng thi"
-            >
-              {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
-            </button>
-
             {/* Question Palette Trigger */}
             <button
               onClick={() => setIsPaletteOpen(true)}

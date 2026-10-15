@@ -19,3 +19,4 @@
 #mobile-bottom-navigation .u041-tab[data-sel="true"] .u041-ic svg{stroke-width:2.2}
 #mobile-bottom-navigation .u041-tab[data-sel="true"] .u041-lab{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.u041-ic,.u041-lab{transition-duration:.001ms}}
+.u041-more{position:absolute;left:50%;top:6px;width:12px;height:12px;margin-left:-6px;color:var(--ui-muted);opacity:.7}

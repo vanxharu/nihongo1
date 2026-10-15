@@ -417,67 +417,23 @@ export default function Header({
               </form>
             </div>
 
-            {/* Bottom tools (PWA, AI Config, Notifications, Reset progress) */}
-            <div className="space-y-3 pt-6 border-t border-slate-50">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsProfileOpen(false);
-                  setIsPwaModalOpen(true);
-                }}
-                className="w-full py-2.5 px-3 bg-sky-50 hover:bg-sky-100/80 border border-sky-200 text-sky-900 font-bold text-xs rounded-xl transition-all flex items-center justify-between cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <Monitor className="w-4 h-4 text-sky-600" />
-                  Cài đặt App (Windows PC / Mobile)
-                </span>
-                <span className="text-[10px] font-mono bg-sky-200 px-2 py-0.5 rounded text-sky-900 font-black">
-                  Cài đặt 💻
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setIsProfileOpen(false);
-                  setIsAiConfigModalOpen(true);
-                }}
-                className="w-full py-2.5 px-3 bg-purple-50 hover:bg-purple-100/80 border border-purple-200 text-purple-900 font-bold text-xs rounded-xl transition-all flex items-center justify-between cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <Settings className="w-4 h-4 text-purple-600" />
-                  Cấu hình API kết nối hệ thống
-                </span>
-                <span className="text-[10px] font-mono bg-purple-200 px-2 py-0.5 rounded text-purple-900 font-black">
-                  Cài đặt ⚙️
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setIsProfileOpen(false);
-                  setIsNotificationModalOpen(true);
-                }}
-                className="w-full py-2.5 px-3 bg-rose-50 hover:bg-rose-100/80 border border-rose-200 text-rose-800 font-bold text-xs rounded-xl transition-all flex items-center justify-between cursor-pointer"
-              >
-                <span className="flex items-center gap-2">
-                  <Bell className="w-4 h-4 text-rose-600" />
-                  Nhắc nhở học tập hàng ngày
-                </span>
-                <span className="text-[10px] font-mono bg-white px-2 py-0.5 rounded text-rose-600 font-black">
-                  Cài đặt ⚙️
-                </span>
-              </button>
-
-              <div className="bg-slate-50/50 p-3.5 rounded-xl border border-slate-100 flex items-center justify-between text-xs">
-                <span className="text-slate-500 font-medium">Tổng kinh nghiệm:</span>
-                <span className="font-mono text-slate-950 font-bold flex items-center gap-1 text-amber-600">
-                  <Flame className="w-3.5 h-3.5 text-amber-500" />
-                  {userProfile.xp} XP
-                </span>
-              </div>
-
+            {/* Cài đặt */}
+            <div className="mt-6 border-t border-slate-100 divide-y divide-slate-100">
+              {[
+                { label: 'Cấu hình API', icon: Settings, open: () => setIsAiConfigModalOpen(true) },
+                { label: 'Nhắc nhở học tập', icon: Bell, open: () => setIsNotificationModalOpen(true) },
+              ].map(({ label, icon: Icon, open }) => (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => { setIsProfileOpen(false); open(); }}
+                  className="w-full py-3 flex items-center gap-3 text-sm font-semibold text-slate-700 hover:text-slate-950 cursor-pointer"
+                >
+                  <Icon className="w-4 h-4 text-slate-400" />
+                  <span className="flex-1 text-left">{label}</span>
+                  <ChevronRight className="w-4 h-4 text-slate-300" />
+                </button>
+              ))}
             </div>
           </div>
         </div>
