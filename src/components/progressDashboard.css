@@ -552,6 +552,3 @@
 .pd-embedded .pd-shell { max-width: none; }
 /* Gộp vào Luyện tập: màn rộng thì xếp 2 thẻ cạnh nhau cho đỡ trống */
 .pd-embedded .pd-calendar { grid-template-rows: repeat(7, 22px); grid-auto-columns: 22px; gap: 5px; }
-@media (min-width: 900px) {
-  .pd-embedded .pd-shell { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
-}

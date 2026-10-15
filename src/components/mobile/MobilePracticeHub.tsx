@@ -127,6 +127,8 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
         </Link>
       )}
 
+      <div className="lg:grid lg:grid-cols-2 lg:gap-3 lg:items-start space-y-2 lg:space-y-0">
+      <div className="space-y-2 min-w-0">
       {/* 014 — Mục tiêu hôm nay */}
       <div className={`ux u014${goalsDone === goals.length ? ' is-all' : ''}`} style={{ ['--p' as any]: (goalsDone / goals.length).toFixed(3) }}>
         <div className="u014-head">
@@ -166,7 +168,7 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
         </button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-2">
         {tiles.map(t => (
           <button
             key={t.id}
@@ -184,9 +186,14 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
         ))}
       </div>
 
-      {/* Tiến độ học tập chi tiết (gộp từ trang Tiến độ cũ) */}
-      <h2 className="text-sm font-bold text-white pt-1">Tiến độ chi tiết</h2>
-      <ProgressDashboard userProfile={userProfile} todayXp={0} embedded />
+
+      </div>
+
+      {/* Tiến độ học tập chi tiết (gộp từ trang Tiến độ cũ): cột phải trên màn rộng */}
+      <div className="min-w-0">
+        <ProgressDashboard userProfile={userProfile} todayXp={0} embedded />
+      </div>
+      </div>
 
       {/* Lịch sử: one compact card, no tab switcher */}
       <div className="rounded-2xl bg-[#121927] border border-[#1b253b] px-4 py-3 space-y-1.5">
