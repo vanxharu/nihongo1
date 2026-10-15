@@ -1029,7 +1029,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
   const [srsOn] = useSrsAuto();
   const srsDue = useMemo(() => (srsOn ? dueSrsQuestions() : []), [srsOn, isPlaying, isSubmitted]);
   const renderMainTabsHeader = () => <>
-    <div className="study-exam-head"><h1>Luyện thi JLPT</h1><span>{userProfile.targetLevel || 'N4'} · {allExams.length} đề · {userProfile.dailyTestResults?.length || 0} lượt làm</span><SrsSwitch /><button type="button" onClick={() => setShowHistoryModal(true)}><History size={14} />Lịch sử</button></div>
+    <div className="study-exam-head"><span>{userProfile.targetLevel || 'N4'} · {allExams.length} đề · {userProfile.dailyTestResults?.length || 0} lượt làm</span><SrsSwitch /><button type="button" onClick={() => setShowHistoryModal(true)}><History size={14} />Lịch sử</button></div>
     {srsOn && srsDue.length > 0 && <button type="button" className="study-srs-bar" onClick={() => handleStartExam({ id: 'srs-review', title: 'Ôn SRS · câu đã sai', level: userProfile.targetLevel || 'N4', category: 'mock_daily', durationMinutes: 30, questions: srsDue }, 'ALL', 'interactive')}><b>{srsDue.length} câu đến hạn ôn hôm nay</b><span>Ôn SRS ngay</span></button>}
     <nav className="study-nav" aria-label="Cách luyện thi">
       {[
