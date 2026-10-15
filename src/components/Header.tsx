@@ -114,7 +114,7 @@ export default function Header({
   const getTabTitle = () => {
     switch (currentTab) {
       case 'practice':
-        return 'Trung tâm Luyện tập';
+        return '';
       case 'listening':
         return 'JLPT Listening (聴解)';
       case 'shadowing':

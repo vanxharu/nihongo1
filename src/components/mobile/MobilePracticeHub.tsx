@@ -51,13 +51,8 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
   const masteredVocab = Object.values(userProfile.vocabStatus || {}).filter(v => v === 'mastered').length;
   const pct = (n: number, total: number) => (total ? Math.min(100, Math.round((n / total) * 100)) : 0);
 
-  // Streak ring: how many of the last 7 days have a study record.
-  const weekDays = Array.from({ length: 7 }, (_, i) => new Date(Date.now() - i * 864e5 - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10));
-  const weekCount = weekDays.filter(d => (userProfile.studyDays || []).includes(d)).length;
-
   const pos = userProfile.lastPosition;
   const resumeTab = pos?.tab && TAB_LABEL[pos.tab] ? pos.tab : 'vocabulary';
-  const resumeTitle = pos?.lessonName || TAB_LABEL[resumeTab];
 
   // Shadowing / Lộ trình / Tiến độ already live in the bottom nav, so they are not repeated here.
   const tiles: Tile[] = [
@@ -100,22 +95,6 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
 
   return (
     <div className="w-full max-w-lg md:max-w-4xl mx-auto px-4 py-2 space-y-2 text-white pb-6 select-none">
-      {/* Tiếp tục: một dòng gọn */}
-      <div className="flex items-center gap-3 rounded-xl bg-[#121927] border border-[#1b253b] px-3 py-2">
-        <div className="flex-1 min-w-0">
-          <div className="text-[11px] text-slate-400 truncate">{pos ? 'Tiếp tục hôm nay' : `Mục tiêu ${targetLevel}`} · {weekCount}/7 ngày tuần này</div>
-          <div className="text-sm font-bold text-white truncate">{resumeTitle}{pos?.level ? ` · ${pos.level}` : ''}</div>
-        </div>
-        <button
-          type="button"
-          id="btn-resume-practice"
-          onClick={() => onNavigate(resumeTab)}
-          className="shrink-0 rounded-lg bg-[#f43f5e] px-3 py-1.5 text-xs font-bold text-white active:scale-95 cursor-pointer"
-        >
-          {pos ? 'Học tiếp' : 'Bắt đầu'}
-        </button>
-      </div>
-
       {/* SRS tự động: từ đến hạn ôn hôm nay */}
       {srsOn && srsDue > 0 && (
         <Link to="/tango" id="btn-srs-auto" className="flex items-center gap-3 rounded-xl bg-[#121927] border border-[#1b253b] px-3 py-2 active:scale-[.99]">
