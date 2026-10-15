@@ -3,7 +3,6 @@ import { UserProfile, GrammarItem, JLPTLevel } from '../types';
 import { GRAMMAR_DATA } from '../data';
 import { safeFetchJson } from '../utils/safeApi';
 import { deduplicateGrammars, getGrammarStatusWithAliases } from '../utils/grammarDeduplicator';
-import TheoryHubView from './grammar/TheoryHubView';
 import GrammarMindmapOverview from './grammar/GrammarMindmapOverview';
 import GrammarMasterDetail from './grammar/GrammarMasterDetail';
 import GrammarLessonListView from './grammar/GrammarLessonListView';
@@ -29,7 +28,7 @@ export default function GrammarPractice({
   updateProfile, 
   onEarnXp, onStudyReward,
   onNavigateTab,
-  initialViewMode = 'overview',
+  initialViewMode = 'lesson-list',
   initialLessonNumber
 }: GrammarPracticeProps) {
   // Navigation state - Show TheoryHubView (overview) by default
@@ -40,7 +39,7 @@ export default function GrammarPractice({
     mq.addEventListener('change', on);
     return () => mq.removeEventListener('change', on);
   }, []);
-  const [viewMode, setViewMode] = useState<GrammarViewMode>(initialViewMode);
+  const [viewMode, setViewMode] = useState<GrammarViewMode>(initialViewMode === 'overview' ? 'lesson-list' : initialViewMode);
   const [selectedLevel, setSelectedLevel] = useState<JLPTLevel>((userProfile.targetLevel as JLPTLevel) || 'N4');
   const [selectedLessonNumber, setSelectedLessonNumber] = useState<number>(
     initialLessonNumber || (userProfile.targetLevel === 'N5' ? 1 : 26)
@@ -60,7 +59,7 @@ export default function GrammarPractice({
   // Sync external initialViewMode or initialLessonNumber when props change
   useEffect(() => {
     if (initialViewMode) {
-      setViewMode(initialViewMode);
+      setViewMode(initialViewMode === 'overview' ? 'lesson-list' : initialViewMode);
     }
   }, [initialViewMode]);
 
@@ -306,47 +305,6 @@ export default function GrammarPractice({
 
   return (
     <div className="min-h-screen bg-[#0f1217] bg-[radial-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:24px_24px] text-slate-100 selection:bg-blue-600 selection:text-white pb-16">
-      {/* 1. OVERVIEW SCREEN (Screen 1: Theory Hub matching mobile screenshot) */}
-      {viewMode === 'overview' && (
-        <TheoryHubView
-          userProfile={userProfile}
-          selectedLevel={selectedLevel}
-          onChangeLevel={(level) => {
-            setSelectedLevel(level);
-            updateProfile({ targetLevel: level });
-            const defaultLesson = level === 'N4' ? 26 : 1;
-            setSelectedLessonNumber(defaultLesson);
-          }}
-          onOpenGrammar={() => {
-            const defaultLesson = selectedLevel === 'N4' ? 26 : (selectedLevel === 'N5' ? 1 : 1);
-            setSelectedLessonNumber(defaultLesson);
-            setViewMode('lesson-list');
-          }}
-          onOpenVocab={() => {
-            if (onNavigateTab) {
-              onNavigateTab('vocabulary');
-            }
-          }}
-          onOpenKanji={() => {
-            if (onNavigateTab) {
-              onNavigateTab('kanji');
-            }
-          }}
-          onContinueStudy={() => {
-            const defaultLesson = selectedLevel === 'N4' ? 26 : (selectedLevel === 'N5' ? 1 : 1);
-            setSelectedLessonNumber(defaultLesson);
-            setViewMode('lesson-detail');
-          }}
-          grammars={grammars}
-          levelStats={levelStats}
-          onSelectGrammarItem={(grammar) => {
-            setSelectedLessonNumber(grammar.lessonNumber || grammar.lessonId || (grammar.level === 'N4' ? 26 : 1));
-            setSelectedGrammar(grammar);
-            setViewMode('grammar-detail');
-          }}
-        />
-      )}
-
       {/* 2. LESSON LIST SCREEN (Screen 2) */}
       {isDesktop && (viewMode === 'lesson-list' || viewMode === 'lesson-detail' || viewMode === 'grammar-detail') ? (
         <GrammarMasterDetail
@@ -355,7 +313,7 @@ export default function GrammarPractice({
           grammars={grammars}
           lessonNumber={selectedLessonNumber}
           selectedGrammar={selectedGrammar}
-          onBack={() => setViewMode('overview')}
+          onBack={() => onNavigateTab?.('practice')}
           onSelectLesson={setSelectedLessonNumber}
           onSelectGrammar={setSelectedGrammar}
           onPractice={(g) => { setSelectedGrammar(g); setViewMode('practice'); }}
@@ -383,7 +341,7 @@ export default function GrammarPractice({
           level={selectedLevel}
           userProfile={userProfile}
           grammars={grammars}
-          onBackToOverview={() => setViewMode('overview')}
+          onBackToOverview={() => onNavigateTab?.('practice')}
           onSelectLesson={(lessonNumber) => {
             setSelectedLessonNumber(lessonNumber);
             setViewMode('lesson-detail');

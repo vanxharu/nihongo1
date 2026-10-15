@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import TheoryRadial from './ui/TheoryRadial';
 import React, { useState } from 'react';
 import './ui/sidebarRail.css';
 import { useDialogFocus } from '../hooks/useDialogFocus';
@@ -65,12 +66,12 @@ const SECONDARY_NAV = (unlockedCount: number, isAdmin: boolean): NavItem[] => [
 ];
 
 // ── Single nav link ──────────────────────────────────────────────────────────
-function NavLink({ item, isActive, onClick, index }: { item: NavItem; isActive: boolean; onClick: () => void; index: number }) {
+function NavLink({ item, isActive, onClick, index, radial }: { item: NavItem; isActive: boolean; onClick: () => void; index: number; radial?: (r: DOMRect) => void }) {
   const Icon = item.icon;
   return (
     <Link
       to={item.path}
-      onClick={onClick}
+      onClick={(e) => { if (radial) { e.preventDefault(); radial(e.currentTarget.getBoundingClientRect()); } else onClick(); }}
       title={item.label}
       className={`u040-link relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 group ${
         isActive
@@ -117,6 +118,7 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
     (item.path === '/' ? location.pathname === '/' : location.pathname.startsWith(item.path));
 
   const streak = userProfile?.streak || 0;
+  const [theoryRect, setTheoryRect] = useState<DOMRect | null>(null);
 
   return (
     <>
@@ -168,8 +170,9 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
               key={item.id}
               index={i}
               item={item}
-              isActive={isItemActive(item)}
+              isActive={isItemActive(item) || (item.id === 'grammar' && ['vocabulary', 'kanji'].includes(currentTab))}
               onClick={() => { setCurrentTab(item.id); onClose(); }}
+              radial={item.id === 'grammar' ? setTheoryRect : undefined}
             />
           ))}
 
@@ -186,6 +189,10 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
             />
           ))}
         </nav>
+
+        {theoryRect && (
+          <TheoryRadial rect={theoryRect} dir="right" onClose={() => setTheoryRect(null)} onPick={(id) => { setCurrentTab(id); onClose(); }} />
+        )}
 
         {/* Windows install card */}
         <div className="u040-fade"><SidebarWindowsInstallCard /></div>

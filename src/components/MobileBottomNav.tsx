@@ -1,3 +1,4 @@
+import TheoryRadial from './ui/TheoryRadial';
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -79,6 +80,7 @@ export default function MobileBottomNav({
   };
 
   const location = useLocation();
+  const [theoryRect, setTheoryRect] = useState<DOMRect | null>(null);
 
   // Primary destinations; other features remain in the navigation drawer
   const mainNavItems = [
@@ -98,7 +100,7 @@ export default function MobileBottomNav({
       path: '/bunpo',
       label: 'Lý thuyết',
       icon: BookOpen,
-      checkActive: (tab: string, pathname: string) => tab === 'grammar' || pathname.startsWith('/bunpo'),
+      checkActive: (tab: string, pathname: string) => ['grammar', 'vocabulary', 'kanji'].includes(tab) || ['/bunpo', '/tango', '/kanji'].some((p) => pathname.startsWith(p)),
     },
     {
       id: 'roadmap',
@@ -152,7 +154,10 @@ export default function MobileBottomNav({
                 id={`mobile-nav-${item.id}`}
                 to={item.path}
                 aria-current={isTabActive ? 'page' : undefined}
-                onClick={() => handleItemClick(item.id)}
+                onClick={(e) => {
+                  if (item.id === 'grammar') { e.preventDefault(); setTheoryRect(e.currentTarget.getBoundingClientRect()); return; }
+                  handleItemClick(item.id);
+                }}
                 className="relative flex flex-col items-center justify-center flex-1 py-1 cursor-pointer active:scale-95 transition-all touch-manipulation"
               >
                 {/* Active Capsule Pill */}
@@ -192,6 +197,10 @@ export default function MobileBottomNav({
           )}
         </div>
       </nav>
+
+      {theoryRect && (
+        <TheoryRadial rect={theoryRect} dir="up" onClose={() => setTheoryRect(null)} onPick={(id) => handleItemClick(id)} />
+      )}
 
       {/* Modern Slide-up Drawer for "Tùy chọn & Mở rộng" */}
       <AnimatePresence>

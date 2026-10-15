@@ -1,0 +1,18 @@
+/* Radial menu — adapted from Lucian UX/UI spec 011 (MIT) */
+.u011{position:fixed;width:0;height:0;z-index:300}
+.u011-halo{position:absolute;left:-130px;top:-130px;width:260px;height:260px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,color-mix(in srgb,var(--ui-accent,#e89a3c) 28%,transparent),transparent 68%);
+  transform:scale(.2);opacity:0;animation:u011-halo .5s cubic-bezier(.34,1.45,.64,1) forwards}
+.u011-item{position:absolute;left:-27px;top:-27px;width:54px;height:54px;border:0;padding:0;border-radius:50%;cursor:pointer;
+  background:var(--c);color:#fff;display:grid;place-items:center;
+  box-shadow:0 8px 20px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.35);
+  transform:translate(0,0) scale(.3);opacity:0;
+  animation:u011-pop .5s cubic-bezier(.34,1.45,.64,1) calc(var(--i)*45ms) forwards;outline:none}
+.u011-item:focus-visible{box-shadow:0 0 0 3px var(--ui-surface,#fff),0 0 0 5px var(--ui-accent,#e89a3c)}
+.u011-item:hover{filter:brightness(1.1)}
+.u011-ico{display:grid;place-items:center}
+.u011-lab{position:absolute;top:60px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11px;font-weight:700;
+  color:var(--ui-ink,#fff);background:var(--ui-surface,#161b2e);padding:2px 8px;border-radius:99px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+@keyframes u011-pop{to{transform:translate(var(--x),var(--y)) scale(1);opacity:1}}
+@keyframes u011-halo{to{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){.u011-item,.u011-halo{animation-duration:.01s;animation-delay:0s}}
