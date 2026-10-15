@@ -166,6 +166,7 @@ export const AchievementsView: React.FC<Props> = ({ userProfile, onBack }) => {
           <div className="collection-empty">
             <ShibaMascot pose="curious" size={80} animated={false} />
             <p>Không có huy hiệu phù hợp. Hãy đổi bộ lọc hoặc từ tìm kiếm.</p>
+            <button onClick={() => { setCategory("all"); setStatus("all"); setSearch(""); }}>Xóa bộ lọc</button>
           </div>
         )}
         <p className="collection-note">

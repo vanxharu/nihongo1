@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { toast } from './ui/Toasts';
 
 // Sách PDF cá nhân: lưu trong IndexedDB của trình duyệt, không upload lên server.
 const DB = 'my-books', STORE = 'pdf';
@@ -39,8 +40,9 @@ export default function MyBooks() {
     if (f) { setCur(n); setUrl(URL.createObjectURL(f)); }
   };
   const del = async (n: string) => {
-    if (!confirm('Xóa "' + n + '" khỏi thiết bị này?')) return;
+    const blob = await tx<Blob>('readonly', s => s.get(n));
     await tx('readwrite', s => s.delete(n));
+    if (blob) toast('Đã xóa "' + n + '"', async () => { await tx('readwrite', s => s.put(blob, n)); refresh(); });
     if (cur === n) { setCur(null); setUrl(null); }
     refresh();
   };

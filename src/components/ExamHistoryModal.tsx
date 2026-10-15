@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ExamHistoryRecord } from '../types';
-import { getExamHistory, deleteExamAttempt, groupHistoryByDate } from '../utils/examHistoryStorage';
+import { toast } from './ui/Toasts';
+import { getExamHistory, deleteExamAttempt, restoreExamAttempt, groupHistoryByDate } from '../utils/examHistoryStorage';
 import { Calendar, CheckCircle, Clock, Eye, FileDown, History, RefreshCw, Trash2, X, AlertCircle } from 'lucide-react';
 
 import { useEscape } from '../hooks/useEscape';
@@ -39,10 +40,10 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
 
   const handleDelete = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (window.confirm('Bạn có chắc chắn muốn xóa bản lưu bài thi này?')) {
-      deleteExamAttempt(id);
-      setHistoryList(getExamHistory());
-    }
+    const rec = historyList.find(h => h.id === id);
+    deleteExamAttempt(id);
+    setHistoryList(getExamHistory());
+    if (rec) toast('Đã xóa bản lưu bài thi', () => { restoreExamAttempt(rec); setHistoryList(getExamHistory()); });
   };
 
   const grouped = groupHistoryByDate(historyList);

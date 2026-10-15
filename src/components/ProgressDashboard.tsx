@@ -188,6 +188,9 @@ export default function ProgressDashboard({
                 </div>
               </div>
               <div className="pd-calendar">
+                {Array.from({ length: (new Date(calendar[0].date + "T00:00:00Z").getUTCDay() + 6) % 7 }, (_, i) => (
+                  <span key={`pad${i}`} aria-hidden="true" />
+                ))}
                 {calendar.map((d) => (
                   <span
                     key={d.date}

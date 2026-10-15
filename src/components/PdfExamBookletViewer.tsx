@@ -112,6 +112,7 @@ interface AiGradeResult {
   };
 }
 
+import { toast } from './ui/Toasts';
 const getProgressStorageKey = (filename: string) => `pdf_exam_progress_v2_${filename.replace(/[^a-zA-Z0-9]/g, '_')}`;
 
 export const PdfExamBookletViewer: React.FC<PdfExamBookletViewerProps> = ({
@@ -599,15 +600,20 @@ export const PdfExamBookletViewer: React.FC<PdfExamBookletViewerProps> = ({
 
   // Reset entire session
   const handleResetSession = () => {
-    if (window.confirm("Bạn có chắc chắn muốn làm lại bài từ đầu? Toàn bộ nét vẽ & ghi chú sẽ được xóa.")) {
-      setPageStrokes({});
-      setPageStamps({});
-      setPageNotes({});
-      setCurrentPage(1);
-      setIsSubmitted(false);
-      setAiGradeResults(null);
-      localStorage.removeItem(getProgressStorageKey(pdfFileName));
-    }
+    const snap = { st: pageStrokes, sp: pageStamps, no: pageNotes, page: currentPage, sub: isSubmitted, ai: aiGradeResults };
+    const key = getProgressStorageKey(pdfFileName), saved = localStorage.getItem(key);
+    setPageStrokes({});
+    setPageStamps({});
+    setPageNotes({});
+    setCurrentPage(1);
+    setIsSubmitted(false);
+    setAiGradeResults(null);
+    localStorage.removeItem(key);
+    toast('Đã làm lại bài từ đầu', () => {
+      setPageStrokes(snap.st); setPageStamps(snap.sp); setPageNotes(snap.no);
+      setCurrentPage(snap.page); setIsSubmitted(snap.sub); setAiGradeResults(snap.ai);
+      if (saved) localStorage.setItem(key, saved);
+    });
   };
 
   // Undo last stroke/stamp on current page

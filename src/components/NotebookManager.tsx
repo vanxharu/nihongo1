@@ -407,7 +407,9 @@ export default function NotebookManager({ onNavigateToTab, onStudyReward }: Note
             id="delete-current-notebook-btn"
             title="Nhấn giữ để xóa"
             onConfirm={() => {
+              const nbs = getStoredNotebooks(), ws = getStoredWords(), name = activeNotebook?.name;
               deleteNotebook(selectedNotebookId);
+              toast(`Đã xóa sổ tay "${name}"`, () => { saveStoredNotebooks(nbs); saveStoredWords(ws); loadData(); });
               setSelectedNotebookId('all');
               loadData();
             }}

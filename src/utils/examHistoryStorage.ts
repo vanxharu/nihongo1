@@ -90,6 +90,15 @@ export function deleteExamAttempt(id: string): void {
   }
 }
 
+export function restoreExamAttempt(rec: ExamHistoryRecord): void {
+  try {
+    const history = getExamHistory();
+    if (!history.some(h => h.id === rec.id)) localStorage.setItem(STORAGE_KEY, JSON.stringify([rec, ...history].sort((a, b) => (b.date ?? 0) > (a.date ?? 0) ? 1 : -1)));
+  } catch (err) {
+    console.error('Failed to restore exam history record:', err);
+  }
+}
+
 export function clearAllExamHistory(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);

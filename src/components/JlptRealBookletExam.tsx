@@ -59,6 +59,7 @@ import { PrintableExamBooklet } from './PrintableExamBooklet';
 import { renderStudyQuestionText } from '../utils/questionFormatUtils';
 
 import { svgDataUri } from '../utils/sanitizeHtml';
+import { toast } from './ui/Toasts';
 interface DrawingStroke {
   id: string;
   tool: 'pen' | 'highlighter';
@@ -933,12 +934,12 @@ export const JlptRealBookletExam: React.FC<JlptRealBookletExamProps> = ({
   };
 
   const handleClearAll = () => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa toàn bộ nét vẽ và ghi chú trên đề thi này?')) {
-      setStrokes([]);
-      setUndoneStrokes([]);
-      setStickyNotes([]);
-      saveAnnotations([], []);
-    }
+    const [s, n] = [strokes, stickyNotes];
+    setStrokes([]);
+    setUndoneStrokes([]);
+    setStickyNotes([]);
+    saveAnnotations([], []);
+    toast('Đã xóa nét vẽ và ghi chú', () => { setStrokes(s); setStickyNotes(n); saveAnnotations(s, n); });
   };
 
   // Fullscreen toggle
