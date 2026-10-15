@@ -186,10 +186,6 @@ export default function JlptRoadmapView({
     <div className="jlpt-journey">
       <div className="journey-shell">
         <div className="journey-bar">
-          <div>
-            <h1>Lộ trình JLPT {level}</h1>
-            <p>{plan.durationDays} ngày học · theo nhịp của bạn</p>
-          </div>
           <div className="journey-bar-actions">
             <button onClick={openSettings}>
               <Settings2 size={16} /> Điều chỉnh
@@ -216,13 +212,6 @@ export default function JlptRoadmapView({
               onClick={() => chooseLevel(item)}
             >
               <span>{item}</span>
-              <small>
-                {
-                  ["Khởi đầu", "Đời sống", "Kết nối", "Mở rộng", "Chuyên sâu"][
-                    index
-                  ]
-                }
-              </small>
               {level === item && <span className="journey-level-dot" />}
             </button>
           ))}

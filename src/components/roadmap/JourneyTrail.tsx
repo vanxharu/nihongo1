@@ -57,17 +57,9 @@ export default function JourneyTrail({
       aria-label={`Bản đồ từng ngày ${level}`}
     >
       <header className="trail-heading">
-        <div>
-          <span>MỖI NGÀY · MỘT BƯỚC TIẾN</span>
-          <h2>
-            Hành trình {plan.durationDays} ngày đến {level}
-          </h2>
-          <p>Mỗi điểm dừng là một ngày học cùng Shiba.</p>
-        </div>
-        <span className="trail-passport">
-          <Compass size={18} />
-          {plan.completedDays.length}/{plan.durationDays} ngày
-        </span>
+        <h2>
+          {level} · {plan.completedDays.length}/{plan.durationDays} ngày
+        </h2>
       </header>
       <nav className="trail-week-nav" aria-label="Chọn tuần học">
         <button
