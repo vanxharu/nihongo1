@@ -26,7 +26,6 @@ import JpStudyLogo from './JpStudyLogo';
 import ThemeToggle from './ThemeToggle';
 import { motion } from 'motion/react';
 import { UserProfile } from '../types';
-import { SidebarWindowsInstallCard } from './PwaInstallPrompt';
 import { calculateUnlockedAchievements, TOTAL_ACHIEVEMENTS_COUNT } from '../data/achievementsData';
 import { readGuestRoadmap } from '../data/jlptRoadmap';
 
@@ -103,7 +102,7 @@ function NavLink({ item, isActive, onClick, index, radial }: { item: NavItem; is
 // ── Sidebar ──────────────────────────────────────────────────────────────────
 export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, userProfile }: SidebarProps) {
   const location = useLocation();
-  const [wide, setWide] = useState(() => { try { return localStorage.getItem('sidebar-wide') !== '0'; } catch { return true; } });
+  const [wide, setWide] = useState(() => { try { return localStorage.getItem('sidebar-wide') === '1'; } catch { return true; } });
   const toggleWide = () => setWide((w) => { try { localStorage.setItem('sidebar-wide', w ? '0' : '1'); } catch { /* ignore */ } return !w; });
   const drawerRef = useDialogFocus<HTMLElement>(isOpen, onClose);
 
@@ -195,7 +194,6 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
         )}
 
         {/* Windows install card */}
-        <div className="u040-fade"><SidebarWindowsInstallCard /></div>
 
         {/* ── Footer ── */}
         <div className="u040-fade px-2.5 pb-3 pt-2 shrink-0"
