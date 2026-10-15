@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import '../ui/todayGoals.css';
+import { localDateStr } from '../../utils/localDate';
 import {
   BookOpen,
   MessagesSquare,
@@ -68,6 +70,17 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
   const last = examHistory[0];
   const R = 30, C = 2 * Math.PI * R;
 
+  // 014 — mục tiêu hôm nay, tính từ dữ liệu học thật
+  const todayStr = localDateStr();
+  const todayXp = Number(localStorage.getItem(`nhai_kanji_today_xp_v1_${todayStr}`) || '0');
+  const goals = [
+    { id: 'study', title: 'Học một bài hôm nay', done: (userProfile.studyDays || []).includes(todayStr), tag: 'Học', k: 'var(--ui-primary)', to: resumeTab },
+    { id: 'xp', title: 'Đạt 50 XP', done: todayXp >= 50, tag: `${Math.min(todayXp, 50)}/50`, k: 'var(--ui-info)', to: resumeTab },
+    { id: 'exam', title: 'Làm một đề luyện thi', done: examHistory.some(r => localDateStr(new Date(r.date)) === todayStr), tag: 'Thi', k: 'var(--ui-success)', to: 'exam' },
+  ];
+  const goalsDone = goals.filter(g => g.done).length;
+  const dateLabel = new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'numeric' });
+
   return (
     <div className="w-full max-w-lg md:max-w-4xl mx-auto px-4 py-2 space-y-2 text-white pb-6 select-none">
       {/* Tiếp tục: một dòng gọn */}
@@ -84,6 +97,32 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
         >
           {pos ? 'Học tiếp' : 'Bắt đầu'}
         </button>
+      </div>
+
+      {/* 014 — Mục tiêu hôm nay */}
+      <div className={`ux u014${goalsDone === goals.length ? ' is-all' : ''}`} style={{ ['--p' as any]: (goalsDone / goals.length).toFixed(3) }}>
+        <div className="u014-head">
+          <div>
+            <b>Mục tiêu hôm nay</b>
+            <span className="u014-sub" aria-live="polite"><span>{dateLabel}</span><span>Hoàn thành mục tiêu hôm nay</span></span>
+          </div>
+          <div className="u014-ring" aria-hidden="true">
+            <svg viewBox="0 0 48 48"><circle className="bg" cx="24" cy="24" r="20" /><circle className="fg" cx="24" cy="24" r="20" /></svg>
+            <span className="u014-num">{goalsDone}/{goals.length}</span>
+            <span className="u014-done"><svg viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.4" /></svg></span>
+          </div>
+        </div>
+        <ul className="u014-list">
+          {goals.map(g => (
+            <li key={g.id}>
+              <button type="button" role="checkbox" aria-checked={g.done} className="u014-row" onClick={() => onNavigate(g.to)}>
+                <span className="u014-box" aria-hidden="true"><svg viewBox="0 0 26 26"><path d="M7.5 13.5l3.8 3.8 7.4-8" /></svg></span>
+                <span className="u014-t">{g.title}</span>
+                <span className="u014-tag" style={{ ['--k' as any]: g.k }}>{g.tag}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <div className="flex items-center justify-between gap-2">

@@ -1,0 +1,39 @@
+/* Lucian UX/UI Prompt #014 · MIT License (c) 2026 Seokwoooo · https://lucianlabs.dev/uxui-prompt/#014 — màu theo --ui-* */
+.u014 { --ux-ease: cubic-bezier(.2,.8,.2,1); --ux-spring: cubic-bezier(.34,1.45,.64,1); --u-line2: color-mix(in srgb, var(--ui-ink) 17%, transparent); position: relative; width: 100%; padding: 18px 20px 8px; border-radius: 24px; background: var(--ui-surface); color: var(--ui-ink); box-shadow: 0 0 0 1px var(--ui-line); }
+.u014-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.u014-head b { display: block; font-size: 18px; font-weight: 760; letter-spacing: -.035em; }
+.u014-sub { position: relative; display: block; width: 240px; max-width: 100%; height: 19px; margin-top: 3px; overflow: hidden; white-space: nowrap; font-size: 13px; color: var(--ui-muted); }
+.u014-sub span { display: block; line-height: 19px; transition: transform .5s var(--ux-spring), opacity .3s var(--ux-ease); }
+.u014-sub span + span { position: absolute; left: 0; top: 0; transform: translateY(100%); opacity: 0; color: var(--ui-success); font-weight: 650; }
+.u014.is-all .u014-sub span:first-child { transform: translateY(-100%); opacity: 0; }
+.u014.is-all .u014-sub span + span { transform: none; opacity: 1; }
+.u014-ring { position: relative; width: 48px; height: 48px; flex: none; }
+.u014-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.u014-ring circle { fill: none; stroke-width: 5; stroke-linecap: round; }
+.u014-ring .bg { stroke: var(--ui-soft); }
+.u014-ring .fg { stroke: var(--ui-accent); stroke-dasharray: 125.7; stroke-dashoffset: calc(125.7 * (1 - var(--p, 0))); transition: stroke-dashoffset .7s var(--ux-spring), stroke .4s var(--ux-ease); }
+.u014.is-all .u014-ring .fg { stroke: var(--ui-success); }
+.u014-num { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12.5px; font-weight: 760; font-variant-numeric: tabular-nums; transition: opacity .3s, transform .5s var(--ux-spring); }
+.u014-done { position: absolute; inset: 9px; border-radius: 50%; display: grid; place-items: center; background: var(--ui-success); color: var(--ui-canvas); transform: scale(0); transition: transform .55s var(--ux-spring); }
+.u014-done svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.u014.is-all .u014-num { opacity: 0; transform: scale(.5); }
+.u014.is-all .u014-done { transform: none; }
+.u014-list { margin: 0; padding: 0; list-style: none; }
+.u014-row { position: relative; display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px 4px; border: 0; border-top: 1px solid var(--ui-line); background: none; color: inherit; text-align: left; cursor: pointer; user-select: none; -webkit-user-select: none; }
+.u014-box { position: relative; width: 26px; height: 26px; flex: none; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--u-line2); transition: box-shadow .3s var(--ux-ease), transform .45s var(--ux-spring); }
+.u014-box::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: linear-gradient(140deg, var(--ui-primary), var(--ui-info)); transform: scale(0); transition: transform .45s var(--ux-spring); }
+.u014-box svg { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--ui-canvas); stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+.u014-box path { stroke-dasharray: 18; stroke-dashoffset: 18; transition: stroke-dashoffset .35s var(--ux-ease); }
+.u014-row:hover .u014-box { box-shadow: inset 0 0 0 2px var(--ui-accent); }
+.u014-row:active .u014-box { transform: scale(.86); }
+.u014-row:focus-visible { outline: 2px solid var(--ui-accent); outline-offset: -2px; border-radius: 12px; }
+.u014-row[aria-checked=true] .u014-box { box-shadow: none; }
+.u014-row[aria-checked=true] .u014-box::before { transform: scale(1); }
+.u014-row[aria-checked=true] .u014-box path { stroke-dashoffset: 0; transition-delay: .12s; }
+.u014-t { position: relative; font-size: 15px; font-weight: 600; letter-spacing: -.02em; transition: color .4s var(--ux-ease); }
+.u014-t::after { content: ""; position: absolute; left: -2px; right: -2px; top: 52%; height: 2px; border-radius: 2px; background: var(--ui-muted); transform: scaleX(0); transform-origin: 0 50%; transition: transform .45s var(--ux-ease); }
+.u014-row[aria-checked=true] .u014-t { color: var(--ui-muted); }
+.u014-row[aria-checked=true] .u014-t::after { transform: scaleX(1); transition-delay: .18s; }
+.u014-tag { margin-left: auto; padding: 4px 9px; border-radius: 999px; font-size: 12px; font-weight: 650; background: color-mix(in srgb, var(--k) 15%, transparent); color: var(--k); white-space: nowrap; transition: opacity .4s var(--ux-ease); }
+.u014-row[aria-checked=true] .u014-tag { opacity: .4; }
+@media (prefers-reduced-motion: reduce) { .u014, .u014 * { transition-duration: .01ms !important; } }
