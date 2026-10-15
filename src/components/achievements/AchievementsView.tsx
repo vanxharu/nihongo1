@@ -9,8 +9,6 @@ import {
 } from "../../data/achievementsData";
 import { AchievementMascotIcon } from "./AchievementMascotIcon";
 import ShibaMascot from "../mascot/ShibaMascot";
-import LottieIcon from "../LottieIcon";
-import unicornAnim from "../../assets/lottie/shiba-unicorn.json"; // LottieFiles "Happy Unicorn Dog" by Margarita Ivanchikova (Lottie Simple License)
 import "./achievements.css";
 import { readGuestRoadmap } from "../../data/jlptRoadmap";
 interface Props {
@@ -74,31 +72,18 @@ export const AchievementsView: React.FC<Props> = ({ userProfile, onBack }) => {
           <button onClick={onBack}>
             <ArrowLeft size={16} /> Về tiến độ
           </button>
-          <span>BỘ SƯU TẬP NIHON SHIBA</span>
         </div>
-        <section className="collection-hero">
-          <div>
-            <span className="collection-eyebrow">MỖI NỖ LỰC · MỘT DẤU ẤN</span>
-            <h1>
-              100 khoảnh khắc.
-              <br />
-              <em>Một hành trình của bạn.</em>
-            </h1>
-            <p>
-              Shiba học, nghe, khám phá và ăn mừng cùng bạn. Mỗi huy hiệu có một
-              mục tiêu rõ ràng.
-            </p>
-            <div className="collection-total">
-              <strong>
-                {earned.size}
-                <small>/ 100 huy hiệu</small>
-              </strong>
-              <div className="collection-meter">
-                <i style={{ width: `${earned.size}%` }} />
-              </div>
+        <section className="collection-hero collection-hero-lite">
+          <h1>Thành tựu</h1>
+          <div className="collection-total">
+            <strong>
+              {earned.size}
+              <small>/ 100 huy hiệu</small>
+            </strong>
+            <div className="collection-meter">
+              <i style={{ width: `${earned.size}%` }} />
             </div>
           </div>
-          <LottieIcon data={unicornAnim} size={180} fallback={<ShibaMascot pose="trophy" size={180} animated={false} />} />
         </section>
         {next && (
           <button className="collection-next" onClick={() => setSelected(next)}>

@@ -998,11 +998,9 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     <nav className="study-nav" aria-label="Cách luyện thi">
       {[
         { id: 'library', title: 'Kho đề luyện', note: 'Chọn đề có sẵn và bắt đầu', icon: BookOpen },
-        { id: 'ai_builder', title: 'Tạo đề với AI', note: 'Soạn đề theo cấp độ của bạn', icon: PenTool },
         { id: 'pdf_practice', title: 'Đề PDF của bạn', note: 'Tải đề và luyện trên trang giấy', icon: FileText }
       ].map(item => <button key={item.id} type="button" aria-pressed={mainTab === item.id} onClick={() => { setMainTab(item.id as typeof mainTab); setShowPdfPractice(item.id === 'pdf_practice'); setSelectedCategory(item.id === 'ai_builder' ? 'ai_generated' : 'ALL'); }}><item.icon size={16} /><strong>{item.title}</strong></button>)}
     </nav>
-    <Link to="/sach" className="study-books-link">📚 Sách của tôi (Soumatome N4, sách PDF)</Link>
     {!showPdfPractice && <div className="study-skill-strip" aria-label="Kỹ năng muốn luyện"><span>Luyện theo:</span>{(['ALL', 'moji-goi', 'bunpou', 'dokkai', 'choukai'] as ExamSectionMode[]).map(mode => <button key={mode} aria-pressed={lobbyPracticeMode === mode} onClick={() => setLobbyPracticeMode(mode)}>{mode === 'ALL' ? 'Toàn bộ đề' : JLPT_SECTION_METAS[mode].shortName}</button>)}</div>}
   </>;
 
@@ -1032,7 +1030,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                 userProfile={userProfile} 
                 onExit={() => {
                   setShowPdfPractice(false);
-                  setMainTab('ai_builder');
+                  setMainTab('library');
                 }} 
               />
             </div>
@@ -1181,8 +1179,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                   {[
                     { id: 'ALL', label: 'Tất cả' },
                     { id: 'official_past', label: 'Đề có sẵn' },
-                    { id: 'mock_daily', label: 'Thi thử' },
-                    { id: 'ai_generated', label: 'AI soạn' }
+                    { id: 'mock_daily', label: 'Thi thử' }
                   ].map(cat => <button key={cat.id} type="button" aria-pressed={selectedCategory === cat.id} onClick={() => setSelectedCategory(cat.id as any)}>{cat.label}</button>)}
                 </div>
               </div>

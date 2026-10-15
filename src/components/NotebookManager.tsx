@@ -282,93 +282,20 @@ export default function NotebookManager({ onNavigateToTab, onStudyReward }: Note
 
   return (
     <div id="notebook-manager-container" className="w-full min-w-0 max-w-7xl mx-auto px-1 sm:px-4 py-3 sm:py-4 space-y-3">
-      {/* Compact Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-950 text-white px-4 py-3 rounded-xl border border-indigo-800/40 shadow-sm">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <span className="p-1.5 rounded-lg bg-indigo-500/20 text-amber-300 border border-indigo-500/30">
-            <Bookmark className="w-4 h-4" />
-          </span>
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-base sm:text-lg font-bold tracking-tight text-white">
-                Sổ tay học tiếng Nhật
-              </h1>
-              <span className="text-[10px] font-bold text-amber-300 bg-amber-950/60 border border-amber-500/30 px-1.5 py-0.2 rounded">
-                Notebook
-              </span>
-            </div>
-            <p className="text-[11px] text-indigo-200/80 line-clamp-1">
-              Lưu giữ từ vựng, kanji, ngữ pháp & ôn tập phản xạ Flashcard 3D, trắc nghiệm.
-            </p>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-1.5 shrink-0">
-          <button
-            id="open-add-word-modal-btn"
-            type="button"
-            onClick={() => setIsWordModalOpen(true)}
-            className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>Thêm từ</span>
+      {/* Một dòng tóm tắt + hành động */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          <b className="text-slate-900 dark:text-white">{totalInActive}</b> từ · <b className="text-emerald-600">{masteredInActive}</b> đã nhớ · <b className="text-amber-600">{totalInActive - masteredInActive}</b> cần ôn · thuộc <b className="text-indigo-600">{masteryPercentage}%</b>
+        </p>
+        <div className="flex items-center gap-1.5">
+          <button id="open-add-word-modal-btn" type="button" onClick={() => setIsWordModalOpen(true)}
+            className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer">
+            <Plus className="w-3.5 h-3.5" /><span>Thêm từ</span>
           </button>
-          <button
-            id="open-create-folder-modal-btn"
-            type="button"
-            onClick={() => setIsFolderModalOpen(true)}
-            className="px-3 py-1.5 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-200 font-semibold text-xs border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer"
-          >
-            <FolderPlus className="w-3.5 h-3.5" />
-            <span>Tạo sổ</span>
+          <button id="open-create-folder-modal-btn" type="button" onClick={() => setIsFolderModalOpen(true)}
+            className="px-3 py-1.5 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 cursor-pointer">
+            <FolderPlus className="w-3.5 h-3.5" /><span>Tạo sổ</span>
           </button>
-        </div>
-      </div>
-
-      {/* Stats Summary Bar - Compact Grid */}
-      <div className="grid grid-cols-4 gap-1.5">
-        <div className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">Tổng</span>
-            <div className="flex items-baseline gap-1 mt-0.5">
-              <span className="text-lg font-bold text-slate-800 dark:text-white">{totalInActive}</span>
-              
-            </div>
-          </div>
-          <span className="hidden sm:inline p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-400 text-xs">📚</span>
-        </div>
-
-        <div className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400">Đã ghi nhớ</span>
-            <div className="flex items-baseline gap-1 mt-0.5">
-              <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{masteredInActive}</span>
-              
-            </div>
-          </div>
-          <span className="hidden sm:inline p-1.5 bg-emerald-50 dark:bg-emerald-950/50 rounded-lg text-emerald-600 dark:text-emerald-400 text-xs">✓</span>
-        </div>
-
-        <div className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[10px] font-medium text-amber-600 dark:text-amber-400">Cần ôn tập</span>
-            <div className="flex items-baseline gap-1 mt-0.5">
-              <span className="text-lg font-bold text-amber-600 dark:text-amber-400">{totalInActive - masteredInActive}</span>
-              
-            </div>
-          </div>
-          <span className="hidden sm:inline p-1.5 bg-amber-50 dark:bg-amber-950/50 rounded-lg text-amber-600 dark:text-amber-400 text-xs">⚡</span>
-        </div>
-
-        <div className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xs">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-medium text-indigo-600 dark:text-indigo-400">Thuộc</span>
-            <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{masteryPercentage}%</span>
-          </div>
-          <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mt-1.5">
-            <div className="h-full bg-indigo-600 rounded-full" style={{ width: `${masteryPercentage}%` }} />
-          </div>
         </div>
       </div>
 

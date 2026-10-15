@@ -410,3 +410,9 @@
   .collection-hero > .relative, .collection-hero > svg, .collection-hero > img, .collection-hero p, .collection-top > span { display: none !important; }
   .collection-hero h1 { font-size: 1.5rem !important; line-height: 1.15 !important; margin: 4px 0 8px !important; }
 }
+
+/* Thu gọn hero Thành tựu */
+.shiba-collection .collection-hero-lite{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:0;padding:14px 18px;border-radius:18px;background:var(--ui-surface,#fff)}
+.shiba-collection .collection-hero-lite h1{font-size:20px;margin:0}
+.shiba-collection .collection-hero-lite .collection-total{display:flex;align-items:center;gap:12px;margin:0;flex:1;max-width:320px}
+.shiba-collection .collection-hero-lite .collection-meter{flex:1}
