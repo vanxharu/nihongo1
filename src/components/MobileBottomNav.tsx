@@ -1,5 +1,6 @@
 import TheoryRadial from './ui/TheoryRadial';
-import React, { useState } from 'react';
+import './ui/bottomNotch.css';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
 
@@ -125,6 +126,35 @@ export default function MobileBottomNav({
     }
   ];
 
+  const tabItems: { id: string; path?: string; label: string; icon: typeof Menu; active: boolean }[] = [
+    ...mainNavItems.map((i) => ({ ...i, active: i.checkActive(currentTab, location.pathname) })),
+    ...(onToggleSidebar ? [{ id: 'menu', label: 'Menu', icon: Menu, active: !!isSidebarOpen }] : []),
+  ];
+  const activeIdx = tabItems.findIndex((i) => i.active);
+  const navRef = useRef<HTMLElement>(null);
+  const spring = useRef({ x: 0, v: 0, raf: 0 });
+
+  // Notch + bubble follow the active tab with a spring (spec 041)
+  useEffect(() => {
+    const nav = navRef.current;
+    const tab = nav?.querySelectorAll<HTMLElement>('.u041-tabs > li')[activeIdx];
+    if (!nav || !tab) return;
+    const sp = spring.current;
+    const target = tab.offsetLeft + tab.offsetWidth / 2;
+    const set = () => nav.style.setProperty('--x', sp.x.toFixed(2) + 'px');
+    cancelAnimationFrame(sp.raf);
+    if (!sp.x || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { sp.x = target; sp.v = 0; set(); return; }
+    const step = () => {
+      sp.v += (target - sp.x) * 0.16 - sp.v * 0.42; sp.x += sp.v; set();
+      if (Math.abs(target - sp.x) > 0.3 || Math.abs(sp.v) > 0.3) sp.raf = requestAnimationFrame(step);
+      else { sp.x = target; sp.v = 0; set(); }
+    };
+    sp.raf = requestAnimationFrame(step);
+    const ro = new ResizeObserver(() => { sp.x = tab.offsetLeft + tab.offsetWidth / 2; set(); });
+    ro.observe(nav);
+    return () => { ro.disconnect(); cancelAnimationFrame(sp.raf); };
+  }, [activeIdx]);
+
   const handleItemClick = (id: string) => {
     setCurrentTab(id);
     setIsMoreOpen(false);
@@ -138,63 +168,45 @@ export default function MobileBottomNav({
   return (
     <>
       {/* Pinned Bottom Navigation Bar for Mobile & Tablet (< xl) - Direct Match with Screenshots */}
-      <nav 
-        aria-label="Điều hướng chính"
-        id="mobile-bottom-navigation"
-        className="fixed bottom-0 left-0 right-0 z-[100] xl:hidden bg-[#0F1424]/95 backdrop-blur-md border-t border-[#1B223C] shadow-2xl select-none px-2 pt-1 pb-[max(0.5rem,env(safe-area-inset-bottom))]"
-      >
-        <div className="flex items-center justify-around max-w-lg mx-auto">
-          {mainNavItems.map((item) => {
-            const Icon = item.icon;
-            const isTabActive = item.checkActive(currentTab, location.pathname);
-
-            return (
-              <Link
-                key={item.id}
-                id={`mobile-nav-${item.id}`}
-                to={item.path}
-                aria-current={isTabActive ? 'page' : undefined}
-                onClick={(e) => {
-                  if (item.id === 'grammar') { e.preventDefault(); setTheoryRect(e.currentTarget.getBoundingClientRect()); return; }
-                  handleItemClick(item.id);
-                }}
-                className="relative flex flex-col items-center justify-center flex-1 py-1 cursor-pointer active:scale-95 transition-all touch-manipulation"
-              >
-                {/* Active Capsule Pill */}
-                <div className={`w-14 h-7.5 rounded-full flex items-center justify-center transition-all ${
-                  isTabActive
-                    ? 'bg-gradient-to-r from-[#E89A3C]/25 to-[#E64556]/25 text-[#E89A3C] border border-[#E89A3C]/60 shadow-md shadow-amber-950/40'
-                    : 'bg-transparent text-slate-400 hover:text-slate-200'
-                }`}>
-                  <Icon className="w-4.5 h-4.5" />
-                </div>
-
-                {/* Label Text */}
-                <span className={`text-[11px] tracking-tight mt-1 transition-colors ${
-                  isTabActive
-                    ? 'text-[#E89A3C] font-black'
-                    : 'text-slate-400 font-medium'
-                }`}>
-                  {item.label}
-                </span>
-              </Link>
-            );
-          })}
-          {onToggleSidebar && (
-            <button
-              type="button"
-              id="mobile-nav-menu"
-              aria-label="Mở menu điều hướng"
-              aria-expanded={isSidebarOpen}
-              onClick={onToggleSidebar}
-              className="relative flex flex-col items-center justify-center flex-1 py-1 cursor-pointer active:scale-95 transition-all touch-manipulation"
-            >
-              <div className={`w-14 h-7.5 rounded-full flex items-center justify-center ${isSidebarOpen ? 'bg-[#E89A3C]/25 text-[#E89A3C] border border-[#E89A3C]/60' : 'text-slate-400'}`}>
-                <Menu className="w-4.5 h-4.5" />
-              </div>
-              <span className={`text-[11px] tracking-tight mt-1 ${isSidebarOpen ? 'text-[#E89A3C] font-black' : 'text-slate-400 font-medium'}`}>Menu</span>
-            </button>
-          )}
+      <nav aria-label="Điều hướng chính" id="mobile-bottom-navigation" ref={navRef} className="u041-nav xl:hidden select-none">
+        <div className="u041">
+          <span className="u041-shadow" aria-hidden="true" />
+          <div className="u041-bar" aria-hidden="true" />
+          {activeIdx >= 0 && <span className="u041-bub" aria-hidden="true" />}
+          <ul className="u041-tabs">
+            {tabItems.map((item, i) => {
+              const Icon = item.icon;
+              const sel = i === activeIdx;
+              const inner = (
+                <>
+                  <span className="u041-ic" aria-hidden="true"><Icon /></span>
+                  <span className="u041-lab">{item.label}</span>
+                </>
+              );
+              return (
+                <li key={item.id}>
+                  {item.path ? (
+                    <Link
+                      id={`mobile-nav-${item.id}`}
+                      to={item.path}
+                      aria-current={sel ? 'page' : undefined}
+                      data-sel={sel}
+                      className="u041-tab"
+                      onClick={(e) => {
+                        if (item.id === 'grammar') { e.preventDefault(); setTheoryRect(e.currentTarget.getBoundingClientRect()); return; }
+                        handleItemClick(item.id);
+                      }}
+                    >{inner}</Link>
+                  ) : (
+                    <button
+                      type="button" id="mobile-nav-menu" aria-label="Mở menu điều hướng" aria-expanded={isSidebarOpen}
+                      data-sel={sel} className="u041-tab" onClick={onToggleSidebar}
+                    >{inner}</button>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </nav>
 
