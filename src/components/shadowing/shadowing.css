@@ -1,6 +1,5 @@
 .shadowing-page { background-color:var(--ui-surface); background-image:linear-gradient(color-mix(in srgb,var(--ui-surface) 50%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--ui-surface) 50%,transparent) 1px,transparent 1px);background-size:16px 16px;min-height:100vh; }
 .shadowing-banner { background:linear-gradient(110deg,var(--ui-soft),var(--ui-soft));position:relative;overflow:hidden; }
-.shadowing-banner:after { content:'';position:absolute;width:160px;height:160px;border-radius:50%;background:#ff922d;right:-65px;bottom:-95px;pointer-events:none; }
 .shadowing-banner form { position:relative;z-index:1; }
 .shadowing-transcript { position:relative; }
 .shadowing-video { position:relative; }

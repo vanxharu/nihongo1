@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ChevronLeft, Headphones, Link2 } from 'lucide-react';
+import { ChevronLeft, Link2 } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 import { SHADOWING_VIDEOS } from '../../data/shadowingVideos';
 import { formatDuration } from '../../utils/youtubeUtils';
@@ -206,10 +206,9 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
   const sources = [...new Set(library.map(v => v.source))];
   const sourceTitle = customTitle || SHADOWING_VIDEOS.find(v => v.youtube_video_id === videoId)?.title;
   return <div className="shadowing-page mx-auto max-w-7xl space-y-3 px-4 py-3 pb-28 text-slate-100 sm:px-6">
-    {!videoId && <header className="shadowing-banner rounded-2xl p-4 sm:p-5">
-      <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-amber-300"><Headphones size={13} /> Nghe · nhại · hiểu</span>
-      <h1 className="mt-1 text-lg font-black">Shadowing & Chép chính tả</h1>
-      <form className="mt-2 flex flex-wrap gap-2 sm:flex-nowrap" onSubmit={e => { e.preventDefault(); chooseVideo(urlInput); }}>
+    {!videoId && <header className="shadowing-banner flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl p-3">
+      <h1 className="text-base font-black">Shadowing & Chép chính tả</h1>
+      <form className="flex min-w-0 flex-1 flex-wrap gap-2 sm:flex-nowrap" onSubmit={e => { e.preventDefault(); chooseVideo(urlInput); }}>
         <label className="sr-only" htmlFor="shadowing-youtube">Đường dẫn video YouTube</label>
         <input id="shadowing-youtube" className={`${field} basis-full sm:basis-auto`} value={urlInput} onChange={e => setUrlInput(e.target.value)} placeholder="Dán link YouTube hoặc ID video…" />
         <button className={`${button} shrink-0 bg-amber-400 text-slate-950 hover:bg-amber-300`}><Link2 size={16} />Mở video</button>
@@ -217,11 +216,10 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
       </form>
     </header>}
     {notice && <p role="status" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">{notice}</p>}
-    {!videoId ? <section className="space-y-4">
-      {library[0] && category === 'Tất cả' && <div className="grid grid-cols-[42%_1fr] items-center gap-3 md:grid-cols-[320px_1fr] md:gap-4"><button onClick={() => chooseVideo(library[0].youtube_video_id)} aria-label="Mở bài luyện nổi bật" className="overflow-hidden rounded-xl"><img src={library[0].thumbnail} alt={library[0].title} className="aspect-video w-full object-cover" /></button><div><span className="text-xs font-bold uppercase tracking-widest text-violet-300">Bắt đầu luyện</span><h3 className="mt-1 text-base font-bold">{library[0].title}</h3><p className="mt-2 hidden text-xs leading-relaxed text-slate-300 sm:block">{library[0].description}</p><button className={`${button} mt-2 bg-violet-600`} onClick={() => chooseVideo(library[0].youtube_video_id)}>▶ Luyện cùng video</button></div></div>}
+    {!videoId ? <section className="space-y-3">
       {sources.length > 1 && <nav aria-label="Nguồn video" className="flex gap-2 overflow-x-auto border-b border-slate-500/30 pb-3">{['Tất cả', ...sources].map(source => <button key={source} onClick={() => setCategory(source)} className={`shrink-0 rounded-lg px-3 py-2 text-sm ${category === source ? 'bg-violet-500 text-white' : 'bg-slate-950/40 text-slate-300'}`}>{source}</button>)}</nav>}
       {personalVideos.length > 0 && <section><h3 className="mb-3 font-bold">Video của tôi</h3><div className="grid gap-3 sm:grid-cols-2">{personalVideos.map(v => <button className={button} key={v.videoId} onClick={() => chooseVideo(v.videoId)}>{v.title} · {v.cueCount} câu</button>)}</div></section>}
-      {sources.filter(source => category === 'Tất cả' || category === source).map(source => <section key={source}><h3 className="mb-3 font-bold">{source}</h3><div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">{library.filter(v => v.source === source).map(v => <button key={v.id} onClick={() => chooseVideo(v.youtube_video_id)} className="overflow-hidden rounded-xl bg-slate-950/40 text-left hover:ring-2 hover:ring-violet-400"><div className="relative"><img src={v.thumbnail} alt="" referrerPolicy="no-referrer" onError={e => { const t = e.currentTarget; if (!t.dataset.f) { t.dataset.f = "1"; t.src = `https://i.ytimg.com/vi/${v.youtube_video_id}/mqdefault.jpg`; } }} className="aspect-video w-full bg-slate-800 object-cover" /><span className="absolute bottom-2 right-2 rounded bg-black/80 px-1 text-xs">{v.duration}</span></div><div className="p-3"><h4 className="line-clamp-2 text-sm font-bold">{v.title}</h4><p className="mt-2 text-xs text-slate-400">{v.level} · Luyện từng câu</p></div></button>)}</div></section>)}
+      {sources.filter(source => category === 'Tất cả' || category === source).map(source => <section key={source}><h3 className="mb-2 font-bold">{source}</h3><div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">{library.filter(v => v.source === source).map(v => <button key={v.id} onClick={() => chooseVideo(v.youtube_video_id)} className="overflow-hidden rounded-xl bg-slate-950/40 text-left hover:ring-2 hover:ring-violet-400"><div className="relative"><img src={v.thumbnail} alt="" referrerPolicy="no-referrer" onError={e => { const t = e.currentTarget; if (!t.dataset.f) { t.dataset.f = "1"; t.src = `https://i.ytimg.com/vi/${v.youtube_video_id}/mqdefault.jpg`; } }} className="aspect-video w-full bg-slate-800 object-cover" /><span className="absolute bottom-2 right-2 rounded bg-black/80 px-1 text-xs">{v.duration}</span></div><div className="p-3"><h4 className="line-clamp-2 text-sm font-bold">{v.title}</h4><p className="mt-2 text-xs text-slate-400">{v.level} · Luyện từng câu</p></div></button>)}</div></section>)}
     </section> : <>
       <div className="flex flex-col gap-2 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="max-lg:contents lg:space-y-4">

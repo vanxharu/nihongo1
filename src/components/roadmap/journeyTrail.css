@@ -745,3 +745,10 @@
   .jlpt-journey .journey-level-heading { margin-top: 8px; }
   .jlpt-journey .journey-prerequisite { margin: 6px 0 !important; font-size: 12.5px; }
 }
+
+/* Thanh đầu trang gọn thay cho banner lớn */
+.jlpt-journey .journey-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:0 0 10px; }
+.jlpt-journey .journey-bar h1 { font-size:1.15rem; font-weight:800; }
+.jlpt-journey .journey-bar p { font-size:12px; opacity:.7; }
+.jlpt-journey .journey-bar-actions { display:flex; gap:8px; }
+.jlpt-journey .journey-bar-actions button { display:inline-flex; align-items:center; gap:6px; font-size:13px; padding:7px 12px; border-radius:10px; cursor:pointer; }

@@ -7,13 +7,11 @@ import {
   Check,
   Clock3,
   Flag,
-  Map,
   Settings2,
   X,
 } from "lucide-react";
 import type { JLPTLevel, StudyRoadmapConfig, UserProfile } from "../../types";
 import { useAuth } from "../../contexts/AuthContext";
-import ShibaMascot from "../mascot/ShibaMascot";
 import {
   completeRoadmapDay,
   GUEST_ROADMAP_KEY,
@@ -187,50 +185,28 @@ export default function JlptRoadmapView({
   return (
     <div className="jlpt-journey">
       <div className="journey-shell">
-        <div className="journey-topline">
-          <span>
-            <Map size={16} /> NHẬT KÝ HÀNH TRÌNH
-          </span>
-          <button onClick={openSettings}>
-            <Settings2 size={16} /> Điều chỉnh kế hoạch
-          </button>
+        <div className="journey-bar">
+          <div>
+            <h1>Lộ trình JLPT {level}</h1>
+            <p>{plan.durationDays} ngày học · theo nhịp của bạn</p>
+          </div>
+          <div className="journey-bar-actions">
+            <button onClick={openSettings}>
+              <Settings2 size={16} /> Điều chỉnh
+            </button>
+            <button
+              className="journey-primary"
+              onClick={preview ? openSettings : inspectToday}
+            >
+              {preview
+                ? `Chọn lộ trình ${level}`
+                : progress === 100
+                  ? "Xem lại hành trình"
+                  : "Tiếp tục"}
+              <ArrowRight size={16} />
+            </button>
+          </div>
         </div>
-        <section className="journey-hero">
-          <div className="journey-hero-copy">
-            <span className="journey-eyebrow">NIHON SHIBA · JLPT {level}</span>
-            <h1>
-              Mỗi bước nhỏ.
-              <br />
-              <em>Một thế giới mới.</em>
-            </h1>
-            <p>{journey.description}</p>
-            <div className="journey-hero-actions">
-              <button
-                className="journey-primary"
-                onClick={preview ? openSettings : inspectToday}
-              >
-                {preview
-                  ? `Chọn lộ trình ${level}`
-                  : progress === 100
-                    ? "Xem lại hành trình"
-                    : "Tiếp tục hành trình"}
-                <ArrowRight size={18} />
-              </button>
-              <span>{plan.durationDays} ngày học · theo nhịp của bạn</span>
-            </div>
-          </div>
-          <div className="journey-hero-art" aria-hidden="true">
-            <span className="journey-orbit orbit-one" />
-            <span className="journey-orbit orbit-two" />
-            <span className="journey-petal petal-one">✿</span>
-            <span className="journey-petal petal-two">✿</span>
-            <span className="journey-mountain" />
-            <ShibaMascot pose="welcome" size={210} animated={false} />
-            <div className="journey-mascot-note">
-              一緒に頑張ろう！<small>Cùng nhau cố gắng nhé!</small>
-            </div>
-          </div>
-        </section>
 
         <nav className="journey-levels" aria-label="Chọn cấp độ lộ trình">
           {ROADMAP_LEVELS.map((item, index) => (
