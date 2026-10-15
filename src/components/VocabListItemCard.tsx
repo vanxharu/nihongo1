@@ -310,18 +310,6 @@ function VocabListItemCardComponent({
             >
               <Volume2 className="w-4 h-4" />
             </button>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); onToggleMastered?.(v.id); }}
-              className="transition-transform active:scale-90 cursor-pointer flex items-center justify-center"
-              title={isMastered ? 'Đã thuộc' : 'Đánh dấu'}
-            >
-              {isMastered ? (
-                <CheckSquare className="w-5 h-5 text-emerald-400 fill-emerald-950/40" />
-              ) : (
-                <Square className="w-5 h-5 text-slate-400 hover:text-emerald-400" />
-              )}
-            </button>
           </div>
         </div>
 
