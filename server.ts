@@ -6,7 +6,7 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { GoogleGenAI, Type } from "@google/genai";
 import OpenAI from "openai";
-import { callFreeLLM, freeGenerate, hasMedia, userLlmMiddleware, getFreeLLMConfig, setFreeLLMConfig, FREE_LLM_DEFAULT_URL, FREE_LLM_DEFAULT_MODEL } from "./src/server/freeLlm.js";
+import { callLLM, generateGemini, getGeminiClient, getLlmConfig, userLlmMiddleware, DEFAULT_GEMINI_MODEL } from "./src/server/llm.js";
 import Kuroshiro from 'kuroshiro';
 import KuromojiAnalyzer from 'kuroshiro-analyzer-kuromoji';
 // hanviet-pinyin-words is ESM-only; use dynamic import so CJS bundling doesn't break
@@ -954,21 +954,6 @@ CRITICAL MANDATES:
   }
 });
 
-// Lazy-initialized Gemini AI client helper
-let aiClient: GoogleGenAI | null = null;
-function getNativeGeminiClient(): GoogleGenAI {
-  if (!aiClient) {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) throw new Error("Tính năng đọc ảnh/âm thanh cần GEMINI_API_KEY (model miễn phí chỉ xử lý văn bản).");
-    aiClient = new GoogleGenAI({ apiKey, httpOptions: { headers: { 'User-Agent': 'aistudio-build' } } });
-  }
-  return aiClient;
-}
-// Văn bản → model miễn phí; chỉ ảnh/âm thanh mới còn dùng Gemini thật.
-function getGeminiClient(): any {
-  return { models: { generateContent: (opts: any) => hasMedia(opts.contents) ? getNativeGeminiClient().models.generateContent(opts) : freeGenerate(opts) } };
-}
-
 // ============================================================================
 // DYNAMIC AI ENGINE & CENTRALIZED CHATGPT (OPENAI) / GEMINI CONFIGURATION
 // ============================================================================
@@ -978,9 +963,6 @@ export interface ServerAIConfig {
   openaiApiKey?: string;
   openaiModel?: string; // "gpt-4o-mini", "gpt-4o", "gpt-4.1-turbo", "gpt-3.5-turbo"
   provider?: "chatgpt" | "gemini";
-  freeBaseUrl?: string; // OpenAI-compatible endpoint của model miễn phí
-  freeModel?: string;
-  freeApiKey?: string;
   updatedAt?: string;
 }
 
@@ -1006,8 +988,6 @@ try {
 } catch (e) {
   console.warn("[AI Config] Could not load ai-config.json:", e);
 }
-
-setFreeLLMConfig({ baseUrl: activeAIConfig.freeBaseUrl, model: activeAIConfig.freeModel, apiKey: activeAIConfig.freeApiKey });
 
 export function getActiveOpenAIApiKey(): string {
   return (activeAIConfig.openaiApiKey || process.env.OPENAI_API_KEY || "").trim();
@@ -1044,7 +1024,7 @@ export async function callOpenAIGPT(options: {
   jsonMode?: boolean;
   temperature?: number;
 }) {
-  return callFreeLLM({ prompt: options.prompt, systemInstruction: options.systemInstruction, json: options.jsonMode });
+  return callLLM({ prompt: options.prompt, systemInstruction: options.systemInstruction, json: options.jsonMode });
 }
 
 /**
@@ -1132,45 +1112,7 @@ export async function callUnifiedAI(options: {
 // Resilient Gemini generateContent wrapper with automatic model fallback for 503/429 spikes
 export const LATEST_GEMINI_MODEL = "gemini-3.8-flash";
 
-export async function generateGeminiContentWithFallback(options: {
-  contents: any;
-  model?: string;
-  config?: any;
-}) {
-  if (!hasMedia(options.contents)) return freeGenerate(options);
-  const client = getNativeGeminiClient();
-  const primaryModel = options.model || LATEST_GEMINI_MODEL;
-  const fallbackModels = ["gemini-3.1-pro-preview", "gemini-3.1-flash-lite", "gemini-flash-latest"].filter(m => m !== primaryModel);
-  const modelsToTry = [primaryModel, ...fallbackModels];
-
-  let lastError: any = null;
-  for (const model of modelsToTry) {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      try {
-        const response = await client.models.generateContent({
-          ...options,
-          model
-        });
-        return response;
-      } catch (err: any) {
-        lastError = err;
-        const status = err?.status || err?.code || '';
-        const msg = (err?.message || '').toLowerCase();
-        const isNotFound = status === 404 || status === 'NOT_FOUND' || msg.includes('not found') || msg.includes('no longer available');
-        const isTransient = status === 503 || status === 429 || status === 'UNAVAILABLE' || status === 'RESOURCE_EXHAUSTED' || msg.includes('high demand') || msg.includes('quota') || msg.includes('rate') || isNotFound;
-        if (!isTransient) {
-          throw err;
-        }
-        if (attempt === 0) {
-          await new Promise(res => setTimeout(res, 350));
-        } else {
-          console.warn(`[Gemini Fallback] Model ${model} encountered issue (${status || msg.substring(0, 50)}), trying next fallback...`);
-        }
-      }
-    }
-  }
-  throw lastError;
-}
+export const generateGeminiContentWithFallback = generateGemini;
 
 // 1. API: Health Check
 app.get("/api/health", (req, res) => {
@@ -1400,7 +1342,7 @@ app.post("/api/exam/review-user-notes", async (req, res) => {
       return res.json({ success: true, corrections: [] });
     }
 
-    if (false) {
+    if (!getLlmConfig().apiKey) {
       const offlineCorrections = notes.map((item: any) => generateOfflineNoteCorrection(item));
       return res.json({ success: true, corrections: offlineCorrections });
     }
@@ -1665,7 +1607,7 @@ app.post("/api/grammar/evaluate-translation", async (req, res) => {
       return res.json(EVALUATION_CACHE.get(cacheKey));
     }
 
-    if (false) {
+    if (!getLlmConfig().apiKey) {
       const fallback = evaluateOfflineTranslation(direction, sourceText, expectedText, userTranslation, grammarStructure);
       return res.json(fallback);
     }
@@ -3918,9 +3860,9 @@ Bây giờ, hãy đóng vai ${character?.name || "Đối tác"} và phản hồi
 Hãy nhớ phản hồi tự nhiên, đầy đủ (2-3 câu), tuân thủ đúng trình độ (${difficulty || "N5"}), phong cách nhân vật, và trả về định dạng JSON chính xác.`;
 
     try {
-      const raw = await callFreeLLM({ prompt, systemInstruction, json: true });
+      const raw = await callLLM({ prompt, systemInstruction, json: true });
       const kaiwaResult = JSON.parse(raw);
-      kaiwaResult.provider = getFreeLLMConfig().model;
+      kaiwaResult.provider = (getLlmConfig().model || DEFAULT_GEMINI_MODEL);
       return res.json(kaiwaResult);
     } catch (aiErr) {
       console.warn("[Kaiwa Chat] model miễn phí lỗi:", (aiErr as any)?.message || aiErr);
@@ -4005,11 +3947,11 @@ ${conversationHistory}
 
     let chatData: any = null;
     try {
-      chatData = JSON.parse(await callFreeLLM({ prompt, systemInstruction, json: true }));
+      chatData = JSON.parse(await callLLM({ prompt, systemInstruction, json: true }));
     } catch (aiErr) {
       console.warn("[Japanese Chat] model miễn phí lỗi:", (aiErr as any)?.message || aiErr);
     }
-    const usedProviderName = getFreeLLMConfig().model;
+    const usedProviderName = (getLlmConfig().model || DEFAULT_GEMINI_MODEL);
 
     if (chatData) {
       chatData.provider = usedProviderName;
@@ -6089,7 +6031,7 @@ Hãy phân tích và trả về đúng JSON theo schema được chỉ định.`
 
     if (!result) {
       // Check Gemini API key
-      if (false) {
+      if (!getLlmConfig().apiKey) {
         return res.status(500).json({
           success: false,
           error: "Chưa cấu hình API Key (OpenAI hoặc Gemini) trong Cấu hình AI.",
@@ -6283,36 +6225,12 @@ app.post('/api/chat-gpt', async (req, res) => {
   }
 });
 
-// Cấu hình model miễn phí cho Chat AI / Kaiwa
-const FREE_LLM_PRESETS = [
-  { id: "pollinations", name: "Pollinations (GPT-OSS 20B)", desc: "Miễn phí, không cần API key. Mặc định.", baseUrl: FREE_LLM_DEFAULT_URL, model: FREE_LLM_DEFAULT_MODEL, needsKey: false },
-  { id: "openrouter", name: "OpenRouter (model :free)", desc: "Cần key miễn phí từ openrouter.ai/keys.", baseUrl: "https://openrouter.ai/api/v1/chat/completions", model: "meta-llama/llama-3.3-70b-instruct:free", needsKey: true },
-  { id: "groq", name: "Groq (Llama 3.3 70B)", desc: "Rất nhanh, key miễn phí từ console.groq.com.", baseUrl: "https://api.groq.com/openai/v1/chat/completions", model: "llama-3.3-70b-versatile", needsKey: true },
-];
-app.get('/api/ai/free-config', requireAuth, requireAdmin, (req, res) => {
-  const c = getFreeLLMConfig();
-  res.json({ ...c, apiKey: undefined, hasKey: !!c.apiKey, presets: FREE_LLM_PRESETS, updatedAt: activeAIConfig.updatedAt });
-});
-app.post('/api/ai/free-config', requireAuth, requireAdmin, (req, res) => {
-  const { baseUrl, model, apiKey } = req.body || {};
-  if (typeof baseUrl !== 'string' || !/^https:\/\//.test(baseUrl.trim())) return res.status(400).json({ error: "Địa chỉ API phải bắt đầu bằng https://" });
-  if (typeof model !== 'string' || !model.trim()) return res.status(400).json({ error: "Thiếu tên model" });
-  activeAIConfig.freeBaseUrl = baseUrl.trim();
-  activeAIConfig.freeModel = model.trim();
-  if (typeof apiKey === 'string') activeAIConfig.freeApiKey = apiKey.trim(); // chuỗi rỗng = xóa key
-  setFreeLLMConfig({ baseUrl: activeAIConfig.freeBaseUrl, model: activeAIConfig.freeModel, apiKey: activeAIConfig.freeApiKey });
-  activeAIConfig.updatedAt = new Date().toISOString();
-  try { fs.writeFileSync(AI_CONFIG_FILE, JSON.stringify(activeAIConfig, null, 2), 'utf-8'); } catch (e) { console.warn("[AI Config] không lưu được:", e); }
-  res.json({ success: true });
-});
+// Thử kết nối Gemini bằng key/model người dùng nhập trong modal Cấu hình API
 app.post('/api/ai/free-test', requireAuth, async (req, res) => {
-  const { baseUrl, model, apiKey } = req.body || {};
+  const { apiKey, model } = req.body || {};
   const started = Date.now();
   try {
-    const reply = await callFreeLLM({
-      prompt: "Chào bạn bằng một câu tiếng Nhật ngắn.", maxTokens: 200,
-      override: { ...(baseUrl ? { baseUrl } : {}), ...(model ? { model } : {}), ...(apiKey ? { apiKey } : {}) },
-    });
+    const reply = await callLLM({ prompt: "Chào bạn bằng một câu tiếng Nhật ngắn.", maxTokens: 200, override: { apiKey: apiKey || undefined, model: model || undefined } });
     res.json({ success: true, reply, ms: Date.now() - started });
   } catch (err: any) {
     res.status(400).json({ success: false, error: err?.message || String(err) });

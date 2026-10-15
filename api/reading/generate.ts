@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { analyzeReading } from '../../src/server/readingAnalysis.js';
 import { sourceReadingFromUrl } from '../../src/server/readingCatalog.js';
-import { withUserLlm } from '../../src/server/freeLlm.js';
+import { withUserLlm } from '../../src/server/llm.js';
 export default withUserLlm(generateReading);
 async function generateReading(req: Request, res: Response) {
   res.setHeader('Cache-Control','no-store');
