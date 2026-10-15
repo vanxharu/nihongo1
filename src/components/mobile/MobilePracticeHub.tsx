@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import '../ui/todayGoals.css';
 import { localDateStr } from '../../utils/localDate';
 import {
@@ -73,6 +74,7 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
   // 014 — mục tiêu hôm nay, tính từ dữ liệu học thật
   const todayStr = localDateStr();
   const todayXp = Number(localStorage.getItem(`nhai_kanji_today_xp_v1_${todayStr}`) || '0');
+  const srsDue = Object.values(userProfile.vocabStatus || {}).filter((v: any) => v && typeof v === 'object' && v.nextReviewDate && new Date(v.nextReviewDate) <= new Date()).length;
   const goals = [
     { id: 'study', title: 'Học một bài hôm nay', done: (userProfile.studyDays || []).includes(todayStr), tag: 'Học', k: 'var(--ui-primary)', to: resumeTab },
     { id: 'xp', title: 'Đạt 50 XP', done: todayXp >= 50, tag: `${Math.min(todayXp, 50)}/50`, k: 'var(--ui-info)', to: resumeTab },
@@ -98,6 +100,17 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
           {pos ? 'Học tiếp' : 'Bắt đầu'}
         </button>
       </div>
+
+      {/* SRS tự động: từ đến hạn ôn hôm nay */}
+      {srsDue > 0 && (
+        <Link to="/tango?srs=1" id="btn-srs-auto" className="flex items-center gap-3 rounded-xl bg-[#121927] border border-[#1b253b] px-3 py-2 active:scale-[.99]">
+          <div className="flex-1 min-w-0">
+            <div className="text-[11px] text-slate-400">Ôn lặp lại ngắt quãng (SRS)</div>
+            <div className="text-sm font-bold text-white truncate">{srsDue} từ đến hạn ôn hôm nay</div>
+          </div>
+          <span className="shrink-0 rounded-lg bg-[#2dd4bf] px-3 py-1.5 text-xs font-bold text-slate-900">Ôn ngay</span>
+        </Link>
+      )}
 
       {/* 014 — Mục tiêu hôm nay */}
       <div className={`ux u014${goalsDone === goals.length ? ' is-all' : ''}`} style={{ ['--p' as any]: (goalsDone / goals.length).toFixed(3) }}>

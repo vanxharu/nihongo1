@@ -790,6 +790,15 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     });
   }, [filteredVocab, userProfile.vocabStatus]);
 
+  // Từ trang Luyện tập (?srs=1): tự vào phiên ôn SRS khi có từ đến hạn.
+  const srsAutoStarted = useRef(false);
+  useEffect(() => {
+    if (srsAutoStarted.current || srsDueItems.length === 0) return;
+    if (new URLSearchParams(window.location.search).get('srs') !== '1') return;
+    srsAutoStarted.current = true;
+    setIsSrsReviewActive(true);
+  }, [srsDueItems.length]);
+
   const QUIZ_PRAISES = [
     '🎉 Đỉnh nóc kịch trần bay phấp phới! Não bộ siêu cấp N1!',
     '⚡ Quá chuẩn! Người Nhật nghe xong cũng phải gật gù bái phục!',
