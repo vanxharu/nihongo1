@@ -811,7 +811,7 @@ export const PdfExamBookletViewer: React.FC<PdfExamBookletViewerProps> = ({
       )}
 
       {/* 1. MASTER TOP HEADER */}
-      <header className="bg-slate-900 border-b border-slate-800 px-3 py-2 flex items-center justify-between gap-2.5 z-20 shadow-md overflow-x-auto">
+      <header className={`bg-slate-900 border-b border-slate-800 px-3 py-2 flex items-center justify-between gap-2.5 z-20 shadow-md overflow-x-auto ${pdfDoc ? '' : 'hidden'}`}>
         <div className="flex items-center gap-2.5 shrink-0">
           {onExit && (
             <button
@@ -962,7 +962,7 @@ export const PdfExamBookletViewer: React.FC<PdfExamBookletViewerProps> = ({
       </header>
 
       {/* 2. MASTER 32-TRACK CHOUKAI AUDIO PLAYER BAR */}
-      <div className="bg-slate-900/90 border-b border-indigo-900/60 px-4 py-2 flex items-center justify-between gap-4 text-xs font-sans text-slate-200">
+      <div className={`bg-slate-900/90 border-b border-indigo-900/60 px-4 py-2 flex items-center justify-between gap-4 text-xs font-sans text-slate-200 ${pdfDoc ? '' : 'hidden'}`}>
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-lg bg-rose-600 text-white font-black flex items-center gap-1 shadow-xs">
             <Headphones className="w-4 h-4" />
@@ -1055,7 +1055,7 @@ export const PdfExamBookletViewer: React.FC<PdfExamBookletViewerProps> = ({
       <div className="flex-1 relative overflow-auto bg-slate-950 p-4 flex justify-center items-start">
         
         {/* FLOATING DRAWING TOOLBAR OVERLAY */}
-        <div className="fixed top-28 z-30 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-2xl p-2 shadow-2xl flex items-center gap-2 text-xs text-white">
+        <div className={`${pdfDoc ? '' : 'hidden '}fixed top-28 z-30 bg-slate-900/95 backdrop-blur-md border border-slate-700 rounded-2xl p-2 shadow-2xl flex items-center gap-2 text-xs text-white`}>
           
           {/* Mouse Pointer Tool */}
           <button
@@ -1289,7 +1289,7 @@ export const PdfExamBookletViewer: React.FC<PdfExamBookletViewerProps> = ({
         )}
 
         {/* PDF BOOKLET PAGE & DRAWING CANVAS CONTAINER */}
-        <div ref={containerRef} className="relative shadow-2xl rounded-sm border border-slate-700 bg-white mt-12 mb-20">
+        <div ref={containerRef} className={`relative shadow-2xl rounded-sm border border-slate-700 bg-white mt-12 mb-20 ${pdfDoc ? '' : 'hidden'}`}>
           
           {/* Background PDF Canvas */}
           <canvas ref={pdfCanvasRef} className="block" />
