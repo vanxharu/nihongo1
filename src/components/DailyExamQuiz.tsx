@@ -38,6 +38,7 @@ import {
   FileDown,
   RefreshCw
 } from 'lucide-react';
+import './learning/studyExperience.css';
 import { DailyExam, ExamQuestion, UserProfile, ExamHistoryRecord } from '../types';
 import { DAILY_EXAMS } from '../data';
 import { JLPT_PAST_EXAMS } from '../data/jlptExams';
