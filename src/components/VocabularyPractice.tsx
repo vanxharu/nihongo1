@@ -2853,76 +2853,6 @@ if (loading) {
     <div className="w-full max-w-5xl mx-auto px-2 sm:px-4 pt-1 sm:pt-2 pb-6 space-y-2.5 sm:space-y-3.5 select-none flex flex-col items-center">
       <div className="w-full space-y-2.5 sm:space-y-3 animate-fade-in flex flex-col items-center">
 
-      {/* Responsive Cohesive Mode Selectors Bar */}
-      <div className="w-full max-w-[780px] space-y-1.5 pt-1">
-        <div className="grid grid-cols-5 gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
-          <button 
-            type="button"
-            onClick={() => handleSwitchMode('flashcard')} 
-            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
-              selectedMode === 'flashcard' 
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/50' 
-                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
-            }`}
-          >
-            <BookOpen className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">Lật thẻ</span>
-          </button>
-
-          <button 
-            type="button"
-            onClick={() => handleSwitchMode('quiz')} 
-            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
-              selectedMode === 'quiz' 
-                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-1 ring-emerald-400/50' 
-                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">Trắc nghiệm</span>
-          </button>
-
-          <button 
-            type="button"
-            onClick={() => handleSwitchMode('cram')} 
-            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
-              selectedMode === 'cram' 
-                ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30 ring-1 ring-amber-400/50' 
-                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
-            }`}
-          >
-            <TrendingUp className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">Luyện gõ</span>
-          </button>
-
-          <button 
-            type="button"
-            onClick={() => handleSwitchMode('dokkai')} 
-            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
-              selectedMode === 'dokkai' 
-                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-1 ring-purple-400/50' 
-                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
-            }`}
-          >
-            <BookOpen className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">Đọc hiểu</span>
-          </button>
-
-          <button 
-            type="button"
-            onClick={() => handleSwitchMode('shadowing')} 
-            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
-              selectedMode === 'shadowing' 
-                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30 ring-1 ring-rose-400/50' 
-                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
-            }`}
-          >
-            <Music className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">Ghép câu</span>
-          </button>
-        </div>
-      </div>
-
       {/* Container Thẻ học chính */}
       <div className={`w-full mx-auto mt-0 sm:mt-1 transition-all duration-300 flex flex-col items-center ${isExpanded ? 'max-w-5xl' : 'max-w-[780px]'}`}>
         <div className="w-full">
@@ -3015,8 +2945,6 @@ if (loading) {
               <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
-
-          <SrsSwitch className="shrink-0" />
 
           {/* Right Controls */}
           <div className={`fc-toolbar ${(selectedMode === 'flashcard' || selectedMode === 'quiz' || selectedMode === 'dokkai') ? 'hidden' : 'flex'} items-center gap-1 sm:gap-1.5 shrink-0`}>
@@ -3401,6 +3329,7 @@ if (loading) {
                 </div>
                 <button type="button" onClick={() => { setFlashcardDirection(p => p === 'JP_VI' ? 'VI_JP' : 'JP_VI'); setShowFlashcardAnswer(false); }} className="vocab-flashcard-direction flex items-center justify-center gap-1 text-slate-300 hover:text-white text-[11px] whitespace-nowrap rounded-md" title="Đổi chiều học" aria-label="Đổi chiều học"><ArrowLeftRight className="w-3 h-3" />{flashcardDirection === 'JP_VI' ? 'JP–VI' : 'VI–JP'}</button>
                 <div className="vocab-flashcard-tools flex items-center justify-end gap-1" role="group" aria-label="Công cụ học">
+                  <SrsSwitch compact />
                   <button type="button" onClick={() => { setIsAutoplay(false); setCurrentIndex(0); setShowFlashcardAnswer(false); setReactionState('neutral'); }} title="Học lại từ đầu" aria-label="Học lại từ đầu"><RotateCcw className="w-4 h-4" /></button>
                   <button type="button" onClick={() => setIsAutoplay(p => !p)} title={isAutoplay ? 'Dừng tự động lật thẻ' : 'Tự động lật thẻ'} aria-label={isAutoplay ? 'Dừng tự động lật thẻ' : 'Tự động lật thẻ'} aria-pressed={isAutoplay} className={isAutoplay ? 'text-amber-400' : ''}>{isAutoplay ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}</button>
                   <button type="button" onClick={() => setIsShuffle(p => !p)} title="Đổi thứ tự ngẫu nhiên" aria-label="Đổi thứ tự ngẫu nhiên" aria-pressed={isShuffle} className={isShuffle ? 'text-emerald-400' : ''}><Shuffle className="w-4 h-4" /></button>
@@ -3970,6 +3899,75 @@ if (loading) {
         ) : null}
       </div>
 
+      {/* Responsive Cohesive Mode Selectors Bar */}
+      <div className="w-full max-w-[780px] space-y-1.5 -mt-2">
+        <div className="grid grid-cols-5 gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
+          <button 
+            type="button"
+            onClick={() => handleSwitchMode('flashcard')} 
+            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
+              selectedMode === 'flashcard' 
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/50' 
+                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Lật thẻ</span>
+          </button>
+
+          <button 
+            type="button"
+            onClick={() => handleSwitchMode('quiz')} 
+            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
+              selectedMode === 'quiz' 
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 ring-1 ring-emerald-400/50' 
+                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
+            }`}
+          >
+            <Layers className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Trắc nghiệm</span>
+          </button>
+
+          <button 
+            type="button"
+            onClick={() => handleSwitchMode('cram')} 
+            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
+              selectedMode === 'cram' 
+                ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30 ring-1 ring-amber-400/50' 
+                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
+            }`}
+          >
+            <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Luyện gõ</span>
+          </button>
+
+          <button 
+            type="button"
+            onClick={() => handleSwitchMode('dokkai')} 
+            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
+              selectedMode === 'dokkai' 
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-1 ring-purple-400/50' 
+                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Đọc hiểu</span>
+          </button>
+
+          <button 
+            type="button"
+            onClick={() => handleSwitchMode('shadowing')} 
+            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
+              selectedMode === 'shadowing' 
+                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30 ring-1 ring-rose-400/50' 
+                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
+            }`}
+          >
+            <Music className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Ghép câu</span>
+          </button>
+        </div>
+      </div>
     </div>
 
       {/* Dynamic Report/Góp ý Modal overlay */}

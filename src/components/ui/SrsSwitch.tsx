@@ -3,8 +3,13 @@ import { Repeat } from 'lucide-react';
 import { useSrsAuto } from '../../utils/srsMode';
 
 // Nút bật/tắt SRS tự động: một viên thuốc gọn gồm icon + chữ + công tắc nhỏ.
-export default function SrsSwitch({ className = '' }: { className?: string }) {
+export default function SrsSwitch({ className = '', compact = false }: { className?: string; compact?: boolean }) {
   const [on, toggle] = useSrsAuto();
+  if (compact) return (
+    <button type="button" role="switch" aria-checked={on} aria-label="SRS tự động" title={on ? 'SRS tự động: bật' : 'SRS tự động: tắt'} onClick={toggle} className={on ? 'text-[color:var(--ui-accent)]' : ''}>
+      <Repeat className="w-4 h-4" aria-hidden />
+    </button>
+  );
   return (
     <button
       type="button"

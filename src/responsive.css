@@ -249,5 +249,5 @@
 .shiba-feedback-bubble{max-width:min(420px,calc(100vw - 24px));white-space:normal!important;line-height:1.5}
 .feedback-xp .shiba-feedback-bubble{border-color:var(--ui-accent)!important;color:var(--ui-accent)!important;background:var(--ui-surface)!important}
 .feedback-xp .shiba-feedback-bubble [role=status]{font-weight:750}
-/* Chọn bài + SRS nằm dưới thẻ */
-#app-root-container .vocab-fixed-stage>.vocab-flashcard-lesson-nav{order:99;margin:12px 0 0;padding:10px 0 0;border-bottom:0;border-top:1px solid rgb(52 61 95/.8)}
+/* Thanh chọn bài sát mép trên khung, thanh chế độ sát mép dưới khung */
+#app-root-container .vocab-fixed-stage>.vocab-flashcard-lesson-nav{margin-bottom:-6px;padding-bottom:4px}
