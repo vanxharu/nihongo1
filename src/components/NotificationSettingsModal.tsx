@@ -1,27 +1,13 @@
 import { Switch, Expand } from './ui/ExpandSwitch';
 import React, { useState, useEffect, useMemo } from 'react';
 import {
-  Bell,
-  BellOff,
-  Clock,
+  X,
   Check,
   Send,
   ShieldAlert,
-  CheckCircle2,
-  Smartphone,
-  Monitor,
-  RefreshCw,
-  Info,
   Volume2,
   Pin,
-  Palette,
-  Type,
-  Eye,
-  Image as ImageIcon,
-  CloudCheck,
-  Sliders,
-  RotateCcw,
-  BookOpen
+  Image as ImageIcon
 } from 'lucide-react';
 import {
   ReminderSettings,
@@ -33,7 +19,6 @@ import {
   sendFloatingVocabNotification,
   generateVocabNotificationImage,
   isNotificationSupported,
-  syncRemindersWithServiceWorker,
   getAllVocabPool,
   getActiveLearningContext,
   getEffectiveVocabPool,
@@ -76,9 +61,7 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
   const [permission, setPermission] = useState<NotificationPermission | 'unsupported'>('default');
   const [testSent, setTestSent] = useState(false);
   const [testVocabSent, setTestVocabSent] = useState(false);
-  const [syncingSw, setSyncingSw] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [showWindowsGuide, setShowWindowsGuide] = useState(false);
 
   const ALL_LEVELS = ['N5', 'N4', 'N3', 'N2', 'N1'];
 
@@ -208,25 +191,6 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
     updateSettingsAndSync(updated);
   };
 
-  const handleSyncServiceWorker = async () => {
-    setSyncingSw(true);
-    try {
-      const success = await syncRemindersWithServiceWorker(settings, getEffectiveVocabPool(settings));
-      if (user) {
-        await updateDbProfile({ notificationSettings: settings });
-      }
-      if (success) {
-        setStatusMessage('Đã đồng bộ cài đặt & Service Worker thành công! ☁️✅');
-      } else {
-        setStatusMessage('Đã cập nhật cấu hình thông báo chạy ngầm & đồng bộ tài khoản.');
-      }
-    } catch (e) {
-      setStatusMessage('Đồng bộ thất bại, hãy thử lại.');
-    } finally {
-      setTimeout(() => setSyncingSw(false), 1200);
-    }
-  };
-
   const handleTestVocabNotification = async () => {
     let currentPerm = getNotificationPermissionStatus();
     if (currentPerm !== 'granted') {
@@ -245,473 +209,155 @@ export default function NotificationSettingsModal({ isOpen, onClose }: Notificat
   };
 
   const PRESET_TIMES = ['08:00', '12:00', '19:00', '20:30', '21:30'];
-
-  const FONT_SIZE_OPTIONS = [
-    { scale: 0.8, label: '80% (Nhỏ)' },
-    { scale: 1.0, label: '100% (Tiêu chuẩn)' },
-    { scale: 1.2, label: '120% (Lớn) ⭐' },
-    { scale: 1.4, label: '140% (Rất lớn)' },
-    { scale: 1.6, label: '160% (Khổng lồ)' }
-  ];
+  const INTERVALS = [5, 15, 30, 60, 120];
+  const FONT_SCALES = [0.8, 1.0, 1.2, 1.4, 1.6];
+  const set = (patch: Partial<ReminderSettings>) => updateSettingsAndSync({ ...settings, ...patch });
+  const levels = settings.vocabLevels || ALL_LEVELS;
+  const interval = settings.vocabInterval || 15;
+  const scale = settings.fontSizeScale ?? 1.2;
+  const theme = settings.cardTheme || 'obsidian';
+  const chip = (on: boolean) => `h-9 min-w-[44px] px-3 rounded-full text-xs font-bold border transition-colors cursor-pointer ${on ? 'bg-[color:var(--ui-accent)] border-[color:var(--ui-accent)] text-white' : 'border-[color:var(--ui-line)] text-[color:var(--ui-muted)] hover:bg-[color:var(--ui-soft)]'}`;
+  const sel = 'w-full h-10 px-3 rounded-xl border border-[color:var(--ui-line)] bg-[color:var(--ui-soft)] text-sm font-semibold text-[color:var(--ui-text)] outline-none focus:border-[color:var(--ui-accent)] cursor-pointer';
+  const label = 'block text-xs font-bold text-[color:var(--ui-muted)] mb-2';
+  const card = 'rounded-2xl border border-[color:var(--ui-line)] p-4';
+  const row = (title: string, sub: string) => (
+    <div className="min-w-0">
+      <h4 className="text-sm font-black text-[color:var(--ui-text)]">{title}</h4>
+      <p className="text-xs text-[color:var(--ui-muted)]">{sub}</p>
+    </div>
+  );
+  const toggleRow = (text: string, icon: React.ReactNode, key: keyof ReminderSettings, on: boolean) => (
+    <div className="flex items-center justify-between gap-3 py-1.5">
+      <span className="flex items-center gap-2 text-sm text-[color:var(--ui-text)]">{icon}{text}</span>
+      <Switch checked={on} onChange={(v) => set({ [key]: v } as Partial<ReminderSettings>)} label={text} />
+    </div>
+  );
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-4 animate-fade-in" onClick={onClose}>
-      <div 
-        role="dialog" aria-modal="true" aria-label="Cài đặt nhắc nhở học tập"
-        className="bg-white dark:bg-slate-900 rounded-3xl max-w-xl w-full p-5 sm:p-6 shadow-2xl border border-slate-100 dark:border-slate-800 relative space-y-4 max-h-[92vh] flex flex-col"
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4" onClick={onClose}>
+      <div
+        role="dialog" aria-modal="true" aria-label="Thông báo"
+        className="bg-[color:var(--ui-card,#fff)] w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[92vh] flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold">
-              <Monitor className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-black text-slate-900 dark:text-slate-100 text-base">Nhắc Nhở & Thông Báo Nổi Windows</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Tùy chỉnh cỡ chữ, màu sắc & đồng bộ đa thiết bị</p>
-            </div>
-          </div>
-          <button 
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center justify-center font-bold text-sm cursor-pointer transition-colors"
-          >
-            ✕
-          </button>
+        <div className="flex items-center justify-between px-5 pt-5 pb-3 shrink-0">
+          <h3 className="text-lg font-black text-[color:var(--ui-text)]">Thông báo</h3>
+          <button onClick={onClose} aria-label="Đóng" className="w-9 h-9 grid place-items-center rounded-full hover:bg-[color:var(--ui-soft)] text-[color:var(--ui-muted)] cursor-pointer"><X size={18} /></button>
         </div>
 
-        {/* Status indicator banner */}
-        {!isNotificationSupported() ? (
-          <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 rounded-2xl text-xs text-amber-800 dark:text-amber-300 flex items-center gap-2">
-            <ShieldAlert className="w-4 h-4 shrink-0 text-amber-600" />
-            <span>Trình duyệt hiện tại không hỗ trợ Web Notification API.</span>
+        <div className="overflow-y-auto px-5 pb-5 space-y-4 flex-1">
+          {!isNotificationSupported() ? (
+            <p className="flex items-center gap-2 text-xs rounded-xl px-3 py-2 bg-amber-500/10 text-amber-700"><ShieldAlert size={16} className="shrink-0" />Trình duyệt này không hỗ trợ thông báo.</p>
+          ) : permission === 'denied' ? (
+            <p className="flex items-start gap-2 text-xs rounded-xl px-3 py-2 bg-rose-500/10 text-rose-700"><ShieldAlert size={16} className="shrink-0 mt-0.5" />Thông báo đang bị chặn. Bấm biểu tượng ổ khóa trên thanh địa chỉ và chọn Cho phép.</p>
+          ) : null}
+
+          {statusMessage && <p role="status" className="text-xs text-center rounded-xl px-3 py-2 bg-[color:var(--ui-soft)] text-[color:var(--ui-text)]">{statusMessage}</p>}
+
+          {/* Xem trước */}
+          <div className="rounded-2xl overflow-hidden bg-slate-950 min-h-[96px] grid place-items-center">
+            {previewImageUrl
+              ? <img src={previewImageUrl} alt="Xem trước thẻ thông báo" className="w-full h-auto max-h-48 object-contain" referrerPolicy="no-referrer" />
+              : <span className="text-xs text-slate-500">Đang tạo xem trước…</span>}
           </div>
-        ) : permission === 'denied' ? (
-          <div className="p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-2xl text-xs text-rose-800 dark:text-rose-300 space-y-1">
-            <div className="flex items-center gap-2 font-black text-rose-900 dark:text-rose-200">
-              <ShieldAlert className="w-4 h-4 shrink-0" />
-              <span>Quyền thông báo đang bị chặn!</span>
+
+          {/* Thẻ từ vựng nổi */}
+          <section className={card}>
+            <div className="flex items-center justify-between gap-3">
+              {row('Thẻ từ vựng nổi', 'Hiện một từ ở góc màn hình theo chu kỳ')}
+              <Switch checked={!!settings.vocabEnabled} onChange={handleToggleVocabReminder} label="Thẻ từ vựng nổi" />
             </div>
-            <p className="text-[11px] leading-relaxed text-rose-700 dark:text-rose-300">
-              Nhấn vào biểu tượng ổ khóa 🔒 hoặc cài đặt trang trên thanh địa chỉ và chuyển <strong>Thông báo (Notifications)</strong> sang <strong>Cho phép (Allow)</strong>.
-            </p>
-          </div>
-        ) : null}
-
-        {/* Status Message feedback toast */}
-        {statusMessage && (
-          <div className="text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 p-2.5 rounded-xl text-center animate-fade-in border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5">
-            <span>{statusMessage}</span>
-          </div>
-        )}
-
-        {/* Scrollable Body */}
-        <div className="space-y-4 overflow-y-auto pr-1 flex-1">
-          {/* LIVE PREVIEW CARD */}
-          <div className="p-3.5 bg-slate-950 rounded-2xl border border-slate-800 space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-300 font-bold">
-              <div className="flex items-center gap-1.5">
-                <Eye className="w-4 h-4 text-indigo-400" />
-                <span>Xem trước</span>
-              </div>
-                          </div>
-            <div className="rounded-xl overflow-hidden border border-slate-800/80 shadow-md bg-black/40 flex items-center justify-center">
-              {previewImageUrl ? (
-                <img 
-                  src={previewImageUrl} 
-                  alt="Notification Preview" 
-                  className="w-full h-auto object-contain max-h-48 rounded-xl"
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <div className="py-8 text-xs text-slate-500">Đang khởi tạo xem trước...</div>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-300" aria-live="polite">
-              {onCount ? `${onCount} đang bật` : 'Đã tắt hết'}
-            </span>
-            <button type="button" onClick={handleTurnAllOff} disabled={!onCount}
-              className="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600 disabled:opacity-40 cursor-pointer transition-colors">
-              Tắt tất cả
-            </button>
-          </div>
-
-          {/* SECTION 1: WINDOWS FLOATING VOCABULARY NOTIFICATION (PRIMARY) */}
-          <div className="p-4 bg-gradient-to-br from-indigo-50/70 to-purple-50/70 dark:from-indigo-950/30 dark:to-purple-950/30 rounded-2xl border border-indigo-200/80 dark:border-indigo-800/60 space-y-3.5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className={`w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center transition-[filter,opacity] duration-500 ${settings.vocabEnabled ? '' : 'grayscale opacity-45'}`}>
-                  <Monitor className="w-4 h-4" />
+            <Expand open={!!settings.vocabEnabled}>
+              <div className="pt-4 space-y-4">
+                <div>
+                  <span className={label}>Chu kỳ</span>
+                  <div className="flex flex-wrap gap-2">
+                    {(INTERVALS.includes(interval) ? INTERVALS : [...INTERVALS, interval].sort((x, y) => x - y)).map(m => (
+                      <button key={m} type="button" aria-pressed={interval === m} onClick={() => set({ vocabInterval: m })} className={chip(interval === m)}>
+                        {m < 60 ? `${m} phút` : `${m / 60} giờ`}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wide">
-                    Thông Báo Nổi Từ Vựng (Windows Toast)
-                  </h4>
-                  <p className="text-[11px] text-indigo-700 dark:text-indigo-300 font-medium">
-                    Tự động hiện thẻ từ vựng ở góc phải màn hình
-                  </p>
-                </div>
-              </div>
-
-              <Switch checked={!!settings.vocabEnabled} onChange={(on) => handleToggleVocabReminder(on)} label="Thông báo nổi từ vựng" />
-            </div>
-
-            <Expand open={!!settings.vocabEnabled}>
-              <div className="space-y-3 pt-1 border-t border-indigo-100 dark:border-indigo-900/60 animate-fade-in text-left">
-                {/* 1. CURRICULUM & LESSON SOURCE SELECTION (NEW) */}
-                <div className="space-y-2 bg-indigo-50/80 dark:bg-indigo-950/40 p-3 rounded-2xl border border-indigo-200/80 dark:border-indigo-800/80">
-                  <div className="flex items-center justify-between">
-                    <label className="text-[11px] font-black text-indigo-950 dark:text-indigo-200 flex items-center gap-1.5">
-                      <BookOpen className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-                      <span>Nguồn Giáo Trình & Bài Học Đang Học:</span>
-                    </label>
-                    <span className="text-[10px] bg-indigo-600 text-white font-bold px-2 py-0.5 rounded-full">
-                      Tự động theo bài
-                    </span>
-                  </div>
-
-                  {/* Active Context Banner */}
-                  <div className="bg-white/80 dark:bg-slate-900/80 p-2.5 rounded-xl border border-indigo-100 dark:border-indigo-900/60 flex items-center justify-between text-xs">
-                    <div className="space-y-0.5">
-                      <div className="text-[10px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
-                        Tiến độ đang học trên hệ thống:
-                      </div>
-                      <div className="font-extrabold text-indigo-700 dark:text-indigo-300 flex items-center gap-1.5">
-                        <span>📗 Tango 1500 N4</span>
-                        <span className="text-slate-400">•</span>
-                        <span className="text-slate-800 dark:text-slate-200">
-                          {activeCtx.lessonName || (activeCtx.lessonId ? `Bài ${activeCtx.lessonId}` : 'Chưa chọn bài')}
-                        </span>
-                      </div>
-                    </div>
-                    <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-2 py-1 rounded-lg">
-                      Đang đồng bộ ✓
-                    </span>
-                  </div>
-
-                  {/* Scope Selector */}
-                  <div className="space-y-1">
-                    <label className="text-[10.5px] font-bold text-slate-600 dark:text-slate-400">
-                      Chế độ thông báo từ vựng:
-                    </label>
-                    <select
-                      value={settings.vocabSourceScope || 'active'}
-                      onChange={(e) => {
-                        const updated = { ...settings, vocabSourceScope: e.target.value as any };
-                        updateSettingsAndSync(updated);
-                      }}
-                      className="w-full text-xs font-bold text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 outline-none focus:border-indigo-500 cursor-pointer"
-                    >
-                      <option value="active">🎯 Tự động theo giáo trình & bài đang học (Khuyên dùng) ⭐</option>
-                      <option value="tango">📗 Toàn bộ giáo trình Tango 1500 N4 (894 từ)</option>
-                      <option value="custom_lesson">📖 Chỉ định một bài học cụ thể...</option>
-                      <option value="all">🌐 Tất cả từ vựng theo cấp độ JLPT đã chọn</option>
-                    </select>
-                  </div>
-
-                  {/* Specific Lesson Selector when custom_lesson is picked */}
+                  <span className={label}>Nguồn từ</span>
+                  <select aria-label="Nguồn từ" className={sel} value={settings.vocabSourceScope || 'active'} onChange={(e) => set({ vocabSourceScope: e.target.value as any })}>
+                    <option value="active">Theo bài đang học{activeCtx.lessonName ? ` · ${activeCtx.lessonName}` : ''}</option>
+                    <option value="tango">Toàn bộ Tango 1500 N4</option>
+                    <option value="custom_lesson">Một bài cụ thể</option>
+                    <option value="all">Tất cả theo cấp độ</option>
+                  </select>
                   {settings.vocabSourceScope === 'custom_lesson' && (
-                    <div className="space-y-1 pt-1 animate-fade-in">
-                      <label className="text-[10.5px] font-bold text-indigo-700 dark:text-indigo-300">
-                        Chọn bài học cần nhận thông báo:
-                      </label>
-                      <select
-                        value={settings.vocabSelectedLessonId || 'all'}
-                        onChange={(e) => {
-                          const updated = { ...settings, vocabSelectedLessonId: e.target.value };
-                          updateSettingsAndSync(updated);
-                        }}
-                        className="w-full text-xs font-bold text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800 border border-indigo-300 dark:border-indigo-600 rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-                      >
-                        <option value="all">-- Chọn bài học cụ thể --</option>
-                        <optgroup label="📗 Tango 1500 N4">
-                          {availableLessons
-                            .filter((l) => l.curriculum === 'tango')
-                            .map((l) => (
-                              <option key={l.id} value={l.id}>
-                                {l.name} ({l.count} từ)
-                              </option>
-                            ))}
-                        </optgroup>
-                      </select>
-                    </div>
+                    <select aria-label="Chọn bài" className={`${sel} mt-2`} value={settings.vocabSelectedLessonId || 'all'} onChange={(e) => set({ vocabSelectedLessonId: e.target.value })}>
+                      <option value="all">Chọn bài học…</option>
+                      {availableLessons.filter(l => l.curriculum === 'tango').map(l => <option key={l.id} value={l.id}>{l.name} ({l.count} từ)</option>)}
+                    </select>
                   )}
                 </div>
-
-                {/* 2. JLPT Level Selection */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-black text-slate-700 dark:text-slate-300 flex items-center gap-1">
-                      <span>🎯 Tùy chọn cấp độ JLPT (Bộ lọc phụ):</span>
-                    </span>
-                    <button
-                      onClick={handleSelectAllLevels}
-                      className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
-                    >
-                      Chọn tất cả N5-N1
-                    </button>
+                <div>
+                  <span className={label}>Cấp độ</span>
+                  <div className="flex gap-2">
+                    {ALL_LEVELS.map(l => <button key={l} type="button" aria-pressed={levels.includes(l)} onClick={() => handleLevelToggle(l)} className={chip(levels.includes(l))}>{l}</button>)}
                   </div>
-
-                  <div className="grid grid-cols-5 gap-1.5">
-                    {ALL_LEVELS.map((lvl) => {
-                      const currentLevels = settings.vocabLevels || ALL_LEVELS;
-                      const isSelected = currentLevels.includes(lvl);
-                      return (
-                        <button
-                          key={lvl}
-                          type="button"
-                          onClick={() => handleLevelToggle(lvl)}
-                          className={`py-1.5 rounded-xl text-xs font-black border transition-all cursor-pointer text-center ${
-                            isSelected
-                              ? 'bg-indigo-600 border-indigo-600 text-white shadow-xs scale-102'
-                              : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-indigo-300'
-                          }`}
-                        >
-                          {lvl}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <p className="text-[10px] text-slate-500 dark:text-slate-400 italic">
-                    Hệ thống sẽ lấy từ vựng theo giáo trình & bài đang học ({settings.vocabLevels?.join(', ') || 'N5-N1'}).
-                  </p>
                 </div>
-
-                {/* 3. Frequency Interval */}
-                <div className="space-y-1.5">
-                  <label className="text-[11px] font-black text-slate-700 dark:text-slate-300 block">
-                    ⏱️ Tần suất xuất hiện thông báo:
-                  </label>
-                  <select
-                    value={settings.vocabInterval || 15}
-                    onChange={(e) => {
-                      const updated = { ...settings, vocabInterval: parseInt(e.target.value) };
-                      updateSettingsAndSync(updated);
-                    }}
-                    className="w-full text-xs font-bold text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 outline-none focus:border-indigo-500 cursor-pointer"
-                  >
-                    <option value={1}>⚡ Mỗi 1 phút (Để thử nghiệm & kiểm tra nhanh)</option>
-                    <option value={3}>⚡ Mỗi 3 phút (Ôn dồn dập)</option>
-                    <option value={5}>Mỗi 5 phút (Tập trung cao độ)</option>
-                    <option value={10}>Mỗi 10 phút (Năng động)</option>
-                    <option value={15}>Mỗi 15 phút (Khuyên dùng khi làm việc) ⭐</option>
-                    <option value={30}>Mỗi 30 phút (Học thong thả)</option>
-                    <option value={60}>Mỗi 1 giờ (Chuẩn hàng ngày)</option>
-                    <option value={120}>Mỗi 2 giờ (Chậm rãi)</option>
-                  </select>
-                </div>
-
-                {/* 3. Windows Floating Options Checkboxes */}
-                <div className="space-y-2 pt-1 bg-white/60 dark:bg-slate-800/60 p-2.5 rounded-xl border border-indigo-100 dark:border-indigo-900/40">
-                  {/* Hide duplicate text lines */}
-                  <label className="flex items-center gap-2 text-[11px] font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={settings.hideNotificationText !== false}
-                      onChange={(e) => {
-                        const updated = { ...settings, hideNotificationText: e.target.checked };
-                        updateSettingsAndSync(updated);
-                      }}
-                      className="w-4 h-4 text-indigo-600 rounded-sm border-slate-300 focus:ring-indigo-500 cursor-pointer"
-                    />
-                    <ImageIcon className="w-3.5 h-3.5 text-indigo-600" />
-                    <span>Chỉ hiển thị ảnh thẻ từ vựng (Ẩn dòng chữ trùng lặp trên thông báo Windows)</span>
-                  </label>
-
-                  {/* Pin / Require interaction */}
-                  <label className="flex items-center gap-2 text-[11px] font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={settings.vocabRequireInteraction === true}
-                      onChange={(e) => {
-                        const updated = { ...settings, vocabRequireInteraction: e.target.checked };
-                        updateSettingsAndSync(updated);
-                      }}
-                      className="w-4 h-4 text-indigo-600 rounded-sm border-slate-300 focus:ring-indigo-500 cursor-pointer"
-                    />
-                    <Pin className="w-3.5 h-3.5 text-indigo-600" />
-                    <span>Ghim cố định thông báo trên Windows (mặc định thông báo sẽ tự đóng sau 5 giây)</span>
-                  </label>
-
-                  {/* Sound Chime */}
-                  <label className="flex items-center gap-2 text-[11px] font-bold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={settings.vocabPlaySound !== false}
-                      onChange={(e) => {
-                        const updated = { ...settings, vocabPlaySound: e.target.checked };
-                        updateSettingsAndSync(updated);
-                      }}
-                      className="w-4 h-4 text-indigo-600 rounded-sm border-slate-300 focus:ring-indigo-500 cursor-pointer"
-                    />
-                    <Volume2 className="w-3.5 h-3.5 text-indigo-600" />
-                    <span>Phát âm thanh chuông nhẹ (Pling! 🎵) khi từ vựng xuất hiện</span>
-                  </label>
+                <div className="divide-y divide-[color:var(--ui-line)]">
+                  {toggleRow('Chỉ hiện ảnh thẻ', <ImageIcon size={16} className="text-[color:var(--ui-muted)]" />, 'hideNotificationText', settings.hideNotificationText !== false)}
+                  {toggleRow('Ghim đến khi tắt', <Pin size={16} className="text-[color:var(--ui-muted)]" />, 'vocabRequireInteraction', settings.vocabRequireInteraction === true)}
+                  {toggleRow('Âm báo', <Volume2 size={16} className="text-[color:var(--ui-muted)]" />, 'vocabPlaySound', settings.vocabPlaySound !== false)}
                 </div>
               </div>
             </Expand>
-          </div>
+          </section>
 
-          {/* SECTION 2: CUSTOMIZE FONT SIZE & COLOR THEME */}
-          <div className="p-4 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3.5 text-left">
-            <div className="flex items-center gap-2">
-              <Palette className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-              <h4 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wide">
-                Chỉnh Cỡ Chữ & Màu Sắc Thẻ Thông Báo (Tùy Chỉnh & Đồng Bộ Cloud)
-              </h4>
+          {/* Giao diện thẻ */}
+          <section className={card}>
+            {row('Giao diện thẻ', 'Màu nền và cỡ chữ')}
+            <div className="flex flex-wrap gap-3 mt-3" role="radiogroup" aria-label="Màu thẻ">
+              {(Object.keys(NOTIFICATION_THEMES) as NotificationThemeKey[]).map(k => {
+                const t = NOTIFICATION_THEMES[k];
+                return (
+                  <button key={k} type="button" role="radio" aria-checked={theme === k} title={t.name} aria-label={t.name} onClick={() => set({ cardTheme: k })}
+                    className={`w-9 h-9 rounded-full grid place-items-center cursor-pointer transition-shadow ${theme === k ? 'ring-2 ring-offset-2 ring-[color:var(--ui-accent)]' : 'ring-1 ring-black/10'}`}
+                    style={{ background: `linear-gradient(135deg, ${t.bgStart}, ${t.bgEnd})` }}>
+                    {theme === k && <Check size={14} className="text-white" />}
+                  </button>
+                );
+              })}
             </div>
-
-            {/* A. Font Size Scale Selector */}
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                <span className="flex items-center gap-1">
-                  <Type className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Tỉ lệ cỡ chữ tổng thể:</span>
-                </span>
-                <span className="font-mono text-indigo-600 dark:text-indigo-400 font-black">
-                  {Math.round((settings.fontSizeScale || 1.2) * 100)}%
-                </span>
-              </label>
-
-              <div className="grid grid-cols-5 gap-1.5">
-                {FONT_SIZE_OPTIONS.map((opt) => {
-                  const currentScale = settings.fontSizeScale !== undefined ? settings.fontSizeScale : 1.2;
-                  const isSelected = Math.abs(currentScale - opt.scale) < 0.05;
-                  return (
-                    <button
-                      key={opt.scale}
-                      type="button"
-                      onClick={() => {
-                        const updated = { ...settings, fontSizeScale: opt.scale };
-                        updateSettingsAndSync(updated);
-                      }}
-                      className={`py-1.5 px-1 rounded-xl text-[10px] font-black border transition-all cursor-pointer text-center truncate ${
-                        isSelected
-                          ? 'bg-indigo-600 border-indigo-600 text-white shadow-xs'
-                          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-indigo-300'
-                      }`}
-                    >
-                      {opt.label}
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="flex gap-2 mt-4">
+              {FONT_SCALES.map(f => (
+                <button key={f} type="button" aria-pressed={Math.abs(scale - f) < 0.05} onClick={() => set({ fontSizeScale: f })} className={`${chip(Math.abs(scale - f) < 0.05)} flex-1 px-0`}>{Math.round(f * 100)}%</button>
+              ))}
             </div>
+          </section>
 
-            {/* B. Preset Theme Palette */}
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300 block">
-                🎨 Giao diện màu sắc phối sẵn:
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {(Object.keys(NOTIFICATION_THEMES) as NotificationThemeKey[]).map((themeKey) => {
-                  const preset = NOTIFICATION_THEMES[themeKey];
-                  const isSelected = (settings.cardTheme || 'obsidian') === themeKey;
-
-                  return (
-                    <button
-                      key={themeKey}
-                      type="button"
-                      onClick={() => {
-                        const updated = { ...settings, cardTheme: themeKey };
-                        updateSettingsAndSync(updated);
-                      }}
-                      className={`p-2 rounded-xl text-xs font-bold border transition-all text-left flex items-center justify-between cursor-pointer ${
-                        isSelected
-                          ? 'border-indigo-600 ring-2 ring-indigo-500/30 bg-white dark:bg-slate-800 shadow-sm'
-                          : 'border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 hover:border-slate-300'
-                      }`}
-                    >
-                      <div className="flex items-center gap-1.5 overflow-hidden">
-                        <div 
-                          className="w-3.5 h-3.5 rounded-full shrink-0 border border-black/20"
-                          style={{ background: `linear-gradient(135deg, ${preset.bgStart}, ${preset.bgEnd})` }}
-                        />
-                        <span className="truncate text-[11px] text-slate-800 dark:text-slate-200">{preset.name}</span>
-                      </div>
-                      {isSelected && <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />}
-                    </button>
-                  );
-                })}
-              </div>
+          {/* Nhắc hằng ngày */}
+          <section className={card}>
+            <div className="flex items-center justify-between gap-3">
+              {row('Nhắc học mỗi ngày', 'Một thông báo vào giờ bạn chọn')}
+              <Switch checked={!!settings.enabled} onChange={handleToggleReminder} label="Nhắc học mỗi ngày" />
             </div>
-
-          </div>
-
-          {/* SECTION 3: DAILY SCHEDULE REMINDER */}
-          <div className="space-y-2.5 p-3.5 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-100 dark:border-slate-800">
-            <div className="flex items-center justify-between">
-              <label className="text-[11px] font-black text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-                <Clock className={`w-3.5 h-3.5 transition-[filter,opacity] duration-500 ${settings.enabled ? 'text-rose-500' : 'text-slate-400 opacity-60'}`} />
-                Nhắc Học Định Kỳ Hàng Ngày:
-              </label>
-              <Switch checked={!!settings.enabled} onChange={(on) => handleToggleReminder(on)} label="Nhắc nhở học hằng ngày" />
-            </div>
-
             <Expand open={!!settings.enabled}>
-              <div className="space-y-2 pt-1 animate-fade-in">
-                <div className="flex items-center gap-3">
-                  <input 
-                    type="time" 
-                    value={settings.time}
-                    onChange={(e) => handleTimeChange(e.target.value)}
-                    className="px-3 py-1.5 rounded-xl border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-mono font-black text-sm focus:border-rose-500 outline-none w-24 text-center shadow-xs bg-white dark:bg-slate-800 cursor-pointer"
-                  />
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                    Nhắc tổng hợp lúc <strong className="text-slate-900 dark:text-slate-100 font-mono">{settings.time}</strong>
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap gap-1.5">
-                  {PRESET_TIMES.map((t) => (
-                    <button
-                      key={t}
-                      onClick={() => handleTimeChange(t)}
-                      className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold border transition-all cursor-pointer ${
-                        settings.time === t
-                          ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-400 text-rose-700 dark:text-rose-300 font-black'
-                          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100'
-                      }`}
-                    >
-                      {t}
-                    </button>
-                  ))}
-                </div>
+              <div className="pt-4 flex flex-wrap items-center gap-2">
+                <input type="time" aria-label="Giờ nhắc" value={settings.time} onChange={(e) => handleTimeChange(e.target.value)}
+                  className="h-9 px-3 rounded-full border border-[color:var(--ui-line)] bg-[color:var(--ui-soft)] font-mono font-bold text-sm text-[color:var(--ui-text)] outline-none focus:border-[color:var(--ui-accent)]" />
+                {PRESET_TIMES.map(t => <button key={t} type="button" aria-pressed={settings.time === t} onClick={() => handleTimeChange(t)} className={`${chip(settings.time === t)} font-mono`}>{t}</button>)}
               </div>
             </Expand>
-          </div>
+          </section>
+
+          {onCount > 0 && (
+            <button type="button" onClick={handleTurnAllOff} className="text-xs font-bold text-[color:var(--ui-muted)] hover:text-rose-600 cursor-pointer">Tắt tất cả thông báo</button>
+          )}
         </div>
 
-        {/* Action Buttons & Instant Test */}
-        <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center gap-2 shrink-0">
-          <button
-            onClick={handleSyncServiceWorker}
-            disabled={syncingSw}
-            className="w-full sm:w-auto py-2.5 px-3.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
-            title="Lưu & Đồng bộ tài khoản Cloud"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${syncingSw ? 'animate-spin' : ''}`} />
-            <span>Lưu & Đồng Bộ Cloud ☁️</span>
-          </button>
-
-          <button
-            onClick={handleTestVocabNotification}
-            className={`w-full sm:flex-1 py-2.5 px-4 rounded-xl font-black text-xs flex items-center justify-center gap-2 border transition-all cursor-pointer ${
-              testVocabSent 
-                ? 'bg-emerald-600 text-white border-emerald-600'
-                : 'bg-indigo-600 hover:bg-indigo-700 text-white border-indigo-600 shadow-sm'
-            }`}
-          >
-            <Send className="w-3.5 h-3.5" />
-            <span>{testVocabSent ? 'Đã gửi thông báo nổi lên Windows! ✓' : 'Gửi Thử Thông Báo Nổi Windows Ngay 🔔'}</span>
+        <div className="px-5 py-4 border-t border-[color:var(--ui-line)] shrink-0">
+          <button type="button" onClick={handleTestVocabNotification}
+            className="w-full h-11 rounded-full bg-[color:var(--ui-accent)] text-white text-sm font-black inline-flex items-center justify-center gap-2 cursor-pointer">
+            {testVocabSent ? <><Check size={16} />Đã gửi</> : <><Send size={16} />Gửi thử một thẻ</>}
           </button>
         </div>
       </div>
     </div>
   );
 }
-
-
