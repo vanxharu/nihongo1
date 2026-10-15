@@ -76,11 +76,6 @@ export default function JourneyTrail({
       className={`journey-trail trail-daily-map ${celebrate ? "trail-celebrating" : ""}`}
       aria-label={`Bản đồ từng ngày ${level}`}
     >
-      <header className="trail-heading">
-        <h2>
-          {level} · {plan.completedDays.length}/{plan.durationDays} ngày
-        </h2>
-      </header>
       <nav className="trail-week-nav" aria-label="Chọn tuần học">
         <button
           aria-label="Tuần trước"
@@ -113,12 +108,6 @@ export default function JourneyTrail({
           onClick={() => onSelect(last + 1)}
         >
           <ChevronRight size={18} />
-        </button>
-        <button
-          className="trail-today"
-          onClick={() => onSelect(plan.currentDay)}
-        >
-          Ngày đang học <Flag size={13} />
         </button>
       </nav>
       <div className="trail-layout">

@@ -132,7 +132,7 @@ export default function Header({
       case 'exam':
       case 'daily-exam':
       case 'jlpt-exam':
-        return 'Luyện thi JLPT';
+        return '';
       case 'roadmap':
         return 'Lộ trình JLPT';
       case 'notebook':
@@ -196,10 +196,6 @@ export default function Header({
                 <Menu className="w-5 h-5" />
               </button>
             )}
-            <span className="text-slate-600">•</span>
-            <span className="text-xs sm:text-sm font-bold text-white tracking-tight truncate">
-              {getTabTitle()}
-            </span>
             <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-[#1B223C] border border-[#E89A3C]/40 text-amber-300 shrink-0">
               {userProfile.targetLevel}
             </span>
@@ -219,7 +215,6 @@ export default function Header({
       >
         {/* Left side: Logo & Breadcrumb and Target Level */}
         <div id="header-pathway" className="flex items-center gap-3 min-w-0">
-          <span className="font-bold text-slate-100 tracking-tight truncate">{getTabTitle()}</span>
         </div>
 
       {/* Center Spacer */}

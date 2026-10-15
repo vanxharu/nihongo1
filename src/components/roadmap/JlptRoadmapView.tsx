@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import RoadmapClassroom from "./RoadmapClassroom";
 import { dailyExercises } from "../../data/roadmapExercises";
 import {
+  ArrowLeft,
   ArrowRight,
   BookOpen,
   Check,
@@ -65,6 +66,7 @@ export default function JlptRoadmapView({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [celebrate, setCelebrate] = useState(false);
+  const [practiceOpen, setPracticeOpen] = useState(false); // false: bản đồ ngày, true: trang bài tập của ngày đã chọn
   const dialogRef = useRef<HTMLDivElement>(null);
 
   const classroomRef = useRef<HTMLDivElement>(null);
@@ -175,18 +177,19 @@ export default function JlptRoadmapView({
   };
   const inspectToday = () => {
     inspectDay(plan.currentDay);
-    classroomRef.current?.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
-      block: "start",
-    });
+    setPracticeOpen(true);
   };
+  useEffect(() => {
+    // Đổi giữa bản đồ và trang bài tập thì về đầu trang
+    window.scrollTo(0, 0);
+    document.getElementById("main-content")?.scrollTo?.(0, 0);
+  }, [practiceOpen]);
 
   return (
     <div className="jlpt-journey">
       <div className="journey-shell">
-        <div className="journey-bar">
+        {!practiceOpen && (<>
+        {preview && <div className="journey-bar">
           <div className="journey-bar-actions">
             <button onClick={openSettings}>
               <Settings2 size={16} /> Điều chỉnh
@@ -203,20 +206,7 @@ export default function JlptRoadmapView({
               <ArrowRight size={16} />
             </button>
           </div>
-        </div>
-
-        <nav className="journey-levels" aria-label="Chọn cấp độ lộ trình">
-          {ROADMAP_LEVELS.map((item, index) => (
-            <button
-              key={item}
-              aria-pressed={level === item}
-              onClick={() => chooseLevel(item)}
-            >
-              <span>{item}</span>
-              {level === item && <span className="journey-level-dot" />}
-            </button>
-          ))}
-        </nav>
+        </div>}
         {error && (
           <p role="alert" className="journey-error">
             {error}
@@ -231,13 +221,7 @@ export default function JlptRoadmapView({
           onSelect={inspectDay}
           onPractice={(day) => {
             inspectDay(day);
-            classroomRef.current?.scrollIntoView({
-              behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
-                .matches
-                ? "auto"
-                : "smooth",
-              block: "start",
-            });
+            setPracticeOpen(true);
           }}
         />
 
@@ -289,6 +273,10 @@ export default function JlptRoadmapView({
           </div>
         </div>
 
+        </>)}
+
+        {practiceOpen && (<>
+        <button className="journey-back" onClick={() => setPracticeOpen(false)}><ArrowLeft size={16} /> Bản đồ lộ trình</button>
         <div ref={classroomRef} style={{ scrollMarginTop: 90 }}>
           <RoadmapClassroom key={assessmentKey} level={level} day={selected.day} storageKey={`${accountPlan}:${plan.durationDays}`} onComplete={() => {
             setAssessmentDay(assessmentKey);
@@ -302,6 +290,7 @@ export default function JlptRoadmapView({
             <p>{preview ? "Chọn lộ trình này để lưu tiến độ." : "Nộp bài để xem kết quả và mở nút hoàn thành ngày."}</p>
           </div>
         </div>
+        </>)}
         <footer className="journey-footer">
           Bài tập luyện theo cấu trúc JLPT, không gắn nhãn đề thi chính thức.{" "}
           <a

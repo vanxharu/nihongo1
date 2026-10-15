@@ -181,19 +181,6 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
               <ArrowLeft className="w-4 h-4" />
             </button>
 
-            <div className="flex items-center gap-1.5">
-              <span className="px-2.5 py-0.5 rounded-full font-black text-xs bg-[#1F2639] text-[#FDF1E2] tracking-wider uppercase shadow-2xs">
-                {exam.level}
-              </span>
-              <div className="hidden sm:block">
-                <h2 className="text-xs font-bold text-[#1F2639] line-clamp-1 max-w-[220px]">
-                  {exam.title}
-                </h2>
-                <div className="flex items-center gap-1.5 text-[10px] text-[#786D5E]">
-                  <span>{activeQuestions.length} câu hỏi</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Center: Sticky Countdown Timer with calm alerts */}
@@ -241,44 +228,6 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
       {/* ================= MAIN EXAM CONTENT BODY ================= */}
       <main className="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-6 pb-28">
         
-        {/* Section Category Header (When ALL is active) */}
-        {!isFocusMode && selectedSectionMode === 'ALL' && (
-          <div className="mb-4 flex items-center justify-between flex-wrap gap-2 bg-white rounded-xl p-2.5 border border-[#EADFCF] shadow-2xs">
-            <div className="flex items-center gap-1.5 overflow-x-auto text-xs font-bold pb-0.5">
-              <span className="text-[11px] text-[#786D5E] shrink-0 mr-1">Phần thi:</span>
-              {(['ALL', 'moji-goi', 'bunpou', 'dokkai', 'choukai'] as const).map(sec => {
-                const isSelected = activeSectionFilter === sec;
-                const meta = JLPT_SECTION_METAS[sec];
-                const count = sec === 'ALL' 
-                  ? exam.questions.length 
-                  : exam.questions.filter(q => q.section === sec).length;
-                if (count === 0 && sec !== 'ALL') return null;
-
-                return (
-                  <button
-                    key={sec}
-                    onClick={() => {
-                      onChangeSectionFilter(sec);
-                      onJumpQuestion(0);
-                    }}
-                    className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer shrink-0 flex items-center gap-1.5 text-xs ${
-                      isSelected 
-                        ? 'bg-[#1F2639] text-[#FDF1E2] shadow-xs font-bold' 
-                        : 'bg-[#FDFBF7] text-[#786D5E] hover:bg-[#F4EDE2] hover:text-[#1F2639] border border-[#EADFCF]'
-                    }`}
-                  >
-                    <span>{meta.icon}</span>
-                    <span>{meta.shortName}</span>
-                    <span className={`text-[10px] px-1 rounded ${isSelected ? 'bg-white/20' : 'bg-[#EADFCF]'}`}>
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
         {/* Question Area Container */}
         {currentQuestion ? (
           <div className="space-y-4">
@@ -289,13 +238,6 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
                 
                 {/* Left: Reading Passage Card */}
                 <div className="lg:col-span-6 bg-white rounded-2xl p-5 border border-[#EADFCF] shadow-xs space-y-3 sticky top-20 max-h-[75vh] overflow-y-auto">
-                  <div className="flex items-center justify-between pb-2 border-b border-[#F4EDE2]">
-                    <span className="px-2 py-0.5 rounded-md bg-[#FDF1E2] text-[#7A3E12] text-xs font-bold flex items-center gap-1">
-                      <BookOpen className="w-3.5 h-3.5 text-[#F4A643]" />
-                      Đoạn văn đọc hiểu (読解本文)
-                    </span>
-                    <span className="text-[11px] text-[#786D5E] font-medium">Cuộn để đọc toàn bài</span>
-                  </div>
                   <div className="text-[#1F2639] font-medium text-base sm:text-lg leading-relaxed whitespace-pre-line tracking-wide font-sans">
                     {renderFormattedQuestion(readingPassage)}
                   </div>
@@ -572,43 +514,6 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
     return (
       <div className="exam-question-surface bg-white rounded-2xl p-5 sm:p-7 border border-[#EADFCF] shadow-sm space-y-6">
         
-        {/* Question Header & Meta */}
-        <div className="flex items-center justify-between pb-3 border-b border-[#F4EDE2]">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-1 rounded-lg bg-[#FDF1E2] text-[#7A3E12] font-mono text-xs font-black">
-              Câu {currentQuestionIndex + 1} / {activeQuestions.length}
-            </span>
-            <span className="text-xs font-bold text-[#786D5E]">
-              {JLPT_SECTION_METAS[currentQuestion.section]?.name || 'Kiến thức ngôn ngữ'}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {/* Save to Notebook Shortcut */}
-            <button
-              type="button"
-              onClick={() => {
-                window.dispatchEvent(
-                  new CustomEvent('save_to_notebook', {
-                    detail: {
-                      kanji: currentQuestion.question.replace(/[【】\[\]]/g, ''),
-                      meaning: currentQuestion.explanation || currentQuestion.hint || currentQuestion.options[currentQuestion.correctIndex],
-                      level: exam.level,
-                      note: `JLPT ${exam.level}: ${exam.title}`,
-                      source: 'exam'
-                    }
-                  })
-                );
-              }}
-              className="px-2 py-1 rounded-lg text-xs font-semibold text-[#786D5E] hover:text-[#1F2639] hover:bg-[#F4EDE2] transition flex items-center gap-1 cursor-pointer"
-              title="Lưu câu hỏi/từ vựng vào Sổ tay"
-            >
-              <Bookmark className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Lưu sổ tay</span>
-            </button>
-          </div>
-        </div>
-
         {/* Choukai Audio Player (if listening section) */}
         {currentQuestion.section === 'choukai' && (currentQuestion.audioScript || currentQuestion.audioUrl || currentQuestion.audioTrack) && (
           <div className="bg-[#1F2639] text-[#FDF1E2] rounded-2xl p-4 space-y-3 shadow-md">
@@ -688,13 +593,6 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
           <p className={`exam-prompt font-bold text-[#1F2639] whitespace-pre-line tracking-wide font-sans ${questionFontClass}`}>
             {renderFormattedQuestion(currentQuestion.question)}
           </p>
-
-          {currentQuestion.hint && !isFocusMode && currentQuestion.section !== 'dokkai' && (
-            <div className="p-3 rounded-xl bg-[#FDF1E2]/70 border border-[#EADFCF] text-xs text-[#7A3E12] flex items-start gap-2">
-              <span className="font-bold shrink-0">Cách làm:</span>
-              <span className="leading-relaxed">{currentQuestion.hint}</span>
-            </div>
-          )}
 
           {/* Visual illustration diagram SVG / Image if present */}
           {currentQuestion.imageSvg && (
