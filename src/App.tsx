@@ -12,8 +12,6 @@ import { useAuth } from './contexts/AuthContext';
 import AuthModal from './components/AuthModal';
 import LearningMotion from './components/LearningMotion';
 import StreakCelebration from './components/StreakCelebration';
-import LottieIcon from './components/LottieIcon';
-import astronautAnim from './assets/lottie/shiba-astronaut.json'; // LottieFiles "Astronaut Dog" by Margarita Ivanchikova (Lottie Simple License)
 import { ParticleCelebration, ParticleCelebrationRef } from './components/ParticleCelebration';
 import { playMilestoneChime } from './utils/audio';
 import { motion, AnimatePresence, useReducedMotion, MotionConfig } from 'motion/react';
@@ -51,6 +49,7 @@ const MobileProfileView = lazyWithRetry(() => import('./components/mobile/Mobile
 import SaveToNotebookModal from './components/SaveToNotebookModal';
 import JlptWordDetailModal from './components/JlptWordDetailModal';
 import ShibaMascot from './components/mascot/ShibaMascot';
+import OrbitLoader from './components/ui/OrbitLoader';
 
 import { localDateStr } from './utils/localDate';
 const LOCAL_STORAGE_KEY = 'nhai_kanji_user_profile_v1';
@@ -885,10 +884,7 @@ export default function App() {
             >
               <Suspense fallback={
                 <div className="flex-1 flex flex-col items-center justify-center p-12 min-h-[400px]">
-                  <LottieIcon data={astronautAnim} size={96} fallback={<ShibaMascot pose="study" size={72} animated={true} />} />
-                  <p className="text-xs font-black text-amber-400 tracking-wider uppercase mt-4 animate-pulse">
-                    Nihon Shiba đang tải dữ liệu...
-                  </p>
+                  <OrbitLoader />
                 </div>
               }>
                 <AppErrorBoundary key={location.pathname}>

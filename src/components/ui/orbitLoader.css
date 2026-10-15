@@ -1,0 +1,11 @@
+/* Lucian UX/UI Prompt #080 · MIT License (c) 2026 Seokwoooo · màu theo --ui-* của ứng dụng */
+.u080 { --ux-ease: cubic-bezier(.2,.8,.2,1); display: flex; flex-direction: column; align-items: center; padding: 8px; color: var(--ui-ink); }
+.u080-sys { position: relative; width: 230px; height: 200px; flex: none; }
+.u080-o { position: absolute; left: 50%; top: 50%; width: var(--d); height: var(--d); margin: calc(var(--d) / -2) 0 0 calc(var(--d) / -2); transform: rotate(var(--t)) scaleY(.38); }
+.u080-o::before { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--ui-ink) 14%, transparent); }
+.u080-p { position: absolute; left: 0; top: 0; width: var(--s); height: var(--s); margin: calc(var(--s) / -2) 0 0 calc(var(--s) / -2); border-radius: 50%; background: var(--c); box-shadow: 0 0 12px var(--c); }
+.u080-core { position: absolute; z-index: 1; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%; background: radial-gradient(circle at 38% 32%, #fff, var(--ui-accent) 55%, var(--ui-primary)); box-shadow: 0 0 30px color-mix(in srgb, var(--ui-accent) 60%, transparent); animation: u080-breath 2.2s ease-in-out infinite; }
+@keyframes u080-breath { 50% { transform: scale(1.08); box-shadow: 0 0 44px color-mix(in srgb, var(--ui-accent) 70%, transparent); } }
+.u080-t { margin-top: 10px; font-size: 18px; font-weight: 850; letter-spacing: -.04em; }
+.u080-sub { margin: 4px 0 0; font-size: 13px; font-weight: 650; color: var(--ui-muted); }
+@media (prefers-reduced-motion: reduce) { .u080-core { animation: none; } }
