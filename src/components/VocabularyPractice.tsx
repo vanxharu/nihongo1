@@ -13,7 +13,7 @@ import {
   Settings, 
   Heart, 
   ChevronLeft, 
-  ChevronRight, ListTree, 
+  ChevronRight, 
   ChevronDown, 
   HelpCircle, 
   Layers, 
@@ -863,8 +863,6 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
 
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [isQuickLessonSelectorOpen, setIsQuickLessonSelectorOpen] = useState(false);
-  const [tocOpen, setTocOpen] = useState<string | null>(null);
-  useEffect(() => setTocOpen(null), [currentLessonIndex]);
   const [quickLessonSearch, setQuickLessonSearch] = useState('');
 
   // Map counts per lesson for quick reference
@@ -2839,49 +2837,9 @@ if (loading) {
     );
   }
 
-  const tocGroups = (() => {
-    const g: { key: string; items: { les: typeof lessons[number]; idx: number }[] }[] = [];
-    lessons.forEach((les, idx) => {
-      const key = String(les.chapter || les.level || '');
-      let grp = g.find(x => x.key === key);
-      if (!grp) { grp = { key, items: [] }; g.push(grp); }
-      grp.items.push({ les, idx });
-    });
-    return g;
-  })();
-  const curTocKey = String(lessons[currentLessonIndex]?.chapter || lessons[currentLessonIndex]?.level || '');
-  const tocKey = tocOpen ?? curTocKey;
-
   return (
-    <div className="w-full max-w-5xl xl:max-w-[1180px] mx-auto px-2 sm:px-4 pt-1 sm:pt-2 pb-6 space-y-2.5 sm:space-y-3.5 select-none flex flex-col items-center xl:grid xl:grid-cols-[minmax(0,1fr)_260px] xl:gap-4 xl:items-start xl:space-y-0">
-      {lessons.length > 1 && (
-        <aside aria-label="Mục lục" className="hidden xl:block xl:col-start-2 xl:row-start-1 sticky top-2 max-h-[calc(100vh-6rem)] overflow-y-auto custom-scrollbar text-slate-200 text-xs">
-          <h2 className="flex items-center gap-1.5 font-bold text-sm text-white"><ListTree className="w-4 h-4" />Mục lục</h2>
-          <p className="text-[11px] text-slate-400 mb-2">{levelFilter || userProfile.targetLevel} · {lessons.length} bài</p>
-          {tocGroups.map(grp => {
-            const open = grp.key === tocKey;
-            return (
-              <div key={grp.key} className="mb-1">
-                <button type="button" aria-expanded={open} onClick={() => setTocOpen(open ? '' : grp.key)} className={`w-full flex items-center gap-1.5 px-1 py-1.5 text-left cursor-pointer ${open ? 'text-sky-400 font-bold' : 'text-slate-400 hover:text-slate-200'}`}>
-                  <ChevronRight className={`w-3 h-3 shrink-0 transition-transform ${open ? 'rotate-90' : ''}`} />
-                  <span className="truncate">{grp.key}</span>
-                </button>
-                {open && (
-                  <div className="grid grid-cols-2 gap-1.5 mb-1.5">
-                    {grp.items.map(({ les, idx }) => (
-                      <button key={les.id} type="button" onClick={() => { setCurrentLessonIndex(idx); setCurrentIndex(0); }} aria-current={idx === currentLessonIndex} className={`rounded-lg border px-2 py-1.5 text-left cursor-pointer ${idx === currentLessonIndex ? 'border-sky-500 text-sky-300 bg-sky-500/10' : 'border-[#2b3353] bg-[#121626] hover:border-sky-500/50'}`}>
-                        <div className="font-semibold truncate">{les.name}</div>
-                        <div className="text-[10px] text-slate-400">{lessonVocabCountMap[les.id]?.total ?? 0} từ</div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </aside>
-      )}
-      <div className="w-full space-y-2.5 sm:space-y-3 animate-fade-in flex flex-col items-center xl:col-start-1 xl:row-start-1 min-w-0">
+    <div className="w-full max-w-5xl mx-auto px-2 sm:px-4 pt-1 sm:pt-2 pb-6 space-y-2.5 sm:space-y-3.5 select-none flex flex-col items-center">
+      <div className="w-full space-y-2.5 sm:space-y-3 animate-fade-in flex flex-col items-center">
 
       {/* Container Thẻ học chính */}
       <div className={`w-full mx-auto mt-0 sm:mt-1 transition-all duration-300 flex flex-col items-center ${isExpanded ? 'max-w-5xl' : 'max-w-[780px]'}`}>
