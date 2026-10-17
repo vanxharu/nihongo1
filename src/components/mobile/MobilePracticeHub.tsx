@@ -70,25 +70,50 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
   const last = examHistory[0];
   const R = 30, C = 2 * Math.PI * R;
 
-  // 014 — mục tiêu hôm nay, tính từ dữ liệu học thật
+  // A stable daily rotation: same goals all day, new challenges on the next local date.
+  // Use UTC calendar arithmetic on the local YYYY-MM-DD to avoid timezone/DST drift.
   const todayStr = localDateStr();
+  const [year, month, day] = todayStr.split('-').map(Number);
+  const dayNumber = Math.floor(Date.UTC(year, month - 1, day) / 86400000);
+  const dailyRotation = ((dayNumber % 7) + 7) % 7;
   const srsDue = Object.values(userProfile.vocabStatus || {}).filter((v: any) => v && typeof v === 'object' && v.nextReviewDate && new Date(v.nextReviewDate) <= new Date()).length;
-  // Mục tiêu tính theo độ đúng, không chỉ theo việc đã mở bài: đạt khi đúng ≥ PASS và đủ MIN câu.
-  const PASS = 70, MIN = 10;
   const acc = readAccuracy();
-  const skillGoal = (id: 'vocab' | 'grammar', title: string, to: string) => {
-    const [c, t] = acc[id];
-    const rate = t ? Math.round((c / t) * 100) : 0;
-    const done = t >= MIN && rate >= PASS;
-    const fail = t >= MIN && rate < PASS;
-    return { id, title, done, to, tag: t < MIN ? `${t}/${MIN} câu` : `${rate}%${fail ? ' · làm thêm' : ''}`, k: fail ? 'var(--ui-danger, #f43f5e)' : done ? 'var(--ui-success)' : 'var(--ui-info)' };
-  };
   const todayExams = examHistory.filter(r => localDateStr(new Date(r.date)) === todayStr);
   const bestExam = todayExams.reduce((m, r) => Math.max(m, Math.round(r.percentage || 0)), 0);
+  type DailySkill = 'vocab' | 'grammar' | 'kanji';
+  const skillNames: Record<DailySkill, string> = { vocab: 'Từ vựng', grammar: 'Ngữ pháp', kanji: 'Kanji' };
+  const skillRoutes: Record<DailySkill, string> = { vocab: 'vocabulary', grammar: 'grammar', kanji: 'kanji' };
+  const challenges: { skills: DailySkill[]; questions: number; pass: number; exam: boolean }[] = [
+    { skills: ['vocab', 'grammar'], questions: 10, pass: 70, exam: true },
+    { skills: ['kanji', 'vocab', 'grammar'], questions: 5, pass: 60, exam: false },
+    { skills: ['grammar', 'kanji'], questions: 8, pass: 75, exam: true },
+    { skills: ['vocab', 'kanji', 'grammar'], questions: 10, pass: 70, exam: false },
+    { skills: ['kanji', 'vocab'], questions: 8, pass: 70, exam: true },
+    { skills: ['grammar', 'vocab', 'kanji'], questions: 6, pass: 80, exam: false },
+    { skills: ['vocab', 'grammar'], questions: 12, pass: 75, exam: true },
+  ];
+  const challenge = challenges[dailyRotation];
+  const skillGoal = (id: DailySkill) => {
+    const [correct, total] = acc[id];
+    const rate = total ? Math.round((correct / total) * 100) : 0;
+    const done = total >= challenge.questions && rate >= challenge.pass;
+    const fail = total >= challenge.questions && !done;
+    return {
+      id, title: `${skillNames[id]}: đúng ≥ ${challenge.pass}% (${challenge.questions} câu)`,
+      done, to: skillRoutes[id],
+      tag: total < challenge.questions ? `${total}/${challenge.questions} câu` : `${rate}%${fail ? ' · làm thêm' : ''}`,
+      k: fail ? 'var(--ui-danger, #f43f5e)' : done ? 'var(--ui-success)' : 'var(--ui-info)'
+    };
+  };
   const goals = [
-    skillGoal('vocab', `Từ vựng: đúng ≥ ${PASS}% (${MIN} câu)`, 'vocabulary'),
-    skillGoal('grammar', `Ngữ pháp: đúng ≥ ${PASS}% (${MIN} câu)`, 'grammar'),
-    { id: 'exam', title: `Một đề luyện thi đúng ≥ ${PASS}%`, done: bestExam >= PASS, tag: todayExams.length ? `${bestExam}%` : 'Chưa làm', k: bestExam >= PASS ? 'var(--ui-success)' : todayExams.length ? 'var(--ui-danger, #f43f5e)' : 'var(--ui-info)', to: 'exam' },
+    ...challenge.skills.map(skillGoal),
+    ...(challenge.exam ? [{
+      id: 'exam', title: `Một đề luyện thi đúng ≥ ${challenge.pass}%`,
+      done: bestExam >= challenge.pass,
+      tag: todayExams.length ? `${bestExam}%` : 'Chưa làm',
+      k: bestExam >= challenge.pass ? 'var(--ui-success)' : todayExams.length ? 'var(--ui-danger, #f43f5e)' : 'var(--ui-info)',
+      to: 'exam'
+    }] : [])
   ];
   const goalsDone = goals.filter(g => g.done).length;
   const dateLabel = new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'numeric' });
@@ -139,11 +164,11 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
         <button
           type="button"
           id="btn-recommended-practice-now"
-          onClick={() => onNavigate('grammar')}
+          onClick={() => onNavigate(skillRoutes[challenge.skills[0]])}
           className="inline-flex items-center gap-1.5 rounded-full border border-[#20a3db]/50 bg-[#20a3db]/15 px-3 py-1 text-[11px] font-bold text-[#38bdf8] cursor-pointer min-w-0"
         >
           <Dice5 className="w-3.5 h-3.5 shrink-0" />
-          <span className="truncate">Gợi ý: <span className="hidden sm:inline">文法形式の判断 · </span>10 câu</span>
+          <span className="truncate">Gợi ý: <span className="hidden sm:inline">{skillNames[challenge.skills[0]]} · </span>{challenge.questions} câu</span>
         </button>
       </div>
 
