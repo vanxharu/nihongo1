@@ -34,6 +34,8 @@ import { playCorrectSound, playIncorrectSound } from '../utils/audio';
 import KanjiWorksheetModal from './KanjiWorksheetModal';
 import { getKanjiCategory } from '../utils/kanjiHelper';
 import { getKanjiAssociativeColor } from '../utils/associativeColorHelper';
+import KanjiMasterN4 from './KanjiMasterN4';
+import SlidingTabs from './ui/SlidingTabs';
 import { KANJI_DICTIONARY } from '../data/kanjiDictionary';
 import { safeFetchJson } from '../utils/safeApi';
 import JapaneseFuriganaText, { SelectiveFuriganaWord } from './JapaneseFuriganaText';
@@ -70,7 +72,7 @@ function withVocabWords(char: string, level: string, base: { word: string; hirag
   return [...base, ...extra].slice(0, 8);
 }
 
-export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: KanjiExplorerProps) {
+function KanjiExplorerLevel({ userProfile, updateProfile, onEarnXp }: KanjiExplorerProps) {
   const { token, user } = useAuth();
   const [dbKanjis, setDbKanjis] = useState<KanjiItem[]>(() => KANJI_DATA.map(k => ({ ...k, exampleWords: withVocabWords(k.character, k.level, k.exampleWords) })));
   const [loading, setLoading] = useState(false);
@@ -1490,6 +1492,18 @@ export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: 
         kanjiList={dbKanjis}
         defaultLevel={userProfile.targetLevel}
       />
+    </div>
+  );
+}
+
+export default function KanjiExplorer(props: React.ComponentProps<typeof KanjiExplorerLevel>) {
+  const [mode, setMode] = React.useState<'level' | 'master'>('level');
+  return (
+    <div>
+      <div className="flex justify-center pt-2">
+        <SlidingTabs<"level" | "master"> id="kmode" value={mode} onChange={setMode} items={[['level', 'Theo cấp độ'], ['master', 'Kanji Master N4']]} />
+      </div>
+      {mode === 'level' ? <KanjiExplorerLevel {...props} /> : <div className="w-full max-w-3xl mx-auto px-3 py-3"><KanjiMasterN4 /></div>}
     </div>
   );
 }
