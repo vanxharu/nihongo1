@@ -135,9 +135,8 @@ export async function shadowingVideo(req: Request, res: Response) {
 export async function shadowingRefreshAnalysis(req: Request, res: Response) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Chỉ hỗ trợ POST.' });
   try {
-    const uid = await shadowingOwner(req);
-    const adminUids = (process.env.SHADOWING_ADMIN_UIDS || '').split(',').map(x => x.trim()).filter(Boolean);
-    if (!adminUids.includes(uid)) return res.status(403).json({ error: 'Chỉ quản trị viên được cập nhật dữ liệu chung.' });
+    // Every authenticated learner may request a refresh; the shared results are reused.
+    await shadowingOwner(req);
     const { videoId, offset = 0 } = req.body || {};
     if (typeof videoId !== 'string' || !SHADOWING_VIDEOS.some(v => v.youtube_video_id === videoId) || !Number.isInteger(offset) || offset < 0) return res.status(400).json({ error: 'Video hoặc vị trí không hợp lệ.' });
     const db = shadowingDatabase();
