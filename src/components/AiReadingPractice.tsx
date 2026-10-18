@@ -6,6 +6,7 @@ import { PlayPauseMorph, WaveSeek } from './ui/AudioMorph';
  */
 
 import './learning/studyExperience.css';
+import './readingTheme.css';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   BookOpen,
@@ -1328,9 +1329,9 @@ export default function AiReadingPractice({
             { id: 'todai', title: 'Tin tức Todaii', note: 'Luyện đọc qua tin tức mỗi ngày', icon: Newspaper },
             { id: 'custom', title: 'Bài đọc của bạn', note: 'Nhập văn bản hoặc chọn bài mẫu', icon: PenTool }
           ].map(item => <button key={item.id} id={`btn-mode-${item.id}`} aria-pressed={readingSourceMode === item.id} onClick={() => setReadingSourceMode(item.id as typeof readingSourceMode)}><item.icon size={16} /><strong>{item.title}</strong></button>)}</nav>
-          {readingSourceMode !== 'custom' && <div className="study-reading-toolbar"><span className="text-xs text-slate-400">Chọn bài bên dưới để bắt đầu.</span><button className="study-history-button" onClick={() => readingSourceMode === 'todai' ? setShowTodaiLinkInput(v => !v) : setShowWatanocLinkInput(v => !v)}><Plus size={15} />Thêm link bài viết</button></div>}
+          {readingSourceMode !== 'custom' && <div className="study-reading-toolbar"><span className="text-xs text-[var(--ui-muted)]">Chọn bài bên dưới để bắt đầu.</span><button className="study-history-button" onClick={() => readingSourceMode === 'todai' ? setShowTodaiLinkInput(v => !v) : setShowWatanocLinkInput(v => !v)}><Plus size={15} />Thêm link bài viết</button></div>}
         </>      ) : (
-        <div className="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-2xl bg-slate-900/95 border border-slate-800/90 shadow-md backdrop-blur-md">
+        <div className="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-2xl reading-surface border border-[var(--ui-line)] shadow-md backdrop-blur-md">
           {/* Left: Change article back button */}
           <button
             id="btn-change-article"
@@ -1341,7 +1342,7 @@ export default function AiReadingPractice({
               setUserAnswers({});
               setIsQuizSubmitted(false);
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-700 text-xs sm:text-sm font-bold transition cursor-pointer active:scale-95 shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl reading-soft reading-hover text-[var(--ui-ink)] hover:text-[var(--ui-ink)] border border-[var(--ui-line)] text-xs sm:text-sm font-bold transition cursor-pointer active:scale-95 shadow-sm"
             title="Quay lại danh sách hoặc chọn bài khác"
           >
             <ChevronLeft className="w-4 h-4 text-indigo-400" />
@@ -1354,7 +1355,7 @@ export default function AiReadingPractice({
               <button
                 type="button"
                 onClick={() => setShowHistoryModal(true)}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition cursor-pointer"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl reading-soft reading-hover text-[var(--ui-ink)] text-xs font-semibold border border-[var(--ui-line)] transition cursor-pointer"
               >
                 <History className="w-3.5 h-3.5 text-indigo-400" />
                 <span>Lịch sử ({savedHistory.length})</span>
@@ -1380,7 +1381,7 @@ export default function AiReadingPractice({
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-rose-950/40 border border-rose-800/60 rounded-xl p-3 text-rose-200 text-xs sm:text-sm flex items-start gap-2.5 shadow-lg"
+          className="reading-error border border-rose-800/60 rounded-xl p-3 text-rose-200 text-xs sm:text-sm flex items-start gap-2.5 shadow-lg"
         >
           <XCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
           <div className="flex-1">
@@ -1402,7 +1403,7 @@ export default function AiReadingPractice({
             <div className="space-y-3">
               {/* Optional Collapsible Link Input */}
               {showTodaiLinkInput && (
-                <div className="p-3 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2 shadow-lg">
+                <div className="p-3 rounded-2xl reading-surface border border-[var(--ui-line)] space-y-2 shadow-lg">
                   <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       id="input-todai-url"
@@ -1413,7 +1414,7 @@ export default function AiReadingPractice({
                         if (e.key === 'Enter') handleFetchTodaiUrl();
                       }}
                       placeholder="Dán link https://japanese.todaiinews.com/vi/news/... hoặc mã 32 ký tự..."
-                      className="flex-1 bg-slate-950/80 border border-slate-700/80 rounded-xl py-2 px-3 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 font-mono"
+                      className="flex-1 reading-surface border border-[var(--ui-line)] rounded-xl py-2 px-3 text-xs sm:text-sm text-[var(--ui-ink)] placeholder-slate-500 focus:outline-none focus:border-indigo-500 font-mono"
                     />
                     <div className="flex items-center gap-1.5">
                       <button
@@ -1426,7 +1427,7 @@ export default function AiReadingPractice({
                             }
                           } catch {}
                         }}
-                        className="px-2.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition cursor-pointer"
+                        className="px-2.5 py-2 rounded-xl reading-soft reading-hover text-[var(--ui-ink)] text-xs font-semibold border border-[var(--ui-line)] transition cursor-pointer"
                         title="Dán từ clipboard"
                       >
                         <ClipboardPaste className="w-4 h-4" />
@@ -1438,7 +1439,7 @@ export default function AiReadingPractice({
                         onClick={handleFetchTodaiUrl}
                         className={`px-3.5 py-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shrink-0 ${
                           isFetchingTodaiArticle || !todaiInputUrl.trim()
-                            ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                            ? 'reading-soft text-[var(--ui-muted)] cursor-not-allowed border border-[var(--ui-line)]'
                             : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-sm'
                         }`}
                       >
@@ -1460,12 +1461,12 @@ export default function AiReadingPractice({
               )}
 
               {/* Todaii Live News Feed Card */}
-              <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 sm:p-4 shadow-xl space-y-3">
+              <div className="reading-surface border border-[var(--ui-line)] rounded-2xl p-3 sm:p-4 shadow-xl space-y-3">
                 {/* Header & Level / Read Filter in 1 Single Clean Row */}
-                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 pb-2.5 border-b border-slate-800/80">
+                <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2 pb-2.5 border-b border-[var(--ui-line)]">
                   <div className="flex items-center gap-2">
                     <Newspaper className="w-4 h-4 text-indigo-400" />
-                    <h3 className="text-xs sm:text-sm font-bold text-white">
+                    <h3 className="text-xs sm:text-sm font-bold text-[var(--ui-ink)]">
                       Bài báo Todaii Easy Japanese
                     </h3>
                   </div>
@@ -1473,7 +1474,7 @@ export default function AiReadingPractice({
                   {/* Level Filters + Read Status + Refresh: Unified Single Bar */}
                   <div className="flex items-center gap-1.5 flex-wrap w-full lg:w-auto justify-between lg:justify-end">
                     {/* Level Filter */}
-                    <div className="flex items-center p-0.5 rounded-lg bg-slate-950/80 border border-slate-800">
+                    <div className="flex items-center p-0.5 rounded-lg reading-surface border border-[var(--ui-line)]">
                       {(['all', 'N5', 'N4', 'N3', 'N2', 'N1'] as const).map(lvl => (
                         <button
                           key={lvl}
@@ -1482,7 +1483,7 @@ export default function AiReadingPractice({
                           className={`px-2 py-0.5 rounded-md text-xs font-bold transition cursor-pointer ${
                             todaiFilterLevel === lvl
                               ? 'bg-indigo-600 text-white shadow-sm'
-                              : 'text-slate-400 hover:text-slate-200'
+                              : 'text-[var(--ui-muted)] hover:text-slate-200'
                           }`}
                         >
                           {lvl === 'all' ? 'Tất cả' : lvl}
@@ -1491,14 +1492,14 @@ export default function AiReadingPractice({
                     </div>
 
                     {/* Read Status Filter */}
-                    <div className="flex items-center p-0.5 rounded-lg bg-slate-950/80 border border-slate-800">
+                    <div className="flex items-center p-0.5 rounded-lg reading-surface border border-[var(--ui-line)]">
                       <button
                         type="button"
                         onClick={() => setTodaiReadFilter('all')}
                         className={`px-2 py-0.5 rounded-md text-xs font-semibold transition cursor-pointer ${
                           todaiReadFilter === 'all'
-                            ? 'bg-slate-700 text-white shadow-sm'
-                            : 'text-slate-400 hover:text-slate-200'
+                            ? 'reading-selected shadow-sm'
+                            : 'text-[var(--ui-muted)] hover:text-slate-200'
                         }`}
                       >
                         Tất cả
@@ -1509,7 +1510,7 @@ export default function AiReadingPractice({
                         className={`px-2 py-0.5 rounded-md text-xs font-semibold transition cursor-pointer flex items-center gap-1 ${
                           todaiReadFilter === 'unread'
                             ? 'bg-amber-600 text-white shadow-sm'
-                            : 'text-slate-400 hover:text-amber-300'
+                            : 'text-[var(--ui-muted)] hover:text-amber-300'
                         }`}
                       >
                         <Circle className="w-2 h-2" />
@@ -1521,7 +1522,7 @@ export default function AiReadingPractice({
                         className={`px-2 py-0.5 rounded-md text-xs font-semibold transition cursor-pointer flex items-center gap-1 ${
                           todaiReadFilter === 'read'
                             ? 'bg-emerald-600 text-white shadow-sm'
-                            : 'text-slate-400 hover:text-emerald-300'
+                            : 'text-[var(--ui-muted)] hover:text-emerald-300'
                         }`}
                       >
                         <CheckCircle2 className="w-2 h-2" />
@@ -1533,10 +1534,10 @@ export default function AiReadingPractice({
                       type="button"
                       onClick={() => fetchTodaiNews('refresh')}
                       disabled={todaiLoading}
-                      className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-semibold transition cursor-pointer disabled:opacity-50"
+                      className="p-1 rounded-lg reading-soft reading-hover border border-[var(--ui-line)] text-[var(--ui-ink)] text-xs font-semibold transition cursor-pointer disabled:opacity-50"
                       title="Làm mới bài báo"
                     >
-                      <RefreshCw className={`w-3.5 h-3.5 ${todaiLoading ? 'animate-spin text-indigo-400' : 'text-slate-400'}`} />
+                      <RefreshCw className={`w-3.5 h-3.5 ${todaiLoading ? 'animate-spin text-indigo-400' : 'text-[var(--ui-muted)]'}`} />
                     </button>
                   </div>
                 </div>
@@ -1548,16 +1549,16 @@ export default function AiReadingPractice({
                       initial={{ opacity: 0, y: -6 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -6 }}
-                      className="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-indigo-950/70 border border-indigo-500/40 text-indigo-200 text-xs shadow-lg"
+                      className="flex items-center justify-between gap-3 p-3.5 rounded-2xl reading-info border border-indigo-500/40 text-indigo-200 text-xs shadow-lg"
                     >
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-indigo-400 shrink-0" />
-                        <span className="font-semibold text-white">{refreshNotification.text}</span>
+                        <span className="font-semibold text-[var(--ui-ink)]">{refreshNotification.text}</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => setRefreshNotification(null)}
-                        className="text-slate-400 hover:text-white text-xs px-2 py-0.5 rounded-lg hover:bg-indigo-900/40 transition cursor-pointer"
+                        className="text-[var(--ui-muted)] hover:text-[var(--ui-ink)] text-xs px-2 py-0.5 rounded-lg hover:bg-indigo-900/40 transition cursor-pointer"
                       >
                         ✕
                       </button>
@@ -1569,17 +1570,17 @@ export default function AiReadingPractice({
                 {todaiLoading && todaiNewsList.length === 0 ? (
                   <div className="py-16 text-center space-y-3">
                     <Loader2 className="w-8 h-8 text-indigo-400 animate-spin mx-auto" />
-                    <p className="text-sm font-semibold text-slate-300">Đang tải danh sách bài báo Todaii News...</p>
+                    <p className="text-sm font-semibold text-[var(--ui-ink)]">Đang tải danh sách bài báo Todaii News...</p>
                   </div>
                 ) : filteredTodaiNews.length === 0 ? (
-                  <div className="py-12 text-center text-slate-400 space-y-2">
+                  <div className="py-12 text-center text-[var(--ui-muted)] space-y-2">
                     <p className="text-sm">Không tìm thấy bài báo nào phù hợp với bộ lọc đã chọn.</p>
                     <div className="flex items-center justify-center gap-2 pt-2">
                       {todaiReadFilter !== 'all' && (
                         <button
                           type="button"
                           onClick={() => setTodaiReadFilter('all')}
-                          className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-indigo-300 hover:bg-slate-700 font-semibold cursor-pointer"
+                          className="text-xs px-3 py-1.5 rounded-lg reading-soft text-indigo-300 reading-hover font-semibold cursor-pointer"
                         >
                           Hiển thị tất cả trạng thái đọc
                         </button>
@@ -1588,7 +1589,7 @@ export default function AiReadingPractice({
                         <button
                           type="button"
                           onClick={() => setTodaiFilterLevel('all')}
-                          className="text-xs px-3 py-1.5 rounded-lg bg-slate-800 text-indigo-300 hover:bg-slate-700 font-semibold cursor-pointer"
+                          className="text-xs px-3 py-1.5 rounded-lg reading-soft text-indigo-300 reading-hover font-semibold cursor-pointer"
                         >
                           Xem tất cả cấp độ
                         </button>
@@ -1599,11 +1600,8 @@ export default function AiReadingPractice({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {filteredTodaiNews.map((article, idx) => {
                       const levelColors: Record<string, string> = {
-                        N5: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-                        N4: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
-                        N3: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-                        N2: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-                        N1: 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+                        N5: 'reading-success', N4: 'reading-info', N3: 'reading-primary',
+                        N2: 'reading-warning', N1: 'reading-error'
                       };
                       const badgeClass = levelColors[article.jlptLevel] || levelColors.N4;
                       const isRead = isArticleRead(article);
@@ -1613,14 +1611,14 @@ export default function AiReadingPractice({
                           key={`todai-${article.id || article.url || 'news'}-${idx}`}
                           className={`flex flex-col justify-between rounded-2xl border transition-all duration-200 p-4 shadow-md group ${
                             isRead
-                              ? 'bg-slate-950/40 hover:bg-slate-950/70 border-emerald-900/30 hover:border-emerald-500/40'
-                              : 'bg-slate-950/70 hover:bg-slate-950/95 border-slate-800/90 hover:border-indigo-500/40'
+                              ? 'reading-surface reading-hover border-emerald-900/30 hover:border-emerald-500/40'
+                              : 'reading-surface reading-hover border-[var(--ui-line)] hover:border-indigo-500/40'
                           }`}
                         >
                           <div className="space-y-3">
                             {/* Article Image (if available) */}
                             {article.image && (
-                              <div className="relative w-full h-32 rounded-xl overflow-hidden bg-slate-900">
+                              <div className="relative w-full h-32 rounded-xl overflow-hidden reading-surface">
                                 <ReadingImage
                                   src={article.image}
                                   alt={article.titleJp}
@@ -1632,18 +1630,18 @@ export default function AiReadingPractice({
                                     {article.jlptLevel}
                                   </span>
                                   {article.audio && (
-                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-950/80 text-emerald-300 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1">
+                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold reading-success text-emerald-300 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1">
                                       <Radio className="w-2.5 h-2.5 text-emerald-400" />
                                       <span>Audio MP3</span>
                                     </span>
                                   )}
                                   {isRead ? (
-                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
+                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold reading-success text-emerald-300 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
                                       <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
                                       <span>Đã đọc</span>
                                     </span>
                                   ) : (
-                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-950/80 text-amber-300 border border-amber-500/30 backdrop-blur-md flex items-center gap-1">
+                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-medium reading-warning text-amber-300 border border-amber-500/30 backdrop-blur-md flex items-center gap-1">
                                       <Circle className="w-2.5 h-2.5 text-amber-400" />
                                       <span>Chưa đọc</span>
                                     </span>
@@ -1671,25 +1669,25 @@ export default function AiReadingPractice({
                                       <span>Đã đọc</span>
                                     </span>
                                   ) : (
-                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-900 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-medium reading-warning text-amber-300 border border-amber-500/30 flex items-center gap-1">
                                       <Circle className="w-2.5 h-2.5 text-amber-400" />
                                       <span>Chưa đọc</span>
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-[11px] text-slate-500">{article.date}</span>
+                                <span className="text-[11px] text-[var(--ui-muted)]">{article.date}</span>
                               </div>
                             )}
 
                             {/* Titles */}
                             <div>
                               <h4 className={`text-sm sm:text-base font-bold transition line-clamp-2 leading-snug font-jp ${
-                                isRead ? 'text-slate-300 group-hover:text-emerald-300' : 'text-slate-100 group-hover:text-indigo-300'
+                                isRead ? 'text-[var(--ui-ink)] group-hover:text-emerald-300' : 'text-[var(--ui-ink)] group-hover:text-indigo-300'
                               }`}>
                                 {article.titleJp}
                               </h4>
                               {article.titleVi && (
-                                <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                                <p className="text-xs text-[var(--ui-muted)] mt-1 line-clamp-2 leading-relaxed">
                                   {article.titleVi}
                                 </p>
                               )}
@@ -1697,10 +1695,10 @@ export default function AiReadingPractice({
                           </div>
 
                           {/* Action Footer */}
-                          <div className="flex items-center justify-between gap-2 pt-3 mt-3 border-t border-slate-800/80">
+                          <div className="flex items-center justify-between gap-2 pt-3 mt-3 border-t border-[var(--ui-line)]">
                             <div className="flex items-center gap-2">
-                              <span className="text-[11px] text-slate-500 flex items-center gap-1">
-                                <Clock className="w-3 h-3 text-slate-500" />
+                              <span className="text-[11px] text-[var(--ui-muted)] flex items-center gap-1">
+                                <Clock className="w-3 h-3 text-[var(--ui-muted)]" />
                                 <span>{article.date || 'Todaii'}</span>
                                 {article.prepared && <span className="text-emerald-300">Câu hỏi sẵn có</span>}
                               </span>
@@ -1712,7 +1710,7 @@ export default function AiReadingPractice({
                                 className={`px-2 py-1 rounded-lg text-[11px] font-semibold border transition cursor-pointer flex items-center gap-1 ${
                                   isRead
                                     ? 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                                    : 'bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-800'
+                                    : 'reading-surface reading-hover text-[var(--ui-muted)] hover:text-slate-200 border-[var(--ui-line)]'
                                 }`}
                                 title={isRead ? 'Bấm để đánh dấu Chưa đọc' : 'Bấm để đánh dấu Đã đọc'}
                               >
@@ -1723,7 +1721,7 @@ export default function AiReadingPractice({
                                   </>
                                 ) : (
                                   <>
-                                    <Circle className="w-3 h-3 text-slate-500" />
+                                    <Circle className="w-3 h-3 text-[var(--ui-muted)]" />
                                     <span>Đánh dấu đã đọc</span>
                                   </>
                                 )}
@@ -1736,7 +1734,7 @@ export default function AiReadingPractice({
                               onClick={() => handleSelectTodaiArticle(article)}
                               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-white text-xs font-bold transition cursor-pointer shadow-sm group-hover:translate-x-0.5 ${
                                 isRead
-                                  ? 'bg-slate-800 hover:bg-indigo-600 text-slate-200 hover:text-white border border-slate-700'
+                                  ? 'reading-soft hover:bg-indigo-600 text-[var(--ui-ink)] hover:text-[var(--ui-ink)] border border-[var(--ui-line)]'
                                   : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-600/30'
                               }`}
                             >
@@ -1755,7 +1753,7 @@ export default function AiReadingPractice({
                           type="button"
                           onClick={() => fetchTodaiNews('more')}
                           disabled={todaiLoadingMore}
-                          className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-indigo-500/50 text-slate-300 hover:text-white text-xs font-bold transition-all shadow-md cursor-pointer disabled:opacity-50"
+                          className="flex items-center gap-2 px-5 py-2.5 rounded-2xl reading-surface reading-hover border border-[var(--ui-line)] hover:border-indigo-500/50 text-[var(--ui-ink)] hover:text-[var(--ui-ink)] text-xs font-bold transition-all shadow-md cursor-pointer disabled:opacity-50"
                         >
                           {todaiLoadingMore ? (
                             <>
@@ -1782,7 +1780,7 @@ export default function AiReadingPractice({
             <div className="space-y-3">
               {/* Optional Collapsible Link Input */}
               {showWatanocLinkInput && (
-                <div className="p-3 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2 shadow-lg">
+                <div className="p-3 rounded-2xl reading-surface border border-[var(--ui-line)] space-y-2 shadow-lg">
                   <div className="flex flex-col sm:flex-row gap-2">
                     <input
                       id="input-watanoc-url"
@@ -1793,7 +1791,7 @@ export default function AiReadingPractice({
                         if (e.key === 'Enter') handleFetchWatanocUrl();
                       }}
                       placeholder="Dán link https://watanoc.com/post-... hoặc mã bài..."
-                      className="flex-1 bg-slate-950/80 border border-slate-700/80 rounded-xl py-2 px-3 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono"
+                      className="flex-1 reading-surface border border-[var(--ui-line)] rounded-xl py-2 px-3 text-xs sm:text-sm text-[var(--ui-ink)] placeholder-slate-500 focus:outline-none focus:border-emerald-500 font-mono"
                     />
                     <div className="flex items-center gap-1.5">
                       <button
@@ -1806,7 +1804,7 @@ export default function AiReadingPractice({
                             }
                           } catch {}
                         }}
-                        className="px-2.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition cursor-pointer"
+                        className="px-2.5 py-2 rounded-xl reading-soft reading-hover text-[var(--ui-ink)] text-xs font-semibold border border-[var(--ui-line)] transition cursor-pointer"
                         title="Dán từ clipboard"
                       >
                         <ClipboardPaste className="w-4 h-4" />
@@ -1818,7 +1816,7 @@ export default function AiReadingPractice({
                         onClick={handleFetchWatanocUrl}
                         className={`px-3.5 py-2 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer shrink-0 ${
                           isFetchingWatanocArticle || !watanocInputUrl.trim()
-                            ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                            ? 'reading-soft text-[var(--ui-muted)] cursor-not-allowed border border-[var(--ui-line)]'
                             : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm'
                         }`}
                       >
@@ -1840,9 +1838,9 @@ export default function AiReadingPractice({
               )}
 
               {/* Watanoc Magazine List & Category Filters */}
-              <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-3 sm:p-4 shadow-xl space-y-3">
-                <div className="flex items-center justify-between gap-3 pb-2 border-b border-slate-800/80">
-                  <h3 className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+              <div className="reading-surface border border-[var(--ui-line)] rounded-2xl p-3 sm:p-4 shadow-xl space-y-3">
+                <div className="flex items-center justify-between gap-3 pb-2 border-b border-[var(--ui-line)]">
+                  <h3 className="text-xs sm:text-sm font-bold text-[var(--ui-ink)] flex items-center gap-2">
                     <BookOpen className="w-4 h-4 text-emerald-400" />
                     <span>Bài viết Tạp chí Watanoc</span>
                   </h3>
@@ -1851,10 +1849,10 @@ export default function AiReadingPractice({
                     type="button"
                     onClick={() => fetchWatanocArticles(watanocFilterLevel, watanocFilterCategory, 'refresh')}
                     disabled={watanocLoading}
-                    className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-semibold transition cursor-pointer disabled:opacity-50"
+                    className="p-1 rounded-lg reading-soft reading-hover border border-[var(--ui-line)] text-[var(--ui-ink)] text-xs font-semibold transition cursor-pointer disabled:opacity-50"
                     title="Làm mới bài viết Watanoc"
                   >
-                    <RefreshCw className={`w-3.5 h-3.5 ${watanocLoading ? 'animate-spin text-emerald-400' : 'text-slate-400'}`} />
+                    <RefreshCw className={`w-3.5 h-3.5 ${watanocLoading ? 'animate-spin text-emerald-400' : 'text-[var(--ui-muted)]'}`} />
                   </button>
                 </div>
 
@@ -1865,16 +1863,16 @@ export default function AiReadingPractice({
                       initial={{ opacity: 0, y: -6 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -6 }}
-                      className="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-emerald-200 text-xs shadow-lg"
+                      className="flex items-center justify-between gap-3 p-2.5 rounded-xl reading-success border border-emerald-500/40 text-emerald-200 text-xs shadow-lg"
                     >
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                        <span className="font-semibold text-white">{refreshNotification.text}</span>
+                        <span className="font-semibold text-[var(--ui-ink)]">{refreshNotification.text}</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => setRefreshNotification(null)}
-                        className="text-slate-400 hover:text-white text-xs px-2 py-0.5 rounded-lg hover:bg-emerald-900/40 transition cursor-pointer"
+                        className="text-[var(--ui-muted)] hover:text-[var(--ui-ink)] text-xs px-2 py-0.5 rounded-lg hover:bg-emerald-900/40 transition cursor-pointer"
                       >
                         ✕
                       </button>
@@ -1886,15 +1884,15 @@ export default function AiReadingPractice({
                 <div className="space-y-2">
                   {/* Read Status Filter */}
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Trạng thái:</span>
-                    <div className="flex items-center p-0.5 rounded-lg bg-slate-950/80 border border-slate-800">
+                    <span className="text-[11px] font-bold text-[var(--ui-muted)] uppercase tracking-wider">Trạng thái:</span>
+                    <div className="flex items-center p-0.5 rounded-lg reading-surface border border-[var(--ui-line)]">
                       <button
                         type="button"
                         onClick={() => setWatanocReadFilter('all')}
                         className={`px-2 py-0.5 rounded-md text-xs font-bold transition cursor-pointer ${
                           watanocReadFilter === 'all'
-                            ? 'bg-slate-700 text-white shadow-sm'
-                            : 'text-slate-400 hover:text-slate-200'
+                            ? 'reading-selected shadow-sm'
+                            : 'text-[var(--ui-muted)] hover:text-slate-200'
                         }`}
                       >
                         Tất cả ({watanocReadStats.total})
@@ -1905,7 +1903,7 @@ export default function AiReadingPractice({
                         className={`px-2 py-0.5 rounded-md text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
                           watanocReadFilter === 'unread'
                             ? 'bg-amber-600 text-white shadow-sm'
-                            : 'text-slate-400 hover:text-amber-300'
+                            : 'text-[var(--ui-muted)] hover:text-amber-300'
                         }`}
                       >
                         <Circle className="w-2 h-2" />
@@ -1917,7 +1915,7 @@ export default function AiReadingPractice({
                         className={`px-2 py-0.5 rounded-md text-xs font-bold transition cursor-pointer flex items-center gap-1 ${
                           watanocReadFilter === 'read'
                             ? 'bg-emerald-600 text-white shadow-sm'
-                            : 'text-slate-400 hover:text-emerald-300'
+                            : 'text-[var(--ui-muted)] hover:text-emerald-300'
                         }`}
                       >
                         <CheckCircle2 className="w-2 h-2" />
@@ -1927,7 +1925,7 @@ export default function AiReadingPractice({
                   </div>
 
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Trình độ:</span>
+                    <span className="text-[11px] font-bold text-[var(--ui-muted)] uppercase tracking-wider">Trình độ:</span>
                     {[
                       { id: 'all', label: 'Tất cả' },
                       { id: 'N5', label: 'N5 (Sơ cấp)' },
@@ -1947,7 +1945,7 @@ export default function AiReadingPractice({
                         className={`px-2 py-0.5 rounded-md text-xs font-bold transition cursor-pointer border ${
                           watanocFilterLevel === lvl.id
                             ? 'bg-emerald-600 border-emerald-500 text-white shadow-sm'
-                            : 'bg-slate-800/80 border-slate-700 text-slate-400 hover:text-slate-200 hover:bg-slate-700/80'
+                            : 'reading-soft border-[var(--ui-line)] text-[var(--ui-muted)] hover:text-slate-200 reading-hover'
                         }`}
                       >
                         {lvl.label}
@@ -1956,7 +1954,7 @@ export default function AiReadingPractice({
                   </div>
 
                   <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Chủ đề:</span>
+                    <span className="text-[11px] font-bold text-[var(--ui-muted)] uppercase tracking-wider">Chủ đề:</span>
                     {[
                       { id: 'all', label: 'Tất cả chủ đề' },
                       { id: 'meal', label: '🍜 Ẩm thực' },
@@ -1975,7 +1973,7 @@ export default function AiReadingPractice({
                         className={`px-2 py-0.5 rounded-md text-xs font-medium transition cursor-pointer border ${
                           watanocFilterCategory === cat.id
                             ? 'bg-teal-700/80 border-teal-500 text-teal-100 shadow-sm'
-                            : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-300'
+                            : 'reading-surface border-[var(--ui-line)] text-[var(--ui-muted)] hover:text-slate-300'
                         }`}
                       >
                         {cat.label}
@@ -1986,15 +1984,15 @@ export default function AiReadingPractice({
 
                 {/* Article Grid */}
                 {watanocLoading ? (
-                  <div className="py-16 flex flex-col items-center justify-center gap-3 text-slate-400">
+                  <div className="py-16 flex flex-col items-center justify-center gap-3 text-[var(--ui-muted)]">
                     <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
                     <span className="text-sm font-medium">Đang tải danh sách bài viết từ Watanoc...</span>
                   </div>
                 ) : filteredWatanocArticles.length === 0 ? (
-                  <div className="py-12 text-center rounded-2xl bg-slate-950/40 border border-slate-800/60 p-6 space-y-3">
-                    <BookOpen className="w-10 h-10 text-slate-600 mx-auto" />
-                    <h4 className="text-sm font-bold text-slate-300">Không tìm thấy bài viết nào phù hợp</h4>
-                    <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                  <div className="py-12 text-center rounded-2xl reading-surface border border-[var(--ui-line)] p-6 space-y-3">
+                    <BookOpen className="w-10 h-10 text-[var(--ui-muted)] mx-auto" />
+                    <h4 className="text-sm font-bold text-[var(--ui-ink)]">Không tìm thấy bài viết nào phù hợp</h4>
+                    <p className="text-xs text-[var(--ui-muted)] max-w-sm mx-auto">
                       Hãy thay đổi bộ lọc trạng thái đọc, phân loại hoặc dán link bài viết trực tiếp từ watanoc.com
                     </p>
                     <div className="flex items-center justify-center gap-2 pt-1">
@@ -2002,7 +2000,7 @@ export default function AiReadingPractice({
                         <button
                           type="button"
                           onClick={() => setWatanocReadFilter('all')}
-                          className="px-3.5 py-1.5 rounded-xl bg-slate-800 text-emerald-300 text-xs font-semibold hover:bg-slate-700 transition cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-xl reading-soft text-emerald-300 text-xs font-semibold reading-hover transition cursor-pointer"
                         >
                           Hiển thị tất cả bài
                         </button>
@@ -2025,10 +2023,8 @@ export default function AiReadingPractice({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {filteredWatanocArticles.map((article, idx) => {
                       const levelColors: Record<string, string> = {
-                        N5: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-                        N4: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
-                        N3: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-                        All: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30'
+                        N5: 'reading-success', N4: 'reading-info', N3: 'reading-primary',
+                        N2: 'reading-warning', N1: 'reading-error'
                       };
                       const badgeClass = levelColors[article.level] || levelColors.N4;
                       const isRead = isArticleRead(article);
@@ -2038,14 +2034,14 @@ export default function AiReadingPractice({
                           key={`watanoc-${article.id || article.url || 'mag'}-${idx}`}
                           className={`flex flex-col justify-between rounded-2xl border transition-all duration-200 p-4 shadow-md group ${
                             isRead
-                              ? 'bg-slate-950/40 hover:bg-slate-950/70 border-emerald-900/30 hover:border-emerald-500/40'
-                              : 'bg-slate-950/60 hover:bg-slate-950/90 border-slate-800/90 hover:border-emerald-500/40'
+                              ? 'reading-surface reading-hover border-emerald-900/30 hover:border-emerald-500/40'
+                              : 'reading-surface reading-hover border-[var(--ui-line)] hover:border-emerald-500/40'
                           }`}
                         >
                           <div className="space-y-3">
                             {/* Article Image */}
                             {article.image && (
-                              <div className="relative w-full h-36 rounded-xl overflow-hidden bg-slate-900">
+                              <div className="relative w-full h-36 rounded-xl overflow-hidden reading-surface">
                                 <ReadingImage
                                   src={article.image}
                                   alt={article.titleJp}
@@ -2057,18 +2053,18 @@ export default function AiReadingPractice({
                                     {article.level}
                                   </span>
                                   {article.hasAudio && (
-                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-950/80 text-emerald-300 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1">
+                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold reading-success text-emerald-300 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1">
                                       <Radio className="w-2.5 h-2.5 text-emerald-400" />
                                       <span>Audio MP3</span>
                                     </span>
                                   )}
                                   {isRead ? (
-                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
+                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold reading-success text-emerald-300 border border-emerald-500/40 backdrop-blur-md flex items-center gap-1 shadow-sm">
                                       <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
                                       <span>Đã đọc</span>
                                     </span>
                                   ) : (
-                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-950/80 text-amber-300 border border-amber-500/30 backdrop-blur-md flex items-center gap-1">
+                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-medium reading-warning text-amber-300 border border-amber-500/30 backdrop-blur-md flex items-center gap-1">
                                       <Circle className="w-2.5 h-2.5 text-amber-400" />
                                       <span>Chưa đọc</span>
                                     </span>
@@ -2096,30 +2092,30 @@ export default function AiReadingPractice({
                                       <span>Đã đọc</span>
                                     </span>
                                   ) : (
-                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-900 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                                    <span className="px-2 py-0.5 rounded-md text-[10px] font-medium reading-warning text-amber-300 border border-amber-500/30 flex items-center gap-1">
                                       <Circle className="w-2.5 h-2.5 text-amber-400" />
                                       <span>Chưa đọc</span>
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-[11px] text-slate-500">{article.date}</span>
+                                <span className="text-[11px] text-[var(--ui-muted)]">{article.date}</span>
                               </div>
                             )}
 
                             {/* Titles & Snippet */}
                             <div>
                               <h4 className={`text-sm sm:text-base font-bold transition line-clamp-2 leading-snug font-jp ${
-                                isRead ? 'text-slate-300 group-hover:text-emerald-300' : 'text-slate-100 group-hover:text-emerald-300'
+                                isRead ? 'text-[var(--ui-ink)] group-hover:text-emerald-300' : 'text-[var(--ui-ink)] group-hover:text-emerald-300'
                               }`}>
                                 {article.titleJp}
                               </h4>
                               {article.titleSub && (
-                                <p className="text-xs text-slate-400 mt-1 line-clamp-1 leading-relaxed">
+                                <p className="text-xs text-[var(--ui-muted)] mt-1 line-clamp-1 leading-relaxed">
                                   {article.titleSub}
                                 </p>
                               )}
                               {article.snippet && (
-                                <p className="text-xs text-slate-400/90 mt-1.5 line-clamp-2 leading-relaxed font-jp">
+                                <p className="text-xs text-[var(--ui-muted)]/90 mt-1.5 line-clamp-2 leading-relaxed font-jp">
                                   {article.snippet}
                                 </p>
                               )}
@@ -2127,10 +2123,10 @@ export default function AiReadingPractice({
                           </div>
 
                           {/* Action Footer */}
-                          <div className="flex items-center justify-between gap-2 pt-3 mt-3 border-t border-slate-800/80">
+                          <div className="flex items-center justify-between gap-2 pt-3 mt-3 border-t border-[var(--ui-line)]">
                             <div className="flex items-center gap-2">
-                              <span className="text-[11px] text-slate-500 flex items-center gap-1">
-                                <Clock className="w-3 h-3 text-slate-500" />
+                              <span className="text-[11px] text-[var(--ui-muted)] flex items-center gap-1">
+                                <Clock className="w-3 h-3 text-[var(--ui-muted)]" />
                                 <span>{article.date || 'Watanoc.com'}</span>
                                 {article.prepared && <span className="text-emerald-300">Câu hỏi sẵn có</span>}
                               </span>
@@ -2142,7 +2138,7 @@ export default function AiReadingPractice({
                                 className={`px-2 py-1 rounded-lg text-[11px] font-semibold border transition cursor-pointer flex items-center gap-1 ${
                                   isRead
                                     ? 'bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                                    : 'bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-800'
+                                    : 'reading-surface reading-hover text-[var(--ui-muted)] hover:text-slate-200 border-[var(--ui-line)]'
                                 }`}
                                 title={isRead ? 'Bấm để đánh dấu Chưa đọc' : 'Bấm để đánh dấu Đã đọc'}
                               >
@@ -2153,7 +2149,7 @@ export default function AiReadingPractice({
                                   </>
                                 ) : (
                                   <>
-                                    <Circle className="w-3 h-3 text-slate-500" />
+                                    <Circle className="w-3 h-3 text-[var(--ui-muted)]" />
                                     <span>Đánh dấu đã đọc</span>
                                   </>
                                 )}
@@ -2166,7 +2162,7 @@ export default function AiReadingPractice({
                               onClick={() => handleSelectWatanocArticle(article)}
                               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-white text-xs font-bold transition cursor-pointer shadow-sm group-hover:translate-x-0.5 ${
                                 isRead
-                                  ? 'bg-slate-800 hover:bg-emerald-600 text-slate-200 hover:text-white border border-slate-700'
+                                  ? 'reading-soft hover:bg-emerald-600 text-[var(--ui-ink)] hover:text-[var(--ui-ink)] border border-[var(--ui-line)]'
                                   : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/30'
                               }`}
                             >
@@ -2185,7 +2181,7 @@ export default function AiReadingPractice({
                           type="button"
                           onClick={() => fetchWatanocArticles(watanocFilterLevel, watanocFilterCategory, 'more')}
                           disabled={watanocLoadingMore}
-                          className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/50 text-slate-300 hover:text-white text-xs font-bold transition-all shadow-md cursor-pointer disabled:opacity-50"
+                          className="flex items-center gap-2 px-5 py-2.5 rounded-2xl reading-surface reading-hover border border-[var(--ui-line)] hover:border-emerald-500/50 text-[var(--ui-ink)] hover:text-[var(--ui-ink)] text-xs font-bold transition-all shadow-md cursor-pointer disabled:opacity-50"
                         >
                           {watanocLoadingMore ? (
                             <>
@@ -2211,13 +2207,13 @@ export default function AiReadingPractice({
           {readingSourceMode === 'custom' && (
             <div className="space-y-3">
               {/* Sample Passages Bar */}
-              <div className="bg-slate-900/80 border border-slate-800/80 rounded-xl p-3 shadow-lg space-y-2">
+              <div className="reading-surface border border-[var(--ui-line)] rounded-xl p-3 shadow-lg space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-300 flex items-center gap-1.5 uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-[var(--ui-ink)] flex items-center gap-1.5 uppercase tracking-wider">
                     <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
                     <span>Hoặc chọn bài viết mẫu tiếng Nhật thử nghiệm:</span>
                   </span>
-                  <span className="text-[10px] text-slate-500">1-click để nạp văn bản</span>
+                  <span className="text-[10px] text-[var(--ui-muted)]">1-click để nạp văn bản</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5">
                   {SAMPLE_PASSAGES.map((sample, idx) => (
@@ -2226,18 +2222,18 @@ export default function AiReadingPractice({
                       id={`sample-passage-${sample.level.toLowerCase()}`}
                       type="button"
                       onClick={() => handleLoadSample(sample)}
-                      className="flex flex-col items-start text-left p-2.5 rounded-lg bg-slate-950/60 hover:bg-indigo-950/40 border border-slate-800/80 hover:border-indigo-500/50 transition cursor-pointer group"
+                      className="flex flex-col items-start text-left p-2.5 rounded-lg reading-surface hover:bg-indigo-950/40 border border-[var(--ui-line)] hover:border-indigo-500/50 transition cursor-pointer group"
                     >
                       <div className="flex items-center justify-between w-full mb-1">
                         <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
                           {sample.level}
                         </span>
-                        <span className="text-[10px] text-slate-400">{sample.genre}</span>
+                        <span className="text-[10px] text-[var(--ui-muted)]">{sample.genre}</span>
                       </div>
-                      <strong className="text-xs font-semibold text-slate-200 group-hover:text-white line-clamp-1">
+                      <strong className="text-xs font-semibold text-[var(--ui-ink)] group-hover:text-[var(--ui-ink)] line-clamp-1">
                         {sample.title}
                       </strong>
-                      <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5 font-jp">
+                      <p className="text-[10px] text-[var(--ui-muted)] line-clamp-1 mt-0.5 font-jp">
                         {sample.text}
                       </p>
                     </button>
@@ -2246,9 +2242,9 @@ export default function AiReadingPractice({
               </div>
 
               {/* Main Input Textarea Card */}
-              <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-3.5 sm:p-4 shadow-xl space-y-3">
-                <div className="flex items-center justify-between flex-wrap gap-2 pb-1.5 border-b border-slate-800/80">
-                  <label htmlFor="custom-passage-textarea" className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+              <div className="reading-surface border border-[var(--ui-line)] rounded-2xl p-3.5 sm:p-4 shadow-xl space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2 pb-1.5 border-b border-[var(--ui-line)]">
+                  <label htmlFor="custom-passage-textarea" className="text-xs sm:text-sm font-bold text-[var(--ui-ink)] flex items-center gap-2">
                     <FileText className="w-4 h-4 text-indigo-400" />
                     <span>Bài viết tiếng Nhật cần phân tích:</span>
                   </label>
@@ -2258,7 +2254,7 @@ export default function AiReadingPractice({
                       id="btn-paste-clipboard"
                       type="button"
                       onClick={handlePasteClipboard}
-                      className="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition cursor-pointer border border-slate-700/80"
+                      className="flex items-center gap-1 px-2 py-1 rounded-lg reading-soft reading-hover text-[var(--ui-ink)] text-xs font-medium transition cursor-pointer border border-[var(--ui-line)]"
                       title="Dán từ clipboard"
                     >
                       <ClipboardPaste className="w-3.5 h-3.5 text-indigo-400" />
@@ -2270,7 +2266,7 @@ export default function AiReadingPractice({
                         id="btn-clear-text"
                         type="button"
                         onClick={() => setInputText('')}
-                        className="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-800 hover:bg-rose-950/40 text-slate-400 hover:text-rose-300 text-xs font-medium transition cursor-pointer border border-slate-700/80"
+                        className="flex items-center gap-1 px-2 py-1 rounded-lg reading-soft hover:bg-rose-950/40 text-[var(--ui-muted)] hover:text-rose-300 text-xs font-medium transition cursor-pointer border border-[var(--ui-line)]"
                         title="Xóa văn bản"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -2291,27 +2287,27 @@ export default function AiReadingPractice({
                       if (errorMessage) setErrorMessage(null);
                     }}
                     placeholder="Dán hoặc nhập đoạn văn bản tiếng Nhật tại đây... (Ví dụ: tin tức NHK Easy, bài đọc sách Minna/Soumatome/Shinkanzen, đoạn văn trong đề thi JLPT, bài luận, thư từ, thông báo công ty...)"
-                    className="w-full bg-slate-950/80 border border-slate-700/80 rounded-xl p-3 text-sm sm:text-base text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 font-jp leading-relaxed resize-y transition shadow-inner"
+                    className="w-full reading-surface border border-[var(--ui-line)] rounded-xl p-3 text-sm sm:text-base text-[var(--ui-ink)] placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 font-jp leading-relaxed resize-y transition shadow-inner"
                   />
                 </div>
 
                 {/* Live Metrics */}
-                <div className="flex items-center justify-between text-xs text-slate-400 px-1 flex-wrap gap-2">
+                <div className="flex items-center justify-between text-xs text-[var(--ui-muted)] px-1 flex-wrap gap-2">
                   <div className="flex items-center gap-3 font-medium text-[11px]">
                     <span>Số ký tự: <strong className="text-indigo-300 font-semibold">{textStats.charCount}</strong></span>
                     <span>Chữ Hán: <strong className="text-amber-300 font-semibold">{textStats.kanjiCount}</strong></span>
                     <span>Số câu ước tính: <strong className="text-cyan-300 font-semibold">{textStats.sentenceCount}</strong></span>
                   </div>
-                  <span className="text-[10px] text-slate-500 italic">
+                  <span className="text-[10px] text-[var(--ui-muted)] italic">
                     Khuyến nghị: Từ 30 đến 400 ký tự
                   </span>
                 </div>
 
                 {/* Options Configuration */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1.5 border-t border-slate-800/80">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1.5 border-t border-[var(--ui-line)]">
                   {/* JLPT Level Target */}
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
+                    <label className="text-[11px] font-semibold text-[var(--ui-ink)] flex items-center gap-1.5">
                       <Sliders className="w-3.5 h-3.5 text-indigo-400" />
                       <span>Trình độ JLPT mục tiêu:</span>
                     </label>
@@ -2325,7 +2321,7 @@ export default function AiReadingPractice({
                           className={`py-1 text-xs font-bold rounded-lg border transition cursor-pointer ${
                             selectedLevel === lvl
                               ? 'bg-indigo-600 border-indigo-400 text-white shadow-sm'
-                              : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                              : 'reading-surface border-[var(--ui-line)] text-[var(--ui-muted)] hover:text-slate-200 reading-hover'
                           }`}
                         >
                           {lvl === 'auto' ? 'Auto' : lvl}
@@ -2336,7 +2332,7 @@ export default function AiReadingPractice({
 
                   {/* Question Count Target */}
                   <div className="space-y-1">
-                    <label className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
+                    <label className="text-[11px] font-semibold text-[var(--ui-ink)] flex items-center gap-1.5">
                       <HelpCircle className="w-3.5 h-3.5 text-indigo-400" />
                       <span>Số lượng câu hỏi cần soạn:</span>
                     </label>
@@ -2350,7 +2346,7 @@ export default function AiReadingPractice({
                           className={`py-1 text-xs font-bold rounded-lg border transition cursor-pointer ${
                             questionCount === count
                               ? 'bg-purple-600 border-purple-400 text-white shadow-sm'
-                              : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                              : 'reading-surface border-[var(--ui-line)] text-[var(--ui-muted)] hover:text-slate-200 reading-hover'
                           }`}
                         >
                           {count} câu
@@ -2369,7 +2365,7 @@ export default function AiReadingPractice({
                     onClick={handleAnalyzePassage}
                     className={`w-full py-2.5 px-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition cursor-pointer shadow-md ${
                       isAnalyzing || !inputText.trim()
-                        ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                        ? 'reading-soft text-[var(--ui-muted)] cursor-not-allowed border border-[var(--ui-line)]'
                         : 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-500 hover:via-purple-500 hover:to-pink-500 text-white shadow-indigo-600/30 border border-indigo-400/30'
                     }`}
                   >
@@ -2400,10 +2396,10 @@ export default function AiReadingPractice({
           className="reading-article-layout"
         >
           {/* Passage Overview Card */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xl space-y-5">
+          <div className="reading-surface border border-[var(--ui-line)] rounded-3xl p-5 sm:p-7 shadow-xl space-y-5">
             {/* Article Image Banner (If available from Todaii News) */}
             {readingData.imageUrl && (
-              <div className="relative w-full h-44 sm:h-64 rounded-2xl overflow-hidden border border-slate-800 shadow-md group">
+              <div className="relative w-full h-44 sm:h-64 rounded-2xl overflow-hidden border border-[var(--ui-line)] shadow-md group">
                 <ReadingImage
                   src={readingData.imageUrl}
                   alt={readingData.title}
@@ -2419,7 +2415,7 @@ export default function AiReadingPractice({
                       href={readingData.sourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-cyan-300 border border-cyan-500/30 text-xs font-bold shrink-0 backdrop-blur-md transition shadow-md"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl reading-surface reading-hover text-cyan-300 border border-cyan-500/30 text-xs font-bold shrink-0 backdrop-blur-md transition shadow-md"
                     >
                       <Globe className="w-3.5 h-3.5" />
                       <span>Xem báo gốc</span>
@@ -2431,7 +2427,7 @@ export default function AiReadingPractice({
             )}
 
             {/* Header Meta, Title & Action Toolbar */}
-            <div className="space-y-3.5 pb-4 border-b border-slate-800">
+            <div className="space-y-3.5 pb-4 border-b border-[var(--ui-line)]">
               {/* Badges & Source Meta */}
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
@@ -2456,10 +2452,10 @@ export default function AiReadingPractice({
                     href={readingData.sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 flex items-center gap-1.5 transition shrink-0"
+                    className="px-2.5 py-1 rounded-full text-xs font-medium reading-soft reading-hover text-[var(--ui-ink)] hover:text-[var(--ui-ink)] border border-[var(--ui-line)] flex items-center gap-1.5 transition shrink-0"
                     title="Mở liên kết bài viết gốc"
                   >
-                    <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+                    <ExternalLink className="w-3.5 h-3.5 text-[var(--ui-muted)]" />
                     <span>Bài gốc</span>
                   </a>
                 )}
@@ -2468,18 +2464,18 @@ export default function AiReadingPractice({
                     {readingData.passageType}
                   </span>
                 )}
-                <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700/50">
+                <span className="px-2.5 py-1 rounded-full text-xs font-medium reading-soft text-[var(--ui-ink)] border border-[var(--ui-line)]">
                   {readingData.sentenceBreakdown?.length || 0} câu
                 </span>
               </div>
 
               {/* Title & Translation (Takes full width, never crushed into vertical column) */}
               <div className="space-y-1.5 w-full">
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white leading-snug tracking-tight font-jp break-words">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[var(--ui-ink)] leading-snug tracking-tight font-jp break-words">
                   {readingData.title}
                 </h2>
                 {readingData.titleVi && (
-                  <p className="text-sm sm:text-base font-medium text-slate-300/90 italic leading-relaxed break-words">
+                  <p className="text-sm sm:text-base font-medium text-[var(--ui-ink)]/90 italic leading-relaxed break-words">
                     {readingData.titleVi}
                   </p>
                 )}
@@ -2499,7 +2495,7 @@ export default function AiReadingPractice({
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer active:scale-95 ${
                           isRead
                             ? 'bg-emerald-500/20 border-emerald-400/50 text-emerald-200 shadow-[0_0_12px_rgba(16,185,129,0.25)]'
-                            : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-amber-300'
+                            : 'reading-soft border-[var(--ui-line)] text-[var(--ui-muted)] hover:text-amber-300'
                         }`}
                         title={isRead ? 'Đang ở trạng thái Đã đọc (Bấm để chuyển thành Chưa đọc)' : 'Bấm để đánh dấu Đã đọc'}
                       >
@@ -2531,7 +2527,7 @@ export default function AiReadingPractice({
                     id="btn-copy-passage"
                     type="button"
                     onClick={handleCopyPassage}
-                    className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 transition cursor-pointer"
+                    className="p-1.5 rounded-xl reading-soft reading-hover border border-[var(--ui-line)] text-[var(--ui-ink)] transition cursor-pointer"
                     title="Sao chép văn bản tiếng Nhật"
                   >
                     {copyFeedback ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
@@ -2568,7 +2564,7 @@ export default function AiReadingPractice({
                     <button
                       type="button"
                       onClick={() => handleSkipTodaiAudio(-5)}
-                      className="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer border border-slate-700 transition"
+                      className="px-2 py-1.5 rounded-xl reading-soft reading-hover text-[var(--ui-ink)] text-xs font-semibold cursor-pointer border border-[var(--ui-line)] transition"
                       title="Lùi 5 giây"
                     >
                       -5s
@@ -2584,13 +2580,13 @@ export default function AiReadingPractice({
                     <button
                       type="button"
                       onClick={() => handleSkipTodaiAudio(5)}
-                      className="px-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer border border-slate-700 transition"
+                      className="px-2 py-1.5 rounded-xl reading-soft reading-hover text-[var(--ui-ink)] text-xs font-semibold cursor-pointer border border-[var(--ui-line)] transition"
                       title="Tua tới 5 giây"
                     >
                       +5s
                     </button>
 
-                    <span className="text-[11px] text-slate-300 font-mono pl-1">
+                    <span className="text-[11px] text-[var(--ui-ink)] font-mono pl-1">
                       {Math.floor(todaiAudioCurrentTime / 60)}:{(Math.floor(todaiAudioCurrentTime % 60)).toString().padStart(2, '0')} / {Math.floor((todaiAudioDuration || 0) / 60)}:{(Math.floor((todaiAudioDuration || 0) % 60)).toString().padStart(2, '0')}
                     </span>
                   </div>
@@ -2612,7 +2608,7 @@ export default function AiReadingPractice({
 
                   {/* Right: Compact Speed Selector & Audio Badge */}
                   <div className="flex items-center gap-1.5 justify-end">
-                    <div className="flex items-center bg-slate-900/80 p-0.5 rounded-xl border border-slate-800">
+                    <div className="flex items-center reading-surface p-0.5 rounded-xl border border-[var(--ui-line)]">
                       {[0.8, 1.0, 1.25].map(spd => (
                         <button
                           key={spd}
@@ -2621,7 +2617,7 @@ export default function AiReadingPractice({
                           className={`px-2 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
                             todaiAudioSpeed === spd
                               ? 'bg-emerald-600 text-white shadow-sm'
-                              : 'text-slate-400 hover:text-white'
+                              : 'text-[var(--ui-muted)] hover:text-[var(--ui-ink)]'
                           }`}
                         >
                           {spd}x
@@ -2639,9 +2635,9 @@ export default function AiReadingPractice({
 
             {/* POS (Part of Speech) Legend & Filter: Sleek & Compact */}
             {showPosHighlight && (
-              <div className="flex flex-wrap items-center justify-between gap-2 bg-slate-900/90 border border-slate-800/80 rounded-2xl px-3.5 py-2 shadow-sm text-xs">
+              <div className="flex flex-wrap items-center justify-between gap-2 reading-surface border border-[var(--ui-line)] rounded-2xl px-3.5 py-2 shadow-sm text-xs">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <div className="flex items-center gap-1.5 font-bold text-slate-300 mr-1">
+                  <div className="flex items-center gap-1.5 font-bold text-[var(--ui-ink)] mr-1">
                     <Palette className="w-3.5 h-3.5 text-sky-400" />
                     <span>Từ loại:</span>
                   </div>
@@ -2720,7 +2716,7 @@ export default function AiReadingPractice({
                 <button
                   type="button"
                   onClick={() => setIsOptionsModalOpen(true)}
-                  className="text-[11px] text-slate-400 hover:text-slate-200 transition cursor-pointer flex items-center gap-1"
+                  className="text-[11px] text-[var(--ui-muted)] hover:text-slate-200 transition cursor-pointer flex items-center gap-1"
                 >
                   <SlidersHorizontal className="w-3 h-3 text-indigo-400" />
                   <span>Cài đặt hiển thị</span>
@@ -2836,7 +2832,7 @@ export default function AiReadingPractice({
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-amber-950/20 border border-amber-800/40 rounded-2xl p-5 space-y-2 text-sm sm:text-base text-slate-200 leading-relaxed shadow-sm"
+                className="reading-warning border border-amber-800/40 rounded-2xl p-5 space-y-2 text-sm sm:text-base text-[var(--ui-ink)] leading-relaxed shadow-sm"
               >
                 <div className="flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider">
                   <Eye className="w-4 h-4 text-amber-400" />
@@ -2850,8 +2846,8 @@ export default function AiReadingPractice({
           </div>
 
           {/* Navigation Tabs Bar for Analysis */}
-          <div className="reading-analysis-tabs border-b border-slate-800 pb-2">
-            <p className="col-span-2 text-xs text-slate-400 pb-2">
+          <div className="reading-analysis-tabs border-b border-[var(--ui-line)] pb-2">
+            <p className="col-span-2 text-xs text-[var(--ui-muted)] pb-2">
               {readingData.questionOrigin === 'source' ? 'Câu hỏi gốc từ trang nguồn. Đáp án chưa được nguồn cung cấp sẽ được AI suy luận từ bài.' : 'Nguồn không có câu hỏi; câu hỏi luyện đọc được AI soạn theo bài viết.'}
             </p>
             <button
@@ -2861,7 +2857,7 @@ export default function AiReadingPractice({
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition cursor-pointer whitespace-nowrap ${
                 activeTab === 'quiz'
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  : 'text-[var(--ui-muted)] hover:text-slate-200 reading-hover'
               }`}
             >
               <HelpCircle className="w-4 h-4" />
@@ -2875,7 +2871,7 @@ export default function AiReadingPractice({
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition cursor-pointer whitespace-nowrap ${
                 activeTab === 'vocab'
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  : 'text-[var(--ui-muted)] hover:text-slate-200 reading-hover'
               }`}
             >
               <Bookmark className="w-4 h-4" />
@@ -2889,7 +2885,7 @@ export default function AiReadingPractice({
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition cursor-pointer whitespace-nowrap ${
                 activeTab === 'grammar'
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  : 'text-[var(--ui-muted)] hover:text-slate-200 reading-hover'
               }`}
             >
               <Layers className="w-4 h-4" />
@@ -2903,7 +2899,7 @@ export default function AiReadingPractice({
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-sm transition cursor-pointer whitespace-nowrap ${
                 activeTab === 'sentences'
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                  : 'text-[var(--ui-muted)] hover:text-slate-200 reading-hover'
               }`}
             >
               <MessageSquareQuote className="w-4 h-4" />
@@ -2922,8 +2918,8 @@ export default function AiReadingPractice({
               {isQuizSubmitted && quizScore && (
                 <div className={`p-5 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-4 shadow-lg ${
                   quizScore.percentage >= 70
-                    ? 'bg-emerald-950/30 border-emerald-800/50 text-emerald-200'
-                    : 'bg-amber-950/30 border-amber-800/50 text-amber-200'
+                    ? 'reading-success border-emerald-800/50 text-emerald-200'
+                    : 'reading-warning border-amber-800/50 text-amber-200'
                 }`}>
                   <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
                     <ShibaMascot
@@ -2932,10 +2928,10 @@ export default function AiReadingPractice({
                       animated={true}
                     />
                     <div>
-                      <strong className="text-base font-bold text-white block">
+                      <strong className="text-base font-bold text-[var(--ui-ink)] block">
                         Kết quả đọc hiểu: Đúng {quizScore.correct}/{quizScore.total} câu ({quizScore.percentage}%)
                       </strong>
-                      <span className="text-xs text-slate-300">
+                      <span className="text-xs text-[var(--ui-ink)]">
                         {quizScore.percentage === 100
                           ? 'Xuất sắc! Nihon Shiba rất khâm phục bạn, không sai một câu nào!'
                           : quizScore.percentage >= 60
@@ -2949,7 +2945,7 @@ export default function AiReadingPractice({
                     id="btn-quiz-retry"
                     type="button"
                     onClick={handleResetQuiz}
-                    className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border border-slate-700 shrink-0"
+                    className="px-4 py-2 rounded-xl reading-soft reading-hover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer border border-[var(--ui-line)] shrink-0"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Làm lại trắc nghiệm</span>
@@ -2968,7 +2964,7 @@ export default function AiReadingPractice({
                     <div
                       key={qIdx}
                       id={`quiz-question-card-${qIdx}`}
-                      className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl space-y-4"
+                      className="reading-surface border border-[var(--ui-line)] rounded-2xl p-5 sm:p-6 shadow-xl space-y-4"
                     >
                       {/* Question Header & Type */}
                       <div className="flex items-start justify-between gap-3">
@@ -2985,7 +2981,7 @@ export default function AiReadingPractice({
 
                         {/* Tips indicator */}
                         {quiz.tips && (
-                          <span className="text-[11px] text-amber-400 bg-amber-950/40 px-2.5 py-0.5 rounded-full border border-amber-800/40 flex items-center gap-1">
+                          <span className="text-[11px] text-amber-400 reading-warning px-2.5 py-0.5 rounded-full border border-amber-800/40 flex items-center gap-1">
                             <Lightbulb className="w-3 h-3 text-amber-400" />
                             <span>Mẹo JLPT</span>
                           </span>
@@ -2999,7 +2995,7 @@ export default function AiReadingPractice({
 
                       {/* Tips Content if available */}
                       {quiz.tips && (
-                        <div className="bg-slate-950/60 border border-slate-800/80 rounded-xl p-3 text-xs text-amber-200/90 leading-relaxed flex items-start gap-2">
+                        <div className="reading-surface border border-[var(--ui-line)] rounded-xl p-3 text-xs text-amber-200/90 leading-relaxed flex items-start gap-2">
                           <Lightbulb className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                           <div>
                             <strong className="text-amber-400 font-semibold">Mẹo giải nhanh: </strong>
@@ -3014,15 +3010,15 @@ export default function AiReadingPractice({
                           const isSelected = userAnswers[qIdx] === oIdx;
                           const isTheCorrectOption = quiz.correctIndex === oIdx;
 
-                          let optionClass = 'bg-slate-950/60 border-slate-800/80 text-slate-200 hover:bg-slate-800 hover:border-slate-700';
+                          let optionClass = 'reading-surface border-[var(--ui-line)] text-[var(--ui-ink)] reading-hover hover:border-slate-700';
 
                           if (isQuizSubmitted) {
                             if (isTheCorrectOption) {
-                              optionClass = 'bg-emerald-950/40 border-emerald-500/80 text-emerald-200 shadow-sm';
+                              optionClass = 'reading-success border-emerald-500/80 text-emerald-200 shadow-sm';
                             } else if (isSelected) {
-                              optionClass = 'bg-rose-950/40 border-rose-500/80 text-rose-200';
+                              optionClass = 'reading-error border-rose-500/80 text-rose-200';
                             } else {
-                              optionClass = 'bg-slate-950/40 border-slate-900 text-slate-500 opacity-60';
+                              optionClass = 'reading-surface border-[var(--ui-line)] text-[var(--ui-muted)] opacity-60';
                             }
                           } else if (isSelected) {
                             optionClass = 'bg-indigo-600/20 border-indigo-500 text-indigo-100 shadow-sm shadow-indigo-600/20';
@@ -3044,7 +3040,7 @@ export default function AiReadingPractice({
                                   ? 'bg-rose-500 text-white border-rose-400'
                                   : isSelected
                                   ? 'bg-indigo-600 text-white border-indigo-400'
-                                  : 'bg-slate-900 text-slate-400 border-slate-800'
+                                  : 'reading-surface text-[var(--ui-muted)] border-[var(--ui-line)]'
                               }`}>
                                 {String.fromCharCode(65 + oIdx)}
                               </span>
@@ -3067,13 +3063,13 @@ export default function AiReadingPractice({
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
-                          className="mt-3 pt-3 border-t border-slate-800 space-y-2 bg-indigo-950/20 border border-indigo-900/40 rounded-xl p-4 text-xs sm:text-sm text-indigo-100 leading-relaxed"
+                          className="mt-3 pt-3 border-t border-[var(--ui-line)] space-y-2 reading-info border border-indigo-900/40 rounded-xl p-4 text-xs sm:text-sm text-indigo-100 leading-relaxed"
                         >
                           <div className="flex items-center gap-2 font-bold text-amber-400 uppercase tracking-wider text-xs">
                             <Lightbulb className="w-4 h-4 text-amber-400" />
                             <span>Giải thích chi tiết & Phân tích đáp án:</span>
                           </div>
-                          <p className="whitespace-pre-line text-slate-200">
+                          <p className="whitespace-pre-line text-[var(--ui-ink)]">
                             {quiz.explanation}
                           </p>
                         </motion.div>
@@ -3093,7 +3089,7 @@ export default function AiReadingPractice({
                     disabled={Object.keys(userAnswers).length === 0}
                     className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 transition cursor-pointer shadow-xl ${
                       Object.keys(userAnswers).length === 0
-                        ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
+                        ? 'reading-soft text-[var(--ui-muted)] border border-[var(--ui-line)] cursor-not-allowed'
                         : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-600/30'
                     }`}
                   >
@@ -3112,32 +3108,32 @@ export default function AiReadingPractice({
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xl space-y-5"
+              className="reading-surface border border-[var(--ui-line)] rounded-3xl p-5 sm:p-7 shadow-xl space-y-5"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--ui-line)]">
                 <div className="flex items-center gap-2 text-sm font-bold text-amber-400">
                   <Bookmark className="w-4 h-4 text-amber-400" />
                   <span>Từ vựng trọng tâm & Từ khó trong bài ({readingData.vocabularyList?.length || 0}):</span>
                 </div>
-                <span className="text-xs text-slate-400">Nhấn biểu tượng loa để nghe phát âm</span>
+                <span className="text-xs text-[var(--ui-muted)]">Nhấn biểu tượng loa để nghe phát âm</span>
               </div>
 
               {(!readingData.vocabularyList || readingData.vocabularyList.length === 0) ? (
-                <p className="text-slate-400 text-sm italic">Không có danh sách từ vựng bổ sung cho đoạn văn này.</p>
+                <p className="text-[var(--ui-muted)] text-sm italic">Không có danh sách từ vựng bổ sung cho đoạn văn này.</p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {readingData.vocabularyList.map((vocab, idx) => (
                     <div
                       key={idx}
                       id={`vocab-item-${idx}`}
-                      className="bg-slate-950/60 border border-slate-800/90 hover:border-amber-500/40 rounded-2xl p-4 space-y-2 transition shadow-sm group"
+                      className="reading-surface border border-[var(--ui-line)] hover:border-amber-500/40 rounded-2xl p-4 space-y-2 transition shadow-sm group"
                     >
                       <div className="flex items-center justify-between gap-2">
                         <div className="flex items-baseline gap-2 font-jp flex-wrap">
                           <strong className="text-amber-300 font-bold text-base sm:text-lg">{vocab.kanji}</strong>
-                          <span className="text-slate-400 text-xs sm:text-sm">({vocab.hiragana})</span>
+                          <span className="text-[var(--ui-muted)] text-xs sm:text-sm">({vocab.hiragana})</span>
                           {vocab.hanViet && (
-                            <span className="text-[10px] text-purple-300 font-semibold bg-purple-950/50 px-1.5 py-0.5 rounded border border-purple-800/40">
+                            <span className="text-[10px] text-purple-300 font-semibold reading-primary px-1.5 py-0.5 rounded border border-purple-800/40">
                               {vocab.hanViet}
                             </span>
                           )}
@@ -3146,17 +3142,17 @@ export default function AiReadingPractice({
                         <button
                           type="button"
                           onClick={() => speakJapanese(vocab.kanji || vocab.hiragana)}
-                          className="p-1.5 rounded-lg bg-slate-800 group-hover:bg-amber-500/20 text-slate-400 group-hover:text-amber-300 transition cursor-pointer"
+                          className="p-1.5 rounded-lg reading-soft group-hover:bg-amber-500/20 text-[var(--ui-muted)] group-hover:text-amber-300 transition cursor-pointer"
                           title="Nghe phát âm"
                         >
                           <Volume2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-900">
-                        <span className="text-slate-200 font-medium">{vocab.meaning}</span>
+                      <div className="flex items-center justify-between text-xs pt-1 border-t border-[var(--ui-line)]">
+                        <span className="text-[var(--ui-ink)] font-medium">{vocab.meaning}</span>
                         {vocab.sourceLesson && (
-                          <span className="text-[10px] text-slate-400 bg-slate-900 px-2 py-0.5 rounded-full border border-slate-800">
+                          <span className="text-[10px] text-[var(--ui-muted)] reading-surface px-2 py-0.5 rounded-full border border-[var(--ui-line)]">
                             {vocab.sourceLesson}
                           </span>
                         )}
@@ -3173,25 +3169,25 @@ export default function AiReadingPractice({
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xl space-y-5"
+              className="reading-surface border border-[var(--ui-line)] rounded-3xl p-5 sm:p-7 shadow-xl space-y-5"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--ui-line)]">
                 <div className="flex items-center gap-2 text-sm font-bold text-cyan-400">
                   <Layers className="w-4 h-4 text-cyan-400" />
                   <span>Cấu trúc ngữ pháp ứng dụng trong bài ({readingData.usedGrammar?.length || 0}):</span>
                 </div>
-                <span className="text-xs text-slate-400">Phân tích cách dùng thực tế trong câu</span>
+                <span className="text-xs text-[var(--ui-muted)]">Phân tích cách dùng thực tế trong câu</span>
               </div>
 
               {(!readingData.usedGrammar || readingData.usedGrammar.length === 0) ? (
-                <p className="text-slate-400 text-sm italic">Không có danh sách ngữ pháp chi tiết cho đoạn văn này.</p>
+                <p className="text-[var(--ui-muted)] text-sm italic">Không có danh sách ngữ pháp chi tiết cho đoạn văn này.</p>
               ) : (
                 <div className="space-y-3">
                   {readingData.usedGrammar.map((grammar, idx) => (
                     <div
                       key={idx}
                       id={`grammar-item-${idx}`}
-                      className="bg-slate-950/60 border border-slate-800/90 rounded-2xl p-4 sm:p-5 space-y-2.5 transition shadow-sm"
+                      className="reading-surface border border-[var(--ui-line)] rounded-2xl p-4 sm:p-5 space-y-2.5 transition shadow-sm"
                     >
                       <div className="flex items-center justify-between gap-2 flex-wrap">
                         <div className="flex items-center gap-2.5">
@@ -3209,15 +3205,15 @@ export default function AiReadingPractice({
                         )}
                       </div>
 
-                      <div className="text-xs sm:text-sm text-slate-200 font-medium">
-                        <span className="text-slate-400">Ý nghĩa: </span>
+                      <div className="text-xs sm:text-sm text-[var(--ui-ink)] font-medium">
+                        <span className="text-[var(--ui-muted)]">Ý nghĩa: </span>
                         <span>{grammar.meaning}</span>
                       </div>
 
                       {grammar.usageInPassage && (
-                        <div className="bg-slate-900/80 border border-slate-800/80 rounded-xl p-3 text-xs text-slate-300 font-jp leading-relaxed">
+                        <div className="reading-surface border border-[var(--ui-line)] rounded-xl p-3 text-xs text-[var(--ui-ink)] font-jp leading-relaxed">
                           <strong className="text-amber-300 font-semibold block mb-1">Cách dùng thực tế trong bài đọc:</strong>
-                          <p className="text-slate-200">{grammar.usageInPassage}</p>
+                          <p className="text-[var(--ui-ink)]">{grammar.usageInPassage}</p>
                         </div>
                       )}
                     </div>
@@ -3232,14 +3228,14 @@ export default function AiReadingPractice({
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xl space-y-4"
+              className="reading-surface border border-[var(--ui-line)] rounded-3xl p-5 sm:p-7 shadow-xl space-y-4"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--ui-line)]">
                 <div className="flex items-center gap-2 text-sm font-bold text-indigo-400">
                   <MessageSquareQuote className="w-4 h-4 text-indigo-400" />
                   <span>Dịch nghĩa & Đánh dấu Furigana từng câu ({readingData.sentenceBreakdown?.length || 0}):</span>
                 </div>
-                <span className="text-xs text-slate-400">Nghe từng câu độc lập</span>
+                <span className="text-xs text-[var(--ui-muted)]">Nghe từng câu độc lập</span>
               </div>
 
               <div className="space-y-3">
@@ -3247,20 +3243,20 @@ export default function AiReadingPractice({
                   <div
                     key={idx}
                     id={`sentence-row-${idx}`}
-                    className="bg-slate-950/60 border border-slate-800/90 rounded-2xl p-4 sm:p-5 space-y-3 transition shadow-sm"
+                    className="reading-surface border border-[var(--ui-line)] rounded-2xl p-4 sm:p-5 space-y-3 transition shadow-sm"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-2.5 flex-1">
-                        <span className="w-6 h-6 rounded-full bg-slate-800 text-slate-300 text-xs font-bold flex items-center justify-center shrink-0 mt-1">
+                        <span className="w-6 h-6 rounded-full reading-soft text-[var(--ui-ink)] text-xs font-bold flex items-center justify-center shrink-0 mt-1">
                           {idx + 1}
                         </span>
-                        <div className="text-base sm:text-lg font-jp leading-relaxed text-slate-100 flex-1">
+                        <div className="text-base sm:text-lg font-jp leading-relaxed text-[var(--ui-ink)] flex-1">
                           <JapaneseFuriganaText
                             sentence={item.furigana || item.japanese}
                             showFurigana={showFurigana}
                             size="lg"
                             forceDark={true}
-                            textClassName="text-slate-100"
+                            textClassName="text-[var(--ui-ink)]"
                             kanjiClassName="text-white font-bold"
                             furiganaClassName="text-[#43EEF7]"
                           />
@@ -3273,7 +3269,7 @@ export default function AiReadingPractice({
                         className={`p-2 rounded-xl border transition cursor-pointer shrink-0 ${
                           activeSentenceIndex === idx
                             ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300 animate-pulse'
-                            : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300'
+                            : 'reading-soft reading-hover border-[var(--ui-line)] text-[var(--ui-ink)]'
                         }`}
                         title="Nghe câu này"
                       >
@@ -3281,7 +3277,7 @@ export default function AiReadingPractice({
                       </button>
                     </div>
 
-                    <div className="text-xs sm:text-sm text-amber-200/90 bg-amber-950/20 border border-amber-900/30 rounded-xl p-3 pl-4 leading-relaxed">
+                    <div className="text-xs sm:text-sm text-amber-200/90 reading-warning border border-amber-900/30 rounded-xl p-3 pl-4 leading-relaxed">
                       <strong className="text-amber-400 text-xs uppercase mr-2 font-semibold">Dịch nghĩa:</strong>
                       <span>{item.vietnamese}</span>
                     </div>
@@ -3296,22 +3292,22 @@ export default function AiReadingPractice({
       {/* HISTORY MODAL */}
       <AnimatePresence>
         {showHistoryModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 reading-surface backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5 max-h-[85vh] flex flex-col"
+              className="w-full max-w-2xl reading-surface border border-[var(--ui-line)] rounded-3xl p-6 shadow-2xl space-y-5 max-h-[85vh] flex flex-col"
             >
-              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center justify-between pb-3 border-b border-[var(--ui-line)]">
                 <div className="flex items-center gap-2">
                   <History className="w-5 h-5 text-indigo-400" />
-                  <h3 className="text-lg font-bold text-white">Lịch sử bài viết đã phân tích</h3>
+                  <h3 className="text-lg font-bold text-[var(--ui-ink)]">Lịch sử bài viết đã phân tích</h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowHistoryModal(false)}
-                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition cursor-pointer"
+                  className="p-1.5 rounded-lg reading-soft reading-hover text-[var(--ui-muted)] hover:text-[var(--ui-ink)] transition cursor-pointer"
                 >
                   <XCircle className="w-5 h-5" />
                 </button>
@@ -3319,21 +3315,21 @@ export default function AiReadingPractice({
 
               <div className="flex-1 overflow-y-auto space-y-3 pr-1">
                 {savedHistory.length === 0 ? (
-                  <p className="text-slate-400 text-center py-8 text-sm">Chưa có bài đọc nào trong lịch sử.</p>
+                  <p className="text-[var(--ui-muted)] text-center py-8 text-sm">Chưa có bài đọc nào trong lịch sử.</p>
                 ) : (
                   savedHistory.map((item, idx) => (
                     <div
                       key={idx}
-                      className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 hover:border-indigo-500/50 transition flex items-start justify-between gap-3 group"
+                      className="p-4 rounded-2xl reading-surface border border-[var(--ui-line)] hover:border-indigo-500/50 transition flex items-start justify-between gap-3 group"
                     >
                       <div className="space-y-1 flex-1">
                         <div className="flex items-center gap-2">
                           <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
                             {item.level || 'JLPT'}
                           </span>
-                          <strong className="text-sm text-white font-semibold line-clamp-1">{item.title}</strong>
+                          <strong className="text-sm text-[var(--ui-ink)] font-semibold line-clamp-1">{item.title}</strong>
                         </div>
-                        <p className="text-xs text-slate-400 font-jp line-clamp-2 leading-relaxed">
+                        <p className="text-xs text-[var(--ui-muted)] font-jp line-clamp-2 leading-relaxed">
                           {item.japanesePassage}
                         </p>
                       </div>
@@ -3361,7 +3357,7 @@ export default function AiReadingPractice({
                               return next;
                             });
                           }}
-                          className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-950/40 text-slate-400 hover:text-rose-300 transition cursor-pointer"
+                          className="p-1.5 rounded-lg reading-soft hover:bg-rose-950/40 text-[var(--ui-muted)] hover:text-rose-300 transition cursor-pointer"
                           title="Xóa bài này"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
