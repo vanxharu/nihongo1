@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { KANJI_N4_SOURCE } from '../data/kanjiMasterN4Source';
+import KanjiSentences from './KanjiSentences';
 import RAW_PAGES from '../data/kanjiMasterN4Ocr.json';
 import { BookOpen, Layers, PenLine, RotateCcw, Volume2, ChevronLeft, ChevronRight, CheckCircle2, LockKeyhole, Search } from 'lucide-react';
 
@@ -106,6 +107,7 @@ export default function KanjiMasterN4() {
           <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">{detailNote?.checked?'Đã được người học đánh dấu đối chiếu với sách.':'Nội dung bổ sung là ghi chú học tập, chưa được xác minh với PDF. Không tự động dùng làm đáp án kiểm tra.'}</div>
           <button onClick={()=>{if(!detailEntry)return;setStudyNotes(p=>({...p,[detailEntry.glyph]:{meaning:'',onyomi:'',kunyomi:'',mnemonic:'',examples:'',vocabulary:'',sourcePage:detailEntry.page,...p[detailEntry.glyph],checked:true}}));}} className="rounded-xl border border-teal-300 bg-teal-50 px-4 py-3 text-sm font-bold text-teal-800">Tôi đã đối chiếu nội dung với sách</button>
           </div></div></section>}
+      <KanjiSentences />
       {sourceReview}
       <section className="rounded-2xl border bg-white p-4"><div className="flex items-center gap-2 font-bold"><Search size={18}/> OCR gốc · 154 trang</div><p className="mt-1 text-xs text-amber-700">Bản nhận dạng thô, chưa xác minh; có thể sai Kanji, ví dụ và mẹo nhớ.</p><input value={ocrSearch} onChange={e=>setOcrSearch(e.target.value)} placeholder="Tìm nội dung OCR hoặc số trang" className="mt-3 w-full rounded-xl border p-3"/><div className="mt-3 max-h-72 space-y-2 overflow-auto">{ocrPages.map(p=><details key={p.page} className="rounded-lg border p-2"><summary className="cursor-pointer text-sm font-semibold">Trang {p.page} · {reviewed[p.page]?.status==='checked'?'Đã đánh dấu đối chiếu':'Chưa duyệt'}</summary><pre className="mt-2 whitespace-pre-wrap text-xs">{p.text||'Không đọc được'}</pre><button onClick={()=>{setReviewPage(p.page);setReviewOpen(true);}} className="mt-2 text-sm text-sky-700 underline">Duyệt trang này</button></details>)}</div></section>
     </div>}
