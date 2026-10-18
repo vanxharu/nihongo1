@@ -9,6 +9,7 @@ import { maskVocabularyInExample } from '../utils/vocabularyCloze';
 import HeartLike from './ui/HeartLike';
 import SrsSwitch from './ui/SrsSwitch';
 import { useSrsAuto } from '../utils/srsMode';
+import VocabSentenceMode from './VocabSentenceMode';
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { 
   Volume2, 
@@ -46,7 +47,7 @@ import {
   Lightbulb,
   FastForward,
   RotateCcw
-} from 'lucide-react';
+, PenLine } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { VocabularyItem, UserProfile, LearningPosition, JLPTLevel } from '../types';
 import { VOCABULARY_DATA } from '../data';
@@ -641,20 +642,22 @@ export interface VocabModeSettings {
 }
 
 // Mặc định: ẩn những gì làm lộ đáp án của chế độ đó, hiện những gì giúp hiểu ngữ cảnh.
-export const VOCAB_MODE_DEFAULTS: Record<'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing', VocabModeSettings> = {
+export const VOCAB_MODE_DEFAULTS: Record<'flashcard' | 'quiz' | 'cram' | 'sentence' | 'dokkai' | 'shadowing', VocabModeSettings> = {
   // Lật thẻ: mặt trước chỉ có chữ để tự nhớ cách đọc; lật thẻ mới thấy đọc/nghĩa.
   flashcard: { showFurigana: false, showExampleFurigana: true, showPitchAccent: false, showRomaji: false, autoAdvance: false, studyDirection: 'JP_VI' },
   // Trắc nghiệm: furigana của từ sẽ lộ đáp án câu hỏi cách đọc.
   quiz: { showFurigana: false, showExampleFurigana: true, showPitchAccent: false, showRomaji: false, autoAdvance: false, studyDirection: 'JP_VI' },
   // Luyện gõ: ẩn mọi furigana (kể cả câu ví dụ) vì đáp án chính là cách đọc; gõ đúng tự chuyển.
   cram: { showFurigana: false, showExampleFurigana: false, showPitchAccent: false, showRomaji: false, autoAdvance: true, studyDirection: 'JP_VI' },
+  // Đặt câu: gõ cả câu nên ẩn furigana câu ví dụ (đó là đáp án).
+  sentence: { showFurigana: false, showExampleFurigana: false, showPitchAccent: false, showRomaji: false, autoAdvance: false, studyDirection: 'JP_VI' },
   // Đọc hiểu: hiện furigana để đọc trôi chảy.
   dokkai: { showFurigana: true, showExampleFurigana: true, showPitchAccent: false, showRomaji: false, autoAdvance: false, studyDirection: 'JP_VI' },
   // Ghép câu (nghe – nói theo): cần cách đọc và trọng âm.
   shadowing: { showFurigana: true, showExampleFurigana: true, showPitchAccent: true, showRomaji: false, autoAdvance: false, studyDirection: 'JP_VI' },
 };
 
-export const getVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing'): VocabModeSettings => {
+export const getVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'sentence' | 'dokkai' | 'shadowing'): VocabModeSettings => {
   try {
     const saved = localStorage.getItem(`jlpt_vocab_mode_settings_${mode}`);
     if (saved) {
@@ -664,7 +667,7 @@ export const getVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dokk
   return VOCAB_MODE_DEFAULTS[mode];
 };
 
-export const saveVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing', settings: Partial<VocabModeSettings>) => {
+export const saveVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'sentence' | 'dokkai' | 'shadowing', settings: Partial<VocabModeSettings>) => {
   try {
     const current = getVocabModeSettings(mode);
     const updated = { ...current, ...settings };
@@ -675,7 +678,7 @@ export const saveVocabModeSettings = (mode: 'flashcard' | 'quiz' | 'cram' | 'dok
 // ?mode=quiz (vd. nút "Ôn từ vựng 5 phút") mở thẳng chế độ đó.
 const URL_VOCAB_MODE = () => {
   const m = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('mode') : null;
-  return (['flashcard', 'quiz', 'cram', 'dokkai', 'shadowing'] as const).find(x => x === m);
+  return (['flashcard', 'quiz', 'cram', 'sentence', 'dokkai', 'shadowing'] as const).find(x => x === m);
 };
 
 export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel }: VocabularyPracticeProps) {
@@ -732,7 +735,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardSlideDirection, setCardSlideDirection] = useState(1);
   const reduceCardMotion = useReducedMotion();
-  const [selectedMode, setSelectedMode] = useState<'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing'>(() => {
+  const [selectedMode, setSelectedMode] = useState<'flashcard' | 'quiz' | 'cram' | 'sentence' | 'dokkai' | 'shadowing'>(() => {
     const urlMode = URL_VOCAB_MODE();
     if (urlMode) return urlMode;
     if (!user) return 'flashcard';
@@ -1069,7 +1072,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
 
   // Switch mode with smart defaults
-  const handleSwitchMode = useCallback((newMode: 'flashcard' | 'quiz' | 'cram' | 'dokkai' | 'shadowing') => {
+  const handleSwitchMode = useCallback((newMode: 'flashcard' | 'quiz' | 'cram' | 'sentence' | 'dokkai' | 'shadowing') => {
     setSelectedMode(newMode);
     const cfg = getVocabModeSettings(newMode);
     setShowFurigana(cfg.showFurigana);
@@ -3020,7 +3023,7 @@ if (loading) {
               <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 mb-2.5 border-b border-[#343d5f]/70 text-xs">
                 <div className="flex items-center gap-2 text-slate-300 font-medium">
                   <span className="px-2.5 py-0.5 rounded-lg bg-indigo-950/90 text-indigo-300 border border-indigo-500/40 font-bold uppercase text-[11px]">
-                    Chế độ {selectedMode === 'flashcard' ? 'Lật thẻ' : selectedMode === 'quiz' ? 'Trắc nghiệm' : selectedMode === 'cram' ? 'Luyện gõ' : selectedMode === 'dokkai' ? 'Đọc hiểu' : 'Ghép câu'}
+                    Chế độ {selectedMode === 'flashcard' ? 'Lật thẻ' : selectedMode === 'quiz' ? 'Trắc nghiệm' : selectedMode === 'cram' ? 'Luyện gõ' : selectedMode === 'sentence' ? 'Đặt câu' : selectedMode === 'dokkai' ? 'Đọc hiểu' : 'Ghép câu'}
                   </span>
                   <span className="text-slate-400 text-[11px] leading-tight">
                     {selectedMode === 'flashcard' && '💡 Bật Furigana & Dấu nhấn âm điệu để ghi nhớ chữ Nhật và âm đọc chuẩn xác nhất.'}
@@ -3542,6 +3545,8 @@ if (loading) {
             </div>
           )}
 
+          {selectedMode === 'sentence' && currentItem && <VocabSentenceMode item={currentItem} onNext={handleNext} />}
+
           {selectedMode === 'cram' && currentItem && (
             <div className="vocab-cram-exercise w-full max-w-lg mx-auto space-y-5 relative">
               {/* Mascot decoration */}
@@ -3901,7 +3906,7 @@ if (loading) {
 
       {/* Responsive Cohesive Mode Selectors Bar */}
       <div className="w-full max-w-[780px] space-y-1.5 -mt-2">
-        <div className="grid grid-cols-5 gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
+        <div className="grid grid-cols-6 gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
           <button 
             type="button"
             onClick={() => handleSwitchMode('flashcard')} 
@@ -3939,6 +3944,19 @@ if (loading) {
           >
             <TrendingUp className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">Luyện gõ</span>
+          </button>
+
+          <button 
+            type="button"
+            onClick={() => handleSwitchMode('sentence')} 
+            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
+              selectedMode === 'sentence' 
+                ? 'bg-teal-600 text-white shadow-md shadow-teal-600/30 ring-1 ring-teal-400/50' 
+                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
+            }`}
+          >
+            <PenLine className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">Đặt câu</span>
           </button>
 
           <button 
