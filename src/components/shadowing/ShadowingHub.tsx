@@ -75,6 +75,57 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     });
     return unsubscribe;
   }, []);
+  // Persist analyses for each video so revisiting sentences never starts from zero.
+  const analysisStoreKey = 'nihon:shadowing:analysis:v2:' + videoId;
+  useEffect(() => {
+    cache.current.clear();
+    try {
+      const saved = JSON.parse(localStorage.getItem(analysisStoreKey) || '{}');
+      if (saved && typeof saved === 'object') for (const [text, value] of Object.entries(saved)) {
+        const a = value as ShadowingAnalysis;
+        if (Array.isArray(a?.vocabulary) && Array.isArray(a?.kanji) && Array.isArray(a?.grammar)) cache.current.set(text, a);
+      }
+    } catch {}
+    refreshAnalysis(n => n + 1);
+  }, [analysisStoreKey]);
+  const saveAnalysis = (text: string, value: ShadowingAnalysis) => {
+    cache.current.set(text, value);
+    try {
+      // Keep the full video within browser storage limits.
+      const entries = [...cache.current].slice(-500);
+      localStorage.setItem(analysisStoreKey, JSON.stringify(Object.fromEntries(entries)));
+    } catch {}
+    refreshAnalysis(n => n + 1);
+  };
+  // Build a fast offline-like analysis index for the entire video in batches.
+  // The server uses its existing Japanese tokenizer and local dictionaries, not Gemini.
+  useEffect(() => {
+    if (!videoId || !cues.length) return;
+    const controller = new AbortController();
+    const sentences = [...new Set(cues.map(c => c.text.trim()).filter(Boolean))].filter(t => !cache.current.has(t));
+    const run = async () => {
+      for (let i = 0; i < sentences.length && !controller.signal.aborted; i += 40) {
+        try {
+          const response = await fetch('/api/shadowing/analyze', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sentences: sentences.slice(i, i + 40) }),
+            signal: controller.signal,
+          });
+          if (!response.ok) break;
+          const data = await response.json();
+          if (controller.signal.aborted) break;
+          for (const [text, value] of Object.entries(data.items || {})) {
+            const a = value as ShadowingAnalysis;
+            if (Array.isArray(a?.vocabulary) && Array.isArray(a?.kanji) && Array.isArray(a?.grammar) && cache.current.get(text)?.source !== 'ai') cache.current.set(text, a);
+          }
+          try { localStorage.setItem(analysisStoreKey, JSON.stringify(Object.fromEntries([...cache.current].slice(-500)))); } catch {}
+          refreshAnalysis(n => n + 1);
+        } catch { break; }
+      }
+    };
+    void run();
+    return () => controller.abort();
+  }, [videoId, cues, analysisStoreKey]);
   const active = activeShadowingCue(cues, currentTime);
   const displayedIndex = mode === 'dictation' ? selected : visibleShadowingCue(cues, currentTime);
   const displayed = cues[displayedIndex] || null;
@@ -109,8 +160,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
       void requestSentenceAnalysis(text).then(result=>{
         if(analysisVideo.current!==requestedVideo)return;
         if(!Array.isArray(result.vocabulary)||!Array.isArray(result.kanji)||!Array.isArray(result.grammar))return;
-        cache.current.set(text,{...result,translation:result.translation||cue.translation||''});
-        refreshAnalysis(n=>n+1);
+        saveAnalysis(text,{...result,translation:result.translation||cue.translation||''});
       }).catch(()=>{
         if(analysisVideo.current===requestedVideo)failedAnalysis.current.set(text,Date.now()+60000);
       }).finally(()=>{
@@ -154,7 +204,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     alignmentRequest.current = alignmentController;
     setCues([]); setSentence(''); setSelected(0);
     setInsightCue(null);
-    setRevision(null); setCustomTitle(''); setEditing(params.get('edit') === '1'); cache.current.clear();
+    setRevision(null); setCustomTitle(''); setEditing(params.get('edit') === '1');
     setNotice(''); setCurrentTime(0); setStart('0'); setEnd('10');
     setRevealed(false);
     if (videoId) {
@@ -330,7 +380,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
         <div className="max-lg:contents lg:space-y-4">
           
           
-          {insightCue && (mode === 'shadowing' || revealed) && <SentenceInsights key={videoId + insightCue.text} videoId={videoId || ''} cue={insightCue} cached={cache.current.get(insightCue.text)} onClose={() => setInsightCue(null)} onResult={(text, data) => { cache.current.set(text, data); refreshAnalysis(n => n + 1); }} />}
+          {insightCue && (mode === 'shadowing' || revealed) && <SentenceInsights key={videoId + insightCue.text} videoId={videoId || ''} cue={insightCue} cached={cache.current.get(insightCue.text)} onClose={() => setInsightCue(null)} onResult={(text, data) => { saveAnalysis(text, data); }} />}
           {mode === 'dictation' && <DictationPanel onCorrect={() => onStudyReward?.(`dictation:${videoId}:${start}:${sentence}`, 20) ?? false} key={`${videoId}:${selected}:${sentence}`} sentence={sentence} autoPause={autoPause} onAutoPause={value => { playerRef.current?.pause(); setAutoPause(value); }} onPlay={() => playerRef.current?.playSentence(parseShadowingTime(start), parseShadowingTime(end), autoPause) || false} onReveal={setRevealed} onPrevious={() => jumpCue(selected - 1)} onNext={() => jumpCue(selected + 1)} hasPrevious={selected > 0} hasNext={selected < cues.length - 1} />}
           {(mode === 'shadowing' || revealed) && <section className="rounded-xl bg-[#101010] p-3 max-lg:hidden">
             <div className="mb-3 flex items-center justify-between gap-2">
