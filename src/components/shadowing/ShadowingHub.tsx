@@ -206,7 +206,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
   const library = SHADOWING_VIDEOS.filter(v => v.status === 'active');
   const sources = [...new Set(library.map(v => v.source))];
   const sourceTitle = customTitle || SHADOWING_VIDEOS.find(v => v.youtube_video_id === videoId)?.title;
-  return <div className="shadowing-page shadowing-aanime mx-auto max-w-7xl space-y-3 px-3 py-3 pb-28 text-slate-100 sm:px-6">
+  return <div className="shadowing-page mx-auto max-w-7xl space-y-3 px-3 py-3 pb-28 text-slate-100 sm:px-6">
     {!videoId && <header className="shadowing-banner flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl p-3">
       <form className="flex min-w-0 flex-1 flex-wrap gap-2 sm:flex-nowrap" onSubmit={e => { e.preventDefault(); chooseVideo(urlInput); }}>
         <label className="sr-only" htmlFor="shadowing-youtube">Đường dẫn video YouTube</label>
@@ -245,7 +245,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
               <button aria-pressed={furigana} onClick={() => setFurigana(v => !v)} className={`shadowing-pill${furigana ? ' shadowing-pill-active' : ''}`}>Furigana</button>
               <button aria-pressed={translation} onClick={() => setTranslation(v => !v)} className={`shadowing-pill${translation ? ' shadowing-pill-active' : ''}`}>Dịch</button></div>}
           /></div>
-          <div className="lg:hidden"><div className="mb-2 flex items-center justify-between"><span className="text-xs font-bold uppercase tracking-widest text-amber-300">Học qua anime · Aanime style</span><span className="text-xs text-slate-400">{cues.length} câu</span></div><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} /></div>
+          
           {sourceTitle && <h2 className="line-clamp-2 text-base font-bold leading-snug text-slate-100 max-lg:hidden">{sourceTitle}</h2>}
           {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-3 sm:p-6">
             <div className="mb-1 flex items-center justify-between gap-2 text-xs text-slate-400">
@@ -274,6 +274,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
           </section>}
 
 
+          <div className="lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} /></div>
           <div className="space-y-4 max-lg:order-last">
           <button className={compactButton} aria-expanded={editing} onClick={() => { playerRef.current?.pause(); setEditing(value => !value); }}>{editing ? 'Đóng soạn phụ đề' : 'Soạn phụ đề video'}</button>
           {editing && <SubtitleEditor videoId={videoId} title={sourceTitle || ''} cues={cues} selected={selected} revision={revision} onChange={next => { applyCues(next, true); try { localStorage.setItem(`shadowing-draft:${storageSuffix}`, JSON.stringify({ cues: next, revision })); } catch {} }} onSaved={(saved, title) => { setRevision(saved); setCustomTitle(title); try { localStorage.removeItem(`shadowing-draft:${storageSuffix}`); } catch {} setPersonalVideos(videos => [...videos.filter(v => v.videoId !== videoId), { videoId, title, cueCount: cues.length }]); }} />}
