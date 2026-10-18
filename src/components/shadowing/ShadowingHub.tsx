@@ -76,6 +76,44 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     return unsubscribe;
   }, []);
   // Persist analyses for each video so revisiting sentences never starts from zero.
+  const [refreshingVideo,setRefreshingVideo] = useState(false);
+  const [refreshProgress,setRefreshProgress] = useState('');
+  const [canRefresh,setCanRefresh] = useState(false);
+  useEffect(() => { setCanRefresh(false); }, [videoId]);
+  async function refreshVideoWithClaude() {
+    if (!videoId || refreshingVideo) return;
+    const token = await auth.currentUser?.getIdToken();
+    if (!token) { setNotice('Đăng nhập tài khoản quản trị để cập nhật phụ đề.'); return; }
+    setRefreshingVideo(true); setRefreshProgress('Đang tải SRT và phân tích bằng Claude…');
+    try {
+      let offset = 0;
+      for (let batch = 0; batch < 120; batch++) {
+        const response = await fetch('/api/shadowing/refresh', { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+token }, body:JSON.stringify({videoId,offset}) });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Không thể cập nhật.');
+        offset = data.nextOffset || offset;
+        setRefreshProgress(`Đã phân tích ${offset} / ${data.total} câu`);
+        if (data.done) break;
+      }
+      await loadStoredAnalysis();
+      setRefreshProgress('Đã lưu phân tích vào database.');
+    } catch (error) { setRefreshProgress(error instanceof Error ? error.message : 'Cập nhật thất bại.'); }
+    finally { setRefreshingVideo(false); }
+  }
+  async function loadStoredAnalysis() {
+    if (!videoId) return;
+    try {
+      const response = await fetch('/api/shadowing/analysis?videoId='+encodeURIComponent(videoId));
+      if (!response.ok) return;
+      const data = await response.json();
+      for (const [text,value] of Object.entries(data.items || {})) {
+        const a = value as ShadowingAnalysis;
+        if (Array.isArray(a?.vocabulary) && Array.isArray(a?.kanji) && Array.isArray(a?.grammar)) cache.current.set(text,a);
+      }
+      refreshAnalysis(n=>n+1);
+    } catch {}
+  }
+  useEffect(()=>{void loadStoredAnalysis();},[videoId]);
   const analysisStoreKey = 'nihon:shadowing:analysis:v2:' + videoId;
   useEffect(() => {
     cache.current.clear();
@@ -316,6 +354,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     </section> : <>
       <div className="flex flex-col gap-2 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="max-lg:contents lg:space-y-4">
+          {mode === 'analysis' && <div className="rounded-xl border border-[var(--ui-line)] bg-[var(--ui-surface)] p-2 text-[var(--ui-text)]"><button disabled={refreshingVideo} onClick={refreshVideoWithClaude} className="rounded-lg bg-[var(--ui-primary)] px-3 py-2 text-sm font-bold text-white disabled:opacity-50">↻ Cập nhật phụ đề bằng Claude</button>{refreshProgress && <p className="mt-1 text-xs">{refreshProgress}</p>}</div>}
           {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} busy={analysisBusy} revision={analysisRevision} /></div>}
           <div className="shadowing-sticky"><ShadowingPlayer
             ref={playerRef}
