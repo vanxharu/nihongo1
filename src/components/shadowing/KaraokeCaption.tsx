@@ -1,4 +1,5 @@
 import React from 'react';
+import { shadowingReadingFallbacks } from '../../utils/shadowingReadingFallbacks';
 import { ShadowingAnalysis, ShadowingTextTiming, shadowingTextFill, karaokeVisualFill, validShadowingTimings, currentShadowingWord } from '../../utils/shadowing';
 const segmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter('ja', { granularity: 'word' }) : null;
 
@@ -9,7 +10,7 @@ function KaraokeCaption({ text, time, start, end, timings, analysis, furigana, v
   variant?: 'stage' | 'transcript';
 }) {
   const measured = validShadowingTimings({ id: '', text, start, end, timings }) ? timings! : [];
-  const words = [...(analysis?.readings || []), ...(analysis?.vocabulary || [])].filter(v => v.word).sort((a, b) => b.word.length - a.word.length);
+  const words = [...(analysis?.readings || []), ...(analysis?.vocabulary || []), ...shadowingReadingFallbacks(text)].filter(v => v.word).sort((a, b) => b.word.length - a.word.length);
   const pieces: { text: string; reading?: string; offset: number }[] = [];
   for (let offset = 0; offset < text.length;) {
     // Prefer a reading whose offset matches exactly (disambiguates homographs like 人 ひと/じん).
@@ -17,7 +18,18 @@ function KaraokeCaption({ text, time, start, end, timings, analysis, furigana, v
       ?? words.find(v => text.startsWith(v.word, offset) && (v as any).offset === undefined)
       ?? words.find(v => text.startsWith(v.word, offset));
     const segment = segmenter?.segment(text.slice(offset))[Symbol.iterator]().next().value?.segment;
-    const piece = word?.word || segment || String.fromCodePoint(text.codePointAt(offset)!);
+    let piece = word?.word || segment || String.fromCodePoint(text.codePointAt(offset)!);
+    // A browser word boundary may include a prefix (ご利用) while the stored
+    // reading starts inside it (利用). Never skip over a known reading anchor.
+    if (!word) {
+      for (let next = offset + 1; next < offset + piece.length; next++) {
+        if (words.some(v => text.startsWith(v.word, next) &&
+          ((v as any).offset === undefined || (v as any).offset === next))) {
+          piece = text.slice(offset, next);
+          break;
+        }
+      }
+    }
     if (pieces.length && /^[、。，．！？!?…]+$/.test(piece)) {
       pieces[pieces.length - 1].text += piece;
     } else {
