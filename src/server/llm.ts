@@ -35,6 +35,26 @@ export function getGeminiClient(apiKey = getLlmConfig().apiKey): GoogleGenAI {
 
 // generateContent với tự chuyển model khi quá tải (503/429/404). Model người dùng chọn được thử trước.
 export async function generateGemini(options: { contents: any; model?: string; config?: any; apiKey?: string }) {
+  // Claude is the primary provider when configured; existing callers retain their JSON contract.
+  const claudeKey = process.env.ANTHROPIC_API_KEY || '';
+  if (claudeKey) {
+    const system = String(options.config?.systemInstruction || '');
+    const contents = typeof options.contents === 'string' ? options.contents : JSON.stringify(options.contents);
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': claudeKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: process.env.CLAUDE_MODEL || 'claude-sonnet-4-5',
+        max_tokens: options.config?.maxOutputTokens || 4096,
+        ...(system ? { system: system + (options.config?.responseMimeType === 'application/json' ? '\\nReturn ONLY valid JSON.' : '') } : {}),
+        messages: [{ role: 'user', content: contents }],
+      }),
+      signal: AbortSignal.timeout(90000),
+    });
+    const data: any = await response.json();
+    if (!response.ok) throw new Error('Claude API: ' + (data.error?.message || response.status));
+    return { text: (data.content || []).filter((c: any) => c.type === 'text').map((c: any) => c.text).join('') } as any;
+  }
   const client = getGeminiClient(options.apiKey);
   const primary = getLlmConfig().model || options.model || DEFAULT_GEMINI_MODEL;
   let lastError: any = null;
