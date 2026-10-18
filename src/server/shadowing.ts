@@ -149,7 +149,7 @@ export async function shadowingAnalyze(req: Request, res: Response) {
   // Fast, deterministic bulk pre-analysis: no LLM latency or quota consumption.
   // Client stores this per-video and upgrades individual sentences with AI later.
   if (Array.isArray(req.body?.sentences)) {
-    const sentences = [...new Set(req.body.sentences.filter((v: unknown): v is string => typeof v === 'string' && !!v.trim() && v.length <= 1000))].slice(0, 40);
+    const sentences: string[] = [...new Set<string>((req.body.sentences as unknown[]).filter((v: unknown): v is string => typeof v === 'string' && !!v.trim() && v.length <= 1000))].slice(0, 40);
     if (!sentences.length) return res.status(400).json({ error: 'Không có câu hợp lệ.' });
     const items: Record<string, ShadowingAnalysis> = {};
     for (const sentence of sentences) {
