@@ -43,3 +43,36 @@ test('prepared catalog keeps all live sentence IDs for static analysis', async (
   assert.throws(() => parsePreparedShadowingCaptions({ ...source, videoId: 'different' }, source.videoId));
   assert.throws(() => parsePreparedShadowingCaptions({ ...source, cues: [{ ...source.cues[0], start: -1 }] }, source.videoId));
 });
+
+test('dictionary provenance remains dictionary after import', () => {
+  const p = packet();
+  (p.sentences[0].analysis as any).source = 'dictionary';
+  assert.equal(parse(p).sentences[0].analysis.source, 'dictionary');
+});
+
+test('every catalog file covers its exact source and repeated loads never join sentences', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const { SHADOWING_VIDEOS } = await import('../src/data/shadowingVideos');
+  const { parsePreparedShadowingCaptions, normalizeShadowingTimeline } = await import('../src/utils/shadowing');
+  const { createHash } = await import('node:crypto');
+  const manifest = JSON.parse(await readFile(new URL('../public/shadowing-analysis/manifest.json', import.meta.url), 'utf8'));
+  assert.equal(manifest.totalVideos, 10);
+  let total = 0;
+  for (const video of SHADOWING_VIDEOS) {
+    const id = video.youtube_video_id;
+    const source = JSON.parse(await readFile(new URL(`../public/shadowing-captions/${id}.json`, import.meta.url), 'utf8'));
+    let cues = parsePreparedShadowingCaptions(source, id);
+    for (let n = 0; n < 5; n++) cues = normalizeShadowingTimeline(cues);
+    assert.deepEqual(cues.map(c => [c.id, c.text]), source.cues.map((c: any) => [c.id, c.text]));
+    const saved = JSON.parse(await readFile(new URL(`../public/shadowing-analysis/${id}.json`, import.meta.url), 'utf8'));
+    const analysis = parseShadowingAnalysisFile(saved, id, cues);
+    assert.equal(analysis.sentences.length, cues.length);
+    assert.deepEqual(analysis.sentences.map(c => [c.id,c.text]), cues.map(c => [c.id,c.text]));
+    const hash = createHash('sha256').update(JSON.stringify(source.cues.map((c: any) => [c.id,c.text,c.start,c.end]))).digest('hex');
+    assert.equal(manifest.videos.find((v: any) => v.videoId === id).sourceHash, hash);
+    for (const row of analysis.sentences) for (const v of row.analysis.vocabulary) assert.ok(row.text.includes(v.word), `Vocabulary must occur in its caption: ${id} ${row.id}`);
+    total += cues.length;
+  }
+  assert.equal(total,3384);
+  assert.equal(manifest.totalCues,total);
+});

@@ -35,7 +35,7 @@ export function parseShadowingAnalysisFile(value: unknown, videoId: string, cues
           !(a.readings as Record<string, unknown>[]).every(r => text.includes(r.word as string) &&
             (r.offset === undefined || (Number.isInteger(r.offset) && (r.offset as number) >= 0 && text.slice(r.offset as number, (r.offset as number) + (r.word as string).length) === r.word))))))
       throw new Error(`Câu ${index + 1}: thiếu bản dịch hoặc cấu trúc từ vựng, kanji, ngữ pháp, furigana không hợp lệ.`);
-    return { id: entry.id, text: entry.text, analysis: { ...a, source: 'ai' } as ShadowingAnalysis };
+    return { id: entry.id, text: entry.text, analysis: { ...a, source: a.source === 'dictionary' ? 'dictionary' : 'ai' } as ShadowingAnalysis };
   });
   const texts = new Map<string, string>();
   for (const row of sentences) {

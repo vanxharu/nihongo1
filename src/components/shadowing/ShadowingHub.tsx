@@ -4,7 +4,7 @@ import { ChevronLeft, Link2 } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 import { SHADOWING_VIDEOS } from '../../data/shadowingVideos';
 import { formatDuration } from '../../utils/youtubeUtils';
-import { mergeSentenceCues, parseShadowingVideoId, parseShadowingTime, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
+import { parseShadowingVideoId, parseShadowingTime, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
 import ShadowingPlayer, { ShadowingPlayerHandle } from './ShadowingPlayer';
 import KaraokeCaption from './KaraokeCaption';
 import DictationPanel from './DictationPanel';
@@ -190,7 +190,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
         } catch { /* A draft and original captions remain usable offline. */ }
         // Catalog captions remain available even when the preview has no database credentials.
         try {
-          const response = await fetch(`/shadowing-prepared/${videoId}.json`, { signal: alignmentController.signal });
+          const response = await fetch(`/shadowing-captions/${videoId}.json`, { signal: alignmentController.signal });
           if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
             const packet = await response.json();
             const prepared = parsePreparedShadowingCaptions(packet, videoId);
@@ -214,7 +214,6 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
 
   function applyCues(next: ShadowingCue[], preserveSelection = false) {
     next = normalizeShadowingTimeline(next);
-    if (!preserveSelection) next = mergeSentenceCues(next);
     setCues(next); selectCue(preserveSelection ? Math.min(selected, Math.max(0, next.length - 1)) : Math.max(0, activeShadowingCue(next, playbackTime.current)), next);
     if (videoId) { try { localStorage.setItem(`shadowing-cues:${storageSuffix}`, JSON.stringify(next)); } catch {} }
   }

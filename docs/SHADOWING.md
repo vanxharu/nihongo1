@@ -25,3 +25,13 @@ YouTube may refuse transcript requests from cloud servers even when the same vid
 Checks: `npm run lint`, `npm run build`.
 
 Bài 05 (`R1Oy-PqXhz4`) có sẵn file phân tích tĩnh cho đủ 322 dòng, khớp ID/text bộ phụ đề website chính ngày 2026-10-18 (revision `df4262b1-01fd-408f-bd21-b1a9ae54c6e0`). Bản này do ChatGPT biên soạn ghi chú ngữ pháp theo ngữ cảnh, bổ sung từ vựng, dùng từ điển app cho kanji/từ vựng và kế thừa bản dịch/furigana đã có. Chưa đối chiếu âm thanh; 21 đoạn nghi lỗi nhận dạng được ghi chú, giữ nguyên text và thời gian. Nhãn số câu/phương án không bị tạo ngữ pháp giả. Chạy `node --import tsx scripts/build-shadowing-static-analysis.ts` để tái tạo JSON và prompt Claude. Prompt xuất sẵn tại `public/shadowing-analysis/R1Oy-PqXhz4-claude.txt`.
+
+## Toàn bộ 10 đề
+
+`public/shadowing-captions/` chứa bản chụp phụ đề app đã lưu của đủ 10 đề (3.384 dòng), tải từ endpoint video của website chính ngày 2026-10-18. Dữ liệu gốc có dòng bị ngắt giữa mệnh đề và có lỗi nhận dạng. Không tự gộp các dòng đã lưu: ID, text và mốc phải khớp với file phân tích.
+
+Chạy `node --import tsx scripts/build-shadowing-catalog-analysis.ts` để tạo 10 JSON và 10 prompt Claude trong `public/shadowing-analysis/`. `manifest.json` ghi số dòng, độ phủ từ vựng/kanji/ngữ pháp, phương pháp và hash nguồn từng đề. Bài 05 giữ ghi chú ngữ pháp theo ngữ cảnh đã biên soạn; 9 đề còn lại tách từ bằng Kuromoji, tra từ điển app, nhận diện cấu trúc bằng quy tắc có ví dụ do ChatGPT biên soạn. Đây là phân tích học tập tĩnh bằng từ điển/quy tắc, **chưa phải phân tích Claude và chưa kiểm tra audio**. Bản dịch và readings kế thừa app. Những dòng chưa nhận diện được cấu trúc để mảng grammar rỗng; nhãn số không bị tạo ngữ pháp giả. Lời cảnh báo về dòng bị ngắt/nhận dạng sai được hiển thị trong bảng phân tích.
+
+Có thể thay từng JSON bằng kết quả Claude sau khi kiểm tra nội dung. Prompt giữ nguyên ID/text và cho phép chia nhiều file nhỏ. Không cần lấy lại phụ đề từ YouTube để làm bước này.
+
+Kiểm tra: `node --import tsx --test tests/shadowingAnalysisFile.test.ts`, `npm run lint`, `npm run build`.
