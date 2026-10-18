@@ -22,7 +22,7 @@
       "destination": "https://nihongo-fd01e.firebaseapp.com/__/auth/$1"
     },
     {
-      "source": "/api/((?!reading/(?:generate$|sync$|todai/|watanoc/)|shadowing/(?:video|transcript|analyze|prepare)$|tts$).*)",
+      "source": "/api/((?!reading/(?:generate$|sync$|todai/|watanoc/)|shadowing/(?:video|transcript|analyze|prepare|refresh|analysis)$|tts$).*)",
       "destination": "/api/server"
     },
     {
