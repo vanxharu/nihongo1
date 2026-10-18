@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import type { ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
 import { normalizeDictation } from '../../utils/shadowing';
 import { Volume2 } from 'lucide-react';
+import KaraokeCaption from './KaraokeCaption';
 
 type Tab = 'vocabulary' | 'kanji' | 'grammar' | 'cards' | 'quiz';
 type Saved = { id: string; text: string; translation: string; due: number; interval: number; seen: number };
@@ -9,9 +10,9 @@ const storeKey = (videoId: string) => 'nihon:video-learning:v1:' + videoId;
 function load(videoId: string): Saved[] { try { const v = JSON.parse(localStorage.getItem(storeKey(videoId)) || '[]'); return Array.isArray(v) ? v.filter(x=>x && typeof x.id==='string' && typeof x.text==='string') : []; } catch { return []; } }
 const unique = <T extends { word?: string; character?: string; pattern?: string }>(items:T[], key:keyof T) => [...new Map(items.map(x=>[String(x[key]),x])).values()];
 function speak(text:string) { if (!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='ja-JP'; u.rate=.85; speechSynthesis.speak(u); }
-export default function VideoLearningPanel({videoId,cues,selected,onJump,analysis,onAnalyze,busy,revision}:{
+export default function VideoLearningPanel({videoId,cues,selected,onJump,analysis,onAnalyze,busy,revision,time=0,furigana=true,showTranslation=true}:{
  videoId:string; cues:ShadowingCue[]; selected:number; onJump:(index:number)=>void;
- analysis:Map<string,ShadowingAnalysis>; onAnalyze:(cue:ShadowingCue)=>void; busy?:boolean; revision?:number;
+ analysis:Map<string,ShadowingAnalysis>; onAnalyze:(cue:ShadowingCue)=>void; busy?:boolean; revision?:number; time?:number; furigana?:boolean; showTranslation?:boolean;
 }) {
  const [tab,setTab]=useState<Tab>('vocabulary');
  const [cards,setCards]=useState<Saved[]>(()=>load(videoId));
@@ -23,6 +24,8 @@ export default function VideoLearningPanel({videoId,cues,selected,onJump,analysi
  useEffect(()=>{setCards(load(videoId));setCardIndex(0);setTab('vocabulary');setScore({correct:0,total:0});},[videoId]);
  useEffect(()=>{try{localStorage.setItem(storeKey(videoId),JSON.stringify(cards));}catch{}},[videoId,cards]);
  const analyses=useMemo(()=>{const result=analysis.get(cues[selected]?.text||'');return result?[result]:[];},[cues,analysis,selected,busy,revision]);
+ const currentCue=cues[selected];
+ const currentAnalysis: ShadowingAnalysis = analyses[0] || {source:'dictionary',translation:currentCue?.translation||'',readings:currentCue?.readings||[],vocabulary:[],kanji:[],grammar:[]};
  const vocab=useMemo(()=>unique(analyses.flatMap(a=>a.vocabulary||[]),'word'),[analyses]);
  const kanji=useMemo(()=>unique(analyses.flatMap(a=>a.kanji||[]),'character'),[analyses]);
  const grammar=useMemo(()=>unique(analyses.flatMap(a=>a.grammar||[]),'pattern'),[analyses]);
@@ -32,7 +35,13 @@ export default function VideoLearningPanel({videoId,cues,selected,onJump,analysi
  const question=quizCards[score.total%Math.max(1,quizCards.length)];
  const tabs:{id:Tab;label:string}[]=[{id:'vocabulary',label:'Từ vựng'},{id:'kanji',label:'Kanji'},{id:'grammar',label:'Ngữ pháp'},{id:'cards',label:'Flashcard'},{id:'quiz',label:'Kiểm tra'}];
  return <section className="overflow-hidden rounded-2xl border border-[var(--ui-line)] bg-[var(--ui-surface)] text-[var(--ui-text)] shadow-sm">
- <div className="border-b border-[var(--ui-line)] bg-[var(--ui-soft)] px-4 py-3"><h3 className="font-bold text-[var(--ui-text)]">Phân tích bài nghe</h3><p className="text-xs text-[var(--ui-muted)]">Hiển thị kết quả từ file phân tích theo câu đang phát.</p></div>
+ <div aria-label="Câu đang phát" className="shadowing-analysis-current border-b border-[var(--ui-line)] px-3 py-3">
+ {currentCue ? <>
+   <p className="mb-1 text-[10px] font-medium text-[var(--ui-muted)]">Câu {selected+1}/{cues.length}</p>
+   <KaraokeCaption text={currentCue.text} time={time} start={currentCue.start} end={currentCue.end} timings={currentCue.timings} analysis={currentAnalysis} furigana={furigana} variant="transcript" />
+   {showTranslation && (currentAnalysis.translation || currentCue.translation) && <p className="mt-1 text-xs leading-relaxed text-[var(--ui-muted)]">{currentAnalysis.translation || currentCue.translation}</p>}
+ </> : <p className="text-xs text-[var(--ui-muted)]">Phát video để xem câu đang phát.</p>}
+ </div>
  <div className="flex overflow-x-auto border-b border-[var(--ui-line)]" role="tablist" aria-label="Phân tích và ôn tập">{tabs.map(t=><button key={t.id} role="tab" aria-selected={tab===t.id} onClick={()=>setTab(t.id)} className={`shrink-0 px-4 py-3 text-xs font-semibold border-b-2 ${tab===t.id?'border-[var(--ui-primary)] text-[var(--ui-primary)]':'border-transparent text-[var(--ui-muted)]'}`}>{t.label}{t.id==='cards'?` (${cards.length})`:''}</button>)}</div>
  <div className="p-3 sm:p-4 space-y-3 max-h-[520px] overflow-y-auto">
  {analyses[0]?.note && <p className="rounded-lg bg-[var(--ui-soft)] p-2 text-xs text-[var(--ui-muted)]">{analyses[0].note}</p>}

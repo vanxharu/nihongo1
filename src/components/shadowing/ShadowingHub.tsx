@@ -274,7 +274,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
       <div className="flex flex-col gap-2 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="max-lg:contents lg:space-y-4">
           {mode === 'analysis' && <AnalysisFilePanel key={videoId} videoId={videoId} cues={cues} analysis={cache.current} onImport={importAnalysis} />}
-          {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} revision={analysisRevision} /></div>}
+          {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} revision={analysisRevision} time={currentTime} furigana={furigana} showTranslation={translation} /></div>}
           <div className="shadowing-sticky"><ShadowingPlayer
             ref={playerRef}
             key={videoId}
@@ -299,7 +299,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
               <button aria-pressed={translation} onClick={() => setTranslation(v => !v)} className={`shadowing-pill${translation ? ' shadowing-pill-active' : ''}`}>Dịch</button></div>}
           /></div>
           
-          {mode === 'analysis' && <div className="lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} revision={analysisRevision} /></div>}
+          {mode === 'analysis' && <div className="lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} revision={analysisRevision} time={currentTime} furigana={furigana} showTranslation={translation} /></div>}
           {sourceTitle && <h2 className="line-clamp-2 text-base font-bold leading-snug text-slate-100 max-lg:hidden">{sourceTitle}</h2>}
           {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-3 sm:p-6">
             <div className="mb-1 flex items-center justify-between gap-2 text-xs text-slate-400">
