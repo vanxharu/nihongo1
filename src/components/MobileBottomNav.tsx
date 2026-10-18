@@ -1,6 +1,6 @@
 import TheoryRadial from './ui/TheoryRadial';
 import './ui/bottomNotch.css';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
 
@@ -32,8 +32,7 @@ import {
   TrendingUp,
   GraduationCap,
   Trophy,
-  FileText,
-  ChevronUp
+  FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../types';
@@ -125,30 +124,6 @@ export default function MobileBottomNav({
     ...(onToggleSidebar ? [{ id: 'menu', label: 'Menu', icon: Menu, active: !!isSidebarOpen }] : []),
   ];
   const activeIdx = tabItems.findIndex((i) => i.active);
-  const navRef = useRef<HTMLElement>(null);
-  const spring = useRef({ x: 0, v: 0, raf: 0 });
-
-  // Notch + bubble follow the active tab with a spring (spec 041)
-  useEffect(() => {
-    const nav = navRef.current;
-    const tab = nav?.querySelectorAll<HTMLElement>('.u041-tabs > li')[activeIdx];
-    if (!nav || !tab) return;
-    const sp = spring.current;
-    const target = tab.offsetLeft + tab.offsetWidth / 2;
-    const set = () => nav.style.setProperty('--x', sp.x.toFixed(2) + 'px');
-    cancelAnimationFrame(sp.raf);
-    if (!sp.x || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { sp.x = target; sp.v = 0; set(); return; }
-    const step = () => {
-      sp.v += (target - sp.x) * 0.16 - sp.v * 0.42; sp.x += sp.v; set();
-      if (Math.abs(target - sp.x) > 0.3 || Math.abs(sp.v) > 0.3) sp.raf = requestAnimationFrame(step);
-      else { sp.x = target; sp.v = 0; set(); }
-    };
-    sp.raf = requestAnimationFrame(step);
-    const ro = new ResizeObserver(() => { sp.x = tab.offsetLeft + tab.offsetWidth / 2; set(); });
-    ro.observe(nav);
-    return () => { ro.disconnect(); cancelAnimationFrame(sp.raf); };
-  }, [activeIdx]);
-
   const handleItemClick = (id: string) => {
     setCurrentTab(id);
     setIsMoreOpen(false);
@@ -161,12 +136,10 @@ export default function MobileBottomNav({
 
   return (
     <>
-      {/* Pinned Bottom Navigation Bar for Mobile & Tablet (< xl) - Direct Match with Screenshots */}
-      <nav aria-label="Điều hướng chính" id="mobile-bottom-navigation" ref={navRef} className="u041-nav xl:hidden select-none">
+      {/* Compact navigation for mobile and tablet. */}
+      <nav aria-label="Điều hướng chính" id="mobile-bottom-navigation" className="u041-nav xl:hidden select-none">
         <div className="u041">
-          <span className="u041-shadow" aria-hidden="true" />
           <div className="u041-bar" aria-hidden="true" />
-          {activeIdx >= 0 && <span className="u041-bub" aria-hidden="true" />}
           <ul className="u041-tabs">
             {tabItems.map((item, i) => {
               const Icon = item.icon;
@@ -174,7 +147,7 @@ export default function MobileBottomNav({
               const inner = (
                 <>
                   <span className="u041-ic" aria-hidden="true"><Icon /></span>
-                  {item.id === 'grammar' && !sel && <ChevronUp className="u041-more" aria-hidden="true" />}
+
                   <span className="u041-lab">{item.label}</span>
                 </>
               );
