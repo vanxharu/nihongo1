@@ -11,6 +11,7 @@ import DictationPanel from './DictationPanel';
 import SentenceInsights from './SentenceInsights';
 import SubtitleEditor from './SubtitleEditor';
 import VideoLearningPanel from './VideoLearningPanel';
+import { requestSentenceAnalysis } from './analysisRequest';
 import { auth } from '../../lib/firebase';
 import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings, visibleShadowingCue } from '../../utils/shadowing';
 import './shadowing.css';
@@ -78,6 +79,46 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
   const displayedIndex = mode === 'dictation' ? selected : visibleShadowingCue(cues, currentTime);
   const displayed = cues[displayedIndex] || null;
   const displayedAnalysis = displayed ? preparedAnalysis(displayed) : null;
+  // Analyze the current subtitle quietly, regardless of which mode is visible.
+  // Debounce seeking, cache by sentence, and cap simultaneous API requests.
+  const pendingAnalysis = useRef(new Set<string>());
+  const failedAnalysis = useRef(new Map<string,number>());
+  const analysisVideo = useRef(videoId);
+  const [analysisBusy,setAnalysisBusy] = useState(false);
+  useEffect(()=>{
+    analysisVideo.current=videoId;
+    pendingAnalysis.current.clear();
+    failedAnalysis.current.clear();
+    setAnalysisBusy(false);
+  },[videoId]);
+  useEffect(()=>{
+    const cue=displayed;
+    if(!videoId||!cue?.text?.trim())return;
+    const text=cue.text.trim();
+    if(cache.current.has(text)||pendingAnalysis.current.has(text))return;
+    if((failedAnalysis.current.get(text)||0)>Date.now())return;
+    const timer=window.setTimeout(()=>{
+      if(cache.current.has(text)||pendingAnalysis.current.has(text))return;
+      // Do not flood the analyzer when a video is rapidly seeking.
+      if(pendingAnalysis.current.size>=2)return;
+      pendingAnalysis.current.add(text);
+      setAnalysisBusy(true);
+      const requestedVideo=videoId;
+      void requestSentenceAnalysis(text).then(result=>{
+        if(analysisVideo.current!==requestedVideo)return;
+        if(!Array.isArray(result.vocabulary)||!Array.isArray(result.kanji)||!Array.isArray(result.grammar))return;
+        cache.current.set(text,{...result,translation:result.translation||cue.translation||''});
+        refreshAnalysis(n=>n+1);
+      }).catch(()=>{
+        if(analysisVideo.current===requestedVideo)failedAnalysis.current.set(text,Date.now()+60000);
+      }).finally(()=>{
+        pendingAnalysis.current.delete(text);
+        if(analysisVideo.current===requestedVideo)setAnalysisBusy(pendingAnalysis.current.size>0);
+      });
+    },850);
+    return()=>window.clearTimeout(timer);
+  },[videoId,displayed?.text]);
+
   useEffect(() => {
     // Keep the playing line at the top of the lyric list (with one previous line above), unless the user is browsing.
     if (Date.now() < followPausedUntil.current) return;
@@ -223,7 +264,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     </section> : <>
       <div className="flex flex-col gap-2 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="max-lg:contents lg:space-y-4">
-          {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} /></div>}
+          {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} busy={analysisBusy} /></div>}
           <div className="shadowing-sticky"><ShadowingPlayer
             ref={playerRef}
             key={videoId}
