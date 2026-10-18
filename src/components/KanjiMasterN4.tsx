@@ -54,7 +54,7 @@ export default function KanjiMasterN4() {
   useEffect(()=>{try{localStorage.setItem('nihon:kanji:book-study:v1',JSON.stringify(studyNotes));}catch{}},[studyNotes]);
   const detailEntry=ENTRIES.find(e=>e.glyph===detailGlyph);
   const detailNote=detailGlyph?studyNotes[detailGlyph]:undefined;
-  const changeStudyNote=(key:'meaning'|'onyomi'|'kunyomi'|'mnemonic'|'examples'|'vocabulary',value:string)=>{if(!detailEntry)return;setStudyNotes(prev=>({...prev,[detailEntry.glyph]:{meaning:'',onyomi:'',kunyomi:'',mnemonic:'',examples:'',vocabulary:'',sourcePage:detailEntry.page,checked:false,...prev[detailEntry.glyph],[key]:value,checked:false}}));};
+  const changeStudyNote=(key:'meaning'|'onyomi'|'kunyomi'|'mnemonic'|'examples'|'vocabulary',value:string)=>{if(!detailEntry)return;setStudyNotes(prev=>({...prev,[detailEntry.glyph]:{meaning:'',onyomi:'',kunyomi:'',mnemonic:'',examples:'',vocabulary:'',sourcePage:detailEntry.page,...prev[detailEntry.glyph],[key]:value,checked:false}}));};
 
   const [autoplay,setAutoplay] = useState(false);
   const [showShortcuts,setShowShortcuts] = useState(false);

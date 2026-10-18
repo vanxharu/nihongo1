@@ -8,7 +8,13 @@ Karaoke follows the YouTube playback clock, including speed changes and backward
 
 **Nghe · Viết chính tả** puts a dictation panel beside the video and hides the transcript and analysis until the learner reveals the answer. Learners can type or assemble shuffled word chunks, reveal individual word hints, check their answer, and move between sentences. Answer comparison ignores punctuation, spacing and fullwidth forms, but preserves Japanese spelling. Duplicate words have independent selectable IDs. Wrong-answer and replay counters apply to the current sentence and reset on sentence changes. The playback button can pause at the sentence end; replaying does not erase the answer. It does not score recorded pronunciation or transcribe microphone audio.
 
-**Phân tích câu** returns vocabulary, kanji, readings, Vietnamese translation and grammar. Configure `OPENAI_API_KEY` (optional `OPENAI_MODEL`) or `GEMINI_API_KEY` (optional `SHADOWING_AI_MODEL`) on the server to enable contextual translation and grammar. Without a key, or when AI fails, built-in vocabulary and kanji remain available; translations and grammar are not fabricated. Furigana uses vocabulary readings returned by the analysis; unknown readings are omitted.
+**Phân tích bằng file Claude**: mở tab **Phân tích**, chọn **Tải prompt cho Claude**, gửi file `.txt` cho Claude rồi tải file JSON hoàn chỉnh và chọn **Nhập JSON phân tích**. Không cần Claude API key. Ứng dụng không tự gọi AI khi phát, chuyển câu hoặc mở phân tích. Kết quả được dùng cho bản dịch, furigana, từ vựng, kanji, ngữ pháp và flashcard.
+
+JSON có dạng `{ "version": 1, "videoId": "...", "sentences": [{ "id": "...", "text": "...", "analysis": { "source": "ai", "translation": "...", "readings": [], "vocabulary": [], "kanji": [], "grammar": [] } }] }`. Prompt tải xuống mô tả đầy đủ các trường con. Giữ nguyên ID và text được xuất từ phụ đề hiện tại. Không sửa mốc thời gian hoặc yêu cầu Claude đoán thời gian từ văn bản.
+
+File được kiểm tra toàn bộ trước khi lưu: đúng video, đúng ID/nội dung câu, không trùng ID, đúng kiểu dữ liệu, tối đa 500 câu và 5 MB/file. Có thể nhập từng phần, các câu khác đã nhập được giữ lại. Sửa phụ đề làm ID/text khác thì cần xuất lại prompt cho các câu đó. File lỗi không ghi đè dữ liệu đã có.
+
+Nhập JSON lưu trên trình duyệt hiện tại. Dùng **Xuất JSON đã lưu** để sao lưu hoặc chuyển máy. Muốn phát hành kết quả tĩnh cho mọi người, lưu JSON đã xuất vào `public/shadowing-analysis/<videoId>.json`, commit rồi deploy Vercel. Ứng dụng tự đọc file này, ưu tiên kết quả nhập trên trình duyệt nếu có. Đường dẫn asset không có file vẫn cho phép nhập thủ công.
 
 The Express development server and Vercel functions share handlers in `src/server/shadowing.ts`. Caption requests have bounded network timeouts. When captions cannot be obtained, manual import stays available.
 

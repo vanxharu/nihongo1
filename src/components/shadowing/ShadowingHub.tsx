@@ -11,7 +11,8 @@ import DictationPanel from './DictationPanel';
 import SentenceInsights from './SentenceInsights';
 import SubtitleEditor from './SubtitleEditor';
 import VideoLearningPanel from './VideoLearningPanel';
-import { requestSentenceAnalysis } from './analysisRequest';
+import AnalysisFilePanel from './AnalysisFilePanel';
+import { parseShadowingAnalysisFile, type ShadowingAnalysisFile } from '../../utils/shadowingAnalysisFile';
 import { auth } from '../../lib/firebase';
 import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings, visibleShadowingCue } from '../../utils/shadowing';
 import './shadowing.css';
@@ -75,140 +76,49 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     });
     return unsubscribe;
   }, []);
-  // Persist analyses for each video so revisiting sentences never starts from zero.
-  const [refreshingVideo,setRefreshingVideo] = useState(false);
-  const [refreshProgress,setRefreshProgress] = useState('');
-  const [canRefresh,setCanRefresh] = useState(false);
-  useEffect(() => { setCanRefresh(false); }, [videoId]);
-  async function refreshVideoWithGroq() {
-    if (!videoId || refreshingVideo) return;
-    const token = await auth.currentUser?.getIdToken();
-    if (!token) { setNotice('Đăng nhập tài khoản quản trị để cập nhật phụ đề.'); return; }
-    setRefreshingVideo(true); setRefreshProgress('Đang tải SRT và phân tích bằng Groq…');
-    try {
-      let offset = 0;
-      for (let batch = 0; batch < 120; batch++) {
-        const response = await fetch('/api/shadowing/refresh', { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:'Bearer '+token }, body:JSON.stringify({videoId,offset}) });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Không thể cập nhật.');
-        offset = data.nextOffset || offset;
-        setRefreshProgress(`Đã phân tích ${offset} / ${data.total} câu`);
-        if (data.done) break;
-      }
-      await loadStoredAnalysis();
-      setRefreshProgress('Đã lưu phân tích vào database.');
-    } catch (error) { setRefreshProgress(error instanceof Error ? error.message : 'Cập nhật thất bại.'); }
-    finally { setRefreshingVideo(false); }
-  }
-  async function loadStoredAnalysis() {
-    if (!videoId) return;
-    try {
-      const response = await fetch('/api/shadowing/analysis?videoId='+encodeURIComponent(videoId));
-      if (!response.ok) return;
-      const data = await response.json();
-      for (const [text,value] of Object.entries(data.items || {})) {
-        const a = value as ShadowingAnalysis;
-        if (Array.isArray(a?.vocabulary) && Array.isArray(a?.kanji) && Array.isArray(a?.grammar)) cache.current.set(text,a);
-      }
-      refreshAnalysis(n=>n+1);
-    } catch {}
-  }
-  useEffect(()=>{void loadStoredAnalysis();},[videoId]);
   const analysisStoreKey = 'nihon:shadowing:analysis:v2:' + videoId;
+  // Local imports override the shared static file. Cancel when video/captions change.
   useEffect(() => {
     cache.current.clear();
-    try {
-      const saved = JSON.parse(localStorage.getItem(analysisStoreKey) || '{}');
-      if (saved && typeof saved === 'object') for (const [text, value] of Object.entries(saved)) {
-        const a = value as ShadowingAnalysis;
-        if (Array.isArray(a?.vocabulary) && Array.isArray(a?.kanji) && Array.isArray(a?.grammar)) cache.current.set(text, a);
-      }
-    } catch {}
     refreshAnalysis(n => n + 1);
-  }, [analysisStoreKey]);
-  const saveAnalysis = (text: string, value: ShadowingAnalysis) => {
-    cache.current.set(text, value);
-    try {
-      // Keep the full video within browser storage limits.
-      const entries = [...cache.current].slice(-500);
-      localStorage.setItem(analysisStoreKey, JSON.stringify(Object.fromEntries(entries)));
-    } catch {}
-    refreshAnalysis(n => n + 1);
-  };
-  // Build a fast offline-like analysis index for the entire video in batches.
-  // The server uses its existing Japanese tokenizer and local dictionaries, not Gemini.
-  useEffect(() => {
     if (!videoId || !cues.length) return;
     const controller = new AbortController();
-    const sentences = [...new Set(cues.map(c => c.text.trim()).filter(Boolean))].filter(t => !cache.current.has(t));
-    const run = async () => {
-      for (let i = 0; i < sentences.length && !controller.signal.aborted; i += 8) {
-        try {
-          const response = await fetch('/api/shadowing/analyze', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sentences: sentences.slice(i, i + 8) }),
-            signal: controller.signal,
-          });
-          if (!response.ok) break;
-          const data = await response.json();
-          if (controller.signal.aborted) break;
-          for (const [text, value] of Object.entries(data.items || {})) {
-            const a = value as ShadowingAnalysis;
-            if (Array.isArray(a?.vocabulary) && Array.isArray(a?.kanji) && Array.isArray(a?.grammar) && cache.current.get(text)?.source !== 'ai') cache.current.set(text, a);
-          }
-          try { localStorage.setItem(analysisStoreKey, JSON.stringify(Object.fromEntries([...cache.current].slice(-500)))); } catch {}
-          refreshAnalysis(n => n + 1);
-        } catch { break; }
-      }
+    const merge = (packet: ShadowingAnalysisFile, onlyMissing = false) => {
+      for (const row of packet.sentences) if (!onlyMissing || !cache.current.has(row.text)) cache.current.set(row.text, row.analysis);
     };
-    void run();
+    let local: ShadowingAnalysisFile | null = null;
+    try {
+      const saved = JSON.parse(localStorage.getItem(analysisStoreKey + ':file') || 'null');
+      if (saved) local = parseShadowingAnalysisFile(saved, videoId, cues);
+      if (local) merge(local);
+    } catch { /* Edited subtitles require a fresh import. */ }
+    refreshAnalysis(n => n + 1);
+    void (async () => {
+      try {
+        const response = await fetch(`/shadowing-analysis/${videoId}.json`, { signal: controller.signal });
+        if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) return;
+        const packet = parseShadowingAnalysisFile(await response.json(), videoId, cues);
+        if (controller.signal.aborted) return;
+        merge(packet, true);
+        refreshAnalysis(n => n + 1);
+      } catch { /* A shared file is optional; manual import remains available. */ }
+    })();
     return () => controller.abort();
   }, [videoId, cues, analysisStoreKey]);
+  function importAnalysis(packet: ShadowingAnalysisFile) {
+    const merged = new Map(cache.current);
+    for (const row of packet.sentences) merged.set(row.text, row.analysis);
+    const saved: ShadowingAnalysisFile = { version: 1, videoId: videoId!, sentences: cues.filter(c => merged.has(c.text)).map(c => ({ id: c.id, text: c.text, analysis: merged.get(c.text)! })) };
+    // Save before updating the UI; a quota failure must not claim persistence.
+    try { localStorage.setItem(analysisStoreKey + ':file', JSON.stringify(saved)); }
+    catch { throw new Error('Không đủ bộ nhớ trình duyệt để lưu file. Hãy giải phóng bộ nhớ hoặc chia file nhỏ hơn.'); }
+    cache.current = merged;
+    refreshAnalysis(n => n + 1);
+  }
   const active = activeShadowingCue(cues, currentTime);
   const displayedIndex = mode === 'dictation' ? selected : visibleShadowingCue(cues, currentTime);
   const displayed = cues[displayedIndex] || null;
-  const displayedAnalysis = displayed ? (()=>{const enriched=cache.current.get(displayed.text);return {...preparedAnalysis(displayed),readings:enriched?.readings?.length?enriched.readings:displayed.readings||[],vocabulary:enriched?.vocabulary||[],kanji:enriched?.kanji||[],grammar:enriched?.grammar||[]};})() : null;
-  // Analyze the current subtitle quietly, regardless of which mode is visible.
-  // Debounce seeking, cache by sentence, and cap simultaneous API requests.
-  const pendingAnalysis = useRef(new Set<string>());
-  const failedAnalysis = useRef(new Map<string,number>());
-  const analysisVideo = useRef(videoId);
-  const [analysisBusy,setAnalysisBusy] = useState(false);
-  const activeAnalysisText=useRef('');
-  activeAnalysisText.current=displayed?.text.trim()||'';
-  useEffect(()=>{
-    analysisVideo.current=videoId;
-    pendingAnalysis.current.clear();
-    failedAnalysis.current.clear();
-    setAnalysisBusy(false);
-  },[videoId]);
-  useEffect(()=>{
-    const cue=displayed;
-    setAnalysisBusy(false);
-    if(!videoId||!cue?.text?.trim())return;
-    const text=cue.text.trim();
-    if(cache.current.has(text)||pendingAnalysis.current.has(text))return;
-    if((failedAnalysis.current.get(text)||0)>Date.now())return;
-    const timer=window.setTimeout(()=>{
-      if(cache.current.has(text)||pendingAnalysis.current.has(text))return;
-      // Do not flood the analyzer when a video is rapidly seeking.
-      pendingAnalysis.current.add(text);
-      if(activeAnalysisText.current===text)setAnalysisBusy(true);
-      const requestedVideo=videoId;
-      void requestSentenceAnalysis(text).then(result=>{
-        if(analysisVideo.current!==requestedVideo)return;
-        if(!Array.isArray(result.vocabulary)||!Array.isArray(result.kanji)||!Array.isArray(result.grammar))return;
-        saveAnalysis(text,{...result,translation:result.translation||cue.translation||''});
-      }).catch(()=>{
-        if(analysisVideo.current===requestedVideo)failedAnalysis.current.set(text,Date.now()+60000);
-      }).finally(()=>{
-        pendingAnalysis.current.delete(text);
-        if(analysisVideo.current===requestedVideo && activeAnalysisText.current===text)setAnalysisBusy(false);
-      });
-    },850);
-    return()=>window.clearTimeout(timer);
-  },[videoId,displayed?.text]);
-
+  const displayedAnalysis = displayed ? (()=>{const enriched=cache.current.get(displayed.text);return {...preparedAnalysis(displayed),translation:enriched?.translation||displayed.translation||'',readings:enriched?.readings?.length?enriched.readings:displayed.readings||[],vocabulary:enriched?.vocabulary||[],kanji:enriched?.kanji||[],grammar:enriched?.grammar||[]};})() : null;
   useEffect(() => {
     // Keep the playing line at the top of the lyric list (with one previous line above), unless the user is browsing.
     if (Date.now() < followPausedUntil.current) return;
@@ -354,8 +264,8 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     </section> : <>
       <div className="flex flex-col gap-2 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="max-lg:contents lg:space-y-4">
-          {mode === 'analysis' && <div className="rounded-xl border border-[var(--ui-line)] bg-[var(--ui-surface)] p-2 text-[var(--ui-text)]"><button disabled={refreshingVideo} onClick={refreshVideoWithGroq} className="rounded-lg bg-[var(--ui-primary)] px-3 py-2 text-sm font-bold text-white disabled:opacity-50">↻ Cập nhật phụ đề bằng Groq</button>{refreshProgress && <p className="mt-1 text-xs">{refreshProgress}</p>}</div>}
-          {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} busy={analysisBusy} revision={analysisRevision} /></div>}
+          {mode === 'analysis' && <AnalysisFilePanel key={videoId} videoId={videoId} cues={cues} analysis={cache.current} onImport={importAnalysis} />}
+          {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} revision={analysisRevision} /></div>}
           <div className="shadowing-sticky"><ShadowingPlayer
             ref={playerRef}
             key={videoId}
@@ -380,7 +290,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
               <button aria-pressed={translation} onClick={() => setTranslation(v => !v)} className={`shadowing-pill${translation ? ' shadowing-pill-active' : ''}`}>Dịch</button></div>}
           /></div>
           
-          {mode === 'analysis' && <div className="lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} busy={analysisBusy} revision={analysisRevision} /></div>}
+          {mode === 'analysis' && <div className="lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} revision={analysisRevision} /></div>}
           {sourceTitle && <h2 className="line-clamp-2 text-base font-bold leading-snug text-slate-100 max-lg:hidden">{sourceTitle}</h2>}
           {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-3 sm:p-6">
             <div className="mb-1 flex items-center justify-between gap-2 text-xs text-slate-400">
@@ -419,7 +329,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
         <div className="max-lg:contents lg:space-y-4">
           
           
-          {insightCue && (mode === 'shadowing' || revealed) && <SentenceInsights key={videoId + insightCue.text} videoId={videoId || ''} cue={insightCue} cached={cache.current.get(insightCue.text)} onClose={() => setInsightCue(null)} onResult={(text, data) => { saveAnalysis(text, data); }} />}
+          {insightCue && (mode !== 'dictation' || revealed) && <SentenceInsights key={videoId + insightCue.text} videoId={videoId || ''} cue={insightCue} cached={cache.current.get(insightCue.text)} onClose={() => setInsightCue(null)} />}
           {mode === 'dictation' && <DictationPanel onCorrect={() => onStudyReward?.(`dictation:${videoId}:${start}:${sentence}`, 20) ?? false} key={`${videoId}:${selected}:${sentence}`} sentence={sentence} autoPause={autoPause} onAutoPause={value => { playerRef.current?.pause(); setAutoPause(value); }} onPlay={() => playerRef.current?.playSentence(parseShadowingTime(start), parseShadowingTime(end), autoPause) || false} onReveal={setRevealed} onPrevious={() => jumpCue(selected - 1)} onNext={() => jumpCue(selected + 1)} hasPrevious={selected > 0} hasNext={selected < cues.length - 1} />}
           {(mode === 'shadowing' || revealed) && <section className="rounded-xl bg-[#101010] p-3 max-lg:hidden">
             <div className="mb-3 flex items-center justify-between gap-2">
