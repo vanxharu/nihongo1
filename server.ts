@@ -26,7 +26,7 @@ import { lessons, vocabularies, grammars, kanjis, users } from './src/db/schema'
 import { VOCABULARY_DATA, GRAMMAR_DATA, KANJI_DATA, TANGO_N4_VOCABULARY } from './src/data';
 import { synthesizeAzureSpeech, ttsParams } from './src/server/azureTts';
 import { shadowingTranscript, shadowingAnalyze } from './src/server/shadowing';
-import { shadowingVideo, shadowingRefreshAnalysis, shadowingReadAnalysis } from './src/server/shadowingStore';
+import { shadowingVideo, shadowingReadAnalysis } from './src/server/shadowingStore';
 import { shadowingPrepare } from './src/server/shadowingPrepare';
 import { cleanVocabSymbols, sanitizeVocabItem, KANJI_TO_HAN_VIET } from './src/utils/japaneseUtils';
 import { deduplicateGrammars } from './src/utils/grammarDeduplicator';
@@ -127,7 +127,8 @@ app.get('/api/shadowing/transcript', shadowingTranscript);
 app.post('/api/shadowing/analyze', shadowingAnalyze);
 app.get('/api/shadowing/video', shadowingVideo);
 app.post('/api/shadowing/video', shadowingVideo);
-app.post('/api/shadowing/refresh', shadowingRefreshAnalysis);
+// Old cached clients receive an explicit retirement response; no AI/database work runs.
+app.all('/api/shadowing/refresh', (_req, res) => res.status(410).json({ error: 'Chức năng cập nhật phụ đề tự động đã được gỡ. Hãy dùng file phân tích tĩnh.' }));
 app.get('/api/shadowing/analysis', shadowingReadAnalysis);
 app.post('/api/shadowing/prepare', shadowingPrepare);
 

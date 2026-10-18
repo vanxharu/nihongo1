@@ -7,7 +7,6 @@ import path from 'node:path';
 import { SHADOWING_VIDEOS } from '../data/shadowingVideos.js';
 import { normalizeShadowingTimeline, validShadowingTimings } from '../utils/shadowing.js';
 import type { ShadowingCue, ShadowingAnalysis } from '../utils/shadowing.js';
-import { shadowingAnalyzeBatch } from './shadowing.js';
 
 export function shadowingDatabase() {
   const name = 'shadowing-storage';
@@ -128,43 +127,6 @@ export async function shadowingVideo(req: Request, res: Response) {
     if (message === 'INVALID_CUES') return res.status(400).json({ error: 'Phụ đề cần câu tiếng Nhật và mốc bắt đầu/kết thúc hợp lệ.' });
     if (message === 'REVISION_CONFLICT') return res.status(409).json({ error: 'Phụ đề đã thay đổi trên thiết bị khác. Hãy tải lại trước khi lưu.' });
     return res.status(503).json({ error: 'Database phụ đề tạm thời chưa khả dụng.' });
-  }
-}
-
-/** Admin-authorized catalog update. Fetches Japanese captions and persists Claude analysis by batch. */
-export async function shadowingRefreshAnalysis(req: Request, res: Response) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Chỉ hỗ trợ POST.' });
-  try {
-    // Every authenticated learner may request a refresh; the shared results are reused.
-    await shadowingOwner(req);
-    const { videoId, offset = 0 } = req.body || {};
-    if (typeof videoId !== 'string' || !SHADOWING_VIDEOS.some(v => v.youtube_video_id === videoId) || !Number.isInteger(offset) || offset < 0) return res.status(400).json({ error: 'Video hoặc vị trí không hợp lệ.' });
-    const db = shadowingDatabase();
-    const videoRef = db.collection('shadowing_videos').doc(videoId);
-    let video = await readVideo(videoRef);
-    if (!video) {
-      const base = process.env.SHADOWING_PUBLIC_BASE_URL || `https://${req.headers.host}`;
-      const response = await fetch(`${base}/api/shadowing/transcript?videoId=${videoId}`, { signal: AbortSignal.timeout(25000) });
-      if (!response.ok) return res.status(422).json({ error: 'Không thể tải phụ đề tiếng Nhật từ YouTube. Hãy kiểm tra nguồn SRT.' });
-      const data: any = await response.json();
-      const cues = validateStoredCues(data.cues);
-      await writeVideo(videoRef, SHADOWING_VIDEOS.find(v => v.youtube_video_id === videoId)?.title || videoId, cues, null);
-      video = await readVideo(videoRef);
-    }
-    if (!video) throw new Error('NO_CAPTIONS');
-    const cues = video.cues;
-    const end = Math.min(offset + 5, cues.length);
-    if (offset >= cues.length) return res.json({ done: true, total: cues.length });
-    const items = await shadowingAnalyzeBatch(cues.slice(offset, end));
-    const batch = db.batch();
-    for (let i = offset; i < end; i++) {
-      const analysis = items.get(i - offset)!;
-      batch.set(videoRef.collection('analysis').doc(String(i)), { text: cues[i].text, analysis, updatedAt: new Date().toISOString() });
-    }
-    await batch.commit();
-    return res.json({ done: end >= cues.length, nextOffset: end, total: cues.length });
-  } catch (error) {
-    return res.status(503).json({ error: error instanceof Error ? error.message : 'Không thể cập nhật phụ đề.' });
   }
 }
 
