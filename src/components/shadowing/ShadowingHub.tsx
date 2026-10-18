@@ -104,11 +104,11 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     const controller = new AbortController();
     const sentences = [...new Set(cues.map(c => c.text.trim()).filter(Boolean))].filter(t => !cache.current.has(t));
     const run = async () => {
-      for (let i = 0; i < sentences.length && !controller.signal.aborted; i += 40) {
+      for (let i = 0; i < sentences.length && !controller.signal.aborted; i += 8) {
         try {
           const response = await fetch('/api/shadowing/analyze', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ sentences: sentences.slice(i, i + 40) }),
+            body: JSON.stringify({ sentences: sentences.slice(i, i + 8) }),
             signal: controller.signal,
           });
           if (!response.ok) break;
