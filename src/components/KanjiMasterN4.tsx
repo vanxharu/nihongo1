@@ -30,7 +30,7 @@ function WritingPad({ glyph, onDone }: { glyph: string; onDone: () => void }) {
   const [hasInk, setHasInk] = useState(false);
   useEffect(() => { ref.current?.getContext('2d')?.clearRect(0,0,320,320); setHasInk(false); }, [glyph]);
   const point = (e: React.PointerEvent<HTMLCanvasElement>) => { const r = e.currentTarget.getBoundingClientRect(); return { x:(e.clientX-r.left)*320/r.width, y:(e.clientY-r.top)*320/r.height }; };
-  const start = (e: React.PointerEvent<HTMLCanvasElement>) => { drawing.current = true; e.currentTarget.setPointerCapture(e.pointerId); const p = point(e); const ctx = ref.current!.getContext('2d')!; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.strokeStyle='#0f766e'; ctx.lineWidth=8; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineTo(p.x+.1,p.y+.1); ctx.stroke(); setHasInk(true); };
+  const start = (e: React.PointerEvent<HTMLCanvasElement>) => { drawing.current = true; e.currentTarget.setPointerCapture(e.pointerId); const p = point(e); const ctx = ref.current!.getContext('2d')!; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.strokeStyle='#3b82f6'; ctx.lineWidth=8; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineTo(p.x+.1,p.y+.1); ctx.stroke(); setHasInk(true); };
   const move = (e: React.PointerEvent<HTMLCanvasElement>) => { if (!drawing.current) return; const p = point(e); const ctx = ref.current!.getContext('2d')!; ctx.lineTo(p.x,p.y); ctx.stroke(); };
   return <div className="space-y-3"><div className="relative mx-auto w-full max-w-[320px] aspect-square rounded-3xl border-2 border-teal-200 bg-white overflow-hidden"><div className="absolute inset-0 flex items-center justify-center text-[220px] text-slate-100 select-none pointer-events-none">{glyph}</div><div className="absolute inset-0 pointer-events-none" style={{backgroundImage:'linear-gradient(to right, transparent calc(50% - .5px), #cbd5e1 50%, transparent calc(50% + .5px)), linear-gradient(to bottom, transparent calc(50% - .5px), #cbd5e1 50%, transparent calc(50% + .5px))'}}/><canvas ref={ref} width={320} height={320} onPointerDown={start} onPointerMove={move} onPointerUp={()=>drawing.current=false} onPointerCancel={()=>drawing.current=false} className="relative w-full h-full touch-none" aria-label={'Viết chữ '+glyph}/></div><div className="flex gap-3"><button className="flex-1 rounded-xl border p-3" onClick={()=>{ref.current?.getContext('2d')?.clearRect(0,0,320,320);setHasInk(false);}}>Viết lại</button><button disabled={!hasInk} className="flex-1 rounded-xl bg-teal-700 text-white p-3 disabled:opacity-40" onClick={onDone}>Đã đối chiếu mẫu</button></div><p className="text-xs text-slate-500">Tự đối chiếu với hình và thứ tự nét trong sách (trang {ENTRIES.find(x=>x.glyph===glyph)?.page}). Không chấm tự động khi chưa có mẫu nét được xác minh.</p></div>;
 }
@@ -48,17 +48,14 @@ export default function KanjiMasterN4() {
   const [reviewed,setReviewed] = useState<Record<number,{status:'draft'|'checked';examples:string;mnemonic:string;meaning:string;readings:string;notes:string}>>(()=>{try{return JSON.parse(localStorage.getItem('nihon:kanji:ocr-review:v1')||'{}')}catch{return {}}});
   const [reviewPage,setReviewPage] = useState(2);
   const [reviewOpen,setReviewOpen] = useState(false);
-  const [cardDirection,setCardDirection] = useState<'jp'|'vi'>('jp');
+
   const [autoplay,setAutoplay] = useState(false);
   const [showShortcuts,setShowShortcuts] = useState(false);
-  const [cardOrder,setCardOrder] = useState<number[]>(ENTRIES.map((_,i)=>i));
-  const [cardPosition,setCardPosition] = useState(0);
-  const [writeGuide,setWriteGuide] = useState(true);
   useEffect(()=>{try{localStorage.setItem('nihon:kanji:ocr-review:v1',JSON.stringify(reviewed));}catch{}},[reviewed]);
   const review = reviewed[reviewPage] || {status:'draft' as const,examples:'',mnemonic:'',meaning:'',readings:'',notes:''};
   const updateReview = (patch:Partial<typeof review>)=>setReviewed(p=>({...p,[reviewPage]:{...review,...patch}}));
   const reviewedCount = Object.values(reviewed).filter(v=>v.status==='checked').length;
-  const shuffled = ()=>{setIndex(i=>(i+3)%ENTRIES.length);setFlipped(false);};
+  const shuffled = ()=>{setIndex(Math.floor(Math.random()*ENTRIES.length));setFlipped(false);};
   useEffect(()=>{if(screen!=='cards')return;const handler=(e:KeyboardEvent)=>{if(['INPUT','TEXTAREA'].includes((e.target as HTMLElement)?.tagName))return;if(e.key==='ArrowRight'||e.key.toLowerCase()==='d'){next();}else if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a'){previous();}else if(e.code==='Space'){e.preventDefault();setFlipped(v=>!v);}else if(e.key.toLowerCase()==='z'){mark('seen',entry.glyph);next();}else if(e.key.toLowerCase()==='x'){mark('wrong',entry.glyph);next();}else if(e.key.toLowerCase()==='p'){setAutoplay(v=>!v);}};window.addEventListener('keydown',handler);return()=>window.removeEventListener('keydown',handler);},[screen,index]);
   useEffect(()=>{if(screen==='cards'&&autoplay)speak(entry.glyph);},[screen,index,autoplay]);
   useEffect(()=>{try{localStorage.setItem('nihongo_kanji_pdf_page_notes_v1',JSON.stringify(pageNotes))}catch{}},[pageNotes]);
@@ -73,8 +70,8 @@ export default function KanjiMasterN4() {
   const ocrPages = useMemo(()=>RAW_PAGES.filter(p=>!ocrSearch || p.text.toLowerCase().includes(ocrSearch.toLowerCase()) || String(p.page)===ocrSearch.trim()),[ocrSearch]);
   const filtered = useMemo(()=>ENTRIES.filter(x=>(filter==='all'||(filter==='starred'?progress.starred:progress.wrong).includes(x.glyph))&& (x.glyph.includes(search)||x.reading.includes(search))),[search,filter,progress]);
   const mark = (field:'seen'|'written'|'starred'|'wrong',glyph:string,remove=false)=>setProgress(p=>({...p,[field]:remove?p[field].filter(x=>x!==glyph):unique([...p[field],glyph])}));
-  const next = () => { setFlipped(false); setIndex(i=>(i+1)%ENTRIES.length); setCardPosition(i=>i+1); };
-  const previous = () => { setFlipped(false); setIndex(i=>(i+ENTRIES.length-1)%ENTRIES.length); setCardPosition(i=>Math.max(0,i-1)); };
+  const next = () => { setFlipped(false); setIndex(i=>(i+1)%ENTRIES.length); };
+  const previous = () => { setFlipped(false); setIndex(i=>(i+ENTRIES.length-1)%ENTRIES.length); };
   const begin = (s:'cards'|'write'|'quiz')=>{setScreen(s);if(s==='quiz'){setQuizIndex(0);setResults([]);setChoice(null);setFinished(false);}};
   const answer = ENTRIES[quizIndex];
   const options = useMemo(()=>answer ? [answer.glyph,...ENTRIES.filter(x=>x.glyph!==answer.glyph).slice(0,3).map(x=>x.glyph)].sort((a,b)=>((a.charCodeAt(0)*13+quizIndex*17)%11)-((b.charCodeAt(0)*13+quizIndex*17)%11)) : [],[quizIndex]);
@@ -107,7 +104,7 @@ export default function KanjiMasterN4() {
        <button aria-label="Chưa biết" onClick={()=>{mark('wrong',entry.glyph);next();}} className="rounded-full bg-rose-950 px-3 py-2 text-rose-400">✕</button>
        <span className="text-sm tabular-nums">{index+1} / {ENTRIES.length}</span>
        <button aria-label="Đã biết" onClick={()=>{mark('seen',entry.glyph);next();}} className="rounded-full bg-emerald-950 px-3 py-2 text-emerald-400">✓</button>
-       <button onClick={()=>setCardDirection(v=>v==='jp'?'vi':'jp')} className="rounded-xl bg-white/10 px-2 py-2 text-xs">{cardDirection==='jp'?'JP→VI':'VI→JP'}</button>
+       <span className="rounded-xl bg-white/10 px-2 py-2 text-xs">JP→Đọc</span>
        <button aria-label="Viết lại thẻ" onClick={()=>setFlipped(false)} className="p-2"><RotateCcw size={18}/></button>
        <button aria-label="Phát âm" onClick={()=>speak(entry.glyph)} className="p-2"><Volume2 size={18}/></button>
        <button aria-label="Xáo trộn" onClick={shuffled} className="p-2">⤨</button>
@@ -117,7 +114,7 @@ export default function KanjiMasterN4() {
      {showShortcuts&&<div className="rounded-xl border bg-white p-4 text-sm"><h3 className="font-bold">Phím tắt bàn phím</h3><p>← / A: Thẻ trước · → / D: Thẻ tiếp · Space: Lật thẻ · Z: Đã biết · X: Chưa biết · P: Tự động đọc</p><button onClick={()=>setAutoplay(v=>!v)} className="mt-2 rounded-lg bg-sky-100 p-2">{autoplay?'Tắt tự động đọc':'Bật tự động đọc'}</button></div>}
      <div className="flex gap-2"><button onClick={previous} className="flex-1 rounded-xl border bg-white p-3">← Trước</button><button onClick={()=>begin('write')} className="flex-1 rounded-xl border bg-white p-3">Luyện viết</button><button onClick={next} className="flex-1 rounded-xl border bg-white p-3">Tiếp →</button></div>
     </div>}
-    {screen==='write' && <>{nav}<div className="flex justify-between text-sm text-slate-500"><span>Bài 1 · Luyện viết</span><span>{index+1}/{ENTRIES.length}</span></div><div className="rounded-2xl bg-white border p-4"><div className="text-center text-2xl font-bold mb-4">{entry.glyph} <span className="text-sm font-normal text-slate-500">· {entry.strokes} nét</span></div><WritingPad glyph={entry.glyph} onDone={()=>{mark('written',entry.glyph);next();}}/></div><div className="flex justify-between"><button onClick={previous} className="rounded-xl border px-5 py-3">← Chữ trước</button><button onClick={()=>begin('quiz')} className="rounded-xl bg-teal-700 text-white px-5 py-3">Làm bài kiểm tra →</button></div></>}
+    {screen==='write' && <div className="mx-auto max-w-xl space-y-5">{nav}<header className="flex items-center justify-between rounded-xl bg-white p-3"><h2 className="text-xl font-bold">✍ Luyện viết</h2><span className="text-slate-500">{index+1}/{ENTRIES.length}</span></header><div className="py-4 text-center"><p className="text-3xl font-bold text-blue-600">{entry.glyph}</p><p className="mt-2 text-sm text-slate-500">Trang PDF {entry.page} · {entry.strokes} nét (chưa có dữ liệu nét động)</p></div><WritingPad glyph={entry.glyph} onDone={()=>{mark('written',entry.glyph);next();}}/><div className="flex gap-2"><button onClick={previous} className="flex-1 rounded-xl border bg-white p-3">← Chữ trước</button><button onClick={next} className="flex-1 rounded-xl bg-blue-500 p-3 font-bold text-white">Chữ tiếp theo →</button></div><p className="text-center text-xs text-slate-500">Có thể viết tự do trên ô. Chưa hỗ trợ kiểm tra thứ tự nét tự động vì chưa có mẫu nét đã đối chiếu.</p></div>}
     {screen==='quiz' && <>{nav}<div className="rounded-2xl border bg-white p-6 space-y-5">{finished?<><h2 className="text-2xl font-black">Đã hoàn thành!</h2><p>Kết quả: {results.filter(Boolean).length}/{ENTRIES.length}. Kết quả được lưu trên thiết bị.</p><button onClick={()=>begin('quiz')} className="rounded-xl bg-teal-700 text-white px-5 py-3 flex items-center gap-2"><RotateCcw size={18}/> Làm lại</button></>:<><div className="flex justify-between text-sm text-slate-500"><span>Chọn chữ tương ứng với cách đọc trong sách</span><span>{quizIndex+1}/{ENTRIES.length}</span></div><h2 className="text-3xl font-bold text-center py-5">{answer.reading}</h2><div className="grid grid-cols-2 gap-3">{options.map(g=><button key={g} onClick={()=>setChoice(g)} className={`rounded-xl border-2 py-5 text-5xl ${choice===g?'border-teal-700 bg-teal-50':'border-slate-100'}`}>{g}</button>)}</div><button disabled={!choice} onClick={recordAnswer} className="w-full rounded-xl bg-teal-700 text-white py-3 font-semibold disabled:opacity-40">Xác nhận đáp án →</button></>}</div></>}
     <p className="text-xs text-slate-500">Tiến độ của giao diện mới được lưu riêng trên thiết bị; dữ liệu cũ không được đưa vào nội dung học. Nội dung chưa đối chiếu PDF không được công bố.</p>
   </div>;
