@@ -7,7 +7,7 @@ export function requestSentenceAnalysis(sentence: string): Promise<ShadowingAnal
   const request = (async () => {
     const response = await fetch('/api/shadowing/analyze', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sentence }), signal: AbortSignal.timeout(35000),
+      body: JSON.stringify({ sentence }), signal: AbortSignal.timeout(12000),
     });
     const result = await readShadowingResponse(response);
     if (!response.ok || !Array.isArray(result.vocabulary) || !Array.isArray(result.kanji) || !Array.isArray(result.grammar))
