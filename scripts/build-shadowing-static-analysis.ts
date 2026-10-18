@@ -14,7 +14,7 @@ const grammarNotes = `
 8,22|Vてはいけない／Vこと|Không được làm… / việc…|してはいけない bổ nghĩa こと: điều bị cấm làm. Chủ đề câu hỏi là việc người đàn ông không được làm hôm nay.
 10|どうしましたか|Có chuyện gì vậy?|Câu hỏi lịch sự dùng khi thấy người khác gặp vấn đề; bác sĩ hỏi triệu chứng của bệnh nhân.
 11|Aくて／～も／～んです|…và… / cũng / giải thích|痛い → 痛くて nối hai triệu chứng; も thêm đau họng bên cạnh đau đầu. んです cung cấp lời giải thích về tình trạng.
-12,16,98|～ですか|Có phải… không? / vậy sao?|そうですか dùng để tiếp nhận hoặc xác nhận thông tin; やっぱり nhấn mạnh điều đã nghi ngờ trước đó.
+12,16|～ですか|Có phải… không? / vậy sao?|そうですか dùng để tiếp nhận hoặc xác nhận thông tin; やっぱり nhấn mạnh điều đã nghi ngờ trước đó.
 13|Vましょう／～ね|Tôi/chúng ta làm… nhé|見ましょう là đề nghị kiểm tra họng; ちょっと làm lời nói nhẹ nhàng hơn, ね tìm sự đồng thuận.
 14|Aくなる／Vています|Trở nên… / trạng thái kết quả|赤い → 赤くなる: trở nên đỏ. なっています miêu tả tình trạng họng đã đỏ lên; すごく nhấn mạnh mức độ.
 17|～から／Vて、Vてください|Vì… / hãy làm A rồi B|あげますから nêu lý do: sẽ đưa thuốc. 飲んで nối việc uống thuốc với 寝てください: nghỉ ngơi sau khi uống thuốc.
@@ -66,6 +66,7 @@ const grammarNotes = `
 93,94|NはA／～よ|…thì… / thông báo|明日の夜は暇 hỏi tối mai có rảnh không; 暇ですよ là câu trả lời có nhấn mạnh thông tin.
 96|Vに行こう|Cùng đi làm…|食べに行く: đi ăn. 行こう là thể ý chí thân mật dùng để rủ người nghe.
 97|～が／Vよ|…sẽ… đấy|僕が nhấn mạnh người trả tiền là người nói; 払うよ là lời hứa thân mật.
+98|～んですか|Có thật là được không?|いいんですか xác nhận lời đề nghị được mời trả tiền ăn; んですか hỏi lại điều vừa nghe với sắc thái ngạc nhiên.
 100|だからさ|Vì thế / này…|Cụm nối khẩu ngữ dùng để dẫn đến lời nhờ vả; cần hiểu cùng câu 手伝ってくれない sau đó.
 102|Vちゃう／～よ|Lỡ/hoàn tất… / nhấn mạnh|閉まっちゃいます là rút gọn của 閉まってしまいます: cửa hàng sẽ đóng mất, hàm ý lo lắng/tiếc.
 104|～だけ|Chỉ…|1時間だけ giới hạn thời gian đồng ý giúp là một giờ; よ của dòng tiếp theo là tiểu từ cuối câu bị tách.
@@ -123,7 +124,7 @@ const grammarNotes = `
 184,186|～は～でした|…thì là…|Chủ ngữ rút gọn là cuốn sách được nữ giới ưa thích; tên sách không nên dịch như một câu trần thuật độc lập.
 187|～も～も／同じで|Cả…lẫn… / giống nhau và…|男の人も女の人も: cả nam lẫn nữ; 同じで nối thông tin hai nhóm chọn cùng cuốn sách hạng ba.
 191,198|V時／どうやって|Khi… / bằng cách nào?|休みの時 đặt điều kiện thư viện đóng cửa; どうやって hỏi cách trả sách trong tình huống đó.
-192|Vます方／～について|Cách làm… / về…|借り方 là cách mượn: bỏ ます của 借ります rồi thêm 方. について xác định nội dung giải thích.
+192|Vます語幹＋方／～について|Cách làm… / về…|借り方 là cách mượn: bỏ ます của 借ります rồi thêm 方. について xác định nội dung giải thích.
 193|～まで／可能形|Tối đa… / có thể…|1人10冊まで giới hạn mỗi người tối đa mười cuốn; 借りられます là thể khả năng, thời hạn hai tuần.
 194|Vている場合／Vことができる|Trong trường hợp… / có thể…|他の人が借りている場合 nói trường hợp sách đang được người khác mượn; khi đó có thể đặt trước.
 195|そうすれば／可能形|Nếu làm vậy / có thể…|そうすれば dẫn kết quả của việc đặt trước; 借りられます nói quyền mượn sau người đang giữ sách.
@@ -132,7 +133,7 @@ const grammarNotes = `
 201|Vながら／Vてください|Vừa…vừa… / hãy…|見ながら質問を聞く: vừa nhìn tranh vừa nghe câu hỏi; cùng một chủ thể thực hiện hai hành động.
 202,206,215,223,231,240|何と言いますか|Sẽ nói gì?|と đánh dấu nội dung lời nói; câu hỏi chọn cách diễn đạt thích hợp với tình huống.
 203|～の中から／Vてください|Trong số… / hãy…|Chọn một đáp án tốt nhất từ các phương án 1–3; 一番いいもの bổ nghĩa đáp án phù hợp nhất.
-205|Vます終わる／まだVていない|Làm xong… / vẫn chưa…|書き終わる là viết xong, ghép thân 書き với 終わる; 書き終わっていません: vẫn chưa hoàn thành báo cáo.
+205|Vます語幹＋終わる／まだVていない|Làm xong… / vẫn chưa…|書き終わる là viết xong, ghép thân 書き với 終わる; 書き終わっていません: vẫn chưa hoàn thành báo cáo.
 208|Vていただけませんか|Anh/chị có thể làm giúp… được không ạ?|待っていただけませんか là lời nhờ giáo viên chờ thêm, mức lịch sự cao và phù hợp vị thế người nói.
 210|使役形＋てください|Xin cho phép tôi…|待つ → 待たせる: cho chờ. 待たせてください xin phép được chờ, khác với nhờ giáo viên chờ mình.
 212|Vことができる／～んですか|Có thể làm… / hỏi giải thích|待つことができる hỏi khả năng chờ; không trực tiếp diễn đạt lời xin gia hạn để hoàn thành bài.
@@ -183,7 +184,7 @@ const grammarNotes = `
 316|Nはどう|N thì sao?|図書館はどう gợi ý địa điểm thư viện để học; dạng rút gọn thân mật của どうですか.
 318|Nは暇だ|…thì rảnh|明日は暇だよ nói ngày mai rảnh, trả lời về thời gian chứ không phải địa điểm học.
 320|～にいる／～と思う|Ở tại… / nghĩ rằng…|教室にいると思う: nghĩ rằng ai đó đang ở lớp; khác với gợi ý nơi cùng học.
-321|これで／Vを終わる|Đến đây / kết thúc…|Đây là dòng kết thúc bài thi nhưng chứa 朝会 và nhãn âm nhạc chen giữa từ. Chưa nghe đối chiếu nên giữ text và đánh dấu cần kiểm tra.
+321|これで／Nを終わる|Đến đây / kết thúc…|Đây là dòng kết thúc bài thi nhưng chứa 朝会 và nhãn âm nhạc chen giữa từ. Chưa nghe đối chiếu nên giữ text và đánh dấu cần kiểm tra.
 `;
 const grammarByIndex = new Map<number, ShadowingAnalysis['grammar']>();
 for (const line of grammarNotes.trim().split('\n')) {

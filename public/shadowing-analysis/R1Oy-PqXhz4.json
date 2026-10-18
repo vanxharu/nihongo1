@@ -6352,9 +6352,9 @@
         "kanji": [],
         "grammar": [
           {
-            "pattern": "～ですか",
-            "meaning": "Có phải… không? / vậy sao?",
-            "explanation": "そうですか dùng để tiếp nhận hoặc xác nhận thông tin; やっぱり nhấn mạnh điều đã nghi ngờ trước đó."
+            "pattern": "～んですか",
+            "meaning": "Có thật là được không?",
+            "explanation": "いいんですか xác nhận lời đề nghị được mời trả tiền ăn; んですか hỏi lại điều vừa nghe với sắc thái ngạc nhiên."
           }
         ],
         "note": "Phân tích học tập do ChatGPT biên soạn từ phụ đề app đã lưu; kanji và một phần từ vựng dùng từ điển của app, bản dịch kế thừa dữ liệu hiện có. Chưa đối chiếu âm thanh. Giữ nguyên nguyên văn và ID; không suy đoán lại mốc thời gian."
@@ -13028,7 +13028,7 @@
         ],
         "grammar": [
           {
-            "pattern": "Vます方／～について",
+            "pattern": "Vます語幹＋方／～について",
             "meaning": "Cách làm… / về…",
             "explanation": "借り方 là cách mượn: bỏ ます của 借ります rồi thêm 方. について xác định nội dung giải thích."
           }
@@ -14018,7 +14018,7 @@
         ],
         "grammar": [
           {
-            "pattern": "Vます終わる／まだVていない",
+            "pattern": "Vます語幹＋終わる／まだVていない",
             "meaning": "Làm xong… / vẫn chưa…",
             "explanation": "書き終わる là viết xong, ghép thân 書き với 終わる; 書き終わっていません: vẫn chưa hoàn thành báo cáo."
           }
@@ -18466,7 +18466,7 @@
         ],
         "grammar": [
           {
-            "pattern": "これで／Vを終わる",
+            "pattern": "これで／Nを終わる",
             "meaning": "Đến đây / kết thúc…",
             "explanation": "Đây là dòng kết thúc bài thi nhưng chứa 朝会 và nhãn âm nhạc chen giữa từ. Chưa nghe đối chiếu nên giữ text và đánh dấu cần kiểm tra."
           }
