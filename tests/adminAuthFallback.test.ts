@@ -15,35 +15,21 @@ const output = await build({
 });
 const { requireAuth, requireAdmin } = await import(`data:text/javascript;base64,${Buffer.from(output.outputFiles[0].text).toString('base64')}`);
 
-test('DB outage retains admin only for the exact verified allowlisted identity', async () => {
-  const previous = process.env.ADMIN_EMAILS;
-  const warning = console.warn;
-  process.env.ADMIN_EMAILS = 'vanvan20001220@gmail.com';
-  console.warn = () => {};
+test('a Firebase profile outage never reports a fake successful account sync', async () => {
+  const warning=console.error;console.error=()=>{};
   try {
-    for (const [email, verified, expected] of [
-      ['vanvan20001220@gmail.com', true, 'admin'],
-      ['VANVAN20001220@gmail.com', true, 'admin'],
-      ['vanvan20001220@gmail.com', false, 'user'],
-      ['someone@gmail.com', true, 'user'],
-      ['vanvan20001220@gmail.com.attacker.test', true, 'user'],
-    ] as const) {
-      const req: any = { headers: { authorization: `Bearer ${JSON.stringify({ uid: 'test', email, email_verified: verified })}` }, body: { role: 'admin' } };
-      let status = 200, advanced = false;
-      const res: any = { status(code: number) { status = code; return this; }, json() { return this; } };
-      await requireAuth(req, res, () => { advanced = true; });
-      assert(advanced); assert.equal(req.dbUser.role, expected);
-      let allowed = false;
-      await requireAdmin(req, res, () => { allowed = true; });
-      assert.equal(allowed, expected === 'admin');
-      assert.equal(status, expected === 'admin' ? 200 : 403);
+    for (const identity of [
+      {uid:'owner',email:'vanvan20001220@gmail.com',email_verified:true},
+      {uid:'user',email:'someone@gmail.com',email_verified:true},
+    ]) {
+      const req:any={headers:{authorization:`Bearer ${JSON.stringify(identity)}`}};
+      let status=200,advanced=false;
+      const res:any={status(code:number){status=code;return this;},json(){return this;}};
+      await requireAuth(req,res,()=>{advanced=true;});
+      assert.equal(status,503);assert.equal(advanced,false);assert.equal(req.dbUser,undefined);
     }
-    let reached = false, status = 200;
-    const res: any = { status(code: number) { status = code; return this; }, json() {} };
-    await requireAuth({ headers: { authorization: 'Bearer invalid' } }, res, () => { reached = true; });
-    assert.equal(status, 401); assert.equal(reached, false);
-  } finally {
-    console.warn = warning;
-    if (previous === undefined) delete process.env.ADMIN_EMAILS; else process.env.ADMIN_EMAILS = previous;
-  }
+    let status=200,advanced=false;const res:any={status(code:number){status=code;return this;},json(){return this;}};
+    await requireAuth({headers:{authorization:'Bearer invalid'}},res,()=>{advanced=true;});
+    assert.equal(status,401);assert.equal(advanced,false);
+  } finally {console.error=warning;}
 });

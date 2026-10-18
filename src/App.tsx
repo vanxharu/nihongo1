@@ -85,6 +85,8 @@ function ReadingRouteScreen(props: React.ComponentProps<typeof AiReadingPractice
   return <AiReadingPractice {...props} initialLevel={routeLevel || props.initialLevel} />;
 }
 export default function App() {
+  const [cloudRestoreVersion,setCloudRestoreVersion]=useState(0);
+  useEffect(()=>{const restored=()=>setCloudRestoreVersion(n=>n+1);window.addEventListener('learning-cloud-restored',restored);return()=>window.removeEventListener('learning-cloud-restored',restored);},[]);
   const reducedMotion = useReducedMotion();
   const location = useLocation();
   const navigate = useNavigate();

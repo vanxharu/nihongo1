@@ -266,19 +266,10 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
     try {
       // 1. Send to server backend if token exists
       let serverCount = 0;
-      if (token) {
-        const res = await fetch('/api/admin/vocabularies/import', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ items: parsedItems })
-        });
-        const resData = await res.json().catch(() => ({}));
-        if (res.ok && resData.success) {
-          serverCount = resData.count || parsedItems.length;
-        }
+      if(!token)throw new Error('Cần đăng nhập bằng tài khoản quản trị.');
+      for(let start=0;start<parsedItems.length;start+=200){
+        const res=await fetch('/api/admin/vocabularies/import',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({items:parsedItems.slice(start,start+200)})});
+        const packet=await res.json().catch(()=>({}));if(!res.ok||!packet.success)throw new Error(packet.error||'Firebase chưa xác nhận lưu dữ liệu.');serverCount+=Number(packet.count)||0;
       }
 
       // 2. Persist locally to localStorage so offline/push notifications have immediate access

@@ -381,7 +381,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
           <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h3 className="text-base font-bold text-slate-950">Danh sách học viên học trực tuyến</h3>
-              <p className="text-xs text-slate-500 mt-1">Truy vấn thời gian thực từ cơ sở dữ liệu Cloud SQL PostgreSQL</p>
+              <p className="text-xs text-slate-500 mt-1">Truy vấn thời gian thực từ cơ sở dữ liệu Firebase Firestore</p>
             </div>
 
             <div className="relative w-full sm:w-72">
@@ -399,7 +399,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
           {loading ? (
             <div className="p-12 text-center text-slate-500 text-sm">
               <div className="w-8 h-8 border-4 border-slate-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-              Đang truy vấn dữ liệu từ cơ sở dữ liệu PostgreSQL...
+              Đang truy vấn dữ liệu từ cơ sở dữ liệu Firestore...
             </div>
           ) : filteredUsers.length === 0 ? (
             <div className="p-12 text-center text-slate-500 text-sm">
@@ -504,7 +504,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
           <div className="bg-slate-50 border border-slate-100 p-4 rounded-xl flex items-start gap-4">
             <AlertCircle className="w-5 h-5 text-slate-600 mt-0.5 shrink-0" />
             <div>
-              <h4 className="text-sm font-bold text-slate-950">Thông số Cloud SQL PostgreSQL</h4>
+              <h4 className="text-sm font-bold text-slate-950">Thông số Firebase Firestore</h4>
               <p className="text-sm text-slate-800 mt-1">Trạng thái dữ liệu được kiểm tra khi mở Tổng quan hoặc Học viên. Khi mất kết nối, thao tác cập nhật có thể không thực hiện được.</p>
             </div>
           </div>

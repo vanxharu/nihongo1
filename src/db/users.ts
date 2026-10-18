@@ -1,177 +1,44 @@
-import { db, withDbRetry } from './index';
-import { users } from './schema';
-import { eq, sql } from 'drizzle-orm';
-
-import { getBootstrapAdminEmails } from '../server/bootstrapAdmin';
+import { firebaseDb, clean } from '../server/firebaseStore';
+import { getBootstrapAdminEmails, isBootstrapAdmin } from '../server/bootstrapAdmin';
 export { getBootstrapAdminEmails } from '../server/bootstrapAdmin';
-
-export const ADMIN_EMAILS = getBootstrapAdminEmails();
-
-export async function getOrCreateUser(uid: string, email: string, emailVerified: boolean = false) {
-  return await withDbRetry(async () => {
-    const normalizedEmail = (email || '').toLowerCase().trim();
-    const bootstrapAdmins = getBootstrapAdminEmails();
-    // Only a verified email may be promoted to admin; otherwise anyone could
-    // register an admin address without owning it.
-    const isBootstrapAdmin = normalizedEmail && emailVerified ? bootstrapAdmins.has(normalizedEmail) : false;
-
-    // 1. Check if user already exists by UID
-    const existingByUid = await db.select().from(users).where(eq(users.uid, uid)).execute();
-    if (existingByUid.length > 0) {
-      const u = existingByUid[0];
-      // Ensure bootstrap admin accounts receive admin role upon login
-      if (isBootstrapAdmin && u.role !== 'admin') {
-        const updated = await db.update(users)
-          .set({ role: 'admin' })
-          .where(eq(users.uid, uid))
-          .returning();
-        return updated[0];
-      }
-      return u;
-    }
-
-    // 2. If UID is not found, check if a user with this email already exists
-    // (Preserves learning progress, XP, streak, achievements when linking accounts)
-    if (normalizedEmail) {
-      const existingByEmail = await db.select().from(users).where(eq(users.email, normalizedEmail)).execute();
-      if (existingByEmail.length > 0) {
-        const u = existingByEmail[0];
-        // Preserve admin status if existing user was admin or is bootstrap admin
-        const targetRole = u.role === 'admin' ? 'admin' : (isBootstrapAdmin ? 'admin' : (u.role || 'user'));
-        const updated = await db.update(users)
-          .set({ 
-            uid: uid,
-            role: targetRole
-          })
-          .where(eq(users.id, u.id))
-          .returning();
-        return updated[0];
-      }
-    }
-
-    const todayStr = new Date().toISOString().split('T')[0] || '';
-    const defaultName = normalizedEmail ? normalizedEmail.split('@')[0] : 'Học viên JLPT';
-    const defaultUsername = normalizedEmail ? normalizedEmail.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '') : defaultName.toLowerCase().replace(/[^a-z0-9_]/g, '');
-    const initialRole = isBootstrapAdmin ? 'admin' : 'user';
-
-    try {
-      const result = await db.insert(users)
-        .values({
-          uid,
-          email: normalizedEmail,
-          username: defaultUsername,
-          name: defaultName,
-          avatar: '🦊',
-          targetLevel: 'N4',
-          xp: 0,
-          streak: 0,
-          coins: 0,
-          lastActiveDate: todayStr,
-          studyDays: JSON.stringify([todayStr]),
-          completedLessons: JSON.stringify([]),
-          vocabStatus: JSON.stringify({}),
-          grammarStatus: JSON.stringify({}),
-          kanjiStatus: JSON.stringify({}),
-          dailyTestResults: JSON.stringify([]),
-          role: initialRole,
-        })
-        .returning();
-
-      return result[0];
-    } catch (insertErr: any) {
-      // Race condition safety: if concurrent requests inserted the same UID
-      const reCheck = await db.select().from(users).where(eq(users.uid, uid)).execute();
-      if (reCheck.length > 0) {
-        return reCheck[0];
-      }
-      throw insertErr;
-    }
+export const ADMIN_EMAILS=getBootstrapAdminEmails();
+const collection=()=>firebaseDb().collection('app_users');
+const jsonFields=['studyDays','completedLessons','vocabStatus','grammarStatus','kanjiStatus','dailyTestResults','lastPosition','notificationSettings'];
+export function profilePatch(fields:any,allowRoleChange=false) {
+  const out:any={};
+  for(const key of ['name','avatar','targetLevel','lastActiveDate'])if(typeof fields[key]==='string')out[key]=fields[key];
+  if(typeof fields.username==='string')out.username=fields.username.toLowerCase().trim().replace(/[^a-z0-9_]/g,'');
+  for(const key of ['xp','streak','coins'])if(Number.isFinite(fields[key]))out[key]=Math.min(10000000,Math.max(0,fields[key]));
+  for(const key of jsonFields)if(fields[key]!==undefined){const value=typeof fields[key]==='string'?JSON.parse(fields[key]):fields[key];out[key]=JSON.stringify(value);}
+  if(allowRoleChange){if(fields.role==='admin'||fields.role==='user')out.role=fields.role;if(typeof fields.isVip==='boolean')out.isVip=fields.isVip;}
+  return clean(out);
+}
+export async function getOrCreateUser(uid:string,email:string,emailVerified=false) {
+  const ref=collection().doc(uid);const normalized=(email||'').trim().toLowerCase();
+  return firebaseDb().runTransaction(async tx=>{
+    const snapshot=await tx.get(ref);const existing=snapshot.data();
+    if(existing){if(isBootstrapAdmin(normalized,emailVerified)&&existing.role!=='admin'){tx.update(ref,{role:'admin'});return {...existing,role:'admin'};}return existing;}
+    const today=new Date().toISOString().slice(0,10);
+    const value={id:uid,uid,email:normalized,username:normalized.split('@')[0].replace(/[^a-z0-9_]/g,''),name:normalized.split('@')[0]||'Học viên JLPT',avatar:'🦊',targetLevel:'N4',xp:0,streak:0,coins:0,lastActiveDate:today,studyDays:JSON.stringify([today]),completedLessons:'[]',vocabStatus:'{}',grammarStatus:'{}',kanjiStatus:'{}',dailyTestResults:'[]',role:isBootstrapAdmin(normalized,emailVerified)?'admin':'user',isVip:false,createdAt:new Date().toISOString(),profileMigrationVersion:0};
+    tx.create(ref,value);return value;
   });
 }
-
-export async function updateUserProfile(uid: string, fields: any, allowRoleChange: boolean = false) {
-  return await withDbRetry(async () => {
-    const updateData: any = {};
-    
-    if (fields.username !== undefined) {
-      updateData.username = fields.username.toLowerCase().trim().replace(/[^a-z0-9_]/g, '');
-    }
-    if (fields.name !== undefined) updateData.name = fields.name;
-    if (fields.avatar !== undefined) updateData.avatar = fields.avatar;
-    if (fields.targetLevel !== undefined) updateData.targetLevel = fields.targetLevel;
-    if (fields.xp !== undefined) updateData.xp = fields.xp;
-    if (fields.streak !== undefined) updateData.streak = fields.streak;
-    if (fields.coins !== undefined) updateData.coins = fields.coins;
-    if (fields.lastActiveDate !== undefined) updateData.lastActiveDate = fields.lastActiveDate;
-    if (fields.isVip !== undefined) updateData.isVip = fields.isVip;
-    if (fields.studyDays !== undefined) updateData.studyDays = typeof fields.studyDays === 'string' ? fields.studyDays : JSON.stringify(fields.studyDays);
-    if (fields.completedLessons !== undefined) updateData.completedLessons = typeof fields.completedLessons === 'string' ? fields.completedLessons : JSON.stringify(fields.completedLessons);
-    if (fields.vocabStatus !== undefined) updateData.vocabStatus = typeof fields.vocabStatus === 'string' ? fields.vocabStatus : JSON.stringify(fields.vocabStatus);
-    if (fields.grammarStatus !== undefined) updateData.grammarStatus = typeof fields.grammarStatus === 'string' ? fields.grammarStatus : JSON.stringify(fields.grammarStatus);
-    if (fields.kanjiStatus !== undefined) updateData.kanjiStatus = typeof fields.kanjiStatus === 'string' ? fields.kanjiStatus : JSON.stringify(fields.kanjiStatus);
-    if (fields.dailyTestResults !== undefined) updateData.dailyTestResults = typeof fields.dailyTestResults === 'string' ? fields.dailyTestResults : JSON.stringify(fields.dailyTestResults);
-    if (fields.lastPosition !== undefined) updateData.lastPosition = typeof fields.lastPosition === 'string' ? fields.lastPosition : JSON.stringify(fields.lastPosition);
-    if (fields.notificationSettings !== undefined) updateData.notificationSettings = typeof fields.notificationSettings === 'string' ? fields.notificationSettings : JSON.stringify(fields.notificationSettings);
-    
-    // SECURITY / RBAC: Role CANNOT be changed by regular profile updates.
-    // Only privileged admin operations (allowRoleChange = true) are permitted to alter role.
-    if (fields.role !== undefined && allowRoleChange) {
-      if (fields.role === 'admin' || fields.role === 'user') {
-        updateData.role = fields.role;
-      }
-    }
-
-    if (Object.keys(updateData).length === 0) {
-      const existing = await db.select().from(users).where(eq(users.uid, uid)).execute();
-      return existing[0] || null;
-    }
-
-    const result = await db.update(users)
-      .set(updateData)
-      .where(eq(users.uid, uid))
-      .returning();
-
-    return result[0];
+export async function updateUserProfile(uid:string,fields:any,allowRoleChange=false) {
+  const patch=profilePatch(fields,allowRoleChange);const ref=collection().doc(uid);
+  return firebaseDb().runTransaction(async tx=>{const snapshot=await tx.get(ref);if(!snapshot.exists)throw new Error('USER_NOT_FOUND');tx.update(ref,patch);return {...snapshot.data(),...patch};});
+}
+export async function getAllUsers(){return (await collection().get()).docs.map(d=>d.data());}
+export async function deleteUserByUid(uid:string){const ref=collection().doc(uid);const previous=(await ref.get()).data();await firebaseDb().recursiveDelete(ref);return previous?[previous]:[];}
+export async function findUserByIdentifier(identifier:string){const key=identifier.trim().toLowerCase();if(!key)return null;const rows=await getAllUsers();return rows.find(u=>[u.username,u.email,u.name,u.email?.split('@')[0]].some(v=>typeof v==='string'&&v.toLowerCase()===key))||null;}
+export async function importBrowserProfile(uid:string,fields:any){
+  const ref=collection().doc(uid);const patch=profilePatch(fields);
+  return firebaseDb().runTransaction(async tx=>{const snapshot=await tx.get(ref);const previous=snapshot.data();if(!previous)throw new Error('USER_NOT_FOUND');if(previous.profileMigrationVersion>=1)return previous;
+    const incoming=Number(patch.xp)||0;const existing=Number(previous.xp)||0;
+    // Preserve a server profile that has already accumulated more progress.
+    const merged={...previous,...(incoming>=existing?patch:{}),xp:Math.max(existing,incoming),role:previous.role,isVip:previous.isVip||false,profileMigrationVersion:1};
+    for(const key of ['studyDays','completedLessons']){const parse=(v:any)=>{try{return JSON.parse(v||'[]');}catch{return [];}};merged[key]=JSON.stringify([...new Set([...parse(previous[key]),...parse(patch[key])])]);}
+    for(const key of ['vocabStatus','grammarStatus','kanjiStatus']){const parse=(v:any)=>{try{return JSON.parse(v||'{}');}catch{return {};}};merged[key]=JSON.stringify({...parse(patch[key]),...parse(previous[key])});}
+    merged.streak=Math.max(Number(previous.streak)||0,Number(patch.streak)||0);
+    tx.set(ref,clean(merged));return merged;
   });
 }
-
-export async function getAllUsers() {
-  return await withDbRetry(async () => {
-    return await db.select().from(users).execute();
-  });
-}
-
-export async function deleteUserByUid(uid: string) {
-  return await withDbRetry(async () => {
-    return await db.delete(users).where(eq(users.uid, uid)).returning();
-  });
-}
-
-export async function findUserByIdentifier(identifier: string) {
-  return await withDbRetry(async () => {
-    const raw = (identifier || '').trim();
-    if (!raw) return null;
-    const lower = raw.toLowerCase();
-
-    // 1. Direct match on username or email
-    const byUsernameOrEmail = await db.select().from(users).where(
-      sql`LOWER(${users.username}) = ${lower} OR LOWER(${users.email}) = ${lower}`
-    ).execute();
-    if (byUsernameOrEmail.length > 0) return byUsernameOrEmail[0];
-
-    // 2. Match on name
-    const byName = await db.select().from(users).where(
-      sql`LOWER(${users.name}) = ${lower}`
-    ).execute();
-    if (byName.length > 0) return byName[0];
-
-    // 3. Match on email prefix (e.g. "vanvan20001220" from "vanvan20001220@gmail.com")
-    const byPrefix = await db.select().from(users).where(
-      sql`LOWER(SPLIT_PART(${users.email}, '@', 1)) = ${lower}`
-    ).execute();
-    if (byPrefix.length > 0) return byPrefix[0];
-
-    return null;
-  });
-}
-
