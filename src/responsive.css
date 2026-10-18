@@ -264,3 +264,6 @@ html:not([data-theme=dark]) .text-slate-400:not(:where([class*="bg-[#"] *,[class
 html[data-theme] #app-root-container input.search-bare{border:0!important;background:transparent!important;box-shadow:none!important;outline:0!important;border-radius:0!important;padding-left:0!important;padding-right:0!important}
 /* hero Kanji nền tối: giữ chữ trắng, không bị theme đổi sang màu mực */
 html[data-theme] #app-root-container .kmn4-hero :is(.text-white,[class*="text-white/"],.text-teal-100,.text-teal-50,.text-slate-300,h1,h2){color:#fff!important}
+/* khối Kanji nền sáng cố định: giữ chữ tối khi theme tối để không mất chữ */
+html[data-theme=dark] #app-root-container .kmn4-light :is(h2,p){color:#0f172a!important}
+html[data-theme=dark] #app-root-container .kmn4-light p{color:#334155!important}
