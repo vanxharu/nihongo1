@@ -34,23 +34,23 @@ export default function ShadowingPractice({videoId,cue,onPlay,onPrevious,onNext}
  const stop=()=>{if(recorder.current?.state==='recording')recorder.current.stop();};
  const practice=()=>{if(!cue)return;onPlay(true);setRepeats(n=>n+1);const id=cue.id;setHistory(p=>{const next={...p,[id]:(p[id]||0)+1};try{localStorage.setItem(storageKey,JSON.stringify(next));}catch{}return next;});};
  return <section className="space-y-4" aria-label="Luyện nói Shadowing">
-  <div className="flex items-center justify-between"><div><h3 className="text-base font-bold text-white">Luyện nói theo nhân vật</h3><p className="text-xs text-slate-400">Nghe → nhắc lại → ghi âm → so sánh</p></div><span className="rounded-full bg-amber-400/10 px-3 py-1 text-xs text-amber-300">{cue?history[cue.id]||0:0} lượt luyện</span></div>
-  {!cue?<p className="text-sm text-slate-400">Hãy chọn một câu có phụ đề để bắt đầu.</p>:<>
-   <div className="rounded-xl border border-white/10 bg-[#24252c] p-4">
-    <p className="mb-2 text-xs text-slate-400">Câu đang luyện · {cue.start===null?'Chưa có mốc thời gian':formatDuration(cue.start)}</p>
-    <button onClick={()=>setHideText(v=>!v)} className="mb-3 text-xs text-amber-300 underline">{hideText?'Hiện lời thoại':'Ẩn lời thoại để thử sức'}</button>
-    <p lang="ja" className="min-h-12 text-xl font-semibold leading-relaxed text-amber-200">{hideText?'••••••••':cue.text}</p>
-    {!hideText&&cue.translation&&<p className="mt-2 text-sm text-slate-300">{cue.translation}</p>}
+  <div className="flex items-center justify-between"><div><h3 className="text-base font-bold text-[var(--ui-text)]">Luyện nói theo nhân vật</h3><p className="text-xs text-[var(--ui-muted)]">Nghe → nhắc lại → ghi âm → so sánh</p></div><span className="rounded-full bg-[var(--ui-soft)] px-3 py-1 text-xs text-[var(--ui-primary)]">{cue?history[cue.id]||0:0} lượt luyện</span></div>
+  {!cue?<p className="text-sm text-[var(--ui-muted)]">Hãy chọn một câu có phụ đề để bắt đầu.</p>:<>
+   <div className="rounded-xl border border-white/10 bg-[var(--ui-soft)] p-4">
+    <p className="mb-2 text-xs text-[var(--ui-muted)]">Câu đang luyện · {cue.start===null?'Chưa có mốc thời gian':formatDuration(cue.start)}</p>
+    <button onClick={()=>setHideText(v=>!v)} className="mb-3 text-xs text-[var(--ui-primary)] underline">{hideText?'Hiện lời thoại':'Ẩn lời thoại để thử sức'}</button>
+    <p lang="ja" className="min-h-12 text-xl font-semibold leading-relaxed text-[var(--ui-primary)]">{hideText?'••••••••':cue.text}</p>
+    {!hideText&&cue.translation&&<p className="mt-2 text-sm text-[var(--ui-muted)]">{cue.translation}</p>}
    </div>
    <div className="grid grid-cols-2 gap-2">
-    <button onClick={()=>onPlay(false)} className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-[#292b32] font-semibold"><Headphones size={17}/> Nghe mẫu</button>
-    <button onClick={practice} className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-amber-400 font-semibold text-slate-950"><Repeat2 size={17}/> Nghe & dừng</button>
+    <button onClick={()=>onPlay(false)} className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--ui-line)] bg-[var(--ui-soft)] font-semibold"><Headphones size={17}/> Nghe mẫu</button>
+    <button onClick={practice} className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[var(--ui-primary)] font-semibold text-white"><Repeat2 size={17}/> Nghe & dừng</button>
    </div>
-   <button onClick={recording?stop:start} className={`flex w-full min-h-14 items-center justify-center gap-2 rounded-xl font-bold ${recording?'bg-rose-600 text-white':'bg-[#343641] text-white border border-amber-400/50'}`}>{recording?<><Square size={18}/> Dừng ghi âm</>:<><Mic size={18}/> Ghi âm giọng của tôi</>}</button>
-   {audio&&<div className="rounded-xl bg-[#24252c] p-3"><p className="mb-2 text-xs text-slate-300">Bản ghi của bạn (chỉ lưu tạm trên thiết bị)</p><audio controls src={audio} className="w-full" /><button onClick={()=>{if(url.current)URL.revokeObjectURL(url.current);url.current=null;setAudio(null);}} className="mt-2 flex items-center gap-1 text-xs text-amber-300"><RotateCcw size={13}/> Ghi lại</button></div>}
+   <button onClick={recording?stop:start} className={`flex w-full min-h-14 items-center justify-center gap-2 rounded-xl font-bold ${recording?'bg-rose-600 text-[var(--ui-text)]':'bg-[var(--ui-soft)] text-[var(--ui-text)] border border-[var(--ui-primary)]'}`}>{recording?<><Square size={18}/> Dừng ghi âm</>:<><Mic size={18}/> Ghi âm giọng của tôi</>}</button>
+   {audio&&<div className="rounded-xl bg-[var(--ui-soft)] p-3"><p className="mb-2 text-xs text-[var(--ui-muted)]">Bản ghi của bạn (chỉ lưu tạm trên thiết bị)</p><audio controls src={audio} className="w-full" /><button onClick={()=>{if(url.current)URL.revokeObjectURL(url.current);url.current=null;setAudio(null);}} className="mt-2 flex items-center gap-1 text-xs text-[var(--ui-primary)]"><RotateCcw size={13}/> Ghi lại</button></div>}
    {error&&<p role="alert" className="text-sm text-rose-300">{error}</p>}
-   <div className="flex gap-2"><button onClick={onPrevious} className="flex-1 rounded-xl border border-white/15 p-3 text-sm">← Câu trước</button><button onClick={onNext} className="flex-1 rounded-xl border border-white/15 p-3 text-sm">Câu tiếp →</button></div>
-   <p className="text-xs text-slate-400">Bản ghi chỉ dùng để tự nghe đối chiếu; không tự chấm điểm phát âm. Số lượt luyện được lưu trên thiết bị.</p>
+   <div className="flex gap-2"><button onClick={onPrevious} className="flex-1 rounded-xl border border-[var(--ui-line)] p-3 text-sm">← Câu trước</button><button onClick={onNext} className="flex-1 rounded-xl border border-[var(--ui-line)] p-3 text-sm">Câu tiếp →</button></div>
+   <p className="text-xs text-[var(--ui-muted)]">Bản ghi chỉ dùng để tự nghe đối chiếu; không tự chấm điểm phát âm. Số lượt luyện được lưu trên thiết bị.</p>
   </>}
  </section>;
 }
