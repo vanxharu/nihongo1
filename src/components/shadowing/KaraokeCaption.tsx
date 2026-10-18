@@ -46,7 +46,7 @@ function KaraokeCaption({ text, time, start, end, timings, analysis, furigana, v
         const active = current && charOffset >= current.textStart && charOffset < current.textEnd;
         const fill = karaokeVisualFill(time, charOffset, visual, end);
         return <span key={charOffset} style={{ '--karaoke-fill': `${fill}%` } as React.CSSProperties} className={`karaoke-char${spoken ? ' is-spoken' : ''}${active ? ' is-current' : ''}`}>{char}</span>;
-      })}</span>{furigana && piece.reading && piece.reading !== piece.text && <rt>{piece.reading}</rt>}</ruby></span>;
+      })}</span>{furigana && /\p{Script=Han}/u.test(piece.text) && piece.reading && piece.reading !== piece.text && <rt>{piece.reading}</rt>}</ruby></span>;
     })}
   </p>;
 }
