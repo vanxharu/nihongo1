@@ -41,7 +41,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
   playbackTime.current = currentTime;
   const [notice, setNotice] = useState('');
   const [insightCue, setInsightCue] = useState<ShadowingCue | null>(null);
-  const [, refreshAnalysis] = useState(0);
+  const [analysisRevision, refreshAnalysis] = useState(0);
   const transcriptRequest = useRef<AbortController | null>(null);
   const alignmentRequest = useRef<AbortController | null>(null);
   const currentVideo = useRef(videoId);
@@ -78,13 +78,15 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
   const active = activeShadowingCue(cues, currentTime);
   const displayedIndex = mode === 'dictation' ? selected : visibleShadowingCue(cues, currentTime);
   const displayed = cues[displayedIndex] || null;
-  const displayedAnalysis = displayed ? preparedAnalysis(displayed) : null;
+  const displayedAnalysis = displayed ? (()=>{const enriched=cache.current.get(displayed.text);return {...preparedAnalysis(displayed),readings:enriched?.readings?.length?enriched.readings:displayed.readings||[],vocabulary:enriched?.vocabulary||[],kanji:enriched?.kanji||[],grammar:enriched?.grammar||[]};})() : null;
   // Analyze the current subtitle quietly, regardless of which mode is visible.
   // Debounce seeking, cache by sentence, and cap simultaneous API requests.
   const pendingAnalysis = useRef(new Set<string>());
   const failedAnalysis = useRef(new Map<string,number>());
   const analysisVideo = useRef(videoId);
   const [analysisBusy,setAnalysisBusy] = useState(false);
+  const activeAnalysisText=useRef('');
+  activeAnalysisText.current=displayed?.text.trim()||'';
   useEffect(()=>{
     analysisVideo.current=videoId;
     pendingAnalysis.current.clear();
@@ -93,6 +95,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
   },[videoId]);
   useEffect(()=>{
     const cue=displayed;
+    setAnalysisBusy(false);
     if(!videoId||!cue?.text?.trim())return;
     const text=cue.text.trim();
     if(cache.current.has(text)||pendingAnalysis.current.has(text))return;
@@ -100,9 +103,8 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     const timer=window.setTimeout(()=>{
       if(cache.current.has(text)||pendingAnalysis.current.has(text))return;
       // Do not flood the analyzer when a video is rapidly seeking.
-      if(pendingAnalysis.current.size>=2)return;
       pendingAnalysis.current.add(text);
-      setAnalysisBusy(true);
+      if(activeAnalysisText.current===text)setAnalysisBusy(true);
       const requestedVideo=videoId;
       void requestSentenceAnalysis(text).then(result=>{
         if(analysisVideo.current!==requestedVideo)return;
@@ -113,7 +115,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
         if(analysisVideo.current===requestedVideo)failedAnalysis.current.set(text,Date.now()+60000);
       }).finally(()=>{
         pendingAnalysis.current.delete(text);
-        if(analysisVideo.current===requestedVideo)setAnalysisBusy(pendingAnalysis.current.size>0);
+        if(analysisVideo.current===requestedVideo && activeAnalysisText.current===text)setAnalysisBusy(false);
       });
     },850);
     return()=>window.clearTimeout(timer);
@@ -264,7 +266,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     </section> : <>
       <div className="flex flex-col gap-2 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="max-lg:contents lg:space-y-4">
-          {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} busy={analysisBusy} /></div>}
+          {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} busy={analysisBusy} revision={analysisRevision} /></div>}
           <div className="shadowing-sticky"><ShadowingPlayer
             ref={playerRef}
             key={videoId}
@@ -289,7 +291,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
               <button aria-pressed={translation} onClick={() => setTranslation(v => !v)} className={`shadowing-pill${translation ? ' shadowing-pill-active' : ''}`}>Dịch</button></div>}
           /></div>
           
-          {mode === 'analysis' && <div className="lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} /></div>}
+          {mode === 'analysis' && <div className="lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} busy={analysisBusy} revision={analysisRevision} /></div>}
           {sourceTitle && <h2 className="line-clamp-2 text-base font-bold leading-snug text-slate-100 max-lg:hidden">{sourceTitle}</h2>}
           {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-3 sm:p-6">
             <div className="mb-1 flex items-center justify-between gap-2 text-xs text-slate-400">
