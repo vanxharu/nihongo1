@@ -11,7 +11,6 @@ import DictationPanel from './DictationPanel';
 import SentenceInsights from './SentenceInsights';
 import SubtitleEditor from './SubtitleEditor';
 import VideoLearningPanel from './VideoLearningPanel';
-import AnalysisFilePanel from './AnalysisFilePanel';
 import { parseShadowingAnalysisFile, type ShadowingAnalysisFile } from '../../utils/shadowingAnalysisFile';
 import { auth } from '../../lib/firebase';
 import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings, visibleShadowingCue, parsePreparedShadowingCaptions } from '../../utils/shadowing';
@@ -105,16 +104,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     })();
     return () => controller.abort();
   }, [videoId, cues, analysisStoreKey]);
-  function importAnalysis(packet: ShadowingAnalysisFile) {
-    const merged = new Map(cache.current);
-    for (const row of packet.sentences) merged.set(row.text, row.analysis);
-    const saved: ShadowingAnalysisFile = { version: 1, videoId: videoId!, sentences: cues.filter(c => merged.has(c.text)).map(c => ({ id: c.id, text: c.text, analysis: merged.get(c.text)! })) };
-    // Save before updating the UI; a quota failure must not claim persistence.
-    try { localStorage.setItem(analysisStoreKey + ':file', JSON.stringify(saved)); }
-    catch { throw new Error('Không đủ bộ nhớ trình duyệt để lưu file. Hãy giải phóng bộ nhớ hoặc chia file nhỏ hơn.'); }
-    cache.current = merged;
-    refreshAnalysis(n => n + 1);
-  }
+
   const active = activeShadowingCue(cues, currentTime);
   const displayedIndex = mode === 'dictation' ? selected : visibleShadowingCue(cues, currentTime);
   const displayed = cues[displayedIndex] || null;
@@ -273,7 +263,6 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     </section> : <>
       <div className="flex flex-col gap-2 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="max-lg:contents lg:space-y-4">
-          {mode === 'analysis' && <AnalysisFilePanel key={videoId} videoId={videoId} cues={cues} analysis={cache.current} onImport={importAnalysis} />}
           {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} revision={analysisRevision} time={currentTime} furigana={furigana} showTranslation={translation} /></div>}
           <div className="shadowing-sticky"><ShadowingPlayer
             ref={playerRef}
