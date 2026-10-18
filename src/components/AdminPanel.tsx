@@ -9,6 +9,8 @@ import { Database, Users, Settings, Activity, Server, AlertCircle,
 import AdminDataPanel from "./AdminDataPanel";
 import ConfirmModal from "./ConfirmModal";
 import UserAvatar from "./UserAvatar";
+import AdminDialog from "./AdminDialog";
+import "./admin.css";
 
 interface AdminPanelProps {
   userProfile: UserProfile;
@@ -20,6 +22,8 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
   const [openExcelModal, setOpenExcelModal] = useState(false);
   const [usersList, setUsersList] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [usersLoaded, setUsersLoaded] = useState(false);
+  const [usersUnavailable, setUsersUnavailable] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -58,23 +62,24 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
         const data = await response.json();
         if (data.success && data.users) {
           setUsersList(data.users);
+          setUsersLoaded(true); setUsersUnavailable(false);
         } else {
-          setError(data.error || 'Không thể tải danh sách người dùng.');
+          setUsersUnavailable(true); setError('Chưa tải được danh sách học viên. Vui lòng thử lại.');
         }
       } else {
         const errData = await response.json().catch(() => ({}));
-        setError(errData.error || 'Yêu cầu tải danh sách bị từ chối.');
+        setUsersUnavailable(true); setError(response.status === 403 ? 'Tài khoản chưa có quyền quản trị.' : 'Không kết nối được dữ liệu học viên. Vui lòng thử lại.');
       }
     } catch (err: any) {
       console.error(err);
-      setError('Đã xảy ra lỗi khi kết nối với server.');
+      setUsersUnavailable(true); setError('Không kết nối được dữ liệu học viên. Vui lòng thử lại.');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (userProfile.role === 'admin' && activeTab === 'users') {
+    if (userProfile.role === 'admin' && (activeTab === 'overview' || activeTab === 'users')) {
       fetchUsers();
     }
   }, [activeTab, token, userProfile.role]);
@@ -177,10 +182,10 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
   });
 
   // Calculate high-level stats for overview tab
-  const totalUsersInDb = usersList.length > 0 ? usersList.length : 142;
-  const adminCount = usersList.filter(u => u.role === 'admin').length || 1;
-  const totalStreakSum = usersList.reduce((acc, u) => acc + (u.streak || 0), 0) || 530;
-  const totalXpSum = usersList.reduce((acc, u) => acc + (u.xp || 0), 0) || 45200;
+  const totalUsersInDb = usersLoaded && !usersUnavailable ? usersList.length : '—';
+  const adminCount = usersList.filter(u => u.role === 'admin').length;
+  const totalStreakSum = usersLoaded && !usersUnavailable ? usersList.reduce((acc, u) => acc + (u.streak || 0), 0) : '—';
+  const totalXpSum = usersLoaded && !usersUnavailable ? usersList.reduce((acc, u) => acc + (u.xp || 0), 0) : '—';
 
   // Render Access Denied for non-admin users
   if (userProfile.role !== 'admin') {
@@ -223,7 +228,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-3 sm:p-4 space-y-4 animate-fade-in">
+    <div className="admin-workspace max-w-6xl mx-auto space-y-4">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         <div>
           <h1 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
@@ -234,14 +239,14 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
             Xin chào, <strong className="text-slate-900">{userProfile.name}</strong> (Quản trị viên)
           </p>
         </div>
-        <div className="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2.5 py-1 rounded-md border border-emerald-200 flex items-center gap-1.5 self-start">
+        <div data-state={usersUnavailable ? "error" : usersLoaded ? "ready" : "pending"} className="admin-status text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2.5 py-1 rounded-md border border-emerald-200 flex items-center gap-1.5 self-start">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          CLOUD SQL POSTGRESQL KẾT NỐI
+          {loading ? 'Đang kiểm tra dữ liệu' : usersUnavailable ? 'Chưa kết nối dữ liệu' : usersLoaded ? 'Đã tải dữ liệu' : 'Chưa kiểm tra dữ liệu'}
         </div>
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex overflow-x-auto no-scrollbar gap-1 border-b border-slate-200 dark:border-slate-800 pb-1">
+      <div className="admin-tabs">
         <button
           onClick={() => setActiveTab('overview')}
           className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
@@ -258,7 +263,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
           }`}
         >
           <Users className="w-3.5 h-3.5 shrink-0" />
-          <span>Học viên ({usersList.length || 'Cloud'})</span>
+          <span>Học viên {usersLoaded && !usersUnavailable ? `(${usersList.length})` : ''}</span>
         </button>
         <button
           onClick={() => setActiveTab('data')}
@@ -267,7 +272,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
           }`}
         >
           <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-          <span>Dữ liệu (Excel / SQL)</span>
+          <span>Dữ liệu học tập</span>
         </button>
 
         <button
@@ -285,7 +290,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
       {error && (
         <div className="bg-rose-50 border border-rose-200 rounded-lg p-2.5 flex items-start gap-2 text-xs">
           <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-          <span className="text-rose-700 font-semibold">{error}</span>
+          <span className="text-rose-700 font-semibold flex-1">{error}</span><button type="button" onClick={fetchUsers} disabled={loading} className="shrink-0 underline">Thử lại</button>
         </div>
       )}
       {success && (
@@ -304,7 +309,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                 <Users className="w-4 h-4" />
               </div>
               <p className="text-[11px] text-slate-500 font-medium">Học viên đồng bộ</p>
-              <h3 className="text-xl font-bold text-slate-900">{usersList.length > 0 ? usersList.length : 'Đang tải...'}</h3>
+              <h3 className="text-xl font-bold text-slate-900">{totalUsersInDb}</h3>
             </div>
             <div className="bg-white p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
               <div className="w-7 h-7 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center mb-1.5">
@@ -324,10 +329,10 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
               <div className="w-7 h-7 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center mb-1.5">
                 <Server className="w-4 h-4" />
               </div>
-              <p className="text-[11px] text-slate-500 font-medium">Server Engine</p>
-              <h3 className="text-sm font-bold text-emerald-600 flex items-center gap-1.5 mt-1">
+              <p className="text-[11px] text-slate-500 font-medium">Kết nối dữ liệu</p>
+              <h3 data-state={usersUnavailable ? "error" : usersLoaded ? "ready" : "pending"} className="admin-status text-sm font-bold text-emerald-600 flex items-center gap-1.5 mt-1">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                Vận hành ổn định
+                {loading ? 'Đang kiểm tra' : usersUnavailable ? 'Chưa kết nối' : usersLoaded ? 'Đã tải dữ liệu' : 'Chưa kiểm tra'}
               </h3>
             </div>
           </div>
@@ -363,7 +368,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
             <h3 className="text-xs font-bold text-slate-900">Ghi chú vận hành quản trị</h3>
             <div className="text-xs text-slate-600 leading-relaxed space-y-1">
               <p>
-                Cơ sở dữ liệu đã liên kết với Cloud SQL PostgreSQL. Bạn có thể kiểm soát và thay đổi thông tin từng học viên ở tab <strong>Học viên</strong>.
+                Xem trạng thái kết nối và quản lý thông tin học viên ở tab <strong>Học viên</strong>.
               </p>
             </div>
           </div>
@@ -398,11 +403,11 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
             </div>
           ) : filteredUsers.length === 0 ? (
             <div className="p-12 text-center text-slate-500 text-sm">
-              Không tìm thấy học viên nào phù hợp với từ khóa tìm kiếm.
+              {usersUnavailable ? "Chưa tải được danh sách học viên." : usersLoaded && !usersList.length ? "Chưa có học viên trong danh sách." : "Không có học viên khớp từ khóa."}
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-sm">
+              <table className="admin-record-table admin-users-table w-full text-left border-collapse text-sm">
                 <thead className="bg-slate-50/50 text-slate-500 border-b border-slate-100 font-bold">
                   <tr>
                     <th className="px-6 py-4 font-bold">Học viên</th>
@@ -417,7 +422,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                 <tbody className="divide-y divide-slate-100">
                   {filteredUsers.map((u) => (
                     <tr key={u.uid} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="px-6 py-4 flex items-center gap-3">
+                      <td data-label="Học viên" className="px-6 py-4 flex items-center gap-3">
                         <UserAvatar avatar={u.avatar} name={u.name} fallbackEmoji="🦊" className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 text-lg shrink-0" />
                         <div className="min-w-0">
                           <p className="font-bold text-slate-950 truncate flex items-center gap-1.5">
@@ -436,21 +441,21 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                           <p className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">UID: {u.uid?.substring(0, 8)}...</p>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-slate-800 font-medium truncate max-w-[150px]">{u.email}</td>
-                      <td className="px-6 py-4">
+                      <td data-label="Email" className="px-6 py-4 text-slate-800 font-medium truncate max-w-[150px]">{u.email}</td>
+                      <td data-label="Cấp độ" className="px-6 py-4">
                         <span className="text-xs bg-slate-50 text-slate-700 px-2 py-0.5 rounded-lg font-bold border border-slate-100">
                           JLPT {u.targetLevel || u.target_level || 'N4'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center font-bold text-orange-600">
+                      <td data-label="Chuỗi học" className="px-6 py-4 text-center font-bold text-orange-600">
                         <div className="flex items-center justify-center gap-1">
                           <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500 shrink-0" />
                           {u.streak || 0}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-center font-bold text-slate-950">{u.xp || 0}</td>
+                      <td data-label="XP" className="px-6 py-4 text-center font-bold text-slate-950">{u.xp || 0}</td>
 
-                      <td className="px-6 py-4">
+                      <td data-label="Vai trò" className="px-6 py-4">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase border ${
                           u.role === 'admin' 
                             ? 'bg-purple-50 text-purple-700 border-purple-200' 
@@ -459,7 +464,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                           {u.role || 'user'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center">
+                      <td data-label="Thao tác" className="px-6 py-4 text-center">
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => handleOpenEdit(u)}
@@ -500,7 +505,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
             <AlertCircle className="w-5 h-5 text-slate-600 mt-0.5 shrink-0" />
             <div>
               <h4 className="text-sm font-bold text-slate-950">Thông số Cloud SQL PostgreSQL</h4>
-              <p className="text-sm text-slate-800 mt-1">Ứng dụng đã kích hoạt đồng bộ hóa bền vững. Tất cả tiến trình làm bài thi thử, chuỗi Streak, từ vựng và cấp độ đều được sao lưu tự động.</p>
+              <p className="text-sm text-slate-800 mt-1">Trạng thái dữ liệu được kiểm tra khi mở Tổng quan hoặc Học viên. Khi mất kết nối, thao tác cập nhật có thể không thực hiện được.</p>
             </div>
           </div>
           <div className="bg-white border border-slate-100 rounded-2xl p-6">
@@ -509,7 +514,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Cơ sở dữ liệu liên kết</label>
                 <div className="flex gap-2">
-                  <input type="text" value="Google Cloud SQL (PostgreSQL Engine v15)" readOnly className="flex-1 px-3 py-2 bg-slate-50/50 border border-slate-100 rounded-lg text-sm text-slate-500 font-medium" />
+                  <input type="text" value={usersUnavailable ? "Chưa kết nối được cơ sở dữ liệu" : usersLoaded ? "Đã tải dữ liệu học viên" : "Chưa kiểm tra kết nối"} readOnly className="flex-1 px-3 py-2 bg-slate-50/50 border border-slate-100 rounded-lg text-sm text-slate-500 font-medium" />
                 </div>
               </div>
               <div>
@@ -524,7 +529,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
       {/* Editing User Modal */}
       <AnimatePresence>
         {editingUser && (
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <AdminDialog label="Sửa hồ sơ học viên" onClose={() => setEditingUser(null)}>
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -533,12 +538,12 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
             >
               <button
                 onClick={() => setEditingUser(null)}
-                className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"
+                aria-label="Đóng chỉnh sửa" className="absolute top-4 right-4 p-1.5 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-50 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <h3 className="text-lg font-display font-bold text-slate-950 mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-display font-bold text-slate-950 mb-4 pr-12 flex items-center gap-2">
                 <Edit3 className="w-5 h-5 text-slate-600" />
                 Sửa hồ sơ học viên
               </h3>
@@ -627,7 +632,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                 </div>
               </form>
             </motion.div>
-          </div>
+          </AdminDialog>
         )}
       </AnimatePresence>
 

@@ -1,0 +1,52 @@
+.admin-workspace{width:100%;min-width:0;max-width:1152px;margin:auto;padding:4px 0 24px;color:var(--ui-ink)}
+.admin-workspace :where(.flex,.grid)>*,.admin-data{min-width:0}
+.admin-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:5px;background:var(--ui-soft);border:1px solid var(--ui-line);border-radius:12px}
+.admin-tabs button{justify-content:center;min-width:0;min-height:44px;white-space:normal;text-align:center;line-height:1.35}
+.admin-data-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;width:min(100%,440px);background:var(--ui-soft);border:1px solid var(--ui-line);border-radius:12px}
+.admin-data-tabs button{min-width:0;padding:8px;justify-content:center;white-space:normal;line-height:1.35}
+.admin-data-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;max-width:100%}
+.admin-data-actions button{min-height:44px;justify-content:center}
+.admin-workspace :is(input,select,textarea){min-width:0;max-width:100%}
+.admin-workspace :is([role=alert],.text-rose-700){overflow-wrap:anywhere}
+.admin-record-table{width:100%;min-width:780px;border-collapse:collapse}
+.admin-record-table :is(td,th){vertical-align:top;overflow-wrap:anywhere}
+.admin-record-table td:first-child{max-width:230px}
+.admin-workspace button:disabled,.admin-overlay button:disabled{opacity:.5;cursor:not-allowed}
+.admin-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));background:rgb(15 23 42 / .55);backdrop-filter:blur(4px);overflow-y:auto;overscroll-behavior:contain;color:var(--ui-ink)}
+.admin-overlay .admin-dialog{box-sizing:border-box;min-width:0;width:100%;max-height:calc(100dvh - 32px);margin:auto;overflow-y:auto;background:var(--ui-surface);color:var(--ui-ink);border:1px solid var(--ui-line);border-radius:16px}
+.admin-dialog>.overflow-y-auto{min-height:0;overscroll-behavior:contain}
+.admin-dialog :is(input:not([type=checkbox]),select,textarea){box-sizing:border-box;min-width:0;max-width:100%;font-size:16px;min-height:44px;background:var(--ui-surface);color:var(--ui-ink)}
+.admin-dialog button{min-height:44px}
+.admin-dialog button:has(>svg:only-child){min-width:44px;display:flex;align-items:center;justify-content:center}
+.admin-dialog :is(button,input,select,textarea):focus-visible{outline:2px solid var(--ui-primary);outline-offset:2px}
+.admin-overlay :is(.text-slate-950,.text-slate-900,.text-slate-800){color:var(--ui-ink)}
+.admin-overlay :is(.text-slate-700,.text-slate-600,.text-slate-500){color:var(--ui-muted)}
+.admin-overlay :is(.bg-slate-50,.bg-slate-100){background:var(--ui-soft)}
+.admin-overlay table{min-width:540px}
+.admin-workspace .bg-slate-900 :is(h3,p){color:var(--ui-ink)}
+@media(max-width:639px){
+ .admin-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .admin-data-tabs{width:100%}.admin-data-actions{width:100%}.admin-data-actions button{flex:1 1 130px}
+ .admin-data-card>div:first-child>div{flex-wrap:wrap;width:100%}
+ .admin-data-card input{width:100%}
+ .admin-record-table{display:block;min-width:0;border:0}
+ .admin-record-table thead{display:none}
+ .admin-record-table tbody{display:grid;gap:12px}
+ .admin-record-table tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px;border:1px solid var(--ui-line);border-radius:12px;background:var(--ui-surface)}
+ .admin-record-table td{display:block!important;min-width:0;max-width:none!important;padding:0!important;text-align:left}
+ .admin-record-table td::before{content:attr(data-label);display:block;margin-bottom:3px;font-size:11px;font-weight:500;color:var(--ui-muted)}
+ .admin-record-table td[colspan]{grid-column:1/-1}
+ .admin-users-table td:nth-child(1),.admin-users-table td:nth-child(2),.admin-users-table td:last-child{grid-column:1/-1}
+ .admin-users-table td:first-child{display:flex!important;align-items:center;flex-wrap:wrap;gap:8px}
+ .admin-users-table td:first-child::before{display:none}
+ .admin-users-table td:nth-child(2){white-space:normal;overflow-wrap:anywhere}
+ .admin-record-table td:last-child>div{justify-content:flex-start}
+ .admin-data-table td:nth-child(2),.admin-data-table td:nth-child(4){grid-column:1/-1}
+ .admin-record-table .truncate{white-space:normal;overflow:visible;text-overflow:clip}
+ .admin-dialog{padding:16px!important}.admin-dialog>div:last-child:has(>button){flex-wrap:wrap}.admin-dialog>div:last-child>button{flex:1 1 120px}
+}
+
+.admin-workspace .admin-status[data-state=error]{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+.admin-workspace .admin-status[data-state=pending]{background:var(--ui-soft);color:var(--ui-muted);border-color:var(--ui-line)}
+.admin-status[data-state=error]>div{background:#f97316;animation:none}
+.admin-status[data-state=pending]>div{background:var(--ui-muted);animation:none}
