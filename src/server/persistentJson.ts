@@ -27,8 +27,8 @@ export function mergeJsonChanges(before:any,incoming:any,latest:any):any {
 async function readWithin(tx:any,ref:any){const meta=(await tx.get(ref)).data();if(!meta)return null;const refs=Array.from({length:meta.count},(_,i)=>ref.collection('parts').doc(String(i)));const parts=refs.length?await tx.getAll(...refs):[];if(parts.some((p:any)=>!p.exists))throw new Error('INCOMPLETE_DATA');return {value:JSON.parse(parts.map((p:any)=>p.data()!.text).join(''))};}
 function writeWithin(tx:any,ref:any,value:any){const text=JSON.stringify(value);if(Buffer.byteLength(text)>8000000)throw new Error('DATA_TOO_LARGE');const count=Math.ceil(text.length/200000);for(let i=0;i<count;i++)tx.set(ref.collection('parts').doc(String(i)),{text:text.slice(i*200000,(i+1)*200000)});tx.set(ref,{count,updatedAt:new Date().toISOString()});}
 export async function writePersistentJson(file:string,value:any){
-  const ref=refFor(file);const before=snapshots.getStore()?.get(file);
-  await firebaseDb().runTransaction(async tx=>{const stored=await readWithin(tx,ref);const latest=stored?.value;const merged=before===undefined?value:mergeJsonChanges(before,value,latest??(Array.isArray(value)?[]:{}));writeWithin(tx,ref,merged);});
+  const ref=refFor(file);const scope=snapshots.getStore();const before=scope?.get(file);
+  await firebaseDb().runTransaction(async tx=>{const stored=await readWithin(tx,ref);const latest=stored?.value;const empty=Array.isArray(value)?[]:{};const merged=before===undefined&&!scope?value:mergeJsonChanges(before??empty,value,latest??empty);writeWithin(tx,ref,merged);});
 }
 export async function readPersistentJson(file:string):Promise<any>{
   const ref=refFor(file);let stored=await firebaseDb().runTransaction(tx=>readWithin(tx,ref));

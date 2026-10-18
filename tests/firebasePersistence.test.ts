@@ -45,3 +45,9 @@ test('listening JSON merges concurrent user and video updates',async()=>{
  ]);
  const result=await api.readPersistentJson(file);assert.equal(result.first.video.currentTime,5);assert.equal(result.second.video.currentTime,20);fs.unlinkSync(file);
 });
+
+test('parallel first listening writes preserve both new owners without seed files',async()=>{
+ const file='/workspace/scratch/afc75b3ad22b/no-listening-seed.json';
+ await Promise.all([api.persistentRequest(()=>api.writePersistentJson(file,{first:{video:1}})),api.persistentRequest(()=>api.writePersistentJson(file,{second:{video:2}}))]);
+ assert.deepEqual(await api.readPersistentJson(file),{first:{video:1},second:{video:2}});
+});
