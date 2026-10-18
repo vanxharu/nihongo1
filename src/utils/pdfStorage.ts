@@ -44,6 +44,7 @@ function openIndexedDB(): Promise<IDBDatabase> {
  * Save an imported PDF exam into permanent browser storage
  */
 export async function savePdfExamToLibrary(file: File, customTitle?: string, level: string = 'N2'): Promise<SavedPdfExam> {
+  const ownerUid = auth.currentUser?.uid;
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = async () => {
@@ -62,7 +63,7 @@ export async function savePdfExamToLibrary(file: File, customTitle?: string, lev
           }),
           fileDataUrl: dataUrl,
           sizeBytes: file.size,
-          level, ownerUid:auth.currentUser?.uid
+          level, ownerUid
         };
 
         // Try IndexedDB first
@@ -71,7 +72,7 @@ export async function savePdfExamToLibrary(file: File, customTitle?: string, lev
           const tx = db.transaction(STORE_NAME, 'readwrite');
           const store = tx.objectStore(STORE_NAME);
           store.put(record);
-          tx.oncomplete = () => {if(auth.currentUser)uploadCloudPdf(record).then(()=>resolve(record)).catch(reject);else resolve(record);};
+          tx.oncomplete = () => {if(ownerUid)uploadCloudPdf(record).then(()=>resolve(record)).catch(reject);else resolve(record);};
           tx.onerror = () => throwFallback(record);
         } catch (dbErr) {
           throwFallback(record);
@@ -82,7 +83,7 @@ export async function savePdfExamToLibrary(file: File, customTitle?: string, lev
             const existing = getSavedPdfExamsFromLocalStorage();
             const updated = [rec, ...existing.filter(item => item.id !== rec.id)].slice(0, 20); // Keep max 20
             localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-            if(auth.currentUser)uploadCloudPdf(rec).then(()=>resolve(rec)).catch(reject);else resolve(rec);
+            if(ownerUid)uploadCloudPdf(rec).then(()=>resolve(rec)).catch(reject);else resolve(rec);
           } catch (e) {
             reject(new Error('Bộ nhớ trình duyệt đã đầy. Không thể lưu file PDF dung lượng lớn này.'));
           }
@@ -136,19 +137,22 @@ async function localPdfExams(): Promise<SavedPdfExam[]> {
 export async function getAllSavedPdfExams():Promise<SavedPdfExam[]>{
   const uid=auth.currentUser?.uid;const legacyOwner=localStorage.getItem('jpstudy_pdf_owner');
   const local=(await localPdfExams()).filter(record=>record.ownerUid?record.ownerUid===uid:!legacyOwner||legacyOwner===uid);
+  if(auth.currentUser?.uid!==uid)return [];
   if(!uid)return local;
   if(!legacyOwner)localStorage.setItem('jpstudy_pdf_owner',uid);
-  try{const remote=await cloudPdfMetadata();const all=new Map(local.map(v=>[v.id,v]));for(const item of remote){if(item.deleted)all.delete(item.id);else if(!all.has(item.id))all.set(item.id,await downloadCloudPdf(item));}
+  try{const remote=await cloudPdfMetadata(uid);const all=new Map(local.map(v=>[v.id,v]));for(const item of remote){if(item.deleted)all.delete(item.id);else if(!all.has(item.id))all.set(item.id,await downloadCloudPdf(item,uid));}
     const remoteIds=new Set(remote.map(v=>v.id));for(const item of local)if(!remoteIds.has(item.id))await uploadCloudPdf({...item,ownerUid:uid});
-    return [...all.values()];
-  }catch{return local;}
+    return auth.currentUser?.uid===uid?[...all.values()]:[];
+  }catch{return auth.currentUser?.uid===uid?local:[];}
 }
 
 /**
  * Delete a saved PDF exam from library
  */
 export async function deleteSavedPdfExam(id: string): Promise<void> {
-  if(auth.currentUser)await deleteCloudPdf(id);
+  const uid=auth.currentUser?.uid;
+  if(uid)await deleteCloudPdf(id,uid);
+  if(auth.currentUser?.uid!==uid)throw new Error('Tài khoản đã thay đổi. Hãy mở lại thư viện PDF.');
   try {
     const db = await openIndexedDB();
     const tx = db.transaction(STORE_NAME, 'readwrite');
