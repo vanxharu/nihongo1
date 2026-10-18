@@ -30,3 +30,16 @@ test('exports exact IDs and text to Claude with required format', () => {
   assert.ok(prompt.includes(cues[0].text));
   assert.ok(prompt.includes('"translation"'));
 });
+
+test('prepared catalog keeps all live sentence IDs for static analysis', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const { parsePreparedShadowingCaptions } = await import('../src/utils/shadowing');
+  const source = JSON.parse(await readFile(new URL('../public/shadowing-prepared/R1Oy-PqXhz4.json', import.meta.url), 'utf8'));
+  const analysis = JSON.parse(await readFile(new URL('../public/shadowing-analysis/R1Oy-PqXhz4.json', import.meta.url), 'utf8'));
+  const prepared = parsePreparedShadowingCaptions(source, source.videoId);
+  assert.equal(prepared.length, 322);
+  assert.deepEqual(prepared.map(c => [c.id, c.text]), source.cues.map((c: any) => [c.id, c.text]));
+  assert.equal(parseShadowingAnalysisFile(analysis, source.videoId, prepared).sentences.length, 322);
+  assert.throws(() => parsePreparedShadowingCaptions({ ...source, videoId: 'different' }, source.videoId));
+  assert.throws(() => parsePreparedShadowingCaptions({ ...source, cues: [{ ...source.cues[0], start: -1 }] }, source.videoId));
+});

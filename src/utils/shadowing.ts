@@ -70,6 +70,26 @@ export function parseShadowingAlignment(value: any, videoId: string): ShadowingC
   return cues;
 }
 
+/** Read the same catalog sentences without merging IDs needed by static analysis. */
+export function parsePreparedShadowingCaptions(value: unknown, videoId: string): ShadowingCue[] {
+  const packet = value as { videoId?: unknown; cues?: unknown } | null;
+  if (packet?.videoId !== videoId || !Array.isArray(packet.cues) || !packet.cues.length || packet.cues.length > 500) throw new Error('Invalid prepared captions');
+  const ids = new Set<string>();
+  const cues = packet.cues.map((value: unknown) => {
+    const c = value as ShadowingCue | null;
+    if (!c || typeof c.id !== 'string' || ids.has(c.id) || typeof c.text !== 'string' || !c.text.trim() || c.text.length > 1000 ||
+        !Number.isFinite(c.start) || c.start! < 0 || !Number.isFinite(c.end) || c.end! <= c.start! || c.end! > 86400) throw new Error('Invalid prepared caption');
+    ids.add(c.id);
+    const cue: ShadowingCue = { id: c.id, text: c.text, start: c.start, end: c.end };
+    if (typeof c.translation === 'string') cue.translation = c.translation;
+    if (Array.isArray(c.readings) && c.readings.every(r => r && typeof r.word === 'string' && c.text.includes(r.word) && typeof r.reading === 'string' &&
+        (r.offset === undefined || (Number.isInteger(r.offset) && r.offset >= 0 && c.text.slice(r.offset, r.offset + r.word.length) === r.word)))) cue.readings = c.readings;
+    if (validShadowingTimings(c)) cue.timings = c.timings;
+    return cue;
+  });
+  return normalizeShadowingTimeline(cues);
+}
+
 export interface ShadowingAnalysis {
   readings?: { word: string; reading: string; offset?: number }[];
   source: 'ai' | 'dictionary';

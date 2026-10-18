@@ -14,7 +14,7 @@ import VideoLearningPanel from './VideoLearningPanel';
 import AnalysisFilePanel from './AnalysisFilePanel';
 import { parseShadowingAnalysisFile, type ShadowingAnalysisFile } from '../../utils/shadowingAnalysisFile';
 import { auth } from '../../lib/firebase';
-import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings, visibleShadowingCue } from '../../utils/shadowing';
+import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings, visibleShadowingCue, parsePreparedShadowingCaptions } from '../../utils/shadowing';
 import './shadowing.css';
 
 const field = 'w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 focus:border-amber-400 focus:outline-none';
@@ -161,7 +161,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
       try {
         const saved = JSON.parse(localStorage.getItem(`shadowing-cues:${storageSuffix}`) || '[]');
         if (Array.isArray(saved) && saved.length && saved.every(c => c && typeof c.text === 'string' && typeof c.id === 'string' && (c.start === null || Number.isFinite(c.start)) && (c.end === null || Number.isFinite(c.end)))) {
-          const restoredCues = mergeSentenceCues(normalizeShadowingTimeline(saved.slice(0, 500)));
+          const restoredCues = normalizeShadowingTimeline(saved.slice(0, 500));
           setCues(restoredCues); selectCue(0, restoredCues);
           restored = true;
         }
@@ -174,7 +174,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
           if (response.ok) {
             const stored = await response.json();
             if (!alignmentController.signal.aborted) {
-              applyCues(stored.cues); setCustomTitle(stored.title);
+              applyCues(stored.cues, true); setCustomTitle(stored.title);
               // Built-in videos are copied into the user's own library when edited.
               setRevision(stored.personal ? stored.revision : null);
               try {
@@ -188,6 +188,16 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
             return;
           }
         } catch { /* A draft and original captions remain usable offline. */ }
+        // Catalog captions remain available even when the preview has no database credentials.
+        try {
+          const response = await fetch(`/shadowing-prepared/${videoId}.json`, { signal: alignmentController.signal });
+          if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
+            const packet = await response.json();
+            const prepared = parsePreparedShadowingCaptions(packet, videoId);
+            if (!alignmentController.signal.aborted) { applyCues(prepared, true); setCustomTitle(packet.title || ''); }
+            return;
+          }
+        } catch { /* Try measured alignments, then the caption endpoint. */ }
         try {
           const response = await fetch(`/shadowing-alignments/${videoId}.json`, { signal: alignmentController.signal, cache: 'no-cache' });
           if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
