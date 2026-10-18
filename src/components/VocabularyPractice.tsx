@@ -2850,7 +2850,7 @@ if (loading) {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-2 sm:px-4 pt-1 sm:pt-2 pb-6 space-y-2.5 sm:space-y-3.5 select-none flex flex-col items-center">
+    <div className="vocabulary-practice w-full max-w-5xl mx-auto px-2 sm:px-4 pt-1 sm:pt-2 pb-6 space-y-2.5 sm:space-y-3.5 select-none flex flex-col items-center">
       <div className="w-full space-y-2.5 sm:space-y-3 animate-fade-in flex flex-col items-center">
 
       {/* Container Thẻ học chính */}
