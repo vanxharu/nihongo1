@@ -35,6 +35,28 @@ export function getGeminiClient(apiKey = getLlmConfig().apiKey): GoogleGenAI {
 
 // generateContent với tự chuyển model khi quá tải (503/429/404). Model người dùng chọn được thử trước.
 export async function generateGemini(options: { contents: any; model?: string; config?: any; apiKey?: string }) {
+  // Groq is the primary server-side provider when configured.
+  const groqKey = process.env.GROQ_API_KEY;
+  if (groqKey && !options.apiKey && !perRequest.getStore()?.apiKey) {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + groqKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+        temperature: 0.1,
+        max_completion_tokens: Math.min(options.config?.maxOutputTokens || 4096, 8192),
+        ...(options.config?.responseMimeType === 'application/json' ? { response_format: { type: 'json_object' } } : {}),
+        messages: [
+          ...(options.config?.systemInstruction ? [{ role: 'system', content: String(options.config.systemInstruction) }] : []),
+          { role: 'user', content: typeof options.contents === 'string' ? options.contents : JSON.stringify(options.contents) },
+        ],
+      }),
+      signal: AbortSignal.timeout(85000),
+    });
+    const data: any = await response.json();
+    if (!response.ok) throw new Error('Groq API (' + response.status + '): ' + (data.error?.message || 'Request failed'));
+    return { text: data.choices?.[0]?.message?.content || '' } as any;
+  }
   // Claude is the primary provider when configured; existing callers retain their JSON contract.
   const claudeKey = process.env.ANTHROPIC_API_KEY || '';
   if (claudeKey) {
@@ -85,6 +107,6 @@ export async function callLLM(options: { prompt: string; systemInstruction?: str
     config: { systemInstruction: options.systemInstruction, maxOutputTokens: options.maxTokens, ...(options.json ? { responseMimeType: 'application/json' } : {}) },
   });
   const text = (res.text || '').trim();
-  if (!text) throw new Error('Gemini trả về nội dung rỗng');
+  if (!text) throw new Error('AI trả về nội dung rỗng');
   return text;
 }
