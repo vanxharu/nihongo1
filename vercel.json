@@ -1,21 +1,72 @@
 {
   "headers": [
-    { "source": "/(.*)", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
-    { "source": "/audio/tango/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
-    { "source": "/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }] }
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/audio/tango/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    }
   ],
   "functions": {
-    "api/tts.ts": { "maxDuration": 30 },
-    "api/reading/generate.ts": { "maxDuration": 60 },
-    "api/reading/sync.ts": { "maxDuration": 60 },
-    "api/reading/todai/*.ts": { "maxDuration": 60 },
-    "api/reading/watanoc/*.ts": { "maxDuration": 60 },
-    "api/shadowing/video.ts": { "includeFiles": "public/shadowing-prepared/*.json", "maxDuration": 60 },
-    "api/shadowing/analyze.ts": { "includeFiles": "node_modules/kuromoji/dict/**", "maxDuration": 60 },
-    "api/shadowing/prepare.ts": { "includeFiles": "node_modules/kuromoji/dict/**", "maxDuration": 60 },
-    "api/server.ts": { "includeFiles": "{node_modules/kuromoji/dict/**,youtube-listening-*.json,src/data/*.json,public/shadowing-prepared/*.json}", "maxDuration": 60 }
+    "api/tts.ts": {
+      "maxDuration": 30
+    },
+    "api/reading/generate.ts": {
+      "maxDuration": 60
+    },
+    "api/reading/sync.ts": {
+      "maxDuration": 60
+    },
+    "api/reading/todai/*.ts": {
+      "maxDuration": 60
+    },
+    "api/reading/watanoc/*.ts": {
+      "maxDuration": 60
+    },
+    "api/shadowing/video.ts": {
+      "includeFiles": "public/shadowing-prepared/*.json",
+      "maxDuration": 60
+    },
+    "api/shadowing/analyze.ts": {
+      "includeFiles": "node_modules/kuromoji/dict/**",
+      "maxDuration": 60
+    },
+    "api/shadowing/prepare.ts": {
+      "includeFiles": "node_modules/kuromoji/dict/**",
+      "maxDuration": 60
+    },
+    "api/server.ts": {
+      "includeFiles": "{node_modules/kuromoji/dict/**,youtube-listening-*.json,src/data/*.json,public/shadowing-prepared/*.json,public/shadowing-analysis/*.json}",
+      "maxDuration": 60
+    }
   },
-  "crons": [{ "path": "/api/reading/sync", "schedule": "0 23 * * *" }],
+  "crons": [
+    {
+      "path": "/api/reading/sync",
+      "schedule": "0 23 * * *"
+    }
+  ],
   "rewrites": [
     {
       "source": "/__/auth/(.*)",
