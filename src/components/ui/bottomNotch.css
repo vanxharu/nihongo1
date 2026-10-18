@@ -1,22 +1,14 @@
-/* Notched bottom tab bar — adapted from Lucian UX/UI spec 041 (MIT) */
-#mobile-bottom-navigation.u041-nav{background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;
-  padding:0!important;pointer-events:none;--x:40px;--H:68px}
-#mobile-bottom-navigation .u041{position:relative;max-width:600px;margin:0 auto;height:calc(var(--H) + 34px + env(safe-area-inset-bottom,0px));pointer-events:none}
-.u041-bar,.u041-shadow{position:absolute;left:8px;right:8px;bottom:calc(env(safe-area-inset-bottom,0px));height:var(--H);border-radius:26px}
-.u041-bar{background:var(--ui-surface);box-shadow:0 0 0 1px var(--ui-line);
-  -webkit-mask:radial-gradient(circle 38px at calc(var(--x) - 8px) -4px,transparent 96%,#000 100%);mask:radial-gradient(circle 38px at calc(var(--x) - 8px) -4px,transparent 96%,#000 100%)}
-.u041-shadow{box-shadow:0 20px 36px -22px rgba(0,0,0,.5)}
-.u041-bub{position:absolute;left:calc(var(--x) + 8px);bottom:calc(var(--H) + env(safe-area-inset-bottom,0px) - 30px);width:56px;height:56px;margin-left:-28px;border-radius:50%;
-  background:linear-gradient(135deg,#e89a3c,#e64556);box-shadow:0 12px 24px -10px rgba(230,69,86,.7)}
-.u041-tabs{position:absolute;left:8px;right:8px;bottom:calc(env(safe-area-inset-bottom,0px));height:var(--H);display:flex;margin:0;padding:0 4px;list-style:none;pointer-events:auto}
-.u041-tabs>li{flex:1;display:flex;min-width:0}
-#mobile-bottom-navigation .u041-tab{position:relative;flex:1;height:100%;min-height:0;border:0;padding:0;background:none;color:var(--ui-muted);cursor:pointer;touch-action:manipulation}
-#mobile-bottom-navigation .u041-tab:focus-visible{outline:2px solid var(--ui-accent);outline-offset:-6px;border-radius:18px}
-.u041-ic{position:absolute;left:50%;top:20px;width:24px;height:24px;margin-left:-12px;transition:transform .55s cubic-bezier(.34,1.45,.64,1),color .3s}
-.u041-ic svg{width:100%;height:100%;stroke-width:1.9}
-#mobile-bottom-navigation .u041-lab{position:absolute;left:0;right:0;bottom:9px;font-size:11px;font-weight:700;color:var(--ui-ink);opacity:0;transform:translateY(6px);transition:opacity .3s,transform .45s cubic-bezier(.34,1.45,.64,1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-#mobile-bottom-navigation .u041-tab[data-sel="true"] .u041-ic{transform:translateY(-36px);color:#fff}
-#mobile-bottom-navigation .u041-tab[data-sel="true"] .u041-ic svg{stroke-width:2.2}
-#mobile-bottom-navigation .u041-tab[data-sel="true"] .u041-lab{opacity:1;transform:none}
-@media (prefers-reduced-motion:reduce){.u041-ic,.u041-lab{transition-duration:.001ms}}
-.u041-more{position:absolute;left:50%;top:6px;width:12px;height:12px;margin-left:-6px;color:var(--ui-muted);opacity:.7}
+/* Compact, flat mobile navigation: every item stays within the bar. */
+#mobile-bottom-navigation.u041-nav{background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;padding:0!important;pointer-events:none;--H:58px}
+#mobile-bottom-navigation .u041{position:relative;max-width:600px;margin:0 auto;height:calc(var(--H) + env(safe-area-inset-bottom,0px));pointer-events:none}
+#mobile-bottom-navigation .u041-bar{position:absolute;left:8px;right:8px;bottom:env(safe-area-inset-bottom,0px);height:var(--H);border:1px solid var(--ui-line);border-radius:16px;background:var(--ui-surface);box-shadow:0 3px 16px -8px rgba(0,0,0,.2)}
+#mobile-bottom-navigation .u041-tabs{position:absolute;left:8px;right:8px;bottom:env(safe-area-inset-bottom,0px);height:var(--H);display:flex;margin:0;padding:4px;gap:2px;list-style:none;pointer-events:auto;box-sizing:border-box}
+#mobile-bottom-navigation .u041-tabs>li{flex:1;display:flex;min-width:0}
+#mobile-bottom-navigation .u041-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;flex:1;height:100%;min-width:0;min-height:0;border:0;border-radius:11px;padding:2px;background:none;color:var(--ui-muted);cursor:pointer;touch-action:manipulation}
+#mobile-bottom-navigation .u041-tab:focus-visible{outline:2px solid var(--ui-accent);outline-offset:-2px}
+#mobile-bottom-navigation .u041-ic{position:static;display:flex;width:20px;height:20px;margin:0;transform:none;color:inherit}
+#mobile-bottom-navigation .u041-ic svg{width:100%;height:100%;stroke-width:1.8}
+#mobile-bottom-navigation .u041-lab{position:static;display:block;font-size:10px;font-weight:500;line-height:1.15;color:inherit;opacity:1;transform:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;letter-spacing:-.025em}
+#mobile-bottom-navigation .u041-tab[data-sel="true"]{background:color-mix(in srgb,var(--ui-primary) 11%,transparent);color:var(--ui-primary)}
+#mobile-bottom-navigation .u041-tab[data-sel="true"] .u041-lab{font-weight:700}
+#mobile-bottom-navigation .u041-tab[data-sel="true"] .u041-ic svg{stroke-width:2.1}

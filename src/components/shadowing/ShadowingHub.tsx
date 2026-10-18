@@ -289,7 +289,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
             hasPrev={selected > 0}
             hasNext={selected < cues.length - 1}
             lead={<button onClick={() => setParams({})} aria-label="Về thư viện" className="shadowing-ctrl-btn"><ChevronLeft size={18} /></button>}
-            tabs={<div className="flex min-w-0 flex-1 gap-1">
+            tabs={<div className="shadowing-mode-tabs">
               <button onClick={() => { setMode('shadowing'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'shadowing' ? ' shadowing-mode-tab-active' : ''}`}>Bắt chước</button>
               <button onClick={() => { setMode('dictation'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'dictation' ? ' shadowing-mode-tab-active' : ''}`}>Chính tả</button>
               <button onClick={() => { setMode('analysis'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'analysis' ? ' shadowing-mode-tab-active' : ''}`}>Phân tích</button>

@@ -65,3 +65,11 @@
 .lyric-scroll .lyric-side.is-now{height:0;min-height:0;padding:0;margin:0;overflow:hidden;visibility:hidden}
 /* Compact playing frame so the list below stays above the bottom nav */
 .lyric-frame{height:13.5rem}.lyric-prev{height:2rem}.lyric-frame .karaoke-line{line-height:1.75}.lyric-now-scroll{padding:.8rem 10px 2px}.lyric-frame .karaoke-translation{font-size:.82rem;line-height:1.35;margin-top:2px;padding-top:4px}.lyric-scroll{height:10rem}
+
+/* Fit the entire player toolbar on phones; override the app-wide 44px button floor here. */
+.shadowing-player-controls{padding:4px 6px}
+.shadowing-control-row{display:flex;align-items:center;gap:3px;min-width:0}
+.shadowing-mode-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));flex:1;min-width:0;gap:3px}
+#app-root-container .shadowing-player .shadowing-control-row .shadowing-ctrl-btn{box-sizing:border-box;width:30px;min-width:30px;height:34px;min-height:34px;padding:0;border-radius:8px}
+#app-root-container .shadowing-player .shadowing-mode-tab{box-sizing:border-box;min-width:0;height:34px;min-height:34px;padding:0 3px;font-size:12px;line-height:1.15;letter-spacing:-.02em}
+@media(max-width:639px){#app-root-container .shadowing-player .shadowing-mode-tab{font-size:11px}.shadowing-control-row{gap:2px}.shadowing-mode-tabs{gap:2px}}

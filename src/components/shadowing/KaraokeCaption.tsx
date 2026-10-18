@@ -9,7 +9,7 @@ function KaraokeCaption({ text, time, start, end, timings, analysis, furigana, v
   variant?: 'stage' | 'transcript';
 }) {
   const measured = validShadowingTimings({ id: '', text, start, end, timings }) ? timings! : [];
-  const words = [...(analysis?.readings || analysis?.vocabulary || [])].filter(v => v.word).sort((a, b) => b.word.length - a.word.length);
+  const words = [...(analysis?.readings || []), ...(analysis?.vocabulary || [])].filter(v => v.word).sort((a, b) => b.word.length - a.word.length);
   const pieces: { text: string; reading?: string; offset: number }[] = [];
   for (let offset = 0; offset < text.length;) {
     // Prefer a reading whose offset matches exactly (disambiguates homographs like 人 ひと/じん).
@@ -46,7 +46,7 @@ function KaraokeCaption({ text, time, start, end, timings, analysis, furigana, v
         const active = current && charOffset >= current.textStart && charOffset < current.textEnd;
         const fill = karaokeVisualFill(time, charOffset, visual, end);
         return <span key={charOffset} style={{ '--karaoke-fill': `${fill}%` } as React.CSSProperties} className={`karaoke-char${spoken ? ' is-spoken' : ''}${active ? ' is-current' : ''}`}>{char}</span>;
-      })}</span>{furigana && /\p{Script=Han}/u.test(piece.text) && piece.reading && piece.reading !== piece.text && <rt>{piece.reading}</rt>}</ruby></span>;
+      })}</span>{furigana && /[\p{Script=Han}\p{Script=Katakana}\p{Nd}]/u.test(piece.text) && piece.reading && piece.reading !== piece.text && <rt>{piece.reading}</rt>}</ruby></span>;
     })}
   </p>;
 }
@@ -55,4 +55,4 @@ export default React.memo(KaraokeCaption, (a, b) =>
   a.text === b.text && a.time === b.time && a.start === b.start && a.end === b.end &&
   a.timings === b.timings && a.furigana === b.furigana && a.variant === b.variant &&
   a.analysis?.readings === b.analysis?.readings &&
-  (a.analysis?.readings !== undefined || a.analysis?.vocabulary === b.analysis?.vocabulary));
+  a.analysis?.vocabulary === b.analysis?.vocabulary);
