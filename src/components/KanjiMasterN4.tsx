@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import SlidingTabs from './ui/SlidingTabs';
-import { KANJI_MASTER_N4, masterKanjiInfo, type MasterLesson, type MasterWord } from '../data/kanjiMasterN4';
+import { KANJI_MASTER_N4, MASTER_SENTENCES, masterKanjiInfo, type MasterLesson, type MasterWord } from '../data/kanjiMasterN4';
 
-type Tab = 'kanji' | 'read' | 'write' | 'review';
+type Tab = 'kanji' | 'read' | 'write' | 'sentence' | 'review';
 type Q = { prompt: string; sub: string; options: string[]; answer: string };
 
 const shuffle = <T,>(a: T[]): T[] => { const r = [...a]; for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
@@ -49,6 +49,49 @@ function Quiz({ qs, storeKey, onDone }: { qs: Q[]; storeKey: string; onDone?: ()
   );
 }
 
+function SentenceBuilder({ lesson, storeKey, onDone }: { lesson: MasterLesson; storeKey: string; onDone: () => void }) {
+  const items = useMemo(() => shuffle(MASTER_SENTENCES[lesson.id] || []), [lesson]);
+  const [i, setI] = useState(0);
+  const [placed, setPlaced] = useState<number[]>([]);
+  const [res, setRes] = useState<boolean | null>(null);
+  const [score, setScore] = useState(0);
+  const cur = items[i];
+  const pool = useMemo(() => (cur ? shuffle(cur.ja.map((t, id) => ({ t, id }))) : []), [cur]);
+  const best = (() => { try { return Number(localStorage.getItem(storeKey)) || 0; } catch { return 0; } })();
+  if (!items.length) return <p className="text-sm text-slate-500">Chưa có câu.</p>;
+  if (i >= items.length) {
+    try { if (score > best) localStorage.setItem(storeKey, String(score)); } catch { /* ignore */ }
+    return (
+      <div className="text-center py-8 space-y-3">
+        <div className="text-4xl font-black text-emerald-600">{score}/{items.length}</div>
+        <button onClick={onDone} className="px-5 py-2 rounded-xl bg-emerald-600 text-white text-sm font-bold">Làm lại</button>
+      </div>
+    );
+  }
+  const ans = placed.map(id => cur.ja[id]).join('');
+  const full = cur.ja.join('');
+  // gợi ý: từ vựng của bài xuất hiện trong câu
+  const hints = [...lesson.words, ...ALL_WORDS].filter((w, n, a) => full.includes(w.word) && hasKanji(w) && a.findIndex(x => x.word === w.word) === n).slice(0, 4);
+  const check = () => { const ok = ans === full; setRes(ok); if (ok) setScore(s => s + 1); };
+  return (
+    <div className="space-y-3">
+      <div className="text-xs text-slate-500 font-mono">{i + 1}/{items.length}</div>
+      <div className="font-bold text-slate-900">{cur.vi}</div>
+      <div className="text-xs text-slate-500 space-y-0.5">{hints.map(w => <div key={w.word}>{w.word}（{w.reading}）: {w.meaning}</div>)}</div>
+      <div className={`min-h-[52px] flex flex-wrap gap-2 p-2 rounded-xl border-2 border-dashed ${res === null ? 'border-slate-300' : res ? 'border-emerald-500 bg-emerald-50' : 'border-rose-400 bg-rose-50'}`}>
+        {placed.map(id => <button key={id} disabled={res !== null} onClick={() => setPlaced(p => p.filter(x => x !== id))} className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-base font-bold">{cur.ja[id]}</button>)}
+      </div>
+      {res === false && <div className="text-sm text-emerald-700 font-bold">Đáp án: {full}</div>}
+      <div className="flex flex-wrap gap-2">
+        {pool.map(c => <button key={c.id} disabled={res !== null || placed.includes(c.id)} onClick={() => setPlaced(p => [...p, c.id])} className={`px-3 py-1.5 rounded-lg border border-slate-200 text-base font-bold bg-white ${placed.includes(c.id) ? 'opacity-30' : ''}`}>{c.t}</button>)}
+      </div>
+      {res === null
+        ? <button disabled={placed.length !== cur.ja.length} onClick={check} className="w-full py-2.5 rounded-xl bg-emerald-600 disabled:opacity-40 text-white text-sm font-bold">Kiểm tra</button>
+        : <button onClick={() => { setI(i + 1); setPlaced([]); setRes(null); }} className="w-full py-2.5 rounded-xl bg-slate-900 text-white text-sm font-bold">Tiếp</button>}
+    </div>
+  );
+}
+
 function Lesson({ lesson, back }: { lesson: MasterLesson; back: () => void }) {
   const [tab, setTab] = useState<Tab>('kanji');
   const [run, setRun] = useState(0);
@@ -60,7 +103,7 @@ function Lesson({ lesson, back }: { lesson: MasterLesson; back: () => void }) {
     <div className="space-y-3">
       <button onClick={back} className="text-xs font-bold text-slate-500">← Danh sách bài</button>
       <h3 className="text-base font-bold">Bài {lesson.id}: {lesson.title}</h3>
-      <SlidingTabs<Tab> id="kmn4" value={tab} onChange={setTab} items={[['kanji', 'Chữ Hán'], ['read', 'Luyện đọc'], ['write', 'Luyện viết'], ['review', 'Ôn tập']]} />
+      <SlidingTabs<Tab> id="kmn4" value={tab} onChange={setTab} items={[['kanji', 'Chữ Hán'], ['read', 'Đọc'], ['write', 'Viết'], ['sentence', 'Ghép câu'], ['review', 'Ôn tập']]} />
       {tab === 'kanji' && (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -82,6 +125,7 @@ function Lesson({ lesson, back }: { lesson: MasterLesson; back: () => void }) {
       )}
       {tab === 'read' && <Quiz key={`r${run}`} qs={read} storeKey={k('read')} onDone={() => setRun(r => r + 1)} />}
       {tab === 'write' && <Quiz key={`w${run}`} qs={write} storeKey={k('write')} onDone={() => setRun(r => r + 1)} />}
+      {tab === 'sentence' && <SentenceBuilder key={`s${run}`} lesson={lesson} storeKey={k('sentence')} onDone={() => setRun(r => r + 1)} />}
       {tab === 'review' && <Quiz key={`v${run}`} qs={review} storeKey={k('review')} onDone={() => setRun(r => r + 1)} />}
     </div>
   );

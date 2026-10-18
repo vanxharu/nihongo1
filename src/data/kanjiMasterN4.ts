@@ -480,3 +480,119 @@ export const KANJI_MASTER_N4: MasterLesson[] = [
 馬|うま|ngựa
 乗馬|じょうば|cưỡi ngựa`),
 ];
+
+export interface MasterSentence { vi: string; ja: string[] }
+// Câu ghép: mỗi dòng "tiếng Việt|cụm/cụm/cụm" (tự soạn, dùng chữ Hán của bài)
+const SENT_RAW: Record<string, string> = {
+'1-1': `Gia đình tôi có năm người.|私の/家族は/五人/です
+Tôi có một anh trai và một em gái.|私には/兄が/一人と/妹が/一人/います
+Chị gái tôi nuôi con một mình.|姉は/子どもを/一人で/育てて/います
+Em trai tôi hay giúp việc nhà.|弟は/よく/家の/手伝いを/します`,
+'1-2': `Phòng này rộng và yên tĩnh.|この/部屋は/広くて/静かです
+Nhà ga ở gần đây.|駅は/ここから/近いです
+Trường học ở xa nhà tôi.|学校は/私の/家から/遠いです
+Cái bàn thấp nên khó dùng.|机が/低いので/使いにくいです`,
+'1-3': `Tôi làm việc ở công ty.|私は/会社で/働いて/います
+Bố tôi làm ở nhà máy.|父は/工場で/働いて/います
+Công việc bắt đầu lúc chín giờ.|仕事は/九時に/始まります
+Hôm nay công việc xong lúc sáu giờ.|今日は/六時に/仕事が/終わりました`,
+'2-1': `Nhân viên cửa hàng rất tốt bụng.|店の/人は/とても/親切です
+Cửa hàng này bán thực phẩm.|この/店では/食品を/売って/います
+Khách đang xếp hàng ở quầy tính tiền.|お客さんが/レジに/並んで/います
+Chuyện đó là thật.|それは/本当の/話です`,
+'2-2': `Cửa hàng tiện lợi rất tiện.|コンビニは/とても/便利です
+Tôi dùng máy của ngân hàng.|銀行の/機械を/使います
+Tôi viết thư lên giấy trắng.|白い/紙に/手紙を/書きます
+Trên bảng đen có chữ trắng.|黒板に/白い/字が/あります`,
+'2-3': `Sáng nay tôi dậy sớm.|今朝は/早く/起きました
+Mỗi tối tôi uống cà phê.|毎晩/コーヒーを/飲みます
+Buổi trưa tôi ăn cơm ở công ty.|昼は/会社で/ご飯を/食べます
+Buổi chiều có cuộc họp.|午後に/会議が/あります`,
+'3-1': `Hành lý này nặng.|この/荷物は/重いです
+Tôi gửi hành lý cho mẹ.|母に/荷物を/送ります
+Cái túi này nhẹ.|この/かばんは/軽いです
+Tàu tốc hành đến muộn.|急行が/遅れて/います`,
+'3-2': `Địa chỉ nhà bạn ở đâu?|あなたの/住所は/どこですか
+Tôi sống ở Tokyo.|私は/東京に/住んで/います
+Xin hãy cho tôi biết số.|番号を/教えて/ください
+Quý khách vui lòng xem bản đồ.|お客様、/地図を/見て/ください`,
+'3-3': `Tôi sống ở thành phố Kyoto.|私は/京都市に/住んで/います
+Ngôi làng đó rất yên tĩnh.|その/村は/とても/静かです
+Hokkaido là nơi lạnh.|北海道は/寒い/所です
+Quận này có công viên.|この/区には/公園が/あります`,
+'4-1': `Mỗi tuần tôi xem phim.|毎週/映画を/見ます
+Tôi đọc sách ở thư viện.|図書館で/本を/読みます
+Tôi đi dạo ở công viên.|公園を/散歩します
+Rạp chiếu phim ở gần ga.|映画館は/駅の/近くに/あります`,
+'4-2': `Chồng tôi nấu ăn giỏi.|夫は/料理が/上手です
+Vợ tôi là người nổi tiếng.|妻は/有名な/人です
+Hôm nay là ngày đặc biệt.|今日は/特別な/日です
+Tôi nghĩ món ở quán này ngon.|この/店の/料理は/おいしいと/思います`,
+'4-3': `Tôi mua quần áo kiểu Tây.|洋服を/買いました
+Cái áo này ngắn.|この/服は/短いです
+Tôi đan áo len bằng len.|毛糸で/セーターを/作ります
+Ánh sáng mặt trời rất đẹp.|太陽の/光が/きれいです`,
+'5-1': `Tôi lên tàu ở ga.|駅で/電車に/乗ります
+Tôi xuống tàu ở Tokyo.|東京で/電車を/降ります
+Cửa tàu đóng lại.|ドアが/閉まります
+Tàu đến ga lúc mười giờ.|電車は/十時に/駅に/着きます`,
+'5-2': `Hãy dừng ở ngã tư.|交差点で/止まって/ください
+Đèn đỏ thì dừng lại.|赤信号では/止まります
+Đèn xanh thì băng qua.|青信号では/渡ります
+Ở đây giao thông đông.|ここは/交通が/多いです`,
+'5-3': `Vì bị bệnh nên tôi đến bệnh viện.|病気なので/病院へ/行きます
+Tôi uống thuốc sau bữa ăn.|食後に/薬を/飲みます
+Xin hãy đợi ở phòng chờ.|待合室で/待って/ください
+Tôi được bác sĩ khám cho.|医者に/見て/もらいました`,
+'6-1': `Tôi đang nghiên cứu văn hóa Nhật.|日本の/文化を/研究して/います
+Tôi đang học tiếng Anh.|英語を/勉強して/います
+Tôi giỏi toán.|数学が/得意です
+Xin đừng lo lắng.|心配しないで/ください`,
+'6-2': `Những người trẻ tụ tập ở quán.|若い/人が/店に/集まりました
+Tôi không uống rượu.|お酒は/飲みません
+Tôi thích hát.|歌うのが/好きです
+Âm nhạc thật vui.|音楽は/楽しいです`,
+'6-3': `Vị của món này ngon.|この/料理は/味が/いいです
+Tôi đã ăn cơm tối.|晩ご飯を/食べました
+Sợi mì này mảnh.|この/麺は/細いです
+Tôi uống trà lúa mạch.|麦茶を/飲みます`,
+'7-1': `Mùa xuân thì ấm áp.|春は/暖かいです
+Mùa đông thì lạnh.|冬は/寒いです
+Trên trời có mây.|空に/雲が/あります
+Năm ngoái tôi đã đến sân bay.|去年/空港へ/行きました`,
+'7-2': `Hôm nay trời nắng đẹp.|今日は/よく/晴れて/います
+Mùa đông tuyết rơi.|冬は/雪が/降ります
+Hôm nay gió mạnh.|今日は/風が/強いです
+Mùa hè thì nóng.|夏は/暑いです`,
+'7-3': `Tôi muốn đi du lịch vòng quanh thế giới.|世界を/旅行したいです
+Tôi chụp ảnh.|写真を/撮ります
+Tôi mang hành lý đi.|荷物を/持って/行きます
+Con thuyền chạy trên biển.|船が/海を/走ります`,
+'8-1': `Tôi học chữ Hán.|漢字を/勉強します
+Tôi làm bài tập về nhà.|宿題を/します
+Tôi có một câu hỏi.|質問が/あります
+Thầy giáo đang dạy trong lớp.|先生は/教室で/教えて/います`,
+'8-2': `Ngày mai có kỳ thi.|明日は/試験が/あります
+Hãy trả lời câu hỏi.|問題に/答えて/ください
+Đáp án này đúng.|この/答えは/正しいです
+Tôi cũng có cùng suy nghĩ.|私も/同じ/考えです`,
+'8-3': `Tôi học lịch sử.|歴史を/勉強します
+Tôi quan tâm đến chính trị.|政治に/興味が/あります
+Nhà vua sống ở đất nước đó.|王様は/その/国に/住んで/います
+Kinh tế nước ngoài thì khó.|外国の/経済は/難しいです`,
+'9-1': `Mỗi ngày tôi luyện tập thể thao.|毎日/運動の/練習を/します
+Tôi chạy trong công viên.|公園を/走ります
+Buổi sáng tôi đi dạo.|朝/散歩を/します
+Tôi biết bơi.|泳ぐ/ことが/できます`,
+'9-2': `Thiên nhiên thật đẹp.|自然が/きれいです
+Cỏ mọc trên thảo nguyên.|草原に/草が/生えて/います
+Có hồ trong thung lũng.|谷に/湖が/あります
+Tôi đã đến bờ biển.|海辺へ/行きました`,
+'9-3': `Rau ở quê rất tươi.|田舎の/野菜は/新鮮です
+Có côn trùng ở ao.|池に/虫が/います
+Căn phòng tối.|部屋が/暗いです
+Tôi cưỡi ngựa.|馬に/乗ります`,
+};
+export const MASTER_SENTENCES: Record<string, MasterSentence[]> = Object.fromEntries(
+  Object.entries(SENT_RAW).map(([id, raw]) => [id, raw.split('\n').map(l => { const [vi, ja] = l.split('|'); return { vi, ja: ja.split('/') }; })]),
+);
