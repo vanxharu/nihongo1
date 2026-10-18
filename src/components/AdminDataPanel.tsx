@@ -1,3 +1,4 @@
+import Skeleton from './ui/Skeleton';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   BookOpen, Compass, Layers, Plus, Edit2, Trash2, Database, RefreshCw, X, 
@@ -553,10 +554,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
         )}
 
         {loading ? (
-          <div className="py-20 flex flex-col items-center justify-center gap-2 text-slate-400">
-            <RefreshCw className="w-7 h-7 animate-spin text-indigo-500" />
-            <span className="text-xs font-bold">Đang tải dữ liệu từ Cloud SQL...</span>
-          </div>
+          <Skeleton rows={6} label="Đang tải dữ liệu từ Cloud SQL" />
         ) : (
           <div className="overflow-x-auto border border-slate-100 dark:border-slate-800 rounded-2xl">
             <table className="admin-record-table admin-data-table w-full text-left border-collapse">

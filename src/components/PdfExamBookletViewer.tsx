@@ -1,3 +1,4 @@
+import Skeleton from './ui/Skeleton';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -1191,10 +1192,7 @@ export const PdfExamBookletViewer: React.FC<PdfExamBookletViewerProps> = ({
 
         {/* LOADING PDF STATE */}
         {isLoadingPdf && (
-          <div className="my-20 flex flex-col items-center gap-3 text-slate-400">
-            <RefreshCw className="w-8 h-8 animate-spin text-indigo-400" />
-            <p className="text-sm font-bold">Đang tải trang sách PDF đề thi...</p>
-          </div>
+          <Skeleton rows={3} label="Đang tải trang sách PDF đề thi" />
         )}
 
         {/* ERROR STATE */}

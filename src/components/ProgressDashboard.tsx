@@ -1,3 +1,4 @@
+import Skeleton from './ui/Skeleton';
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -143,7 +144,7 @@ export default function ProgressDashboard({
             {/* ── Skill progress ── */}
             <section className="pd-card">
               {loading ? (
-                <p className="pd-muted">Đang tải…</p>
+                <Skeleton rows={3} />
               ) : (
                 <div className="pd-skills">
                   {skills.map((skill) => (

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import SearchPicker from './ui/SearchPicker';
 import { KANJI_MASTER_N4, MASTER_SENTENCES, type MasterLesson, type MasterWord } from '../data/kanjiMasterN4';
 
 const shuffle = <T,>(a: T[]): T[] => { const r = [...a]; for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
@@ -53,14 +54,13 @@ function SentenceBuilder({ lesson, storeKey, onDone }: { lesson: MasterLesson; s
 export default function KanjiSentences() {
   const [id, setId] = useState(KANJI_MASTER_N4[0].id);
   const [run, setRun] = useState(0);
+  const chapters = useMemo(() => [...new Set(KANJI_MASTER_N4.map(l => l.chapter))].map(c => { const ls = KANJI_MASTER_N4.filter(l => l.chapter === c); return { label: `Chương ${c}: ${ls[0].chapterTitle}`, items: ls.map(l => ({ value: l.id, label: `Bài ${l.id} ${l.title}` })) }; }), []);
   const lesson = KANJI_MASTER_N4.find(l => l.id === id)!;
   return (
     <section className="rounded-2xl border bg-white p-4 space-y-3">
       <div className="flex items-center justify-between gap-2">
         <h3 className="font-bold">Ghép câu</h3>
-        <select value={id} onChange={e => { setId(e.target.value); setRun(r => r + 1); }} className="rounded-lg border px-2 py-1 text-sm">
-          {KANJI_MASTER_N4.map(l => <option key={l.id} value={l.id}>Bài {l.id} {l.title}</option>)}
-        </select>
+        <div className="w-56"><SearchPicker value={id} onChange={v => { setId(v); setRun(r => r + 1); }} placeholder="Tìm bài hoặc chương…" groups={chapters} /></div>
       </div>
       <SentenceBuilder key={`${id}${run}`} lesson={lesson} storeKey={`kmn4_${id}_sentence`} onDone={() => setRun(r => r + 1)} />
       <p className="text-xs text-slate-500">Câu do app tự soạn để luyện, không phải câu trong sách.</p>

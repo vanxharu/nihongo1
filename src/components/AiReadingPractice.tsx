@@ -1,3 +1,4 @@
+import Skeleton from './ui/Skeleton';
 import ReadingImage from './ReadingImage';
 import { PlayPauseMorph, WaveSeek } from './ui/AudioMorph';
 /**
@@ -1568,10 +1569,7 @@ export default function AiReadingPractice({
 
                 {/* News Grid */}
                 {todaiLoading && todaiNewsList.length === 0 ? (
-                  <div className="py-16 text-center space-y-3">
-                    <Loader2 className="w-8 h-8 text-indigo-400 animate-spin mx-auto" />
-                    <p className="text-sm font-semibold text-[var(--ui-ink)]">Đang tải danh sách bài báo Todaii News...</p>
-                  </div>
+                  <Skeleton grid rows={6} label="Đang tải danh sách bài báo Todaii News" />
                 ) : filteredTodaiNews.length === 0 ? (
                   <div className="py-12 text-center text-[var(--ui-muted)] space-y-2">
                     <p className="text-sm">Không tìm thấy bài báo nào phù hợp với bộ lọc đã chọn.</p>
@@ -1984,10 +1982,7 @@ export default function AiReadingPractice({
 
                 {/* Article Grid */}
                 {watanocLoading ? (
-                  <div className="py-16 flex flex-col items-center justify-center gap-3 text-[var(--ui-muted)]">
-                    <Loader2 className="w-8 h-8 animate-spin text-emerald-400" />
-                    <span className="text-sm font-medium">Đang tải danh sách bài viết từ Watanoc...</span>
-                  </div>
+                  <Skeleton grid rows={6} label="Đang tải danh sách bài viết từ Watanoc" />
                 ) : filteredWatanocArticles.length === 0 ? (
                   <div className="py-12 text-center rounded-2xl reading-surface border border-[var(--ui-line)] p-6 space-y-3">
                     <BookOpen className="w-10 h-10 text-[var(--ui-muted)] mx-auto" />

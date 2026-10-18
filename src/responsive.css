@@ -250,3 +250,17 @@
 .feedback-xp .shiba-feedback-bubble [role=status]{font-weight:750}
 /* Thanh chọn bài sát mép trên khung, thanh chế độ sát mép dưới khung */
 #app-root-container .vocab-fixed-stage>.vocab-flashcard-lesson-nav{margin-bottom:-6px;padding-bottom:4px}
+
+/* UI fix #7: vùng bấm >=44px trên cảm ứng, mở rộng bằng vùng ẩn nên không đổi bố cục */
+@media (pointer:coarse){
+  button:is(.p-0\.5,.p-1,.p-1\.5,.w-6,.h-6,.w-7,.h-7,.w-8,.h-8,.w-9,.h-9):not(.absolute):not(.fixed):not(.sticky){position:relative}
+  button:is(.p-0\.5,.p-1,.p-1\.5,.w-6,.h-6,.w-7,.h-7,.w-8,.h-8,.w-9,.h-9)::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+  #app-root-container .grid.grid-cols-6>button{min-height:44px}
+}
+/* UI fix #4: chữ phụ không nhạt hơn 4.5:1 trên nền sáng, cỡ chữ tối thiểu 11px */
+html:not([data-theme=dark]) .text-slate-400:not(:where([class*="bg-[#"] *,[class*="bg-slate-8"] *,[class*="bg-slate-9"] *,[class*="bg-black"] *,.dark *)){color:#64748b}
+.text-\[9px\],.text-\[10px\]{font-size:11px}
+/* ô tìm tự vẽ khung: bỏ khung/nền input mặc định để không bị viền đôi */
+html[data-theme] #app-root-container input.search-bare{border:0!important;background:transparent!important;box-shadow:none!important;outline:0!important;border-radius:0!important;padding-left:0!important;padding-right:0!important}
+/* hero Kanji nền tối: giữ chữ trắng, không bị theme đổi sang màu mực */
+html[data-theme] #app-root-container .kmn4-hero :is(.text-white,[class*="text-white/"],.text-teal-100,.text-teal-50,.text-slate-300,h1,h2){color:#fff!important}
