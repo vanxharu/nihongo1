@@ -1,3 +1,4 @@
+import { connectCloudLearning, stopCloudLearning } from '../utils/cloudLearningState';
 import React, { createContext, useContext, useState, useEffect, useRef, ReactNode } from 'react';
 import { 
   signInWithEmailAndPassword, 
@@ -166,68 +167,9 @@ const parseDbUser = (dbData: any): UserProfile => {
   };
 
   const syncProfile = async () => {
-    if (!auth.currentUser) return;
-    chosenTargetRef.current = undefined; // server value is authoritative on (re)login
-    try {
-      const idToken = await auth.currentUser.getIdToken(false);
-      setToken(idToken);
-
-      const response = await fetch('/api/user/sync', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.user) {
-          const parsed = parseDbUser(data.user);
-          
-          // Rich feature: If a guest studied without an account, merge their local progress into their new cloud account
-          const savedLocal = localStorage.getItem(LOCAL_STORAGE_KEY);
-          if (savedLocal && parsed.xp === 0) {
-            try {
-              const localProfile = JSON.parse(savedLocal) as UserProfile;
-              // STRICT HYGIENE: Only merge if localProfile was a guest (no uid) or matched the exact same user
-              const isGuestSession = !localProfile.uid || localProfile.uid === parsed.uid;
-              if (isGuestSession && localProfile.xp > 0) {
-                console.log("Merging guest profile progress into new cloud database account...");
-                const mergedProfile = await updateDbProfileWithToken(idToken, {
-                  name: localProfile.name !== 'Học viên JLPT' ? localProfile.name : parsed.name,
-                  avatar: localProfile.avatar || parsed.avatar,
-                  targetLevel: localProfile.targetLevel || parsed.targetLevel,
-                  xp: localProfile.xp,
-                  streak: Math.max(localProfile.streak, parsed.streak),
-                  coins: localProfile.coins,
-                  studyDays: localProfile.studyDays,
-                  completedLessons: localProfile.completedLessons,
-                  vocabStatus: localProfile.vocabStatus,
-                  grammarStatus: localProfile.grammarStatus,
-                  kanjiStatus: localProfile.kanjiStatus,
-                  dailyTestResults: localProfile.dailyTestResults,
-                  lastPosition: localProfile.lastPosition || parsed.lastPosition
-                });
-                if (mergedProfile) {
-                  setDbUser(mergedProfile);
-                  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(mergedProfile));
-                  return;
-                }
-              }
-            } catch (mergeErr) {
-              console.warn("Could not merge local profile into DB:", mergeErr);
-            }
-          }
-
-          setDbUser(parsed);
-          // Sync with local storage too for backup/instant load
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-        }
-      }
-    } catch (error) {
-      console.warn('Could not sync profile with server (running in local mode):', error);
-    }
+    if(!auth.currentUser)return;
+    chosenTargetRef.current=undefined;
+    const parsed=await loadOrCreateProfile(auth.currentUser);setDbUser(parsed);localStorage.setItem(LOCAL_STORAGE_KEY,JSON.stringify(parsed));
   };
 
   // Only the newest save may overwrite state; an older, slower response would revert fields (e.g. targetLevel back to N4).
@@ -343,22 +285,8 @@ const parseDbUser = (dbData: any): UserProfile => {
       if (userCredential && userCredential.user) {
         const idToken = await userCredential.user.getIdToken();
         setToken(idToken);
-        const syncResponse = await fetch('/api/user/sync', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${idToken}`
-          }
-        });
-        if (syncResponse.ok) {
-          const syncData = await syncResponse.json();
-          if (syncData.success && syncData.user) {
-            const parsed = parseDbUser(syncData.user);
-            setDbUser(parsed);
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-            checkAndApplyRedirect(parsed.role);
-          }
-        }
+        const parsed=await loadOrCreateProfile(userCredential.user);
+        setDbUser(parsed);localStorage.setItem(LOCAL_STORAGE_KEY,JSON.stringify(parsed));checkAndApplyRedirect(parsed.role);
       }
       setAuthStatus('AUTHENTICATED');
     } catch (err: any) {
@@ -407,22 +335,8 @@ const parseDbUser = (dbData: any): UserProfile => {
           console.warn('Could not save username on registration:', profileErr);
         }
 
-        const syncResponse = await fetch('/api/user/sync', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${idToken}`
-          }
-        });
-        if (syncResponse.ok) {
-          const syncData = await syncResponse.json();
-          if (syncData.success && syncData.user) {
-            const parsed = parseDbUser(syncData.user);
-            setDbUser(parsed);
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
-            checkAndApplyRedirect(parsed.role);
-          }
-        }
+        const parsed=await loadOrCreateProfile(userCredential.user);
+        setDbUser(parsed);localStorage.setItem(LOCAL_STORAGE_KEY,JSON.stringify(parsed));checkAndApplyRedirect(parsed.role);
       }
       setAuthStatus('AUTHENTICATED');
     } catch (err: any) {
@@ -438,7 +352,14 @@ const parseDbUser = (dbData: any): UserProfile => {
   };
 
   // Helper to load existing profile or create a default one for a verified Firebase user
-  const loadOrCreateProfile = async (firebaseUser: User): Promise<UserProfile> => {
+  const profileLoadingRef=useRef<{uid:string;promise:Promise<UserProfile>}|null>(null);
+  const loadOrCreateProfile=(firebaseUser:User):Promise<UserProfile>=>{
+    if(profileLoadingRef.current?.uid===firebaseUser.uid)return profileLoadingRef.current.promise;
+    const promise=loadProfile(firebaseUser).finally(()=>{if(profileLoadingRef.current?.promise===promise)profileLoadingRef.current=null;});
+    profileLoadingRef.current={uid:firebaseUser.uid,promise};return promise;
+  };
+  const loadProfile = async (firebaseUser: User): Promise<UserProfile> => {
+    let profileBeforeSync:any=null;try{profileBeforeSync=JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)||'null');}catch{}
     // 1. Base profile from Firebase user info
     const defaultProfile: UserProfile = {
       name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'Học viên JLPT'),
@@ -472,6 +393,14 @@ const parseDbUser = (dbData: any): UserProfile => {
       const contentType = syncResponse.headers.get('content-type') || '';
       if (syncResponse.ok && contentType.includes('application/json')) {
         const syncData = await syncResponse.json();
+        if(syncData.success && syncData.user?.profileMigrationVersion===0){
+          const cached=profileBeforeSync;
+          const profile=cached&&(!cached.uid||cached.uid===firebaseUser.uid)?cached:{};
+          const migration=await fetch('/api/user/import-browser',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${idToken}`},body:JSON.stringify({profile})});
+          if(!migration.ok)throw new Error('Không nhập được tiến độ cũ lên Firebase.');
+          const imported=await migration.json();syncData.user=imported.user;
+        }
+        await connectCloudLearning(firebaseUser);
         if (syncData.success && syncData.user) {
           const parsed = parseDbUser(syncData.user);
           // Chưa chọn ảnh riêng (còn emoji mặc định) → dùng ảnh của tài khoản mail.
@@ -490,12 +419,12 @@ const parseDbUser = (dbData: any): UserProfile => {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed && parsed.name && parsed.name !== 'Học viên JLPT') {
+        if (parsed && parsed.uid===firebaseUser.uid && parsed.name && parsed.name !== 'Học viên JLPT') {
           console.log('[AUTH] Profile: LOADED');
           return {
             ...parsed,
             avatar: parsed.avatar && parsed.avatar !== '🦊' ? parsed.avatar : firebaseUser.photoURL || parsed.avatar,
-            role: parsed.role || 'user'
+            role: 'user'
           };
         }
       }
@@ -509,6 +438,7 @@ const parseDbUser = (dbData: any): UserProfile => {
   };
 
   const logout = async () => {
+    await stopCloudLearning();
     setLoading(true);
     try {
       try {

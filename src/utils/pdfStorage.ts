@@ -1,3 +1,5 @@
+import { auth } from '../lib/firebase';
+import { uploadCloudPdf, cloudPdfMetadata, downloadCloudPdf, deleteCloudPdf } from './cloudPdf';
 /**
  * Utility for persisting imported PDF exam files in browser storage (IndexedDB + localStorage fallback)
  */
@@ -10,6 +12,8 @@ export interface SavedPdfExam {
   fileDataUrl: string; // Base64 PDF data
   sizeBytes: number;
   level?: string;
+  ownerUid?: string;
+  deleted?: boolean;
 }
 
 const STORAGE_KEY = 'jpstudy_saved_pdf_exams_v1';
@@ -58,7 +62,7 @@ export async function savePdfExamToLibrary(file: File, customTitle?: string, lev
           }),
           fileDataUrl: dataUrl,
           sizeBytes: file.size,
-          level
+          level, ownerUid:auth.currentUser?.uid
         };
 
         // Try IndexedDB first
@@ -67,7 +71,7 @@ export async function savePdfExamToLibrary(file: File, customTitle?: string, lev
           const tx = db.transaction(STORE_NAME, 'readwrite');
           const store = tx.objectStore(STORE_NAME);
           store.put(record);
-          tx.oncomplete = () => resolve(record);
+          tx.oncomplete = () => {if(auth.currentUser)uploadCloudPdf(record).then(()=>resolve(record)).catch(reject);else resolve(record);};
           tx.onerror = () => throwFallback(record);
         } catch (dbErr) {
           throwFallback(record);
@@ -78,7 +82,7 @@ export async function savePdfExamToLibrary(file: File, customTitle?: string, lev
             const existing = getSavedPdfExamsFromLocalStorage();
             const updated = [rec, ...existing.filter(item => item.id !== rec.id)].slice(0, 20); // Keep max 20
             localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-            resolve(rec);
+            if(auth.currentUser)uploadCloudPdf(rec).then(()=>resolve(rec)).catch(reject);else resolve(rec);
           } catch (e) {
             reject(new Error('Bộ nhớ trình duyệt đã đầy. Không thể lưu file PDF dung lượng lớn này.'));
           }
@@ -104,7 +108,7 @@ function getSavedPdfExamsFromLocalStorage(): SavedPdfExam[] {
 /**
  * Get all saved PDF exams from library
  */
-export async function getAllSavedPdfExams(): Promise<SavedPdfExam[]> {
+async function localPdfExams(): Promise<SavedPdfExam[]> {
   try {
     const db = await openIndexedDB();
     return new Promise((resolve) => {
@@ -129,10 +133,22 @@ export async function getAllSavedPdfExams(): Promise<SavedPdfExam[]> {
   }
 }
 
+export async function getAllSavedPdfExams():Promise<SavedPdfExam[]>{
+  const uid=auth.currentUser?.uid;const legacyOwner=localStorage.getItem('jpstudy_pdf_owner');
+  const local=(await localPdfExams()).filter(record=>record.ownerUid?record.ownerUid===uid:!legacyOwner||legacyOwner===uid);
+  if(!uid)return local;
+  if(!legacyOwner)localStorage.setItem('jpstudy_pdf_owner',uid);
+  try{const remote=await cloudPdfMetadata();const all=new Map(local.map(v=>[v.id,v]));for(const item of remote){if(item.deleted)all.delete(item.id);else if(!all.has(item.id))all.set(item.id,await downloadCloudPdf(item));}
+    const remoteIds=new Set(remote.map(v=>v.id));for(const item of local)if(!remoteIds.has(item.id))await uploadCloudPdf({...item,ownerUid:uid});
+    return [...all.values()];
+  }catch{return local;}
+}
+
 /**
  * Delete a saved PDF exam from library
  */
 export async function deleteSavedPdfExam(id: string): Promise<void> {
+  if(auth.currentUser)await deleteCloudPdf(id);
   try {
     const db = await openIndexedDB();
     const tx = db.transaction(STORE_NAME, 'readwrite');

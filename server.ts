@@ -1,3 +1,7 @@
+import { listUserFiles, userFilePart, writeUserFile } from './src/server/userFiles';
+import { getLearningState, saveLearningState, stageLearningState, learningStateManifest, learningStatePart } from './src/server/cloudLearningState';
+import { persistentJsonExists, readPersistentJson, writePersistentJson, persistentRequest } from './src/server/persistentJson';
+import { recordGrammarAttempt, userGrammarProgress } from './src/server/grammarProgress';
 import { readingImageHandler } from './src/server/readingImage';
 import express from "express";
 import dotenv from "dotenv";
@@ -20,10 +24,8 @@ void (async () => {
     console.warn('[hanviet] Could not load hanviet-pinyin-words:', e);
   }
 })();
-import { eq, inArray, and, like, ne, asc } from 'drizzle-orm';
-import { db, pool, withDbRetry } from './src/db/index';
+import { firebaseDb, listContent, bulkSaveContent, saveContent, removeContent, readRecord, writeRecord, listRecords } from './src/server/firebaseStore';
 import { GRAMMAR_SYSTEM_PROMPT, buildGrammarContentUserPrompt } from './src/prompts/grammarContentPrompt';
-import { lessons, vocabularies, grammars, kanjis, users } from './src/db/schema';
 import { VOCABULARY_DATA, GRAMMAR_DATA, KANJI_DATA, TANGO_N4_VOCABULARY } from './src/data';
 import { synthesizeAzureSpeech, ttsParams } from './src/server/azureTts';
 import { shadowingTranscript, shadowingAnalyze } from './src/server/shadowing';
@@ -34,7 +36,7 @@ import { deduplicateGrammars } from './src/utils/grammarDeduplicator';
 import { KANJI_DICTIONARY } from './src/data/kanjiDictionary';
 import { requireAuth, requireAdmin } from './src/middleware/auth';
 import { adminAuth } from './src/lib/firebase-admin';
-import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid, findUserByIdentifier } from './src/db/users';
+import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid, findUserByIdentifier, importBrowserProfile } from './src/db/users';
 import { readLearningProfile, saveLearningProfile } from './src/server/learningProfile';
 
 const KuroshiroClass = (Kuroshiro as any).default || Kuroshiro;
@@ -75,6 +77,7 @@ function getHanVietWord(word: string) {
 dotenv.config();
 
 const app = express();
+app.use((_req,_res,next)=>persistentRequest(next));
 app.use(userLlmMiddleware);
 const PORT = 3000;
 
@@ -160,43 +163,10 @@ app.all('/__/auth/*', async (req, res) => {
 });
 
 // Mascot API endpoints
-app.get('/api/mascot/status', (req, res) => {
-  const mascotDir = path.join(process.cwd(), 'public', 'mascot');
-  const exists = fs.existsSync(mascotDir);
-  const files = exists ? fs.readdirSync(mascotDir) : [];
-  res.json({
-    status: 'ok',
-    hasCustomMascot: files.length > 0,
-    files,
-    primaryUrl: '/mascot/mascot.png'
-  });
-});
-
-app.post('/api/mascot/upload', requireAuth, requireAdmin, (req, res) => {
-  try {
-    const { imageBase64, filename } = req.body;
-    if (!imageBase64) {
-      return res.status(400).json({ error: 'Missing imageBase64' });
-    }
-    const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, '');
-    const buffer = Buffer.from(cleanBase64, 'base64');
-    const mascotDir = path.join(process.cwd(), 'public', 'mascot');
-    if (!fs.existsSync(mascotDir)) {
-      fs.mkdirSync(mascotDir, { recursive: true });
-    }
-    
-    // Write original and active image
-    fs.writeFileSync(path.join(mascotDir, 'mascot.png'), buffer);
-    fs.writeFileSync(path.join(mascotDir, 'mascot_original.png'), buffer);
-    fs.writeFileSync(path.join(process.cwd(), 'public', 'image.png'), buffer);
-    if (filename) {
-      fs.writeFileSync(path.join(mascotDir, path.basename(String(filename))), buffer); // basename: no path traversal
-    }
-    return res.json({ success: true, url: '/mascot/mascot.png' });
-  } catch (err: any) {
-    return res.status(500).json({ error: err.message });
-  }
-});
+const MASCOT_CLOUD_PATH=path.join(process.cwd(),'firebase-mascot.json');
+app.get('/api/mascot/status',async(_req,res)=>{try{const exists=await persistentJsonExists(MASCOT_CLOUD_PATH);res.json({status:'ok',hasCustomMascot:exists,files:exists?['mascot.png']:[],primaryUrl:'/api/mascot/image'});}catch{res.status(503).json({error:'Không đọc được dữ liệu linh vật.'});}});
+app.get('/api/mascot/image',async(_req,res)=>{try{if(!await persistentJsonExists(MASCOT_CLOUD_PATH))return res.redirect('/brand/nihon-shiba-2026-corrected.svg');const image=await readPersistentJson(MASCOT_CLOUD_PATH);res.setHeader('Content-Type',image.mime);res.setHeader('Cache-Control','no-cache');res.setHeader('X-Content-Type-Options','nosniff');res.send(Buffer.from(image.base64,'base64'));}catch{res.status(503).end();}});
+app.post('/api/mascot/upload',requireAuth,requireAdmin,async(req,res)=>{try{const match=typeof req.body.imageBase64==='string'&&req.body.imageBase64.match(/^data:(image\/(?:png|jpeg|webp|gif));base64,([A-Za-z0-9+/=]+)$/);if(!match||match[2].length>7000000)return res.status(400).json({error:'Ảnh không hợp lệ hoặc quá lớn.'});await writePersistentJson(MASCOT_CLOUD_PATH,{mime:match[1],base64:match[2]});res.json({success:true,url:'/api/mascot/image'});}catch{res.status(503).json({error:'Không lưu được ảnh lên Firebase.'});}});
 
 // Flexible static audio resolver for JLPT Choukai tracks
 app.get('/audio/:filename', (req, res, next) => {
@@ -254,12 +224,13 @@ function parseYouTubeId(input: string): { videoId: string | null; isShorts: bool
   };
 }
 
+app.use('/api', async (_req,_res,next)=>{try{await refreshFirebaseAiConfig();}catch{/* A config read must not prevent unrelated offline fallbacks. */}next();});
+
 // 1. Get all YouTube listening videos
-app.get('/api/listening/videos', (req, res) => {
+app.get('/api/listening/videos', async (req, res) => {
   try {
-    if (fs.existsSync(LISTENING_VIDEOS_FILE)) {
-      const data = fs.readFileSync(LISTENING_VIDEOS_FILE, 'utf-8');
-      const videos = JSON.parse(data);
+    if (await persistentJsonExists(LISTENING_VIDEOS_FILE)) {
+      const videos = await readPersistentJson(LISTENING_VIDEOS_FILE);
       return res.json({ success: true, videos });
     }
     return res.json({ success: true, videos: [] });
@@ -269,7 +240,7 @@ app.get('/api/listening/videos', (req, res) => {
 });
 
 // 2. Add or update YouTube listening video (Admin)
-app.post('/api/listening/videos', requireAuth, requireAdmin, express.json({ limit: '2mb' }), (req, res) => {
+app.post('/api/listening/videos', requireAuth, requireAdmin, express.json({ limit: '2mb' }), async (req, res) => {
   try {
     const videoData = req.body;
     if (!videoData) {
@@ -282,9 +253,9 @@ app.post('/api/listening/videos', requireAuth, requireAdmin, express.json({ limi
     }
 
     let videos: any[] = [];
-    if (fs.existsSync(LISTENING_VIDEOS_FILE)) {
+    if (await persistentJsonExists(LISTENING_VIDEOS_FILE)) {
       try {
-        videos = JSON.parse(fs.readFileSync(LISTENING_VIDEOS_FILE, 'utf-8'));
+        videos = await readPersistentJson(LISTENING_VIDEOS_FILE);
       } catch {}
     }
 
@@ -309,7 +280,7 @@ app.post('/api/listening/videos', requireAuth, requireAdmin, express.json({ limi
       videos.unshift(cleanVideo);
     }
 
-    writeJsonAtomic(LISTENING_VIDEOS_FILE, videos);
+    await writeJsonAtomic(LISTENING_VIDEOS_FILE, videos);
     return res.json({ success: true, video: cleanVideo });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -317,13 +288,13 @@ app.post('/api/listening/videos', requireAuth, requireAdmin, express.json({ limi
 });
 
 // 3. Delete YouTube listening video (Admin)
-app.delete('/api/listening/videos/:id', requireAuth, requireAdmin, (req, res) => {
+app.delete('/api/listening/videos/:id', requireAuth, requireAdmin, async (req, res) => {
   try {
     const videoId = req.params.id;
-    if (fs.existsSync(LISTENING_VIDEOS_FILE)) {
-      let videos = JSON.parse(fs.readFileSync(LISTENING_VIDEOS_FILE, 'utf-8'));
+    if (await persistentJsonExists(LISTENING_VIDEOS_FILE)) {
+      let videos = await readPersistentJson(LISTENING_VIDEOS_FILE);
       videos = videos.filter((v: any) => v.id !== videoId);
-      writeJsonAtomic(LISTENING_VIDEOS_FILE, videos);
+      await writeJsonAtomic(LISTENING_VIDEOS_FILE, videos);
     }
     return res.json({ success: true });
   } catch (e: any) {
@@ -333,11 +304,7 @@ app.delete('/api/listening/videos/:id', requireAuth, requireAdmin, (req, res) =>
 
 // 4. Get YouTube listening progress for a user
 // Write via temp file + rename so a crash mid-write can never leave a truncated JSON store.
-function writeJsonAtomic(file: string, value: unknown) {
-  const tmp = `${file}.${process.pid}.tmp`;
-  fs.writeFileSync(tmp, JSON.stringify(value, null, 2));
-  fs.renameSync(tmp, file);
-}
+async function writeJsonAtomic(file:string,value:unknown){await writePersistentJson(file,value);}
 
 // Listening progress/attempt/resume endpoints are per-user: a verified Firebase token decides the owner.
 // Without a valid token the caller is a guest and only ever touches the shared 'default_user' bucket,
@@ -370,11 +337,11 @@ app.use('/api/listening', async (req, res, next) => {
   next();
 });
 
-app.get('/api/listening/progress', (req, res) => {
+app.get('/api/listening/progress', async (req, res) => {
   try {
     const userId = (req.query.userId as string) || 'default_user';
-    if (fs.existsSync(LISTENING_PROGRESS_FILE)) {
-      const data = JSON.parse(fs.readFileSync(LISTENING_PROGRESS_FILE, 'utf-8'));
+    if (await persistentJsonExists(LISTENING_PROGRESS_FILE)) {
+      const data = await readPersistentJson(LISTENING_PROGRESS_FILE);
       return res.json({ success: true, progress: data[userId] || {} });
     }
     return res.json({ success: true, progress: {} });
@@ -428,7 +395,7 @@ function upsertListeningProgressRecord(allProgress: Record<string, any>, payload
 }
 
 // 5. Save YouTube listening progress for a user (resume time, completed, bookmark)
-app.post('/api/listening/progress', express.json(), (req, res) => {
+app.post('/api/listening/progress', express.json(), async (req, res) => {
   try {
     const { videoId } = req.body;
     if (!videoId) {
@@ -436,9 +403,9 @@ app.post('/api/listening/progress', express.json(), (req, res) => {
     }
 
     let allProgress: Record<string, Record<string, any>> = {};
-    if (fs.existsSync(LISTENING_PROGRESS_FILE)) {
+    if (await persistentJsonExists(LISTENING_PROGRESS_FILE)) {
       try {
-        allProgress = JSON.parse(fs.readFileSync(LISTENING_PROGRESS_FILE, 'utf-8'));
+        allProgress = await readPersistentJson(LISTENING_PROGRESS_FILE);
       } catch {}
     }
 
@@ -447,7 +414,7 @@ app.post('/api/listening/progress', express.json(), (req, res) => {
       return res.status(400).json({ error: 'Invalid payload' });
     }
 
-    writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
+    await writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.json({ success: true, record: result.record });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -455,7 +422,7 @@ app.post('/api/listening/progress', express.json(), (req, res) => {
 });
 
 // 5b. Beacon endpoint for pagehide / beforeunload (supports text/plain or application/json)
-app.post('/api/listening/progress/beacon', express.text({ type: '*/*' }), (req, res) => {
+app.post('/api/listening/progress/beacon', express.text({ type: '*/*' }), async (req, res) => {
   try {
     let payload = req.body;
     if (typeof payload === 'string') {
@@ -466,14 +433,14 @@ app.post('/api/listening/progress/beacon', express.text({ type: '*/*' }), (req, 
     }
 
     let allProgress: Record<string, Record<string, any>> = {};
-    if (fs.existsSync(LISTENING_PROGRESS_FILE)) {
+    if (await persistentJsonExists(LISTENING_PROGRESS_FILE)) {
       try {
-        allProgress = JSON.parse(fs.readFileSync(LISTENING_PROGRESS_FILE, 'utf-8'));
+        allProgress = await readPersistentJson(LISTENING_PROGRESS_FILE);
       } catch {}
     }
 
     upsertListeningProgressRecord(allProgress, payload);
-    writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
+    await writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.status(204).end();
   } catch {
     return res.status(204).end();
@@ -481,7 +448,7 @@ app.post('/api/listening/progress/beacon', express.text({ type: '*/*' }), (req, 
 });
 
 // 5c. Batch sync endpoint when reconnecting online
-app.post('/api/listening/progress/batch', express.json(), (req, res) => {
+app.post('/api/listening/progress/batch', express.json(), async (req, res) => {
   try {
     const { userId = 'default_user', records = [] } = req.body;
     if (!Array.isArray(records)) {
@@ -489,9 +456,9 @@ app.post('/api/listening/progress/batch', express.json(), (req, res) => {
     }
 
     let allProgress: Record<string, Record<string, any>> = {};
-    if (fs.existsSync(LISTENING_PROGRESS_FILE)) {
+    if (await persistentJsonExists(LISTENING_PROGRESS_FILE)) {
       try {
-        allProgress = JSON.parse(fs.readFileSync(LISTENING_PROGRESS_FILE, 'utf-8'));
+        allProgress = await readPersistentJson(LISTENING_PROGRESS_FILE);
       } catch {}
     }
 
@@ -499,7 +466,7 @@ app.post('/api/listening/progress/batch', express.json(), (req, res) => {
       upsertListeningProgressRecord(allProgress, { ...record, userId });
     });
 
-    writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
+    await writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.json({ success: true, count: records.length, progress: allProgress[userId] || {} });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -541,11 +508,11 @@ app.get('/api/listening/youtube-info', async (req, res) => {
 });
 
 // 7. Get JLPT Listening Exam Attempts for user
-app.get('/api/listening/attempts', (req, res) => {
+app.get('/api/listening/attempts', async (req, res) => {
   try {
     const userId = (req.query.userId as string) || 'default_user';
-    if (fs.existsSync(LISTENING_ATTEMPTS_FILE)) {
-      const all = JSON.parse(fs.readFileSync(LISTENING_ATTEMPTS_FILE, 'utf-8'));
+    if (await persistentJsonExists(LISTENING_ATTEMPTS_FILE)) {
+      const all = await readPersistentJson(LISTENING_ATTEMPTS_FILE);
       const userAttempts = (all && all[userId]) || [];
       return res.json({ success: true, attempts: userAttempts });
     }
@@ -556,7 +523,7 @@ app.get('/api/listening/attempts', (req, res) => {
 });
 
 // 8. Save completed JLPT Listening Exam Attempt
-app.post('/api/listening/attempts', express.json({ limit: '5mb' }), (req, res) => {
+app.post('/api/listening/attempts', express.json({ limit: '5mb' }), async (req, res) => {
   try {
     const { userId = 'default_user', attempt } = req.body;
     if (!attempt || !attempt.attemptId) {
@@ -564,25 +531,25 @@ app.post('/api/listening/attempts', express.json({ limit: '5mb' }), (req, res) =
     }
 
     let all: Record<string, any[]> = {};
-    if (fs.existsSync(LISTENING_ATTEMPTS_FILE)) {
+    if (await persistentJsonExists(LISTENING_ATTEMPTS_FILE)) {
       try {
-        all = JSON.parse(fs.readFileSync(LISTENING_ATTEMPTS_FILE, 'utf-8'));
+        all = await readPersistentJson(LISTENING_ATTEMPTS_FILE);
       } catch {}
     }
 
     if (!all[userId]) all[userId] = [];
     // Prepend attempt
     all[userId] = [attempt, ...all[userId].filter((a: any) => a.attemptId !== attempt.attemptId)];
-    writeJsonAtomic(LISTENING_ATTEMPTS_FILE, all);
+    await writeJsonAtomic(LISTENING_ATTEMPTS_FILE, all);
 
     // Also clear in-progress resume state for this video if exists
-    if (fs.existsSync(LISTENING_RESUME_FILE)) {
+    if (await persistentJsonExists(LISTENING_RESUME_FILE)) {
       try {
-        const resumeData = JSON.parse(fs.readFileSync(LISTENING_RESUME_FILE, 'utf-8'));
+        const resumeData = await readPersistentJson(LISTENING_RESUME_FILE);
         if (resumeData[userId]) {
           delete resumeData[userId][attempt.youtubeVideoId];
           if (attempt.examId) delete resumeData[userId][attempt.examId];
-          writeJsonAtomic(LISTENING_RESUME_FILE, resumeData);
+          await writeJsonAtomic(LISTENING_RESUME_FILE, resumeData);
         }
       } catch {}
     }
@@ -594,12 +561,12 @@ app.post('/api/listening/attempts', express.json({ limit: '5mb' }), (req, res) =
 });
 
 // 9. Get in-progress JLPT Listening Exam resume state
-app.get('/api/listening/exam-resume', (req, res) => {
+app.get('/api/listening/exam-resume', async (req, res) => {
   try {
     const userId = (req.query.userId as string) || 'default_user';
     const videoId = req.query.videoId as string;
-    if (fs.existsSync(LISTENING_RESUME_FILE)) {
-      const data = JSON.parse(fs.readFileSync(LISTENING_RESUME_FILE, 'utf-8'));
+    if (await persistentJsonExists(LISTENING_RESUME_FILE)) {
+      const data = await readPersistentJson(LISTENING_RESUME_FILE);
       const userResumes = data[userId] || {};
       if (videoId) {
         return res.json({ success: true, state: userResumes[videoId] || null });
@@ -613,7 +580,7 @@ app.get('/api/listening/exam-resume', (req, res) => {
 });
 
 // 10. Save in-progress JLPT Listening Exam resume state
-app.post('/api/listening/exam-resume', express.json({ limit: '2mb' }), (req, res) => {
+app.post('/api/listening/exam-resume', express.json({ limit: '2mb' }), async (req, res) => {
   try {
     const { userId = 'default_user', state } = req.body;
     if (!state || !state.youtubeVideoId) {
@@ -621,9 +588,9 @@ app.post('/api/listening/exam-resume', express.json({ limit: '2mb' }), (req, res
     }
 
     let all: Record<string, Record<string, any>> = {};
-    if (fs.existsSync(LISTENING_RESUME_FILE)) {
+    if (await persistentJsonExists(LISTENING_RESUME_FILE)) {
       try {
-        all = JSON.parse(fs.readFileSync(LISTENING_RESUME_FILE, 'utf-8'));
+        all = await readPersistentJson(LISTENING_RESUME_FILE);
       } catch {}
     }
 
@@ -633,7 +600,7 @@ app.post('/api/listening/exam-resume', express.json({ limit: '2mb' }), (req, res
       all[userId][state.examId] = state;
     }
 
-    writeJsonAtomic(LISTENING_RESUME_FILE, all);
+    await writeJsonAtomic(LISTENING_RESUME_FILE, all);
     return res.json({ success: true });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -641,15 +608,15 @@ app.post('/api/listening/exam-resume', express.json({ limit: '2mb' }), (req, res
 });
 
 // 11. Delete in-progress JLPT Listening Exam resume state
-app.delete('/api/listening/exam-resume', (req, res) => {
+app.delete('/api/listening/exam-resume', async (req, res) => {
   try {
     const userId = (req.query.userId as string) || 'default_user';
     const videoId = req.query.videoId as string;
-    if (fs.existsSync(LISTENING_RESUME_FILE)) {
-      const data = JSON.parse(fs.readFileSync(LISTENING_RESUME_FILE, 'utf-8'));
+    if (await persistentJsonExists(LISTENING_RESUME_FILE)) {
+      const data = await readPersistentJson(LISTENING_RESUME_FILE);
       if (data[userId] && videoId) {
         delete data[userId][videoId];
-        writeJsonAtomic(LISTENING_RESUME_FILE, data);
+        await writeJsonAtomic(LISTENING_RESUME_FILE, data);
       }
     }
     return res.json({ success: true });
@@ -659,11 +626,11 @@ app.delete('/api/listening/exam-resume', (req, res) => {
 });
 
 // 12. Get Verified JLPT Listening Questions
-app.get('/api/listening/questions', (req, res) => {
+app.get('/api/listening/questions', async (req, res) => {
   try {
     const videoId = req.query.videoId as string;
-    if (fs.existsSync(LISTENING_QUESTIONS_FILE)) {
-      const data = JSON.parse(fs.readFileSync(LISTENING_QUESTIONS_FILE, 'utf-8'));
+    if (await persistentJsonExists(LISTENING_QUESTIONS_FILE)) {
+      const data = await readPersistentJson(LISTENING_QUESTIONS_FILE);
       if (videoId) {
         return res.json({ success: true, exam: data[videoId] || null });
       }
@@ -676,7 +643,7 @@ app.get('/api/listening/questions', (req, res) => {
 });
 
 // 13. Save or Update Verified JLPT Listening Questions & Timestamp mapping (Admin Tool)
-app.post('/api/listening/questions', requireAuth, requireAdmin, express.json({ limit: '5mb' }), (req, res) => {
+app.post('/api/listening/questions', requireAuth, requireAdmin, express.json({ limit: '5mb' }), async (req, res) => {
   try {
     const { videoId, examData } = req.body;
     if (!videoId || !examData) {
@@ -696,9 +663,9 @@ app.post('/api/listening/questions', requireAuth, requireAdmin, express.json({ l
     }
 
     let all: Record<string, any> = {};
-    if (fs.existsSync(LISTENING_QUESTIONS_FILE)) {
+    if (await persistentJsonExists(LISTENING_QUESTIONS_FILE)) {
       try {
-        all = JSON.parse(fs.readFileSync(LISTENING_QUESTIONS_FILE, 'utf-8'));
+        all = await readPersistentJson(LISTENING_QUESTIONS_FILE);
       } catch {}
     }
 
@@ -708,7 +675,7 @@ app.post('/api/listening/questions', requireAuth, requireAdmin, express.json({ l
       updatedAt: new Date().toISOString()
     };
 
-    writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
+    await writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
     return res.json({ success: true, exam: all[videoId] });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -716,7 +683,7 @@ app.post('/api/listening/questions', requireAuth, requireAdmin, express.json({ l
 });
 
 // 14. Quick update question timestamp (Admin Timestamp Editor)
-app.post('/api/listening/questions/update-timestamp', requireAuth, requireAdmin, express.json(), (req, res) => {
+app.post('/api/listening/questions/update-timestamp', requireAuth, requireAdmin, express.json(), async (req, res) => {
   try {
     const { videoId, questionId, startTime, endTime } = req.body;
     if (!videoId || !questionId) {
@@ -730,11 +697,11 @@ app.post('/api/listening/questions/update-timestamp', requireAuth, requireAdmin,
       return res.status(400).json({ error: 'INVALID_QUESTION_MAPPING: endTime must be greater than startTime' });
     }
 
-    if (!fs.existsSync(LISTENING_QUESTIONS_FILE)) {
+    if (!await persistentJsonExists(LISTENING_QUESTIONS_FILE)) {
       return res.status(404).json({ error: 'No questions file found' });
     }
 
-    const all = JSON.parse(fs.readFileSync(LISTENING_QUESTIONS_FILE, 'utf-8'));
+    const all = await readPersistentJson(LISTENING_QUESTIONS_FILE);
     const exam = all[videoId];
     if (!exam || !Array.isArray(exam.questions)) {
       return res.status(404).json({ error: 'Exam not found for this video' });
@@ -750,7 +717,7 @@ app.post('/api/listening/questions/update-timestamp', requireAuth, requireAdmin,
     q.sourceVerified = true;
     exam.updatedAt = new Date().toISOString();
 
-    writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
+    await writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
     return res.json({ success: true, question: q });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -758,14 +725,14 @@ app.post('/api/listening/questions/update-timestamp', requireAuth, requireAdmin,
 });
 
 // 15. Get YouTube Timestamp Mappings (Decoupled from Question Data)
-app.get('/api/listening/mappings', (req, res) => {
+app.get('/api/listening/mappings', async (req, res) => {
   try {
     const videoId = req.query.videoId as string;
     const examId = req.query.examId as string;
     let mappings: any[] = [];
-    if (fs.existsSync(LISTENING_MAPPINGS_FILE)) {
+    if (await persistentJsonExists(LISTENING_MAPPINGS_FILE)) {
       try {
-        mappings = JSON.parse(fs.readFileSync(LISTENING_MAPPINGS_FILE, 'utf-8'));
+        mappings = await readPersistentJson(LISTENING_MAPPINGS_FILE);
       } catch {}
     }
     if (videoId) {
@@ -781,7 +748,7 @@ app.get('/api/listening/mappings', (req, res) => {
 });
 
 // 16. Save single Timestamp Mapping (Admin)
-app.post('/api/listening/mappings', requireAuth, requireAdmin, express.json(), (req, res) => {
+app.post('/api/listening/mappings', requireAuth, requireAdmin, express.json(), async (req, res) => {
   try {
     const { mapping } = req.body;
     if (!mapping || !mapping.questionId || !mapping.youtubeVideoId) {
@@ -796,9 +763,9 @@ app.post('/api/listening/mappings', requireAuth, requireAdmin, express.json(), (
     }
 
     let mappings: any[] = [];
-    if (fs.existsSync(LISTENING_MAPPINGS_FILE)) {
+    if (await persistentJsonExists(LISTENING_MAPPINGS_FILE)) {
       try {
-        mappings = JSON.parse(fs.readFileSync(LISTENING_MAPPINGS_FILE, 'utf-8'));
+        mappings = await readPersistentJson(LISTENING_MAPPINGS_FILE);
       } catch {}
     }
 
@@ -816,7 +783,7 @@ app.post('/api/listening/mappings', requireAuth, requireAdmin, express.json(), (
       mappings.push(enriched);
     }
 
-    writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
+    await writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
     return res.json({ success: true, mapping: enriched });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -824,7 +791,7 @@ app.post('/api/listening/mappings', requireAuth, requireAdmin, express.json(), (
 });
 
 // 17. Batch save Timestamp Mappings (Admin)
-app.post('/api/listening/mappings/batch', requireAuth, requireAdmin, express.json({ limit: '2mb' }), (req, res) => {
+app.post('/api/listening/mappings/batch', requireAuth, requireAdmin, express.json({ limit: '2mb' }), async (req, res) => {
   try {
     const { mappings: incoming = [] } = req.body;
     if (!Array.isArray(incoming)) {
@@ -832,9 +799,9 @@ app.post('/api/listening/mappings/batch', requireAuth, requireAdmin, express.jso
     }
 
     let mappings: any[] = [];
-    if (fs.existsSync(LISTENING_MAPPINGS_FILE)) {
+    if (await persistentJsonExists(LISTENING_MAPPINGS_FILE)) {
       try {
-        mappings = JSON.parse(fs.readFileSync(LISTENING_MAPPINGS_FILE, 'utf-8'));
+        mappings = await readPersistentJson(LISTENING_MAPPINGS_FILE);
       } catch {}
     }
 
@@ -855,7 +822,7 @@ app.post('/api/listening/mappings/batch', requireAuth, requireAdmin, express.jso
       }
     }
 
-    writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
+    await writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
     return res.json({ success: true, count: incoming.length });
   } catch (e: any) {
     return res.status(500).json({ error: e.message });
@@ -976,23 +943,11 @@ let activeAIConfig: ServerAIConfig = {
   provider: "chatgpt",
 };
 
-// Load saved config on startup
-try {
-  if (fs.existsSync(AI_CONFIG_FILE)) {
-    const raw = fs.readFileSync(AI_CONFIG_FILE, "utf-8");
-    const parsed = JSON.parse(raw);
-    if (parsed && typeof parsed === "object") {
-      activeAIConfig = {
-        ...activeAIConfig,
-        ...parsed,
-        openaiApiKey: parsed.openaiApiKey || process.env.OPENAI_API_KEY || "",
-      };
-    }
-  }
-} catch (e) {
-  console.warn("[AI Config] Could not load ai-config.json:", e);
+let configChecked=0;
+async function refreshFirebaseAiConfig(){
+  if(Date.now()-configChecked<60000)return;
+  const saved=await readRecord('server_settings','ai-config');if(saved)activeAIConfig={...activeAIConfig,...saved};configChecked=Date.now();
 }
-
 export function getActiveOpenAIApiKey(): string {
   return (activeAIConfig.openaiApiKey || process.env.OPENAI_API_KEY || "").trim();
 }
@@ -4102,6 +4057,26 @@ app.post('/api/auth/resolve-identifier', async (req: any, res) => {
 });
 
 // 6. User Auth, Profile Sync, and Streak routes
+app.get('/api/shadowing/analysis-file',async(req,res)=>{
+  const id=String(req.query.videoId||'');if(!/^[\w-]{11}$/.test(id))return res.status(400).json({error:'Video không hợp lệ.'});
+  const file=path.join(process.cwd(),'public','shadowing-analysis',`${id}.json`);
+  try{if(!await persistentJsonExists(file))return res.status(404).json({error:'Chưa có phân tích.'});res.json(await readPersistentJson(file));}catch{res.status(503).json({error:'Không đọc được phân tích từ Firebase.'});}
+});
+app.get('/api/user/files',requireAuth,async(req:any,res)=>{try{res.json({files:await listUserFiles(req.dbUser.uid)});}catch{res.status(503).json({error:'Không tải được PDF.'});}});
+app.get('/api/user/files/part',requireAuth,async(req:any,res)=>{try{res.json(await userFilePart(req.dbUser.uid,String(req.query.id),Number(req.query.index)));}catch{res.status(404).json({error:'Không tìm thấy phần PDF.'});}});
+app.post('/api/user/files',requireAuth,async(req:any,res)=>{try{await writeUserFile(req.dbUser.uid,req.body);res.json({success:true});}catch(e:any){res.status(e.message==='INVALID_FILE'?400:503).json({error:'Không lưu được PDF.'});}});
+app.get('/api/user/learning-state/part',requireAuth,async(req:any,res)=>{try{res.json(await learningStatePart(req.dbUser.uid,String(req.query.key),Number(req.query.index),Number(req.query.version)));}catch(e:any){res.status(e.message==='STATE_CHANGED'?409:400).json({error:'Dữ liệu đã thay đổi. Hãy tải lại.'});}});
+app.get('/api/user/learning-state',requireAuth,async(req:any,res)=>{
+  try{res.json({entries:await learningStateManifest(req.dbUser.uid)});}catch{res.status(503).json({error:'Không tải được dữ liệu học tập.'});}
+});
+app.post('/api/user/import-learning-chunk',requireAuth,async(req:any,res)=>{try{await stageLearningState(req.dbUser.uid,req.body);res.json({success:true});}catch(e:any){res.status(e.message==='INVALID_STATE'?400:503).json({error:'Không lưu được dữ liệu học tập.'});}});
+app.post('/api/user/import-learning',requireAuth,async(req:any,res)=>{
+  try{await saveLearningState(req.dbUser.uid,req.body.entries);res.json({success:true});}catch(e:any){res.status(e.message==='INVALID_STATE'?400:503).json({error:'Không lưu được dữ liệu học tập.'});}
+});
+app.post('/api/user/import-browser', requireAuth, async(req:any,res)=>{
+  try {const profile=req.body.profile||{};if(profile.studyRoadmap)await saveLearningProfile(req.dbUser.uid,profile.studyRoadmap);const user=await importBrowserProfile(req.dbUser.uid,profile);res.json({success:true,user:{...user,...await readLearningProfile(req.dbUser.uid)}});}
+  catch {res.status(503).json({error:'Không đồng bộ được hồ sơ.'});}
+});
 app.post('/api/user/sync', requireAuth, async (req: any, res) => {
   try {
     const learning = await readLearningProfile(req.dbUser.uid);
@@ -4174,23 +4149,7 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
       });
       res.json({ success: true, user: { ...(updatedUser || dbUser), ...learning } });
     } catch (dbErr) {
-      console.warn("DB update failed in /api/user/profile, returning updated in-memory object:", dbErr);
-      const fallbackUser = {
-        ...dbUser,
-        ...(name !== undefined && { name }),
-        ...(avatar !== undefined && { avatar }),
-        ...(targetLevel !== undefined && { targetLevel }),
-        ...(xp !== undefined && { xp }),
-        ...(coins !== undefined && { coins }),
-        ...(studyDays !== undefined && { studyDays }),
-        ...(completedLessons !== undefined && { completedLessons }),
-        ...(vocabStatus !== undefined && { vocabStatus }),
-        ...(grammarStatus !== undefined && { grammarStatus }),
-        ...(kanjiStatus !== undefined && { kanjiStatus }),
-        ...(dailyTestResults !== undefined && { dailyTestResults }),
-        ...(lastPosition !== undefined && { lastPosition }),
-      };
-      res.json({ success: true, user: fallbackUser });
+      return res.status(503).json({error:'Không lưu được hồ sơ lên Firebase. Hãy thử lại.'});
     }
   } catch (error: any) {
     console.error("Error in /api/user/profile:", error);
@@ -4239,6 +4198,7 @@ app.post('/api/admin/users/delete', requireAuth, requireAdmin, async (req: any, 
   }
 });
 
+app.post('/api/admin/kanjis/delete',requireAuth,requireAdmin,async(req,res)=>{try{if(!req.body.id)return res.status(400).json({error:'id required'});await removeContent('kanjis',req.body.id);res.json({success:true});}catch{res.status(503).json({error:'Không xóa được Kanji.'});}});
 app.post('/api/admin/kanjis/update', requireAuth, requireAdmin, async (req: any, res) => {
   try {
     const { id, meaningVi, onyomi, kunyomi, strokesCount, exampleWords, mnemonic, exampleSentence, exampleTranslation } = req.body;
@@ -4254,15 +4214,12 @@ app.post('/api/admin/kanjis/update', requireAuth, requireAdmin, async (req: any,
       exampleTranslation: exampleTranslation || ''
     });
 
-    await db.update(kanjis)
-      .set({
+    [await saveContent('kanjis',{
         meaningVi: meaningVi || '',
         onyomi: onyomi || '',
         kunyomi: kunyomi || '',
         examples: examplesJson
-      })
-      .where(eq(kanjis.id, id))
-      .execute();
+      },id) ];
 
     res.json({ success: true, message: "Kanji updated successfully" });
   } catch (error: any) {
@@ -4369,9 +4326,9 @@ Yêu cầu:
 // Database API Routes
 app.get('/api/lessons', async (req, res) => {
   try {
-    const allLessons = await db.select().from(lessons).execute();
+    const allLessons = await listContent('lessons');
     if (allLessons && allLessons.length > 0) {
-      return res.json(allLessons);
+      res.setHeader('X-Data-Store','firestore');return res.json(allLessons);
     }
   } catch (error: any) {
     console.warn("DB lessons query error, returning fallback lessons:", error?.message);
@@ -4398,17 +4355,8 @@ let cachedMappedVocabularies: any[] | null = null;
 
 app.get('/api/vocabularies', async (req, res) => {
   try {
-    if (cachedMappedVocabularies && cachedMappedVocabularies.length > 0) {
-      return res.json(cachedMappedVocabularies);
-    }
-
-    const enrichedStatic: any[] = VOCABULARY_DATA.map(v => sanitizeVocabItem({
-      ...v,
-      hanViet: v.hanViet || getHanVietWord(v.kanji || '')
-    }));
-
-    cachedMappedVocabularies = enrichedStatic;
-    return res.json(enrichedStatic);
+    const enrichedStatic = (await listContent('vocabularies')).map(v=>sanitizeVocabItem({...v,hanViet:v.hanViet||getHanVietWord(v.kanji||'')}));
+    res.setHeader('X-Data-Store','firestore');return res.json(enrichedStatic);
   } catch (error) {
     console.error('Error in /api/vocabularies route, falling back to static data:', error);
     return res.json(VOCABULARY_DATA);
@@ -4423,7 +4371,7 @@ app.post('/api/vocabularies/add-custom', requireAuth, requireAdmin, async (req, 
     }
 
     // Find all lessons in db to assign a lessonId matching target level
-    const allLessons = await db.select().from(lessons).execute();
+    const allLessons = await listContent('lessons');
     let targetLesson = allLessons[0]; // fallback
     if (level) {
       if (level === 'N5') {
@@ -4435,8 +4383,8 @@ app.post('/api/vocabularies/add-custom', requireAuth, requireAdmin, async (req, 
       }
     }
 
-    const inserted = await db.insert(vocabularies).values({
-      lessonId: targetLesson.id,
+    const inserted = [await saveContent('vocabularies',{
+      lessonId: targetLesson?.id || 'custom',
       word: kanji || reading,
       kanji: kanji || '',
       reading,
@@ -4444,7 +4392,7 @@ app.post('/api/vocabularies/add-custom', requireAuth, requireAdmin, async (req, 
       romaji: '',
       exampleJp: '',
       exampleVi: ''
-    }).returning();
+    }) ];
 
     // Invalidate the vocabularies cache so client can fetch fresh updated data!
     cachedMappedVocabularies = null;
@@ -4488,7 +4436,7 @@ app.get('/api/leaderboard', async (req, res) => {
   try {
     let dbUsers: any[] = [];
     try {
-      dbUsers = await withDbRetry(() => db.select().from(users).execute());
+      dbUsers = await getAllUsers();
     } catch (_dbErr) {
       // safe fallback if DB is not reachable
     }
@@ -4600,7 +4548,7 @@ const breakdownList = [];
       
       // Try querying from DB if available
       try {
-        const kanjiDb = await withDbRetry(() => db.select().from(kanjis).where(eq(kanjis.kanji, char)).limit(1).execute());
+        const kanjiDb = (await listContent('kanjis')).filter(v => v.kanji === char).slice(0,1);
         const info = (kanjiDb[0] || {}) as any;
         if (info.onyomi) onyomi = info.onyomi;
         if (info.kunyomi) kunyomi = info.kunyomi;
@@ -4634,16 +4582,7 @@ const breakdownList = [];
       // Get related vocabulary (Kanji Family)
       let familyList: any[] = [];
       try {
-        const relatedVocab = await withDbRetry(() => db.select()
-          .from(vocabularies)
-          .where(
-            and(
-              like(vocabularies.kanji, `%${char}%`),
-              ne(vocabularies.kanji, word)
-            )
-          )
-          .limit(6)
-          .execute());
+        const relatedVocab = (await listContent('vocabularies')).filter(v => v.kanji?.includes(char) && v.kanji !== word).slice(0,6);
 
         familyList = relatedVocab.map(v => ({
           id: 'v_' + v.id,
@@ -4803,10 +4742,10 @@ app.post('/api/admin/vocabularies/update', requireAuth, requireAdmin, async (req
     const { id, lessonId, word, kanji, reading, meaning, type } = req.body;
     
     if (id) {
-      const updated = await db.update(vocabularies).set({ lessonId, word, kanji, reading, meaning, type }).where(eq(vocabularies.id, id)).returning();
+      const updated = [await saveContent('vocabularies',{ lessonId, word, kanji, reading, meaning, type },id) ];
       return res.json({ success: true, item: updated[0] });
     } else {
-      const created = await db.insert(vocabularies).values({ lessonId: lessonId || 1, word, kanji, reading, meaning, type }).returning();
+      const created = [await saveContent('vocabularies',{ lessonId: lessonId || 1, word, kanji, reading, meaning, type }) ];
       return res.json({ success: true, item: created[0] });
     }
   } catch (err: any) {
@@ -4814,79 +4753,18 @@ app.post('/api/admin/vocabularies/update', requireAuth, requireAdmin, async (req
   }
 });
 
-app.post('/api/admin/vocabularies/import', requireAuth, requireAdmin, async (req: any, res) => {
-  try {
-    const { items } = req.body;
-    if (!items || !Array.isArray(items)) {
-      return res.status(400).json({ error: "Invalid data format. Expected 'items' array." });
-    }
-
-    // Cache lessons to avoid hammering DB
-    const allLessons = await db.select().from(lessons).execute();
-    const lessonMap = new Map<number, number>(); // lessonNumber -> lessonId
-    allLessons.forEach(l => {
-      lessonMap.set(l.lessonNumber, l.id);
-    });
-
-    const importedItems = [];
-    for (const item of items) {
-      const lessonNum = parseInt(item.lessonNumber || item.lesson_number) || 1;
-      let lessonId = lessonMap.get(lessonNum);
-
-      if (!lessonId) {
-        // Automatically create lesson if it doesn't exist
-        const newLessons = await db.insert(lessons).values({
-          lessonNumber: lessonNum,
-          titleVi: item.lessonTitle || `Bài ${lessonNum}`,
-          titleJp: `第${lessonNum}課`
-        }).returning();
-        
-        lessonId = newLessons[0].id;
-        lessonMap.set(lessonNum, lessonId);
-      }
-
-      const reading = (item.reading || '').trim();
-      const kanji = (item.kanji || '').trim() || null;
-      const word = (item.word || kanji || reading || '').trim();
-      const meaning = (item.meaning || '').trim();
-      
-      if (!reading || !meaning) {
-        continue; // Skip invalid rows
-      }
-
-      const type = (item.type || '').trim() || null;
-      const romaji = (item.romaji || '').trim() || null;
-      const exampleJp = (item.exampleJp || item.example_jp || '').trim() || null;
-      const exampleVi = (item.exampleVi || item.example_vi || '').trim() || null;
-
-      const created = await db.insert(vocabularies).values({
-        lessonId,
-        word: word || reading,
-        kanji,
-        reading,
-        meaning,
-        romaji,
-        type,
-        exampleJp,
-        exampleVi
-      }).returning();
-      
-      importedItems.push(created[0]);
-    }
-
-    // Invalidate cached vocabularies
-    cachedMappedVocabularies = null;
-
-    res.json({ success: true, count: importedItems.length, items: importedItems });
-  } catch (err: any) {
-    console.error("Import error:", err);
-    res.status(500).json({ error: err.message });
-  }
+app.post('/api/admin/vocabularies/import',requireAuth,requireAdmin,async(req:any,res)=>{
+  try{
+    const items=req.body.items;if(!Array.isArray(items)||items.length>400)return res.status(400).json({error:'Mỗi lần nhập tối đa 400 mục.'});
+    const lessonRows=new Map<string,any>();const rows=[];
+    for(const item of items){const reading=String(item.reading||'').trim(),meaning=String(item.meaning||'').trim();if(!reading||!meaning)continue;const number=Number(item.lessonNumber||item.lesson_number)||1;const level=/^N[1-5]$/.test(item.level)?item.level:'N4';const curriculum=String(item.curriculum||'custom').replace(/[^\w-]/g,'');const lessonId=`import_${curriculum}_${level}_${number}`;lessonRows.set(lessonId,{id:lessonId,lessonNumber:number,titleVi:item.lessonTitle||`Bài ${number}`,titleJp:`第${number}課`,level,curriculum});rows.push({lessonId,lessonNumber:number,lessonName:item.lessonTitle||`Bài ${number}`,level,curriculum,word:String(item.word||item.kanji||reading),kanji:String(item.kanji||''),reading,meaning,hanViet:item.hanViet||'',type:item.type||'',romaji:item.romaji||'',exampleJp:item.exampleJp||item.example_jp||'',exampleVi:item.exampleVi||item.example_vi||''});}
+    await bulkSaveContent('lessons',[...lessonRows.values()]);const saved=await bulkSaveContent('vocabularies',rows);res.json({success:true,count:saved.length,items:saved});
+  }catch{res.status(503).json({error:'Không lưu được dữ liệu nhập lên Firebase. Bạn có thể thử lại.'});}
 });
 
 app.post('/api/admin/vocabularies/delete', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    await db.delete(vocabularies).where(eq(vocabularies.id, req.body.id));
+    await removeContent('vocabularies',req.body.id);
     res.json({ success: true });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -4899,10 +4777,10 @@ app.post('/api/admin/grammars/update', requireAuth, requireAdmin, async (req: an
     const { id, lessonId, structure, meaning, explanation } = req.body;
     
     if (id) {
-      const updated = await db.update(grammars).set({ lessonId, structure, meaning, explanation }).where(eq(grammars.id, id)).returning();
+      const updated = [await saveContent('grammars',{ lessonId, structure, meaning, explanation },id) ];
       return res.json({ success: true, item: updated[0] });
     } else {
-      const created = await db.insert(grammars).values({ lessonId: lessonId || 1, structure, meaning, explanation }).returning();
+      const created = [await saveContent('grammars',{ lessonId: lessonId || 1, structure, meaning, explanation }) ];
       return res.json({ success: true, item: created[0] });
     }
   } catch (err: any) {
@@ -4912,7 +4790,7 @@ app.post('/api/admin/grammars/update', requireAuth, requireAdmin, async (req: an
 
 app.post('/api/admin/grammars/delete', requireAuth, requireAdmin, async (req: any, res) => {
   try {
-    await db.delete(grammars).where(eq(grammars.id, req.body.id));
+    await removeContent('grammars',req.body.id);
     res.json({ success: true });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
@@ -4927,11 +4805,11 @@ app.post('/api/vocabularies/ensure-examples', requireAuth, requireAdmin, async (
     let lesson: any = null;
 
     if (vocabIds && Array.isArray(vocabIds)) {
-      const parsedIds = vocabIds.map((id: string) => parseInt(id.replace('v_', ''))).filter(id => !isNaN(id));
+      const parsedIds = vocabIds.map(String);
       if (parsedIds.length === 0) {
         return res.status(400).json({ error: "Invalid vocabIds format" });
       }
-      vocabs = await db.select().from(vocabularies).where(inArray(vocabularies.id, parsedIds)).execute();
+      vocabs = (await listContent('vocabularies')).filter(v=>parsedIds.map(String).includes(String(v.id)));
     } else {
       if (!lessonId) {
         return res.status(400).json({ error: "lessonId or vocabIds is required" });
@@ -4945,14 +4823,14 @@ app.post('/api/vocabularies/ensure-examples', requireAuth, requireAdmin, async (
       const lessonNumber = parseInt(match[1]);
 
       // Find the corresponding lesson in DB
-      const lessonRows = await db.select().from(lessons).where(eq(lessons.lessonNumber, lessonNumber)).execute();
+      const lessonRows = (await listContent('lessons')).filter(v=>v.lessonNumber === lessonNumber);
       if (lessonRows.length === 0) {
         return res.status(404).json({ error: "Lesson not found" });
       }
       lesson = lessonRows[0];
 
       // Get all vocabularies for this lesson
-      vocabs = await db.select().from(vocabularies).where(eq(vocabularies.lessonId, lesson.id)).execute();
+      vocabs = (await listContent('vocabularies')).filter(v=>String(v.lessonId)===String(lesson.id));
     }
     
     // Match and fill from authentic VOCABULARY_DATA if missing
@@ -4967,9 +4845,7 @@ app.post('/api/vocabularies/ensure-examples', requireAuth, requireAdmin, async (
           v.exampleJp = found.exampleSentence;
           v.exampleVi = found.exampleTranslation || '';
           try {
-            await db.update(vocabularies)
-              .set({ exampleJp: v.exampleJp, exampleVi: v.exampleVi })
-              .where(eq(vocabularies.id, v.id));
+            [await saveContent('vocabularies',{ exampleJp: v.exampleJp, exampleVi: v.exampleVi },v.id) ];
           } catch (e) {
             // Ignore DB update error in fallback
           }
@@ -5005,7 +4881,7 @@ app.post('/api/vocabularies/ensure-examples', requireAuth, requireAdmin, async (
       // If we loaded lessons, or we can look up lesson information
       if (vocabIds) {
         try {
-          const lRows = await db.select().from(lessons).where(eq(lessons.id, v.lessonId)).execute();
+          const lRows = (await listContent('lessons')).filter(l=>String(l.id)===String(v.lessonId));
           if (lRows.length > 0) {
             const lRow = lRows[0];
             const levelNum = lRow.lessonNumber;
@@ -5170,7 +5046,7 @@ app.get('/api/kanji-strokes', async (req, res) => {
 
 app.get('/api/kanjis', async (req, res) => {
   try {
-    const results = await db.select().from(kanjis).execute();
+    const results = await listContent('kanjis');
     if (results && results.length > 0) {
       const mapped = results.map(k => {
         const dictInfo = KANJI_DICTIONARY[k.kanji];
@@ -5185,7 +5061,7 @@ app.get('/api/kanjis', async (req, res) => {
           components: dictInfo?.components || ''
         };
       });
-      return res.json(mapped);
+      res.setHeader('X-Data-Store','firestore');return res.json(mapped);
     }
   } catch (error: any) {
     console.warn("DB kanjis query error, returning fallback KANJI_DATA:", error?.message);
@@ -6141,15 +6017,13 @@ Hãy phân tích và trả về đúng JSON theo schema được chỉ định.`
 
 app.get('/api/grammars', async (req, res) => {
   try {
-    const results = await db.select({
-      g: grammars,
-      l: lessons
-    }).from(grammars).innerJoin(lessons, eq(grammars.lessonId, lessons.id)).execute();
+    const [grammarRows,lessonRows]=await Promise.all([listContent('grammars'),listContent('lessons')]);
+    const results=grammarRows.map(g=>({g,l:lessonRows.find(l=>String(l.id)===String(g.lessonId))||{lessonNumber:g.level==='N4'?26:g.level==='N3'?51:g.level==='N2'?52:g.level==='N1'?53:1,titleVi:g.lessonName||''}}));
 
     if (results && results.length > 0) {
       const mapped = results.map(row => {
         const levelNum = row.l.lessonNumber;
-        const level = levelNum <= 25 ? 'N5' : levelNum <= 50 ? 'N4' : levelNum === 51 ? 'N3' : levelNum === 52 ? 'N2' : 'N1';
+        const level = row.g.level || (levelNum <= 25 ? 'N5' : levelNum <= 50 ? 'N4' : levelNum === 51 ? 'N3' : levelNum === 52 ? 'N2' : 'N1');
         const exampleJp = row.g.exampleJp || '';
         return {
           id: 'g_' + row.g.id,
@@ -6279,7 +6153,7 @@ app.get('/api/ai/config', requireAuth, requireAdmin, (req, res) => {
 });
 
 // Central AI Configuration API: POST (Save dynamic changes immediately)
-app.post('/api/ai/config', requireAuth, requireAdmin, (req, res) => {
+app.post('/api/ai/config', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { openaiApiKey, openaiModel, provider } = req.body;
 
@@ -6298,11 +6172,7 @@ app.post('/api/ai/config', requireAuth, requireAdmin, (req, res) => {
     openaiClientInstance = null;
     currentClientKey = "";
 
-    try {
-      fs.writeFileSync(AI_CONFIG_FILE, JSON.stringify(activeAIConfig, null, 2), 'utf-8');
-    } catch (fsErr) {
-      console.warn("[AI Config] Could not save to ai-config.json:", fsErr);
-    }
+    await writeRecord('server_settings','ai-config',activeAIConfig);
 
     const key = getActiveOpenAIApiKey();
     const maskedKey = key
@@ -6382,111 +6252,13 @@ app.post('/api/ai/test', requireAuth, requireAdmin, async (req, res) => {
 const GRAMMAR_AI_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'grammarAiContents.json');
 const USER_GRAMMAR_PROGRESS_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'userGrammarProgress.json');
 
-function readGrammarAiFile(): Record<string, any> {
-  try {
-    if (fs.existsSync(GRAMMAR_AI_FILE_PATH)) {
-      return JSON.parse(fs.readFileSync(GRAMMAR_AI_FILE_PATH, 'utf-8'));
-    }
-  } catch (e) {
-    console.warn("[Grammar AI] Failed to read grammarAiContents.json:", e);
-  }
-  return {};
+async function readGrammarAiFile(): Promise<Record<string,any>> {
+  const [seed,rows]=await Promise.all([readPersistentJson(GRAMMAR_AI_FILE_PATH),listRecords('grammar_ai_contents')]);
+  return {...Object.fromEntries(Object.entries(seed).map(([key,value]:[string,any])=>[value.grammarId||key,value])),...Object.fromEntries(rows.map(row=>[row.grammarId,row]))};
 }
+async function writeGrammarAiFile(data:Record<string,any>,id:string) {await writeRecord('grammar_ai_contents',id,data[id]);}
+async function initGrammarAiTable() { /* Firestore creates collections on first write. */ }
 
-function writeGrammarAiFile(data: Record<string, any>) {
-  try {
-    const dir = path.dirname(GRAMMAR_AI_FILE_PATH);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(GRAMMAR_AI_FILE_PATH, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (e) {
-    console.warn("[Grammar AI] Failed to write grammarAiContents.json:", e);
-  }
-}
-
-function readUserGrammarProgressFile(): Record<string, Record<string, any>> {
-  try {
-    if (fs.existsSync(USER_GRAMMAR_PROGRESS_FILE_PATH)) {
-      return JSON.parse(fs.readFileSync(USER_GRAMMAR_PROGRESS_FILE_PATH, 'utf-8'));
-    }
-  } catch (e) {
-    console.warn("[Grammar Progress] Failed to read userGrammarProgress.json:", e);
-  }
-  return {};
-}
-
-function writeUserGrammarProgressFile(userUid: string, grammarId: string, data: any) {
-  try {
-    const all = readUserGrammarProgressFile();
-    if (!all[userUid]) all[userUid] = {};
-    all[userUid][grammarId] = data;
-
-    const dir = path.dirname(USER_GRAMMAR_PROGRESS_FILE_PATH);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(USER_GRAMMAR_PROGRESS_FILE_PATH, JSON.stringify(all, null, 2), 'utf-8');
-  } catch (e) {
-    console.warn("[Grammar Progress] Failed to write userGrammarProgress.json:", e);
-  }
-}
-
-async function initGrammarAiTable() {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS grammar_ai_contents (
-        id SERIAL PRIMARY KEY,
-        grammar_id VARCHAR(100) UNIQUE NOT NULL,
-        grammar_structure VARCHAR(255) NOT NULL,
-        level VARCHAR(10) NOT NULL,
-        overview TEXT,
-        formation_rules_json TEXT,
-        usage_guide_json TEXT,
-        notes_json TEXT,
-        memory_tip TEXT,
-        similar_grammars_json TEXT,
-        examples_json TEXT NOT NULL,
-        exercises_json TEXT NOT NULL,
-        backup_json TEXT,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-  } catch (e: any) {
-    console.warn('[Grammar AI] grammar_ai_contents table check:', e?.message);
-  }
-
-  try {
-    await pool.query(`
-      ALTER TABLE grammar_ai_contents ADD COLUMN IF NOT EXISTS formation_rules_json TEXT;
-      ALTER TABLE grammar_ai_contents ADD COLUMN IF NOT EXISTS usage_guide_json TEXT;
-      ALTER TABLE grammar_ai_contents ADD COLUMN IF NOT EXISTS notes_json TEXT;
-      ALTER TABLE grammar_ai_contents ADD COLUMN IF NOT EXISTS memory_tip TEXT;
-      ALTER TABLE grammar_ai_contents ADD COLUMN IF NOT EXISTS similar_grammars_json TEXT;
-    `);
-  } catch (e: any) {
-    // Column might already exist
-  }
-
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS user_grammar_progress (
-        id SERIAL PRIMARY KEY,
-        user_uid VARCHAR(100) NOT NULL,
-        grammar_id VARCHAR(100) NOT NULL,
-        status VARCHAR(20) DEFAULT 'new',
-        mastery_score INTEGER DEFAULT 0,
-        attempts INTEGER DEFAULT 0,
-        correct_count INTEGER DEFAULT 0,
-        incorrect_count INTEGER DEFAULT 0,
-        accuracy_rate NUMERIC(5, 2) DEFAULT 0,
-        last_studied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        next_review_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL '1 day'),
-        recent_mistakes_json TEXT,
-        UNIQUE(user_uid, grammar_id)
-      );
-    `);
-    console.log('[Grammar Progress Engine] Table user_grammar_progress verified.');
-  } catch (e: any) {
-    console.warn('[Grammar Progress Engine] user_grammar_progress table check:', e?.message);
-  }
-}
 
 // 1. AI Content Generation for Grammar (Full Lesson Suite: Overview, Formation, Usage, Notes, Memory Tip, Similar, Examples & Exercises)
 app.post('/api/grammar/ai-generate', requireAuth, requireAdmin, async (req, res) => {
@@ -6647,7 +6419,7 @@ app.post('/api/grammar/ai-generate', requireAuth, requireAdmin, async (req, res)
   }
 });
 
-// 2. Save confirmed AI content directly to the website system (Postgres DB + Local JSON File)
+// 2. Save confirmed AI content directly to the website system (Firebase Firestore)
 app.post('/api/grammar/save-content', requireAuth, requireAdmin, async (req, res) => {
   try {
     const {
@@ -6671,7 +6443,7 @@ app.post('/api/grammar/save-content', requireAuth, requireAdmin, async (req, res
       });
     }
 
-    const fileData = readGrammarAiFile();
+    const fileData = await readGrammarAiFile();
     const existing = fileData[grammarId] || null;
 
     const record = {
@@ -6696,61 +6468,8 @@ app.post('/api/grammar/save-content', requireAuth, requireAdmin, async (req, res
 
     // Layer 1: Save to file cache
     fileData[grammarId] = record;
-    writeGrammarAiFile(fileData);
+    await writeGrammarAiFile(fileData,grammarId);
 
-    // Layer 2: Save to PostgreSQL Database
-    try {
-      const backupJson = record.backup ? JSON.stringify(record.backup) : null;
-      await pool.query(`
-        INSERT INTO grammar_ai_contents (
-          grammar_id, grammar_structure, level, overview,
-          formation_rules_json, usage_guide_json, notes_json, memory_tip, similar_grammars_json,
-          examples_json, exercises_json, backup_json, updated_at
-        )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW())
-        ON CONFLICT (grammar_id)
-        DO UPDATE SET
-          grammar_structure = EXCLUDED.grammar_structure,
-          level = EXCLUDED.level,
-          overview = EXCLUDED.overview,
-          formation_rules_json = EXCLUDED.formation_rules_json,
-          usage_guide_json = EXCLUDED.usage_guide_json,
-          notes_json = EXCLUDED.notes_json,
-          memory_tip = EXCLUDED.memory_tip,
-          similar_grammars_json = EXCLUDED.similar_grammars_json,
-          examples_json = EXCLUDED.examples_json,
-          exercises_json = EXCLUDED.exercises_json,
-          backup_json = COALESCE(grammar_ai_contents.examples_json, EXCLUDED.backup_json),
-          updated_at = NOW();
-      `, [
-        grammarId,
-        grammar,
-        level || 'N4',
-        overview,
-        JSON.stringify(formationRules),
-        JSON.stringify(usageGuide),
-        JSON.stringify(notes),
-        memoryTip,
-        JSON.stringify(similarGrammars),
-        JSON.stringify(examples),
-        JSON.stringify(exercises),
-        backupJson
-      ]);
-
-      // If grammarId is in the core 'grammars' table (e.g. g_41), sync primary example
-      if (grammarId.startsWith('g_')) {
-        const numId = parseInt(grammarId.replace('g_', ''), 10);
-        if (!isNaN(numId) && examples.length > 0) {
-          await pool.query(`
-            UPDATE grammars
-            SET example_jp = $1, example_vi = $2
-            WHERE id = $3
-          `, [examples[0].japanese, examples[0].vietnamese, numId]);
-        }
-      }
-    } catch (dbErr: any) {
-      console.warn("[Grammar AI] DB save warning (file persistent layer active):", dbErr?.message || dbErr);
-    }
 
     return res.json({
       success: true,
@@ -6768,33 +6487,8 @@ app.post('/api/grammar/save-content', requireAuth, requireAdmin, async (req, res
 // 3. Get all saved AI Grammar contents
 app.get('/api/grammar/all-ai-contents', async (req, res) => {
   try {
-    const fileData = readGrammarAiFile();
+    const fileData = await readGrammarAiFile();
 
-    // Query DB to merge latest records if available
-    try {
-      const dbRes = await pool.query(`SELECT * FROM grammar_ai_contents ORDER BY updated_at DESC`);
-      if (dbRes && dbRes.rows && dbRes.rows.length > 0) {
-        for (const row of dbRes.rows) {
-          fileData[row.grammar_id] = {
-            grammarId: row.grammar_id,
-            grammar: row.grammar_structure,
-            level: row.level,
-            overview: row.overview || '',
-            formationRules: JSON.parse(row.formation_rules_json || '[]'),
-            usageGuide: JSON.parse(row.usage_guide_json || '{}'),
-            notes: JSON.parse(row.notes_json || '[]'),
-            memoryTip: row.memory_tip || '',
-            similarGrammars: JSON.parse(row.similar_grammars_json || '[]'),
-            examples: JSON.parse(row.examples_json || '[]'),
-            exercises: JSON.parse(row.exercises_json || '[]'),
-            backup: row.backup_json ? JSON.parse(row.backup_json) : undefined,
-            updatedAt: row.updated_at
-          };
-        }
-      }
-    } catch (e: any) {
-      // DB optional, file fallback active
-    }
 
     return res.json({
       success: true,
@@ -6809,32 +6503,9 @@ app.get('/api/grammar/all-ai-contents', async (req, res) => {
 app.get('/api/grammar/ai-content/:grammarId', async (req, res) => {
   try {
     const { grammarId } = req.params;
-    const fileData = readGrammarAiFile();
+    const fileData = await readGrammarAiFile();
     let item = fileData[grammarId] || null;
 
-    if (!item) {
-      try {
-        const dbRes = await pool.query(`SELECT * FROM grammar_ai_contents WHERE grammar_id = $1 LIMIT 1`, [grammarId]);
-        if (dbRes.rows && dbRes.rows.length > 0) {
-          const row = dbRes.rows[0];
-          item = {
-            grammarId: row.grammar_id,
-            grammar: row.grammar_structure,
-            level: row.level,
-            overview: row.overview || '',
-            formationRules: JSON.parse(row.formation_rules_json || '[]'),
-            usageGuide: JSON.parse(row.usage_guide_json || '{}'),
-            notes: JSON.parse(row.notes_json || '[]'),
-            memoryTip: row.memory_tip || '',
-            similarGrammars: JSON.parse(row.similar_grammars_json || '[]'),
-            examples: JSON.parse(row.examples_json || '[]'),
-            exercises: JSON.parse(row.exercises_json || '[]'),
-            backup: row.backup_json ? JSON.parse(row.backup_json) : undefined,
-            updatedAt: row.updated_at
-          };
-        }
-      } catch (e) {}
-    }
 
     if (!item) {
       return res.status(404).json({ success: false, error: "Chưa có nội dung AI cho mẫu ngữ pháp này." });
@@ -6854,7 +6525,7 @@ app.post('/api/grammar/rollback-content', requireAuth, requireAdmin, async (req,
       return res.status(400).json({ success: false, error: "grammarId là bắt buộc." });
     }
 
-    const fileData = readGrammarAiFile();
+    const fileData = await readGrammarAiFile();
     const existing = fileData[grammarId];
 
     if (!existing || !existing.backup) {
@@ -6875,27 +6546,8 @@ app.post('/api/grammar/rollback-content', requireAuth, requireAdmin, async (req,
 
     // Save to file
     fileData[grammarId] = restored;
-    writeGrammarAiFile(fileData);
+    await writeGrammarAiFile(fileData,grammarId);
 
-    // Save to DB
-    try {
-      await pool.query(`
-        UPDATE grammar_ai_contents
-        SET examples_json = $1, exercises_json = $2, backup_json = NULL, updated_at = NOW()
-        WHERE grammar_id = $3
-      `, [JSON.stringify(restored.examples), JSON.stringify(restored.exercises), grammarId]);
-
-      if (grammarId.startsWith('g_')) {
-        const numId = parseInt(grammarId.replace('g_', ''), 10);
-        if (!isNaN(numId) && restored.examples.length > 0) {
-          await pool.query(`
-            UPDATE grammars
-            SET example_jp = $1, example_vi = $2
-            WHERE id = $3
-          `, [restored.examples[0].japanese, restored.examples[0].vietnamese, numId]);
-        }
-      }
-    } catch (e) {}
 
     return res.json({
       success: true,
@@ -6907,231 +6559,16 @@ app.post('/api/grammar/rollback-content', requireAuth, requireAdmin, async (req,
 });
 
 // 6. User Grammar Progress Tracking & Spaced Repetition (SM-2 Algorithm)
-app.post('/api/grammar/progress/record', requireAuth, async (req: any, res) => {
-  try {
-    // Never trust a client-supplied uid: progress is always recorded for the verified caller.
-    const userUid: string = req.dbUser.uid;
-    const {
-      grammarId,
-      isCorrect,
-      score,
-      mistakeText
-    } = req.body;
-
-    if (!userUid || !grammarId) {
-      return res.status(400).json({ success: false, error: "userUid and grammarId are required." });
-    }
-
-    // Read existing record from file cache first
-    const fileDataAll = readUserGrammarProgressFile();
-    const userFileRecords = fileDataAll[userUid] || {};
-    let currentRecord: any = userFileRecords[grammarId] || null;
-
-    // Try reading from Postgres DB
-    try {
-      const q = await pool.query(
-        `SELECT * FROM user_grammar_progress WHERE user_uid = $1 AND grammar_id = $2`,
-        [userUid, grammarId]
-      );
-      if (q.rows.length > 0) {
-        currentRecord = q.rows[0];
-      }
-    } catch (dbErr: any) {
-      if (dbErr?.message?.includes('does not exist')) {
-        initGrammarAiTable().catch(() => {});
-      }
-    }
-
-    const attempts = (currentRecord?.attempts || currentRecord?.attempts_count || 0) + 1;
-    const correctCount = (currentRecord?.correct_count || currentRecord?.correctCount || 0) + (isCorrect ? 1 : 0);
-    const incorrectCount = (currentRecord?.incorrect_count || currentRecord?.incorrectCount || 0) + (isCorrect ? 0 : 1);
-    const accuracyRate = Math.round((correctCount / attempts) * 100);
-
-    // Calculate Spaced Repetition Interval & Mastery Score (0 - 100)
-    let prevMastery = currentRecord?.mastery_score || currentRecord?.masteryScore || 0;
-    let newMastery = isCorrect 
-      ? Math.min(100, prevMastery + (score ? Math.round(score * 0.2) : 15))
-      : Math.max(0, prevMastery - 20);
-
-    let status: 'new' | 'learning' | 'practicing' | 'review' | 'mastered' = 'learning';
-    let daysToNextReview = 1;
-
-    if (newMastery >= 90 && attempts >= 3) {
-      status = 'mastered';
-      daysToNextReview = 14;
-    } else if (newMastery >= 70) {
-      status = 'practicing';
-      daysToNextReview = 5;
-    } else if (!isCorrect || newMastery < 40) {
-      status = 'review';
-      daysToNextReview = 1; // Needs review tomorrow
-    } else {
-      status = 'learning';
-      daysToNextReview = 2;
-    }
-
-    let mistakes: string[] = [];
-    if (currentRecord?.recent_mistakes_json) {
-      try {
-        mistakes = JSON.parse(currentRecord.recent_mistakes_json);
-      } catch (e) {}
-    } else if (Array.isArray(currentRecord?.recentMistakes)) {
-      mistakes = [...currentRecord.recentMistakes];
-    }
-
-    if (!isCorrect && mistakeText) {
-      mistakes.unshift(mistakeText);
-      if (mistakes.length > 5) mistakes = mistakes.slice(0, 5);
-    }
-
-    const nextReviewDate = new Date();
-    nextReviewDate.setDate(nextReviewDate.getDate() + daysToNextReview);
-
-    const progressObj = {
-      grammarId,
-      status,
-      masteryScore: newMastery,
-      attempts,
-      correctCount,
-      incorrectCount,
-      accuracyRate,
-      lastStudiedAt: new Date().toISOString(),
-      nextReviewAt: nextReviewDate.toISOString(),
-      recentMistakes: mistakes,
-      needsReview: status === 'review' || newMastery < 70
-    };
-
-    // 1. Save to File Cache
-    writeUserGrammarProgressFile(userUid, grammarId, progressObj);
-
-    // 2. Save to Postgres DB
-    try {
-      await pool.query(`
-        INSERT INTO user_grammar_progress (
-          user_uid, grammar_id, status, mastery_score, attempts, correct_count, incorrect_count,
-          accuracy_rate, last_studied_at, next_review_at, recent_mistakes_json
-        )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9, $10)
-        ON CONFLICT (user_uid, grammar_id)
-        DO UPDATE SET
-          status = EXCLUDED.status,
-          mastery_score = EXCLUDED.mastery_score,
-          attempts = EXCLUDED.attempts,
-          correct_count = EXCLUDED.correct_count,
-          incorrect_count = EXCLUDED.incorrect_count,
-          accuracy_rate = EXCLUDED.accuracy_rate,
-          last_studied_at = NOW(),
-          next_review_at = EXCLUDED.next_review_at,
-          recent_mistakes_json = EXCLUDED.recent_mistakes_json;
-      `, [
-        userUid,
-        grammarId,
-        status,
-        newMastery,
-        attempts,
-        correctCount,
-        incorrectCount,
-        accuracyRate,
-        nextReviewDate,
-        JSON.stringify(mistakes)
-      ]);
-    } catch (dbErr: any) {
-      if (dbErr?.message?.includes('does not exist')) {
-        await initGrammarAiTable().catch(() => {});
-        // Retry insert once after table creation
-        try {
-          await pool.query(`
-            INSERT INTO user_grammar_progress (
-              user_uid, grammar_id, status, mastery_score, attempts, correct_count, incorrect_count,
-              accuracy_rate, last_studied_at, next_review_at, recent_mistakes_json
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), $9, $10)
-            ON CONFLICT (user_uid, grammar_id)
-            DO UPDATE SET
-              status = EXCLUDED.status,
-              mastery_score = EXCLUDED.mastery_score,
-              attempts = EXCLUDED.attempts,
-              correct_count = EXCLUDED.correct_count,
-              incorrect_count = EXCLUDED.incorrect_count,
-              accuracy_rate = EXCLUDED.accuracy_rate,
-              last_studied_at = NOW(),
-              next_review_at = EXCLUDED.next_review_at,
-              recent_mistakes_json = EXCLUDED.recent_mistakes_json;
-          `, [
-            userUid, grammarId, status, newMastery, attempts, correctCount, incorrectCount,
-            accuracyRate, nextReviewDate, JSON.stringify(mistakes)
-          ]);
-        } catch (e) {}
-      }
-    }
-
-    return res.json({
-      success: true,
-      progress: progressObj
-    });
-  } catch (err: any) {
-    return res.status(500).json({ success: false, error: err?.message });
-  }
+app.post('/api/grammar/progress/record', requireAuth, async (req:any,res)=>{
+  try {const progress=await recordGrammarAttempt(req.dbUser.uid,req.body);return res.json({success:true,progress});}
+  catch(e:any){return res.status(e.message==='INVALID_PROGRESS'?400:503).json({success:false,error:'Không lưu được tiến độ ngữ pháp.'});}
 });
 
 // 7. Get user's grammar progress map
-app.get('/api/grammar/progress/user/:userUid', requireAuth, async (req: any, res) => {
-  try {
-    const { userUid } = req.params;
-    if (!userUid) {
-      return res.status(400).json({ success: false, error: "userUid is required" });
-    }
-    if (userUid !== req.dbUser.uid && req.dbUser.role !== 'admin') {
-      return res.status(403).json({ success: false, error: "Forbidden" });
-    }
-
-    const map: Record<string, any> = {};
-
-    // 1. Load from file cache first
-    const fileAll = readUserGrammarProgressFile();
-    const userFileRecords = fileAll[userUid] || {};
-    for (const gid of Object.keys(userFileRecords)) {
-      map[gid] = userFileRecords[gid];
-    }
-
-    // 2. Merge with Postgres DB records if available
-    try {
-      const q = await pool.query(`SELECT * FROM user_grammar_progress WHERE user_uid = $1`, [userUid]);
-      for (const row of q.rows) {
-        let mistakes: string[] = [];
-        try {
-          mistakes = JSON.parse(row.recent_mistakes_json || '[]');
-        } catch (e) {}
-
-        const isOverdue = row.next_review_at && new Date(row.next_review_at) <= new Date();
-
-        map[row.grammar_id] = {
-          grammarId: row.grammar_id,
-          status: row.status,
-          masteryScore: row.mastery_score,
-          attempts: row.attempts,
-          correctCount: row.correct_count,
-          incorrectCount: row.incorrect_count,
-          accuracyRate: Number(row.accuracy_rate || 0),
-          lastStudiedAt: row.last_studied_at,
-          nextReviewAt: row.next_review_at,
-          recentMistakes: mistakes,
-          needsReview: row.status === 'review' || row.mastery_score < 70 || isOverdue
-        };
-      }
-    } catch (dbErr: any) {
-      if (dbErr?.message?.includes('does not exist')) {
-        initGrammarAiTable().catch(() => {});
-      }
-    }
-
-    return res.json({
-      success: true,
-      progressMap: map
-    });
-  } catch (err: any) {
-    return res.status(500).json({ success: false, error: err?.message });
-  }
+app.get('/api/grammar/progress/user/:userUid', requireAuth, async (req:any,res)=>{
+  if(req.params.userUid!==req.dbUser.uid&&req.dbUser.role!=='admin')return res.status(403).json({success:false,error:'Forbidden'});
+  try {return res.json({success:true,progressMap:await userGrammarProgress(req.params.userUid)});}
+  catch{return res.status(503).json({success:false,error:'Không tải được tiến độ ngữ pháp.'});}
 });
 
 // 8. AI Personalized Smart Review Generator

@@ -132,7 +132,7 @@ export async function shadowingVideo(req: Request, res: Response) {
 
 export async function shadowingReadAnalysis(req: Request, res: Response) {
   const videoId = req.query.videoId;
-  if (typeof videoId !== 'string' || !/^[\\w-]{11}$/.test(videoId)) return res.status(400).json({ error: 'Video không hợp lệ.' });
+  if (typeof videoId !== 'string' || !/^[\w-]{11}$/.test(videoId)) return res.status(400).json({ error: 'Video không hợp lệ.' });
   try {
     const db = shadowingDatabase();
     const snap = await db.collection('shadowing_videos').doc(videoId).collection('analysis').get();

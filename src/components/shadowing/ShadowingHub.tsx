@@ -94,7 +94,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     refreshAnalysis(n => n + 1);
     void (async () => {
       try {
-        const response = await fetch(`/shadowing-analysis/${videoId}.json`, { signal: controller.signal });
+        const response = await fetch(`/api/shadowing/analysis-file?videoId=${videoId}`, { signal: controller.signal });
         if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) return;
         const packet = parseShadowingAnalysisFile(await response.json(), videoId, cues);
         if (controller.signal.aborted) return;

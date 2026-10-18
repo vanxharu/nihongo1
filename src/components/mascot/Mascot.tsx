@@ -176,7 +176,7 @@ export const Mascot: React.FC<MascotProps> = ({
           body: JSON.stringify({ imageBase64: base64, filename: 'custom_mascot.png' })
         });
         if (res.ok) {
-          setImgSrc(`/mascot/mascot.png?t=${Date.now()}`);
+          setImgSrc(`/api/mascot/image?t=${Date.now()}`);
         }
       };
       reader.readAsDataURL(file);

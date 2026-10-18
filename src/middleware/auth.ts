@@ -8,7 +8,7 @@ import { isBootstrapAdmin } from '../server/bootstrapAdmin';
 export interface AuthRequest extends Request {
   user?: DecodedIdToken;
   dbUser?: {
-    id?: number;
+    id?: number | string;
     uid: string;
     email: string;
     name: string | null;
@@ -55,7 +55,7 @@ export const requireAuth = async (
     // Bootstrap-admin promotion only applies when the email is verified,
     // so nobody can claim an admin email by registering it unverified.
     try {
-      const userFromDb = await getOrCreateUser(
+      const userFromDb: any = await getOrCreateUser(
         decodedToken.uid,
         decodedToken.email || '',
         decodedToken.email_verified === true
@@ -65,27 +65,8 @@ export const requireAuth = async (
         role: (userFromDb.role === 'admin' ? 'admin' : 'user') as UserRole
       };
     } catch (dbErr) {
-      console.warn('DB user retrieval failed, falling back to basic token user:', dbErr);
-      req.dbUser = {
-        uid: decodedToken.uid,
-        email: decodedToken.email || '',
-        name: decodedToken.name || (decodedToken.email ? decodedToken.email.split('@')[0] : 'Học viên JLPT'),
-        avatar: '🦊',
-        targetLevel: 'N4',
-        xp: 0,
-        streak: 1,
-        coins: 0,
-        lastActiveDate: new Date().toISOString().split('T')[0] || '',
-        studyDays: '[]',
-        completedLessons: '[]',
-        vocabStatus: '{}',
-        grammarStatus: '{}',
-        kanjiStatus: '{}',
-        dailyTestResults: '[]',
-        // The allowlist is server configuration and identity comes exclusively
-        // from the verified Firebase token, so DB outages need not revoke it.
-        role: (isBootstrapAdmin(decodedToken.email, decodedToken.email_verified === true) ? 'admin' : 'user') as UserRole
-      };
+      console.error('Firebase profile unavailable:', dbErr);
+      return res.status(503).json({error:'Không kết nối được Firebase. Dữ liệu chưa được đồng bộ.'});
     }
 
     next();
