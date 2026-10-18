@@ -271,7 +271,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
                 const draft = JSON.parse(localStorage.getItem(`shadowing-draft:${storageSuffix}`) || 'null');
                 if (Array.isArray(draft?.cues) && draft.cues.length) {
                   setRevision(draft.revision || null);
-                  applyCues(draft.cues); setEditing(true); setNotice('Đã khôi phục bản nháp phụ đề chưa lưu của bạn.');
+                  applyCues(draft.cues); setEditing(true);
                 }
               } catch {}
             }
