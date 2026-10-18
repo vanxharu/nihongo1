@@ -126,6 +126,24 @@ export async function shadowingTranscript(req: Request, res: Response) {
   }
 }
 
+// Analyze a bounded subtitle batch using Claude through the shared AI gateway.
+export async function shadowingAnalyzeBatch(cues: ShadowingCue[]) {
+  const input = cues.map((c, i) => ({ index: i, text: c.text }));
+  const system = 'Bạn là giáo viên tiếng Nhật cho người Việt. Phân tích CHÍNH XÁC từng câu theo index. Trả JSON thuần dạng {"items":[{"index":0,"translation":"dịch tiếng Việt","vocabulary":[{"word":"từ trong câu","reading":"hiragana","meaning":"nghĩa","type":"loại từ"}],"kanji":[{"character":"chữ Hán trong câu","meaning":"nghĩa","onyomi":"on","kunyomi":"kun"}],"grammar":[{"pattern":"mẫu xuất hiện","meaning":"nghĩa","explanation":"giải thích","example":"ví dụ"}]}]}. Không bỏ câu, không bịa từ ngoài câu.';
+  const content = (await generateGemini({ contents: JSON.stringify(input), config: { systemInstruction: system, responseMimeType: 'application/json', maxOutputTokens: 7000 } })).text;
+  const parsed = JSON.parse(String(content).replace(/^```(?:json)?\s*|\s*```$/g, ''));
+  if (!Array.isArray(parsed.items)) throw new Error('INVALID_AI_BATCH');
+  const results = new Map<number, ShadowingAnalysis>();
+  for (const item of parsed.items) {
+    if (!Number.isInteger(item.index) || item.index < 0 || item.index >= cues.length || results.has(item.index)) continue;
+    const analysis = validateAnalysis(item);
+    analysis.vocabulary = analysis.vocabulary.filter(v => cues[item.index].text.includes(v.word));
+    results.set(item.index, analysis);
+  }
+  if (results.size !== cues.length) throw new Error('INCOMPLETE_AI_BATCH');
+  return results;
+}
+
 export async function shadowingAnalyze(req: Request, res: Response) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ error: 'Chỉ hỗ trợ POST.' }); }
   // Fast, deterministic bulk pre-analysis: no LLM latency or quota consumption.
