@@ -48,7 +48,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
   const playerRef = useRef<ShadowingPlayerHandle>(null);
   const [furigana, setFurigana] = useState(true);
   const [translation, setTranslation] = useState(true);
-  const [mode, setMode] = useState<'shadowing' | 'dictation'>('shadowing');
+  const [mode, setMode] = useState<'shadowing' | 'dictation' | 'analysis'>('shadowing');
   const [autoPause, setAutoPause] = useState(true);
   const [revealed, setRevealed] = useState(false);
   const [category, setCategory] = useState('Tất cả');
@@ -223,6 +223,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     </section> : <>
       <div className="flex flex-col gap-2 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="max-lg:contents lg:space-y-4">
+          {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} /></div>}
           <div className="shadowing-sticky"><ShadowingPlayer
             ref={playerRef}
             key={videoId}
@@ -240,12 +241,14 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
             tabs={<div className="flex min-w-0 flex-1 gap-1">
               <button onClick={() => { setMode('shadowing'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'shadowing' ? ' shadowing-mode-tab-active' : ''}`}>Bắt chước</button>
               <button onClick={() => { setMode('dictation'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'dictation' ? ' shadowing-mode-tab-active' : ''}`}>Chính tả</button>
+              <button onClick={() => { setMode('analysis'); setRevealed(false); }} className={`shadowing-mode-tab${mode === 'analysis' ? ' shadowing-mode-tab-active' : ''}`}>Phân tích</button>
             </div>}
             extra={<div className="flex flex-wrap items-center gap-1.5"><span className="w-16 shrink-0 text-xs text-slate-400">Hiển thị</span>
               <button aria-pressed={furigana} onClick={() => setFurigana(v => !v)} className={`shadowing-pill${furigana ? ' shadowing-pill-active' : ''}`}>Furigana</button>
               <button aria-pressed={translation} onClick={() => setTranslation(v => !v)} className={`shadowing-pill${translation ? ' shadowing-pill-active' : ''}`}>Dịch</button></div>}
           /></div>
           
+          {mode === 'analysis' && <div className="lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} /></div>}
           {sourceTitle && <h2 className="line-clamp-2 text-base font-bold leading-snug text-slate-100 max-lg:hidden">{sourceTitle}</h2>}
           {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-3 sm:p-6">
             <div className="mb-1 flex items-center justify-between gap-2 text-xs text-slate-400">
@@ -274,7 +277,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
           </section>}
 
 
-          <div className="lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} /></div>
+          
           <div className="space-y-4 max-lg:order-last">
           <button className={compactButton} aria-expanded={editing} onClick={() => { playerRef.current?.pause(); setEditing(value => !value); }}>{editing ? 'Đóng soạn phụ đề' : 'Soạn phụ đề video'}</button>
           {editing && <SubtitleEditor videoId={videoId} title={sourceTitle || ''} cues={cues} selected={selected} revision={revision} onChange={next => { applyCues(next, true); try { localStorage.setItem(`shadowing-draft:${storageSuffix}`, JSON.stringify({ cues: next, revision })); } catch {} }} onSaved={(saved, title) => { setRevision(saved); setCustomTitle(title); try { localStorage.removeItem(`shadowing-draft:${storageSuffix}`); } catch {} setPersonalVideos(videos => [...videos.filter(v => v.videoId !== videoId), { videoId, title, cueCount: cues.length }]); }} />}
@@ -282,7 +285,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
         </div>
 
         <div className="max-lg:contents lg:space-y-4">
-          <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} /></div>
+          
           
           {insightCue && (mode === 'shadowing' || revealed) && <SentenceInsights key={videoId + insightCue.text} videoId={videoId || ''} cue={insightCue} cached={cache.current.get(insightCue.text)} onClose={() => setInsightCue(null)} onResult={(text, data) => { cache.current.set(text, data); refreshAnalysis(n => n + 1); }} />}
           {mode === 'dictation' && <DictationPanel onCorrect={() => onStudyReward?.(`dictation:${videoId}:${start}:${sentence}`, 20) ?? false} key={`${videoId}:${selected}:${sentence}`} sentence={sentence} autoPause={autoPause} onAutoPause={value => { playerRef.current?.pause(); setAutoPause(value); }} onPlay={() => playerRef.current?.playSentence(parseShadowingTime(start), parseShadowingTime(end), autoPause) || false} onReveal={setRevealed} onPrevious={() => jumpCue(selected - 1)} onNext={() => jumpCue(selected + 1)} hasPrevious={selected > 0} hasNext={selected < cues.length - 1} />}
