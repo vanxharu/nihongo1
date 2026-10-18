@@ -206,7 +206,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
   const library = SHADOWING_VIDEOS.filter(v => v.status === 'active');
   const sources = [...new Set(library.map(v => v.source))];
   const sourceTitle = customTitle || SHADOWING_VIDEOS.find(v => v.youtube_video_id === videoId)?.title;
-  return <div className="shadowing-page mx-auto max-w-7xl space-y-3 px-4 py-3 pb-28 text-slate-100 sm:px-6">
+  return <div className="shadowing-page shadowing-aanime mx-auto max-w-7xl space-y-3 px-3 py-3 pb-28 text-slate-100 sm:px-6">
     {!videoId && <header className="shadowing-banner flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl p-3">
       <form className="flex min-w-0 flex-1 flex-wrap gap-2 sm:flex-nowrap" onSubmit={e => { e.preventDefault(); chooseVideo(urlInput); }}>
         <label className="sr-only" htmlFor="shadowing-youtube">Đường dẫn video YouTube</label>
@@ -280,7 +280,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
         </div>
 
         <div className="max-lg:contents lg:space-y-4">
-          <VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} />
+          <VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} />
           {insightCue && (mode === 'shadowing' || revealed) && <SentenceInsights key={videoId + insightCue.text} videoId={videoId || ''} cue={insightCue} cached={cache.current.get(insightCue.text)} onClose={() => setInsightCue(null)} onResult={(text, data) => { cache.current.set(text, data); refreshAnalysis(n => n + 1); }} />}
           {mode === 'dictation' && <DictationPanel onCorrect={() => onStudyReward?.(`dictation:${videoId}:${start}:${sentence}`, 20) ?? false} key={`${videoId}:${selected}:${sentence}`} sentence={sentence} autoPause={autoPause} onAutoPause={value => { playerRef.current?.pause(); setAutoPause(value); }} onPlay={() => playerRef.current?.playSentence(parseShadowingTime(start), parseShadowingTime(end), autoPause) || false} onReveal={setRevealed} onPrevious={() => jumpCue(selected - 1)} onNext={() => jumpCue(selected + 1)} hasPrevious={selected > 0} hasNext={selected < cues.length - 1} />}
           {(mode === 'shadowing' || revealed) && <section className="rounded-xl bg-[#101010] p-3 max-lg:hidden">
