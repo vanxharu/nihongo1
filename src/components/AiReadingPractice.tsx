@@ -1,3 +1,4 @@
+import ReadingImage from './ReadingImage';
 import { PlayPauseMorph, WaveSeek } from './ui/AudioMorph';
 /**
  * @license
@@ -1620,14 +1621,11 @@ export default function AiReadingPractice({
                             {/* Article Image (if available) */}
                             {article.image && (
                               <div className="relative w-full h-32 rounded-xl overflow-hidden bg-slate-900">
-                                <img
+                                <ReadingImage
                                   src={article.image}
                                   alt={article.titleJp}
                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                   loading="lazy"
-                                  onError={(e) => {
-                                    (e.target as HTMLElement).style.display = 'none';
-                                  }}
                                 />
                                 <div className="absolute top-2 left-2 flex items-center gap-1.5 flex-wrap">
                                   <span className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold border ${badgeClass} backdrop-blur-md`}>
@@ -2048,14 +2046,11 @@ export default function AiReadingPractice({
                             {/* Article Image */}
                             {article.image && (
                               <div className="relative w-full h-36 rounded-xl overflow-hidden bg-slate-900">
-                                <img
+                                <ReadingImage
                                   src={article.image}
                                   alt={article.titleJp}
                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                   loading="lazy"
-                                  onError={(e) => {
-                                    (e.target as HTMLElement).style.display = 'none';
-                                  }}
                                 />
                                 <div className="absolute top-2 left-2 flex items-center gap-1.5 flex-wrap">
                                   <span className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold border ${badgeClass} backdrop-blur-md`}>
@@ -2409,15 +2404,12 @@ export default function AiReadingPractice({
             {/* Article Image Banner (If available from Todaii News) */}
             {readingData.imageUrl && (
               <div className="relative w-full h-44 sm:h-64 rounded-2xl overflow-hidden border border-slate-800 shadow-md group">
-                <img
+                <ReadingImage
                   src={readingData.imageUrl}
                   alt={readingData.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  onError={(e) => {
-                    (e.target as HTMLElement).style.display = 'none';
-                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
                 <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between gap-2 text-xs">
                   <span className="font-bold text-white truncate drop-shadow text-sm sm:text-base">
                     {readingData.title}

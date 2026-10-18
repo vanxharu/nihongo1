@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   BookOpen, Compass, Layers, Plus, Edit2, Trash2, Database, RefreshCw, X, 
   FileSpreadsheet, UploadCloud, Download, CheckCircle2, AlertCircle, AlertTriangle, Eye,
@@ -7,6 +7,7 @@ import {
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'motion/react';
 import ConfirmModal from './ConfirmModal';
+import AdminDialog from './AdminDialog';
 import * as XLSX from 'xlsx';
 import { getHanViet } from '../utils/japaneseUtils';
 import { invalidateVocabPoolCache } from '../utils/notifications';
@@ -21,6 +22,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
   const [activeSubTab, setActiveSubTab] = useState<'vocab' | 'grammar' | 'kanji'>('vocab');
   
   const [data, setData] = useState<any[]>([]);
+  const loadSequence = useRef(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,6 +61,8 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
   }, [initialOpenImportModal]);
 
   const fetchData = async () => {
+    const request = ++loadSequence.current;
+    setData([]);
     setLoading(true);
     setError('');
     try {
@@ -68,16 +72,18 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
       if (activeSubTab === 'kanji') endpoint = '/api/kanjis';
       
       const res = await fetch(endpoint, { cache: 'no-store' });
+      if (!res.ok) throw new Error('Không tải được dữ liệu học tập. Vui lòng thử lại.');
       const resData = await res.json();
+      if (request !== loadSequence.current) return;
       if (Array.isArray(resData)) {
         setData(resData);
       } else {
-        setData([]);
+        throw new Error('Dữ liệu trả về không hợp lệ. Vui lòng thử lại.');
       }
     } catch (err: any) {
-      setError(err.message || 'Lỗi tải dữ liệu');
+      if (request === loadSequence.current) setError(err.message || 'Lỗi tải dữ liệu');
     } finally {
-      setLoading(false);
+      if (request === loadSequence.current) setLoading(false);
     }
   };
 
@@ -330,7 +336,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
         {
           'Section (Bài)': 1,
           'Từ vựng (Word)': '毎日',
-          'Chữ Hán (Kanji)': '毎日',
+          'Kanji': '毎日',
           'Cách đọc (Reading)': 'まいにち',
           'Hán Việt (HanViet)': 'MỖI NHẬT',
           'Ý nghĩa (Meaning)': 'Hàng ngày, mỗi ngày',
@@ -342,7 +348,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
         {
           'Section (Bài)': 1,
           'Từ vựng (Word)': '今週',
-          'Chữ Hán (Kanji)': '今週',
+          'Kanji': '今週',
           'Cách đọc (Reading)': 'こんしゅう',
           'Hán Việt (HanViet)': 'KIM CHU',
           'Ý nghĩa (Meaning)': 'Tuần này',
@@ -440,10 +446,10 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
   }, [data, searchTerm, selectedLessonFilter]);
 
   return (
-    <div className="space-y-6">
+    <div className="admin-data space-y-6">
       {/* Sub Tabs */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-1.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+        <div className="admin-data-tabs">
           <button
             onClick={() => setActiveSubTab('vocab')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
@@ -472,12 +478,12 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
                 : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
             }`}
           >
-            <Layers className="w-3.5 h-3.5" /> Chữ Hán (Kanji)
+            <Layers className="w-3.5 h-3.5" /> Kanji
           </button>
         </div>
 
         {/* Action buttons */}
-        <div className="flex items-center gap-2">
+        <div className="admin-data-actions">
           {activeSubTab === 'vocab' && (
             <>
               <button 
@@ -485,7 +491,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
                 className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer shadow-sm shadow-emerald-600/20 active:scale-95"
               >
                 <FileSpreadsheet className="w-4 h-4" /> 
-                <span>Nhập từ vựng bằng Excel / CSV</span>
+                <span>Nhập Excel / CSV</span>
               </button>
 
               <button 
@@ -509,7 +515,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
       </div>
 
       {/* Main Database Table Container */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-5 md:p-6 shadow-xs space-y-4">
+      <div className="admin-data-card bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-3 sm:p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Database className="w-4 h-4 text-indigo-500" />
@@ -562,7 +568,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
           </div>
         ) : (
           <div className="overflow-x-auto border border-slate-100 dark:border-slate-800 rounded-2xl">
-            <table className="w-full text-left border-collapse">
+            <table className="admin-record-table admin-data-table w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 text-[11px] uppercase tracking-wider font-bold border-b border-slate-100 dark:border-slate-800">
                   <th className="p-3.5 font-bold">ID</th>
@@ -583,10 +589,10 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
                 ) : (
                   filteredData.slice(0, 100).map((item, i) => (
                     <tr key={item.id || i} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
-                      <td className="p-3.5 font-mono text-slate-400 text-[10px]">
+                      <td data-label="ID" className="p-3.5 font-mono text-slate-400 text-[10px]">
                         {item.id}
                       </td>
-                      <td className="p-3.5 font-bold text-slate-900 dark:text-slate-100">
+                      <td data-label="Nội dung" className="p-3.5 font-bold text-slate-900 dark:text-slate-100">
                         {activeSubTab === 'vocab' && (
                           <div className="flex flex-col gap-0.5">
                             <span className="text-sm font-extrabold text-indigo-950 dark:text-indigo-200">{item.word}</span>
@@ -606,12 +612,12 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
                           </div>
                         )}
                       </td>
-                      <td className="p-3.5">
+                      <td data-label="Hán Việt" className="p-3.5">
                         <span className="font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 px-2 py-0.5 rounded-md text-[10px] uppercase">
                           {item.hanViet || (item.kanji ? getHanViet(item.kanji) : (activeSubTab === 'kanji' ? (item.hanViet || getHanViet(item.kanji)) : '-'))}
                         </span>
                       </td>
-                      <td className="p-3.5 text-slate-700 dark:text-slate-300 max-w-xs">
+                      <td data-label="Nghĩa" className="p-3.5 text-slate-700 dark:text-slate-300 max-w-xs">
                         <div className="space-y-0.5">
                           <p className="font-medium">{item.meaning || item.meaningVi}</p>
                           {item.exampleJp && (
@@ -622,11 +628,11 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
                         </div>
                       </td>
                       {activeSubTab === 'vocab' && (
-                        <td className="p-3.5 font-bold text-slate-600 dark:text-slate-400 font-mono text-[11px]">
+                        <td data-label="Bài" className="p-3.5 font-bold text-slate-600 dark:text-slate-400 font-mono text-[11px]">
                           Bài {item.lessonId || item.lessonNumber || '1'}
                         </td>
                       )}
-                      <td className="p-3.5 text-center">
+                      <td data-label="Thao tác" className="p-3.5 text-center">
                         <div className="flex justify-center gap-1.5">
                           <button 
                             onClick={() => handleDelete(item.id)}
@@ -649,7 +655,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
       {/* Excel Import Modal */}
       <AnimatePresence>
         {isImportModalOpen && (
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-3 md:p-6 overflow-y-auto">
+          <AdminDialog label="Nhập từ vựng Excel hoặc CSV" onClose={() => { if (!isImporting) { setIsImportModalOpen(false); onCloseImportModal?.(); } }}>
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -672,7 +678,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
               </button>
 
               {/* Modal Header */}
-              <div className="mb-4">
+              <div className="mb-4 pr-12">
                 <div className="flex items-center gap-2.5">
                   <div className="w-9 h-9 rounded-2xl bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                     <FileSpreadsheet className="w-5 h-5" />
@@ -944,7 +950,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
                 )}
               </div>
             </motion.div>
-          </div>
+          </AdminDialog>
         )}
       </AnimatePresence>
 

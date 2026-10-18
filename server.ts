@@ -1,3 +1,4 @@
+import { readingImageHandler } from './src/server/readingImage';
 import express from "express";
 import dotenv from "dotenv";
 import path from 'path';
@@ -2609,6 +2610,8 @@ Hãy biên soạn 1 bài đọc hiểu tiếng Nhật đời sống tự nhiên 
     res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 });
+
+app.get("/api/reading/image", readingImageHandler);
 
 // 2.7.1 API: Todaii Japanese News List (Lấy danh sách bài báo từ Todaii News japanese.todaiinews.com)
 app.get("/api/reading/todai/news-list", async (req, res) => {
