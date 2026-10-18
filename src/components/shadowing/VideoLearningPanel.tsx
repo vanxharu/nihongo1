@@ -9,9 +9,9 @@ const storeKey = (videoId: string) => 'nihon:video-learning:v1:' + videoId;
 function load(videoId: string): Saved[] { try { const v = JSON.parse(localStorage.getItem(storeKey(videoId)) || '[]'); return Array.isArray(v) ? v.filter(x=>x && typeof x.id==='string' && typeof x.text==='string') : []; } catch { return []; } }
 const unique = <T extends { word?: string; character?: string; pattern?: string }>(items:T[], key:keyof T) => [...new Map(items.map(x=>[String(x[key]),x])).values()];
 function speak(text:string) { if (!('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='ja-JP'; u.rate=.85; speechSynthesis.speak(u); }
-export default function VideoLearningPanel({videoId,cues,selected,onJump,analysis,onAnalyze,busy}:{
+export default function VideoLearningPanel({videoId,cues,selected,onJump,analysis,onAnalyze,busy,revision}:{
  videoId:string; cues:ShadowingCue[]; selected:number; onJump:(index:number)=>void;
- analysis:Map<string,ShadowingAnalysis>; onAnalyze:(cue:ShadowingCue)=>void; busy?:boolean;
+ analysis:Map<string,ShadowingAnalysis>; onAnalyze:(cue:ShadowingCue)=>void; busy?:boolean; revision?:number;
 }) {
  const [tab,setTab]=useState<Tab>('vocabulary');
  const [cards,setCards]=useState<Saved[]>(()=>load(videoId));
@@ -22,7 +22,7 @@ export default function VideoLearningPanel({videoId,cues,selected,onJump,analysi
  const [score,setScore]=useState({correct:0,total:0});
  useEffect(()=>{setCards(load(videoId));setCardIndex(0);setTab('vocabulary');setScore({correct:0,total:0});},[videoId]);
  useEffect(()=>{try{localStorage.setItem(storeKey(videoId),JSON.stringify(cards));}catch{}},[videoId,cards]);
- const analyses=useMemo(()=>{const result=analysis.get(cues[selected]?.text||'');return result?[result]:[];},[cues,analysis,selected,busy]);
+ const analyses=useMemo(()=>{const result=analysis.get(cues[selected]?.text||'');return result?[result]:[];},[cues,analysis,selected,busy,revision]);
  const vocab=useMemo(()=>unique(analyses.flatMap(a=>a.vocabulary||[]),'word'),[analyses]);
  const kanji=useMemo(()=>unique(analyses.flatMap(a=>a.kanji||[]),'character'),[analyses]);
  const grammar=useMemo(()=>unique(analyses.flatMap(a=>a.grammar||[]),'pattern'),[analyses]);
@@ -35,7 +35,7 @@ export default function VideoLearningPanel({videoId,cues,selected,onJump,analysi
  <div className="border-b border-[var(--ui-line)] bg-[var(--ui-soft)] px-4 py-3"><h3 className="font-bold text-[var(--ui-text)]">Phân tích bài nghe</h3><p className="text-xs text-[var(--ui-muted)]">Tự phân tích theo câu đang phát, kể cả khi bạn không mở tab này.</p></div>
  <div className="flex overflow-x-auto border-b border-[var(--ui-line)]" role="tablist" aria-label="Phân tích và ôn tập">{tabs.map(t=><button key={t.id} role="tab" aria-selected={tab===t.id} onClick={()=>setTab(t.id)} className={`shrink-0 px-4 py-3 text-xs font-semibold border-b-2 ${tab===t.id?'border-[var(--ui-primary)] text-[var(--ui-primary)]':'border-transparent text-[var(--ui-muted)]'}`}>{t.label}{t.id==='cards'?` (${cards.length})`:''}</button>)}</div>
  <div className="p-3 sm:p-4 space-y-3 max-h-[520px] overflow-y-auto">
- {cues[selected] && <div className="rounded-xl border border-[var(--ui-line)] bg-[var(--ui-soft)] p-3"><p className="mb-1 text-xs text-[var(--ui-muted)]">Câu đang chọn</p><p lang="ja" className="mb-2 text-sm font-semibold">{cues[selected].text}</p><p className="text-xs text-[var(--ui-muted)]">{analysis.has(cues[selected].text)?'✓ Đã phân tích câu này':busy?'Đang tự động phân tích…':'Đang chờ phân tích tự động…'}</p></div>}
+ {cues[selected] && <div className="rounded-xl border border-[var(--ui-line)] bg-[var(--ui-soft)] p-3"><p className="mb-1 text-xs text-[var(--ui-muted)]">Câu đang chọn</p><p lang="ja" className="mb-2 text-sm font-semibold">{cues[selected].text}</p><p className="text-xs text-[var(--ui-muted)]">{analysis.has(cues[selected].text)?'✓ Đã phân tích câu này':busy?'Đang phân tích câu này…':'Chưa có kết quả cho câu này · hệ thống sẽ tự thử lại khi phát lại'}</p></div>}
  {tab==='vocabulary'&&<>{vocab.length===0?<p className="text-sm text-[var(--ui-muted)]">Chưa có dữ liệu từ vựng cho câu đang phát. Kết quả sẽ tự cập nhật khi phân tích xong.</p>:vocab.map(v=><div key={v.word} className="border-b border-[var(--ui-line)] pb-3"><div className="flex justify-between"><b lang="ja">{v.word} <span className="font-normal text-sm text-[var(--ui-muted)]">{v.reading}</span></b><button onClick={()=>save(v.word,v.meaning)} className="text-[var(--ui-primary)]">＋ Thẻ</button></div><p className="text-sm">{v.meaning}</p></div>)}</>}
  {tab==='kanji'&&<>{kanji.length===0?<p className="text-sm text-[var(--ui-muted)]">Chưa có dữ liệu Kanji cho câu đang phát.</p>:kanji.map(k=><div key={k.character} className="flex gap-4 border-b border-[var(--ui-line)] pb-3"><span className="text-5xl" lang="ja">{k.character}</span><div className="text-sm flex-1"><b>{k.meaning||'Chưa có nghĩa'}</b><p>ON: {k.onyomi||'—'} · KUN: {k.kunyomi||'—'}</p><button className="text-[var(--ui-primary)] mt-2" onClick={()=>save(k.character,k.meaning||'')}>＋ Flashcard</button></div></div>)}</>}
  {tab==='grammar'&&<>{grammar.length===0?<p className="text-sm text-[var(--ui-muted)]">Chưa có dữ liệu ngữ pháp cho câu đang phát.</p>:grammar.map(g=><div key={g.pattern} className="border-b border-[var(--ui-line)] pb-3"><b className="text-[var(--ui-primary)]">{g.pattern}</b><p className="text-sm font-medium">{g.meaning}</p><p className="text-sm text-[var(--ui-muted)]">{g.explanation}</p>{g.example&&<p lang="ja" className="text-sm mt-1">{g.example}</p>}</div>)}</>}
