@@ -4,7 +4,7 @@ import { ChevronLeft, Link2 } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 import { SHADOWING_VIDEOS } from '../../data/shadowingVideos';
 import { formatDuration } from '../../utils/youtubeUtils';
-import { mergeSentenceCues, parseShadowingVideoId, parseShadowingTime, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
+import { parseShadowingVideoId, parseShadowingTime, ShadowingCue, ShadowingAnalysis } from '../../utils/shadowing';
 import ShadowingPlayer, { ShadowingPlayerHandle } from './ShadowingPlayer';
 import KaraokeCaption from './KaraokeCaption';
 import DictationPanel from './DictationPanel';
@@ -251,7 +251,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
       try {
         const saved = JSON.parse(localStorage.getItem(`shadowing-cues:${storageSuffix}`) || '[]');
         if (Array.isArray(saved) && saved.length && saved.every(c => c && typeof c.text === 'string' && typeof c.id === 'string' && (c.start === null || Number.isFinite(c.start)) && (c.end === null || Number.isFinite(c.end)))) {
-          const restoredCues = mergeSentenceCues(normalizeShadowingTimeline(saved.slice(0, 500)));
+          const restoredCues = normalizeShadowingTimeline(saved.slice(0, 500));
           setCues(restoredCues); selectCue(0, restoredCues);
           restored = true;
         }
@@ -294,7 +294,6 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
 
   function applyCues(next: ShadowingCue[], preserveSelection = false) {
     next = normalizeShadowingTimeline(next);
-    if (!preserveSelection) next = mergeSentenceCues(next);
     setCues(next); selectCue(preserveSelection ? Math.min(selected, Math.max(0, next.length - 1)) : Math.max(0, activeShadowingCue(next, playbackTime.current)), next);
     if (videoId) { try { localStorage.setItem(`shadowing-cues:${storageSuffix}`, JSON.stringify(next)); } catch {} }
   }
