@@ -78,7 +78,7 @@ function validateAnalysis(value: any): ShadowingAnalysis {
   const text = (v: unknown) => typeof v === 'string' ? v.slice(0, 2000) : '';
   return {
     source: 'ai', translation: text(value.translation),
-    vocabulary: value.vocabulary.slice(0, 30).filter((v: any) => v && typeof v.word === 'string').map((v: any) => ({ word: text(v.word), reading: text(v.reading), meaning: text(v.meaning), type: text(v.type) })),
+    vocabulary: value.vocabulary.slice(0, 100).filter((v: any) => v && typeof v.word === 'string').map((v: any) => ({ word: text(v.word), reading: text(v.reading), meaning: text(v.meaning), type: text(v.type) })),
     kanji: value.kanji.slice(0, 30).filter((v: any) => v && typeof v.character === 'string').map((v: any) => ({ character: text(v.character), meaning: text(v.meaning), onyomi: text(v.onyomi), kunyomi: text(v.kunyomi), radical: text(v.radical), components: text(v.components), mnemonic: text(v.mnemonic) })),
     grammar: value.grammar.slice(0, 15).filter((v: any) => v && typeof v.pattern === 'string').map((v: any) => ({ pattern: text(v.pattern), meaning: text(v.meaning), explanation: text(v.explanation), example: text(v.example) })),
     note: 'Phân tích AI để tham khảo; hãy đối chiếu cách dùng trong video.',
@@ -129,7 +129,7 @@ export async function shadowingTranscript(req: Request, res: Response) {
 // Analyze a bounded subtitle batch using Claude through the shared AI gateway.
 export async function shadowingAnalyzeBatch(cues: ShadowingCue[]) {
   const input = cues.map((c, i) => ({ index: i, text: c.text }));
-  const system = 'Bạn là giáo viên tiếng Nhật cho người Việt. Phân tích CHÍNH XÁC từng câu theo index. Trả JSON thuần dạng {"items":[{"index":0,"translation":"dịch tiếng Việt","vocabulary":[{"word":"từ trong câu","reading":"hiragana","meaning":"nghĩa","type":"loại từ"}],"kanji":[{"character":"chữ Hán trong câu","meaning":"nghĩa","onyomi":"on","kunyomi":"kun"}],"grammar":[{"pattern":"mẫu xuất hiện","meaning":"nghĩa","explanation":"giải thích","example":"ví dụ"}]}]}. Không bỏ câu, không bịa từ ngoài câu.';
+  const system = 'Bạn là giáo viên tiếng Nhật cho người Việt. BẮT BUỘC tách ĐẦY ĐỦ mọi từ vựng có nghĩa trong từng câu (danh từ, động từ ở dạng xuất hiện, tính từ, phó từ, số đếm, từ chỉ thời gian, trợ từ quan trọng, biểu thức cố định); không chỉ chọn vài từ JLPT. Từ ghép có nghĩa cần phân tích phù hợp, không lặp lại cùng một từ. Đưa đầy đủ Kanji, mọi mẫu ngữ pháp và bản dịch tiếng Việt tự nhiên. Phân tích CHÍNH XÁC từng câu theo index. Trả JSON thuần dạng {"items":[{"index":0,"translation":"dịch tiếng Việt","vocabulary":[{"word":"từ trong câu","reading":"hiragana","meaning":"nghĩa","type":"loại từ"}],"kanji":[{"character":"chữ Hán trong câu","meaning":"nghĩa","onyomi":"on","kunyomi":"kun"}],"grammar":[{"pattern":"mẫu xuất hiện","meaning":"nghĩa","explanation":"giải thích","example":"ví dụ"}]}]}. Không bỏ câu, không bịa từ ngoài câu.';
   const content = (await generateGemini({ contents: JSON.stringify(input), config: { systemInstruction: system, responseMimeType: 'application/json', maxOutputTokens: 7000 } })).text;
   const parsed = JSON.parse(String(content).replace(/^```(?:json)?\s*|\s*```$/g, ''));
   if (!Array.isArray(parsed.items)) throw new Error('INVALID_AI_BATCH');
@@ -138,6 +138,7 @@ export async function shadowingAnalyzeBatch(cues: ShadowingCue[]) {
     if (!Number.isInteger(item.index) || item.index < 0 || item.index >= cues.length || results.has(item.index)) continue;
     const analysis = validateAnalysis(item);
     analysis.vocabulary = analysis.vocabulary.filter(v => cues[item.index].text.includes(v.word));
+    if (!analysis.translation.trim() || !analysis.vocabulary.length) throw new Error('INCOMPLETE_AI_VOCABULARY');
     results.set(item.index, analysis);
   }
   if (results.size !== cues.length) throw new Error('INCOMPLETE_AI_BATCH');
