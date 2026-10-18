@@ -128,6 +128,20 @@ export async function shadowingTranscript(req: Request, res: Response) {
 
 export async function shadowingAnalyze(req: Request, res: Response) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ error: 'Chỉ hỗ trợ POST.' }); }
+  // Fast, deterministic bulk pre-analysis: no LLM latency or quota consumption.
+  // Client stores this per-video and upgrades individual sentences with AI later.
+  if (Array.isArray(req.body?.sentences)) {
+    const sentences = [...new Set(req.body.sentences.filter((v: unknown): v is string => typeof v === 'string' && !!v.trim() && v.length <= 1000))].slice(0, 40);
+    if (!sentences.length) return res.status(400).json({ error: 'Không có câu hợp lệ.' });
+    const items: Record<string, ShadowingAnalysis> = {};
+    for (const sentence of sentences) {
+      const local = localShadowingAnalysis(sentence);
+      try { local.readings = await sentenceReadings(sentence); }
+      catch { local.readings = local.vocabulary.map(v => ({ word: v.word, reading: v.reading })); }
+      items[sentence] = local;
+    }
+    return res.json({ items });
+  }
   const sentence = req.body?.sentence;
   if (typeof sentence !== 'string' || !sentence.trim() || sentence.length > 1000) return res.status(400).json({ error: 'Nhập một câu tiếng Nhật từ 1 đến 1000 ký tự.' });
   const local = localShadowingAnalysis(sentence);
