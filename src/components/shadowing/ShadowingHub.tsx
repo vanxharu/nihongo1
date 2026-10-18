@@ -245,6 +245,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
               <button aria-pressed={furigana} onClick={() => setFurigana(v => !v)} className={`shadowing-pill${furigana ? ' shadowing-pill-active' : ''}`}>Furigana</button>
               <button aria-pressed={translation} onClick={() => setTranslation(v => !v)} className={`shadowing-pill${translation ? ' shadowing-pill-active' : ''}`}>Dịch</button></div>}
           /></div>
+          <div className="lg:hidden"><div className="mb-2 flex items-center justify-between"><span className="text-xs font-bold uppercase tracking-widest text-amber-300">Học qua anime · Aanime style</span><span className="text-xs text-slate-400">{cues.length} câu</span></div><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} /></div>
           {sourceTitle && <h2 className="line-clamp-2 text-base font-bold leading-snug text-slate-100 max-lg:hidden">{sourceTitle}</h2>}
           {(mode === 'shadowing' || revealed) && <section aria-label="Lời karaoke" className="karaoke-stage rounded-2xl p-3 sm:p-6">
             <div className="mb-1 flex items-center justify-between gap-2 text-xs text-slate-400">
@@ -280,7 +281,8 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
         </div>
 
         <div className="max-lg:contents lg:space-y-4">
-          <VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} />
+          <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{playerRef.current?.pause();setInsightCue({...cue});}} onPlay={(cue,repeat)=>{const from=cue.start;const to=cue.end;playerRef.current?.playSentence(from,to,repeat);}} /></div>
+          
           {insightCue && (mode === 'shadowing' || revealed) && <SentenceInsights key={videoId + insightCue.text} videoId={videoId || ''} cue={insightCue} cached={cache.current.get(insightCue.text)} onClose={() => setInsightCue(null)} onResult={(text, data) => { cache.current.set(text, data); refreshAnalysis(n => n + 1); }} />}
           {mode === 'dictation' && <DictationPanel onCorrect={() => onStudyReward?.(`dictation:${videoId}:${start}:${sentence}`, 20) ?? false} key={`${videoId}:${selected}:${sentence}`} sentence={sentence} autoPause={autoPause} onAutoPause={value => { playerRef.current?.pause(); setAutoPause(value); }} onPlay={() => playerRef.current?.playSentence(parseShadowingTime(start), parseShadowingTime(end), autoPause) || false} onReveal={setRevealed} onPrevious={() => jumpCue(selected - 1)} onNext={() => jumpCue(selected + 1)} hasPrevious={selected > 0} hasNext={selected < cues.length - 1} />}
           {(mode === 'shadowing' || revealed) && <section className="rounded-xl bg-[#101010] p-3 max-lg:hidden">
