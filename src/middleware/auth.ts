@@ -3,6 +3,7 @@ import { adminAuth } from '../lib/firebase-admin';
 import { DecodedIdToken } from 'firebase-admin/auth';
 import { getOrCreateUser } from '../db/users';
 import { UserRole } from '../types';
+import { isBootstrapAdmin } from '../server/bootstrapAdmin';
 
 export interface AuthRequest extends Request {
   user?: DecodedIdToken;
@@ -81,7 +82,9 @@ export const requireAuth = async (
         grammarStatus: '{}',
         kanjiStatus: '{}',
         dailyTestResults: '[]',
-        role: 'user' as UserRole
+        // The allowlist is server configuration and identity comes exclusively
+        // from the verified Firebase token, so DB outages need not revoke it.
+        role: (isBootstrapAdmin(decodedToken.email, decodedToken.email_verified === true) ? 'admin' : 'user') as UserRole
       };
     }
 

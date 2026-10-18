@@ -2,17 +2,8 @@ import { db, withDbRetry } from './index';
 import { users } from './schema';
 import { eq, sql } from 'drizzle-orm';
 
-export function getBootstrapAdminEmails(): Set<string> {
-  const envVar = process.env.ADMIN_EMAILS || '';
-  const set = new Set<string>();
-  if (envVar) {
-    envVar.split(',').forEach(email => {
-      const trimmed = email.trim().toLowerCase();
-      if (trimmed) set.add(trimmed);
-    });
-  }
-  return set;
-}
+import { getBootstrapAdminEmails } from '../server/bootstrapAdmin';
+export { getBootstrapAdminEmails } from '../server/bootstrapAdmin';
 
 export const ADMIN_EMAILS = getBootstrapAdminEmails();
 
