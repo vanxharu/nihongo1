@@ -283,11 +283,12 @@ function VocabListItemCardComponent({
       <div className={`border border-slate-700/70 rounded-xl overflow-hidden shadow-sm w-full flex flex-col bg-[#272B3C] ${isMastered ? 'ring-1 ring-emerald-500/30' : ''}`}>
         <div className="flex items-start gap-3 p-3 sm:p-3.5">
           <span className="font-extrabold text-slate-100 font-serif text-lg tracking-tight">{numLabel}</span>
-          <div className="shrink-0 max-w-[40%] overflow-x-auto no-scrollbar">
+          <div className="shrink-0 max-w-[40%] overflow-x-auto no-scrollbar flex flex-col items-center">
+            {hanViet && <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wide text-rose-500 leading-none mb-0.5">{hanViet}</span>}
             {renderWordWithFuriganaInternal(v.kanji, v.hiragana, v.meaning, hanViet, onSelectKanji, true)}
           </div>
           <div className="flex flex-col flex-1 min-w-0 gap-1">
-            <div className="flex items-center gap-2"><span className="bg-slate-900 border border-slate-700 text-slate-200 font-bold px-1.5 py-0.5 rounded text-[11px] font-mono leading-none">{posBadge}</span>{hanViet && <span className="text-xs font-bold uppercase text-emerald-400">{hanViet}</span>}</div>
+            <div className="flex items-center gap-2"><span className="bg-slate-900 border border-slate-700 text-slate-200 font-bold px-1.5 py-0.5 rounded text-[11px] font-mono leading-none">{posBadge}</span></div>
             <div className="text-sm text-slate-200 font-bold leading-snug break-words">{v.meaning}</div>
             {(v.onyomi || v.kunyomi) && (
               <div lang="ja" className="text-xs text-slate-300 leading-snug break-words">
