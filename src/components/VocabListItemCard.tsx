@@ -306,6 +306,7 @@ function VocabListItemCardComponent({
         <div className="border-t border-slate-700/70 bg-[#272B3C] px-3.5 py-2.5 flex flex-col gap-3">
           {words.map((w, i) => (
             <div key={i} className="border-l-2 border-emerald-500/50 pl-2.5">
+              {w.word && /[\u4e00-\u9faf]/.test(w.word) && getHanViet(w.word) && <div className="text-[10px] font-bold uppercase tracking-wide text-rose-500 leading-none mb-0.5">{getHanViet(w.word)}</div>}
               {w.word && <div lang="ja" className="text-sm"><b className="text-emerald-300 text-base">{w.word}</b> <span className="text-slate-400">（{w.reading}）</span> <span className="text-slate-200">{w.meaning}</span></div>}
               {w.sentence && (
                 <div className="flex items-start justify-between gap-2">
