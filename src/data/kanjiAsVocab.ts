@@ -5,9 +5,11 @@ export interface KanjiRow {
   chapter: number; chapterTitle: string; lesson: number; lessonTitle: string;
   kanji: string; onyomi: string; kunyomi: string; hanViet: string; meaning: string; strokes: number;
   level: string; mnemonic: string;
-  /** Nhiều từ ví dụ trong một ô, ngăn bằng ";" — dạng 家族(かぞく)=gia đình; 家(いえ)=nhà */
-  words: string;
+  /** Mỗi dòng Excel là một từ vựng của chữ này, kèm đúng một câu ví dụ. */
+  word: string; wordReading: string; wordMeaning: string;
   sentence: string; sentenceVi: string;
+  /** Dữ liệu cũ (trước khi tách từng từ): nhiều từ trong một ô. */
+  words?: string;
 }
 
 const splitList = (s: string) => s.split(/[,、;；・\/／]+/).map(x => x.trim()).filter(Boolean);
@@ -30,12 +32,12 @@ const firstWord = (words: string) => {
   return m ? { word: m[1].trim(), reading: m[2]?.trim() || '', meaning: m[3].trim() } : null;
 };
 
-/** Mỗi chữ Hán thành một "từ" để dùng chung giao diện Từ vựng. */
+/** Mỗi dòng (một từ vựng của một chữ Hán) thành một "từ" để dùng chung giao diện Từ vựng. */
 export const kanjiRowsToVocab = (rows: KanjiRow[]): VocabularyItem[] =>
   [...rows].sort((a, b) => a.chapter - b.chapter || a.lesson - b.lesson).map((r): VocabularyItem => {
-    const w = firstWord(r.words || '');
+    const w = r.word ? { word: r.word, reading: r.wordReading, meaning: r.wordMeaning } : firstWord(r.words || '');
     return {
-      id: `kj_${r.chapter}-${r.lesson}_${r.kanji}`,
+      id: `kj_${r.chapter}-${r.lesson}_${r.kanji}_${w?.word || ''}`,
       kanji: r.kanji,
       hiragana: readingsOf(r).join(' / '),
       meaning: r.meaning,
@@ -47,7 +49,7 @@ export const kanjiRowsToVocab = (rows: KanjiRow[]): VocabularyItem[] =>
       exampleReading: w?.reading,
       exampleTranslation: r.sentence ? r.sentenceVi : w?.meaning || r.meaning,
       partOfSpeech: r.strokes ? `${r.strokes} nét` : 'Kanji',
-      relatedWords: r.words ? r.words.split(/[;；]/).map(x => x.trim()).filter(Boolean).join(' ・ ') : undefined,
+      relatedWords: w?.word ? `${w.word}${w.reading ? `(${w.reading})` : ''}${w.meaning ? `=${w.meaning}` : ''}` : undefined,
       notes: r.mnemonic || undefined,
       curriculum: 'tango',
       level: (/^N[1-5]$/.test(r.level?.toUpperCase()) ? r.level.toUpperCase() : 'N4') as JLPTLevel,

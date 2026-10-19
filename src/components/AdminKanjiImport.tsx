@@ -18,10 +18,14 @@ const COLS: [keyof KanjiRow, string, string[]][] = [
   ['strokes', 'Số nét', ['sonet', 'strokes']],
   ['level', 'JLPT', ['jlpt', 'level', 'capdo']],
   ['mnemonic', 'Mẹo nhớ', ['meonho', 'mnemonic']],
-  ['words', 'Từ ví dụ', ['tuvidu', 'words', 'word']],
+  ['word', 'Từ vựng', ['tuvung', 'word', 'tuvidu']],
+  ['wordReading', 'Cách đọc từ', ['cachdoctu', 'wordreading', 'cachdoctuvidu']],
+  ['wordMeaning', 'Nghĩa từ', ['nghiatu', 'wordmeaning', 'nghiatuvidu']],
   ['sentence', 'Câu ví dụ', ['cauvidu', 'sentence']],
   ['sentenceVi', 'Dịch câu', ['dichcau', 'sentencevi']],
 ];
+// Thông tin của chữ (không phải của từ): dòng sau của cùng một chữ được bỏ trống.
+const KANJI_FIELDS = ['chapterTitle', 'lessonTitle', 'onyomi', 'kunyomi', 'hanViet', 'meaning', 'strokes', 'level', 'mnemonic'];
 const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase().replace(/[^a-z0-9]/g, '');
 
 export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void }) {
@@ -36,22 +40,25 @@ export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void
 
   const template = () => {
     const ws = XLSX.utils.aoa_to_sheet([COLS.map(c => c[1]),
-      [1, 'Gia đình', 1, 'Người trong nhà', '家', 'カ, ケ', 'いえ, や', 'GIA', 'nhà, gia đình', 10, 'N4', 'Mái nhà (宀) che con lợn (豕): nhà có người có của', '家族(かぞく)=gia đình; 家(いえ)=nhà', '私の家は駅の近くです。', 'Nhà tôi ở gần ga.'],
-      [1, 'Gia đình', 1, 'Người trong nhà', '兄', 'ケイ, キョウ', 'あに', 'HUYNH', 'anh trai', 5, 'N4', '', '兄(あに)=anh trai (của mình); 兄弟(きょうだい)=anh em', '兄は大学で勉強しています。', 'Anh trai tôi đang học ở đại học.'],
-      [1, 'Gia đình', 1, 'Người trong nhà', '育', 'イク', 'そだ.つ, そだ.てる', 'DỤC', 'nuôi dưỡng', 8, 'N4', '', '育てる(そだてる)=nuôi, trồng; 教育(きょういく)=giáo dục', '祖母は庭で花を育てています。', 'Bà tôi đang trồng hoa trong vườn.'],
-      [2, 'Nơi làm việc', 1, 'Công ty', '働', 'ドウ', 'はたら.く', 'ĐỘNG', 'làm việc', 13, 'N4', '', '働く(はたらく)=làm việc', '父は銀行で働いています。', 'Bố tôi làm việc ở ngân hàng.'],
+      [1, 'Gia đình', 1, 'Người trong nhà', '家', 'カ, ケ', 'いえ, や', 'GIA', 'nhà, gia đình', 10, 'N4', 'Mái nhà (宀) che con lợn (豕): nhà có người có của', '家', 'いえ', 'nhà', '私の家は駅の近くです。', 'Nhà tôi ở gần ga.'],
+      [1, 'Gia đình', 1, 'Người trong nhà', '家', '', '', '', '', '', '', '', '家族', 'かぞく', 'gia đình', '私の家族は四人です。', 'Gia đình tôi có bốn người.'],
+      [1, 'Gia đình', 1, 'Người trong nhà', '家', '', '', '', '', '', '', '', '大家', 'おおや', 'chủ nhà', '大家さんは親切な人です。', 'Chủ nhà là người tốt bụng.'],
+      [1, 'Gia đình', 1, 'Người trong nhà', '兄', 'ケイ, キョウ', 'あに', 'HUYNH', 'anh trai', 5, 'N4', '', '兄', 'あに', 'anh trai (của mình)', '兄は大学で勉強しています。', 'Anh trai tôi đang học ở đại học.'],
+      [1, 'Gia đình', 1, 'Người trong nhà', '兄', '', '', '', '', '', '', '', '兄弟', 'きょうだい', 'anh em', '兄弟は二人います。', 'Tôi có hai anh em.'],
+      [2, 'Nơi làm việc', 1, 'Công ty', '働', 'ドウ', 'はたら.く', 'ĐỘNG', 'làm việc', 13, 'N4', '', '働く', 'はたらく', 'làm việc', '父は銀行で働いています。', 'Bố tôi làm việc ở ngân hàng.'],
     ]);
-    ws['!cols'] = [8, 16, 6, 18, 8, 14, 18, 10, 16, 8, 7, 34, 44, 30, 32].map(wch => ({ wch }));
+    ws['!cols'] = [8, 16, 6, 18, 8, 14, 18, 10, 16, 8, 7, 34, 14, 14, 20, 30, 32].map(wch => ({ wch }));
     const guide = XLSX.utils.aoa_to_sheet([
       ['Quy tắc điền'],
-      ['Mỗi dòng là một chữ Hán. App chỉ đọc sheet "Kanji" (sheet đầu tiên); dòng 1 là tên cột. Xóa các dòng mẫu rồi nhập dữ liệu của bạn.'],
+      ['Mỗi dòng là MỘT TỪ VỰNG của một chữ Hán, kèm đúng một câu ví dụ. Chữ có 3 từ thì có 3 dòng. App chỉ đọc sheet "Kanji" (sheet đầu tiên); dòng 1 là tên cột. Xóa các dòng mẫu rồi nhập dữ liệu của bạn.'],
       ['Bắt buộc: Chương (số), Bài (số thứ tự trong chương), Kanji. Các cột còn lại tùy chọn.'],
-      ['Một chữ được nhận diện bằng Chương + Bài + Kanji; nhập lại cùng bộ ba thì cập nhật dòng cũ.'],
-      ['Âm On (katakana) và Âm Kun (hiragana): nhiều âm ngăn bằng dấu , ; phần okurigana ngăn bằng dấu . (ví dụ や.ぐ).'],
-      ['Hán Việt: viết hoa (ví dụ GIA). JLPT: N1 đến N5, để trống hoặc sai thì mặc định N4.'],
-      ['Từ ví dụ: nhiều từ trong một ô, ngăn bằng ; mỗi từ dạng từ(cách đọc)=nghĩa. Không dùng ; = ( ) trong phần nghĩa.'],
-      ['Câu ví dụ + Dịch câu cần có để dùng chế độ Đặt câu, Ghép câu, Đọc hiểu. Có thể viết furigana tay dạng 二人[ふたり].'],
-      ['Từ ví dụ dùng cho thẻ và chế độ Viết Hán. Mỗi ô tối đa 500 ký tự (Từ ví dụ tối đa 2000). Nội dung nên tự soạn, không chép ví dụ/bài tập của sách.'],
+      ['Thông tin của chữ (Tên chương, Tên bài, Âm On, Âm Kun, Hán Việt, Nghĩa, Số nét, JLPT, Mẹo nhớ) chỉ cần điền ở dòng đầu của chữ; các dòng sau của cùng chữ để trống thì app tự lấy từ dòng đầu.'],
+      ['Một dòng được nhận diện bằng Chương + Bài + Kanji + Từ vựng; nhập lại cùng bộ này thì cập nhật dòng cũ.'],
+      ['Âm On (katakana) và Âm Kun (hiragana): nhiều âm ngăn bằng dấu phẩy; phần okurigana ngăn bằng dấu chấm (ví dụ そだ.つ).'],
+      ['Hán Việt: viết hoa. JLPT: N1 đến N5, để trống hoặc sai thì mặc định N4. Số nét: số nguyên.'],
+      ['Từ vựng, Cách đọc từ, Nghĩa từ: từ chứa chữ Hán đó (ví dụ 家族 / かぞく / gia đình). Dùng cho thẻ và chế độ Viết Hán.'],
+      ['Câu ví dụ + Dịch câu: một câu cho từ vựng của dòng đó. Cần có để dùng Đặt câu, Ghép câu, Đọc hiểu. Có thể viết furigana tay dạng 二人[ふたり].'],
+      ['Mỗi ô tối đa 500 ký tự. Nội dung nên tự soạn, không chép ví dụ/bài tập của sách.'],
     ]);
     const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Kanji'); XLSX.utils.book_append_sheet(wb, guide, 'Hướng dẫn'); XLSX.writeFile(wb, 'Mau_Nhap_Kanji_Moi.xlsx');
   };
@@ -70,7 +77,7 @@ export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void
       const wb = XLSX.read(await file.arrayBuffer(), { type: 'array' });
       const raw = XLSX.utils.sheet_to_json<Record<string, unknown>>(wb.Sheets[wb.SheetNames[0]]);
       const out: KanjiRow[] = []; const bad: number[] = [];
-      const seen = new Map<string, number>(); const w: string[] = [];
+      const seen = new Map<string, number>(); const w: string[] = []; const heads = new Map<string, KanjiRow>();
       for (const [n, r] of raw.entries()) {
         const o: Record<string, unknown> = {};
         const byKey = new Map(Object.entries(r).map(([k, v]) => [norm(k), v]));
@@ -78,11 +85,17 @@ export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void
         const row = o as unknown as KanjiRow;
         row.kanji = String(row.kanji ?? '').trim(); row.chapter = Number(row.chapter); row.lesson = Number(row.lesson);
         if (!row.kanji || !(row.chapter > 0) || !(row.lesson > 0)) { bad.push(n + 2); continue; }
-        const key = `${row.chapter}-${row.lesson}-${row.kanji}`;
-        if (seen.has(key)) { w.push(`Dòng ${n + 2} trùng dòng ${seen.get(key)} (${key}) — dòng sau sẽ ghi đè.`); out.splice(out.findIndex(x => `${x.chapter}-${x.lesson}-${x.kanji}` === key), 1); }
+        row.word = String(row.word ?? '').trim();
+        // Dòng thứ 2 trở đi của cùng một chữ có thể bỏ trống phần thông tin của chữ: lấy từ dòng đầu.
+        const hk = `${row.chapter}-${row.lesson}-${row.kanji}`;
+        const head = heads.get(hk);
+        if (head) { for (const f of KANJI_FIELDS) if (!String((row as any)[f] ?? '').trim()) (row as any)[f] = (head as any)[f]; } else heads.set(hk, row);
+        const key = `${row.chapter}-${row.lesson}-${row.kanji}-${row.word}`;
+        if (seen.has(key)) { w.push(`Dòng ${n + 2} trùng dòng ${seen.get(key)} (${key}) — dòng sau sẽ ghi đè.`); out.splice(out.findIndex(x => `${x.chapter}-${x.lesson}-${x.kanji}-${x.word}` === key), 1); }
         seen.set(key, n + 2);
         if (!String(row.onyomi || '').trim() && !String(row.kunyomi || '').trim()) w.push(`Dòng ${n + 2} (${key}): thiếu cả Âm On và Âm Kun nên Luyện gõ không có đáp án.`);
         if (!String(row.meaning || '').trim()) w.push(`Dòng ${n + 2} (${key}): thiếu Nghĩa.`);
+        if (row.word && !String(row.sentence || '').trim()) w.push(`Dòng ${n + 2} (${key}): từ này chưa có Câu ví dụ.`);
         out.push(row);
       }
       if (!out.length) setMsg({ ok: false, text: 'Không có dòng hợp lệ. Mỗi dòng cần Chương, Bài (số) và Kanji. Hãy tải file mẫu để đối chiếu tên cột.' });

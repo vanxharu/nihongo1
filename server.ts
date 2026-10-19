@@ -4208,10 +4208,10 @@ app.post('/api/admin/kanji-master/import', requireAuth, requireAdmin, async (req
     if (!Array.isArray(items) || items.length > 400) return res.status(400).json({ error: 'Mỗi lần nhập tối đa 400 chữ.' });
     const rows = items.filter((i: any) => i && String(i.kanji || '').trim() && Number(i.chapter) > 0 && Number(i.lesson) > 0).map((i: any) => {
       const t = (v: any) => String(v ?? '').trim().slice(0, 500);
-      return { id: `${Number(i.chapter)}-${Number(i.lesson)}-${t(i.kanji)}`, chapter: Number(i.chapter), chapterTitle: t(i.chapterTitle), lesson: Number(i.lesson), lessonTitle: t(i.lessonTitle),
+      return { id: `${Number(i.chapter)}-${Number(i.lesson)}-${t(i.kanji)}-${t(i.word)}`, chapter: Number(i.chapter), chapterTitle: t(i.chapterTitle), lesson: Number(i.lesson), lessonTitle: t(i.lessonTitle),
         kanji: t(i.kanji), onyomi: t(i.onyomi), kunyomi: t(i.kunyomi), hanViet: t(i.hanViet), meaning: t(i.meaning), strokes: Number(i.strokes) || 0,
         level: /^N[1-5]$/.test(String(i.level).trim().toUpperCase()) ? String(i.level).trim().toUpperCase() : 'N4', mnemonic: t(i.mnemonic),
-        words: String(i.words ?? '').trim().slice(0, 2000), sentence: t(i.sentence), sentenceVi: t(i.sentenceVi) };
+        word: t(i.word), wordReading: t(i.wordReading), wordMeaning: t(i.wordMeaning), sentence: t(i.sentence), sentenceVi: t(i.sentenceVi) };
     });
     await Promise.all(rows.map((r: any) => writeRecord('kanji_master', r.id, r)));
     res.json({ success: true, count: rows.length });

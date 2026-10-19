@@ -600,6 +600,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
                           <div className="flex items-center gap-2">
                             <span className="text-lg font-black text-indigo-700 dark:text-indigo-300">{item.kanji}</span>
                             <span className="text-[11px] text-slate-500">({item.onyomi || item.kunyomi || item.reading})</span>
+                            {item.word && <span className="text-[11px] text-slate-600" lang="ja">· {item.word}{item.wordReading ? `（${item.wordReading}）` : ''}</span>}
                           </div>
                         )}
                       </td>

@@ -94249,7 +94249,7 @@ app.post("/api/admin/kanji-master/import", requireAuth, requireAdmin, async (req
     const rows = items.filter((i) => i && String(i.kanji || "").trim() && Number(i.chapter) > 0 && Number(i.lesson) > 0).map((i) => {
       const t = (v) => String(v ?? "").trim().slice(0, 500);
       return {
-        id: `${Number(i.chapter)}-${Number(i.lesson)}-${t(i.kanji)}`,
+        id: `${Number(i.chapter)}-${Number(i.lesson)}-${t(i.kanji)}-${t(i.word)}`,
         chapter: Number(i.chapter),
         chapterTitle: t(i.chapterTitle),
         lesson: Number(i.lesson),
@@ -94262,7 +94262,9 @@ app.post("/api/admin/kanji-master/import", requireAuth, requireAdmin, async (req
         strokes: Number(i.strokes) || 0,
         level: /^N[1-5]$/.test(String(i.level).trim().toUpperCase()) ? String(i.level).trim().toUpperCase() : "N4",
         mnemonic: t(i.mnemonic),
-        words: String(i.words ?? "").trim().slice(0, 2e3),
+        word: t(i.word),
+        wordReading: t(i.wordReading),
+        wordMeaning: t(i.wordMeaning),
         sentence: t(i.sentence),
         sentenceVi: t(i.sentenceVi)
       };
