@@ -4,6 +4,16 @@ import { FORMS, RULES, VERBS, conjugate, type FormId, type Verb } from '../data/
 const norm = (s: string) => s.replace(/[\s。、]/g, '');
 const shuffle = <T,>(a: T[]): T[] => { const r = [...a]; for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; };
 type Q = { verb: Verb; form: FormId };
+// て/た nhóm 1 có 5 luật theo âm cuối: chỉ hiện luật đúng với động từ đang hỏi.
+const TE_LINE: Record<string, number> = { う: 0, つ: 0, る: 0, ぶ: 1, む: 1, ぬ: 1, く: 2, ぐ: 3, す: 4 };
+function ruleFor(q: Q): string {
+  const lines = RULES[q.form as Exclude<FormId, 'masu'>][q.verb.g - 1].split('｜');
+  if (q.verb.g === 1 && (q.form === 'te' || q.form === 'ta')) {
+    if (q.verb.kana === 'いく') return `き → ${q.form === 'te' ? 'いて' : 'いた'}, riêng いきます → ${q.form === 'te' ? 'いって' : 'いった'} (ngoại lệ)`;
+    return lines[TE_LINE[q.verb.kana.slice(-1)]].replace(/（.*?）/, '');
+  }
+  return lines[0];
+}
 const GROUP_STYLE = ['', 'bg-pink-100 text-pink-800', 'bg-emerald-100 text-emerald-800', 'bg-sky-100 text-sky-800'];
 
 function Rules({ form, setForm }: { form: Exclude<FormId, 'masu'>; setForm: (f: Exclude<FormId, 'masu'>) => void }) {
@@ -79,7 +89,7 @@ export default function VocabConjugateMode() {
                 className={`w-full min-h-[48px] rounded-xl border-2 px-3 text-lg text-slate-900 ${res === 'ok' ? 'border-emerald-500 bg-emerald-50' : res === 'bad' ? 'border-rose-400 bg-rose-50' : 'border-slate-300 bg-white'}`}
               />
               {res === 'ok' && <p className="text-sm font-bold text-emerald-700">Chính xác! {kanjiAns}（{kanaAns}）</p>}
-              {res === 'bad' && <p className="text-sm font-bold text-rose-700">Chưa đúng. Đáp án: {kanjiAns}（{kanaAns}）<br /><span className="font-normal text-slate-700">{RULES[q.form as Exclude<FormId, 'masu'>][q.verb.g - 1].split('｜')[0]}</span></p>}
+              {res === 'bad' && <p className="text-sm font-bold text-rose-700">Chưa đúng. Đáp án: {kanjiAns}（{kanaAns}）<br /><span className="font-normal text-slate-700">{ruleFor(q)}</span></p>}
               <div className="flex gap-2">
                 {res === null && <button onClick={() => { setText(kanaAns); setRes('bad'); setScore(s => ({ ...s, total: s.total + 1 })); }} className="min-h-[44px] px-4 rounded-xl border border-slate-300 bg-white text-sm font-bold text-slate-700">Xem đáp án</button>}
                 {res === null
