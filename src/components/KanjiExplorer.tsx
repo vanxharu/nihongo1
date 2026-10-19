@@ -1,5 +1,5 @@
 import React from 'react';
-import KanjiStudy from './KanjiStudy';
+import VocabularyPractice from './VocabularyPractice';
 import type { UserProfile } from '../types';
 
 interface KanjiExplorerProps {
@@ -7,6 +7,6 @@ interface KanjiExplorerProps {
   updateProfile: (updated: Partial<UserProfile>) => void;
   onEarnXp: (amount: number) => void;
 }
-export default function KanjiExplorer(_props: KanjiExplorerProps) {
-  return <KanjiStudy />;
+export default function KanjiExplorer({ userProfile, updateProfile, onEarnXp }: KanjiExplorerProps) {
+  return <VocabularyPractice userProfile={userProfile} updateProfile={updateProfile} onEarnXp={onEarnXp} initialLevel="N4" kanjiMode />;
 }

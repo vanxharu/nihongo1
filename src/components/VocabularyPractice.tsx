@@ -52,6 +52,7 @@ import {
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { VocabularyItem, UserProfile, LearningPosition, JLPTLevel } from '../types';
 import { VOCABULARY_DATA } from '../data';
+import { KANJI_VOCAB } from '../data/kanjiAsVocab';
 import { 
   getHanViet, 
   getSentenceFuriganaParts, 
@@ -231,6 +232,8 @@ interface VocabularyPracticeProps {
   updateProfile: (updated: Partial<UserProfile>) => void;
   onEarnXp: (amount: number) => void;
   initialLevel?: JLPTLevel;
+  /** Tab Kanji: dùng chung giao diện, dữ liệu là 209 chữ Hán của Kanji Master N4. */
+  kanjiMode?: boolean;
 }
 
 const KANJI_COMMON_READINGS: Record<string, string[]> = {
@@ -684,7 +687,7 @@ const URL_VOCAB_MODE = () => {
   return (['flashcard', 'quiz', 'cram', 'conjugate', 'sentence', 'dokkai', 'shadowing'] as const).find(x => x === m);
 };
 
-export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel }: VocabularyPracticeProps) {
+export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel, kanjiMode }: VocabularyPracticeProps) {
   const [vocabData, setVocabData] = useState<VocabularyItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -693,6 +696,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   useEffect(() => {
     let isMounted = true;
     const fetchVocabularies = async () => {
+      if (kanjiMode) { setVocabData(KANJI_VOCAB.map(v => sanitizeVocabItem(v))); setLoading(false); return; }
       try {
         const result = await safeFetchJson<VocabularyItem[]>('/api/vocabularies');
         if (isMounted && result.ok && Array.isArray(result.data) && result.data.length > 0) {
@@ -719,7 +723,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [kanjiMode]);
 
 
   const { user } = useAuth();
