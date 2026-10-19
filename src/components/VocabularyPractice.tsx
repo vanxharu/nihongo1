@@ -53,7 +53,7 @@ import {
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { VocabularyItem, UserProfile, LearningPosition, JLPTLevel } from '../types';
 import { VOCABULARY_DATA } from '../data';
-import { kanjiRowsToVocab, type KanjiRow } from '../data/kanjiAsVocab';
+import { kanjiRowsToVocab, expandKanjiWords, type KanjiRow } from '../data/kanjiAsVocab';
 import { 
   getHanViet, 
   getSentenceFuriganaParts, 
@@ -1036,12 +1036,16 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     }
   }, [currentLesson?.id, currentIndex, selectedMode, levelFilter, userProfile.targetLevel, user]);
 
-  const lessonItems = useMemo(() => {
+  const baseLessonItems = useMemo(() => {
     if (isSrsReviewActive) {
       return srsActiveSessionItems || srsDueItems;
     }
     return filteredVocab.filter(v => v.lessonId === currentLesson.id as string);
   }, [isSrsReviewActive, srsActiveSessionItems, srsDueItems, filteredVocab, currentLesson.id]);
+  // Kanji: thẻ lật/danh sách gộp theo chữ; các chế độ luyện chạy qua từng từ (mỗi từ một câu ví dụ).
+  const lessonItems = useMemo(
+    () => kanjiMode && selectedMode !== 'flashcard' ? expandKanjiWords(baseLessonItems) : baseLessonItems,
+    [kanjiMode, selectedMode, baseLessonItems]);
 
   useEffect(() => {
     if (isSrsReviewActive) {
@@ -1088,6 +1092,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   // Switch mode with smart defaults
   const handleSwitchMode = useCallback((newMode: 'flashcard' | 'quiz' | 'cram' | 'conjugate' | 'sentence' | 'write' | 'dokkai' | 'shadowing') => {
     setSelectedMode(newMode);
+    if (kanjiMode) setCurrentIndex(0); // số câu thay đổi khi chuyển giữa thẻ gộp và từng từ
     const cfg = getVocabModeSettings(newMode);
     setShowFurigana(cfg.showFurigana);
     setShowExampleFurigana(cfg.showExampleFurigana);
@@ -1096,7 +1101,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     setAutoAdvance(cfg.autoAdvance);
     setStudyDirection(cfg.studyDirection);
     setFlashcardDirection(cfg.studyDirection);
-  }, []);
+  }, [kanjiMode]);
 
   const handleResetModeDefaults = () => {
     const defaults = VOCAB_MODE_DEFAULTS[selectedMode];
@@ -4109,11 +4114,11 @@ if (loading) {
       {/* Vocabulary terms list section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-          <h3 className="text-lg font-bold text-slate-950 tracking-tight">Thuật ngữ trong bài này ({lessonItems.length})</h3>
+          <h3 className="text-lg font-bold text-slate-950 tracking-tight">Thuật ngữ trong bài này ({baseLessonItems.length})</h3>
         </div>
 
         <div className="grid grid-cols-1 gap-3">
-          {lessonItems.map((v, index) => {
+          {baseLessonItems.map((v, index) => {
             const isWordStarred = isStarred[v.id] || false;
             const statusVal = userProfile.vocabStatus?.[v.id];
             const isMastered = typeof statusVal === 'object' ? (statusVal as any)?.status === 'mastered' : statusVal === 'mastered';

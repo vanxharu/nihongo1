@@ -75,3 +75,20 @@ export const kanjiRowsToVocab = (rows: KanjiRow[]): VocabularyItem[] => {
     };
   });
 };
+
+/** Cho các chế độ luyện (trắc nghiệm, gõ, đặt câu...): mỗi từ của chữ là một câu hỏi, đúng câu ví dụ của từ đó. */
+export const expandKanjiWords = (items: VocabularyItem[]): VocabularyItem[] =>
+  items.flatMap(it => {
+    const ws: KanjiWord[] = it.kanjiWords;
+    if (!ws || ws.length < 2) return [it];
+    return ws.map((w, i): VocabularyItem => ({
+      ...it,
+      id: `${it.id}_w${i}`,
+      hiragana: readingsOf({ onyomi: it.onyomi || '', kunyomi: it.kunyomi || '', kanji: it.kanji, sentence: w.sentence } as KanjiRow).join(' / ') || it.hiragana,
+      exampleSentence: w.sentence || w.word || it.kanji,
+      exampleReading: w.reading,
+      exampleTranslation: w.sentence ? w.sentenceVi : w.meaning || it.meaning,
+      relatedWords: `${w.word}${w.reading ? `(${w.reading})` : ''}${w.meaning ? `=${w.meaning}` : ''}`,
+      kanjiWords: [w],
+    }));
+  });

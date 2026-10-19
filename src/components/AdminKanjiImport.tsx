@@ -26,6 +26,10 @@ const COLS: [keyof KanjiRow, string, string[]][] = [
 ];
 // Thông tin của chữ (không phải của từ): dòng sau của cùng một chữ được bỏ trống.
 const KANJI_FIELDS = ['chapterTitle', 'lessonTitle', 'onyomi', 'kunyomi', 'hanViet', 'meaning', 'strokes', 'level', 'mnemonic'];
+const KANJI_RE = /[\u4e00-\u9fff々〆]/g;
+/** Chữ Hán trong câu chưa có furigana ghi tay (dạng 家[いえ] hoặc {家|いえ}). */
+const missingFurigana = (sentence: string) =>
+  [...new Set((sentence.replace(/[\u4e00-\u9fff々〆ヶ]+\[[^\]]*\]/g, '').replace(/\{[^}|]*\|[^}]*\}/g, '').match(KANJI_RE)) || [])];
 const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase().replace(/[^a-z0-9]/g, '');
 
 export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void }) {
@@ -33,6 +37,7 @@ export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void
   const [rows, setRows] = useState<KanjiRow[]>([]);
   const [skipped, setSkipped] = useState<number[]>([]);
   const [warns, setWarns] = useState<string[]>([]);
+  const [errRows, setErrRows] = useState<{ row: KanjiRow; miss: string[] }[]>([]);
   const [replace, setReplace] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -72,12 +77,12 @@ export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void
     } catch { setMsg({ ok: false, text: 'Không xuất được dữ liệu.' }); }
   };
   const parse = async (file: File) => {
-    setMsg(null); setRows([]); setSkipped([]); setWarns([]);
+    setMsg(null); setRows([]); setSkipped([]); setWarns([]); setErrRows([]);
     try {
       const wb = XLSX.read(await file.arrayBuffer(), { type: 'array' });
       const raw = XLSX.utils.sheet_to_json<Record<string, unknown>>(wb.Sheets[wb.SheetNames[0]]);
       const out: KanjiRow[] = []; const bad: number[] = [];
-      const seen = new Map<string, number>(); const w: string[] = []; const heads = new Map<string, KanjiRow>();
+      const errs: { row: KanjiRow; miss: string[] }[] = []; const seen = new Map<string, number>(); const w: string[] = []; const heads = new Map<string, KanjiRow>();
       for (const [n, r] of raw.entries()) {
         const o: Record<string, unknown> = {};
         const byKey = new Map(Object.entries(r).map(([k, v]) => [norm(k), v]));
@@ -96,11 +101,18 @@ export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void
         if (!String(row.onyomi || '').trim() && !String(row.kunyomi || '').trim()) w.push(`Dòng ${n + 2} (${key}): thiếu cả Âm On và Âm Kun nên Luyện gõ không có đáp án.`);
         if (!String(row.meaning || '').trim()) w.push(`Dòng ${n + 2} (${key}): thiếu Nghĩa.`);
         if (row.word && !String(row.sentence || '').trim()) w.push(`Dòng ${n + 2} (${key}): từ này chưa có Câu ví dụ.`);
+        const miss = missingFurigana(String(row.sentence || ''));
+        if (miss.length) { errs.push({ row, miss }); w.push(`Dòng ${n + 2} (${key}): câu ví dụ thiếu furigana cho ${miss.join(', ')}.`); }
         out.push(row);
       }
       if (!out.length) setMsg({ ok: false, text: 'Không có dòng hợp lệ. Mỗi dòng cần Chương, Bài (số) và Kanji. Hãy tải file mẫu để đối chiếu tên cột.' });
-      setRows(out); setSkipped(bad); setWarns(w);
+      setRows(out); setSkipped(bad); setWarns(w); setErrRows(errs.filter(e => out.includes(e.row)));
     } catch { setMsg({ ok: false, text: 'Không đọc được file này.' }); }
+  };
+  const downloadErrors = () => {
+    const ws = XLSX.utils.aoa_to_sheet([[...COLS.map(c => c[1]), 'Lỗi'], ...errRows.map(e => [...COLS.map(c => (e.row as any)[c[0]] ?? ''), `Thiếu furigana: ${e.miss.join(', ')}`])]);
+    ws['!cols'] = [8, 16, 6, 18, 8, 14, 18, 10, 16, 8, 7, 34, 14, 14, 20, 30, 32, 24].map(wch => ({ wch }));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Kanji'); XLSX.writeFile(wb, 'Kanji_Loi_Furigana.xlsx');
   };
   const call = async (url: string, body?: unknown) => {
     const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify(body ?? {}) });
@@ -114,7 +126,7 @@ export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void
       let n = 0; for (let i = 0; i < rows.length; i += 200) n += (await call('/api/admin/kanji-master/import', { items: rows.slice(i, i + 200) })).count;
       let removed = 0;
       if (replace) {
-        const keep = new Set(rows.map(r => `${r.chapter}-${r.lesson}-${r.kanji}`));
+        const keep = new Set(rows.map(r => `${r.chapter}-${r.lesson}-${r.kanji}-${r.word}`));
         const old = await (await fetch('/api/kanji-master', { cache: 'no-store' })).json();
         const stale = (Array.isArray(old) ? old : []).map((o: any) => String(o.id)).filter((id: string) => !keep.has(id));
         for (let i = 0; i < stale.length; i += 500) removed += (await call('/api/admin/kanji-master/delete', { ids: stale.slice(i, i + 500) })).count;
@@ -148,6 +160,7 @@ export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void
           {rows.length > 30 && <p className="p-2 text-slate-500">…và {rows.length - 30} dòng nữa</p>}
         </div>
         {warns.length > 0 && <ul className="max-h-32 overflow-auto text-xs text-amber-700 space-y-0.5" aria-label="Cảnh báo">{warns.slice(0, 40).map((x, i) => <li key={i}>⚠ {x}</li>)}{warns.length > 40 && <li>…và {warns.length - 40} cảnh báo nữa</li>}</ul>}
+        {errRows.length > 0 && <button type="button" onClick={downloadErrors} className={`${btn} bg-amber-100 text-amber-900`}><Download size={16} /> Tải {errRows.length} dòng thiếu furigana (đúng form, sửa rồi nhập đè)</button>}
         <label className="flex items-center gap-2 text-xs min-h-[44px]"><input type="checkbox" checked={replace} onChange={e => setReplace(e.target.checked)} /> Thay thế toàn bộ: xóa các chữ cũ không có trong file này (sau khi lưu thành công)</label>
         <button type="button" disabled={busy} onClick={save} className={`${btn} bg-blue-600 text-white`}>{busy ? 'Đang lưu…' : `Lưu ${rows.length} chữ`}</button>
       </>)}
