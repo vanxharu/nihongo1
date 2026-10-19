@@ -94275,9 +94275,14 @@ app.post("/api/admin/kanji-master/import", requireAuth, requireAdmin, async (req
 });
 app.post("/api/admin/kanji-master/delete", requireAuth, requireAdmin, async (req, res) => {
   try {
-    if (!req.body.id) return res.status(400).json({ error: "id required" });
-    await firebaseDb().collection("kanji_master").doc(documentKey(req.body.id)).delete();
-    res.json({ success: true });
+    const ids = Array.isArray(req.body.ids) ? req.body.ids.map(String) : req.body.id ? [String(req.body.id)] : [];
+    if (!ids.length || ids.length > 1e3) return res.status(400).json({ error: "id required" });
+    for (let i = 0; i < ids.length; i += 300) {
+      const b = firebaseDb().batch();
+      ids.slice(i, i + 300).forEach((id) => b.delete(firebaseDb().collection("kanji_master").doc(documentKey(id))));
+      await b.commit();
+    }
+    res.json({ success: true, count: ids.length });
   } catch {
     res.status(503).json({ error: "Kh\xF4ng x\xF3a \u0111\u01B0\u1EE3c ch\u1EEF Kanji." });
   }
