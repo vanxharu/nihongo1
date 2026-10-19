@@ -121,6 +121,8 @@ export default function Header({
         return 'Shadowing tiếng Nhật';
       case 'kanji':
         return 'Thư viện Hán tự (Kanji)';
+      case 'myvocab':
+        return 'Từ vựng của tôi';
       case 'grammar':
         return 'Lý thuyết (Ngữ pháp, Từ vựng, Hán tự)';
       case 'vocabulary':

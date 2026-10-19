@@ -14,6 +14,7 @@ export const APP_ROUTES = {
   HOME: '/',
   BUNPO: '/bunpo',
   KANJI: '/kanji',
+  MYVOCAB: '/tu-cua-toi',
   TANGO: '/tango',
   CHO: '/cho',
   SHADOWING: '/shadowing',
@@ -37,6 +38,7 @@ export const TAB_TO_ROUTE_MAP: Record<string, string> = {
   practice: APP_ROUTES.HOME,
   grammar: APP_ROUTES.BUNPO,
   kanji: APP_ROUTES.KANJI,
+  myvocab: APP_ROUTES.MYVOCAB,
   vocabulary: APP_ROUTES.TANGO,
   listening: APP_ROUTES.JLPT,
   shadowing: APP_ROUTES.SHADOWING,
@@ -62,6 +64,7 @@ export const ROUTE_TO_TAB_MAP: Record<string, string> = {
   '/': 'practice',
   '/bunpo': 'grammar',
   '/kanji': 'kanji',
+  '/tu-cua-toi': 'myvocab',
   '/tango': 'vocabulary',
   '/cho': 'listening',
   '/shadowing': 'shadowing',
@@ -107,6 +110,7 @@ export function getTabFromPathname(pathname: string): string {
   // Prefix matching
   if (cleanPath.startsWith('/bunpo') || cleanPath.startsWith('/grammar')) return 'grammar';
   if (cleanPath.startsWith('/kanji')) return 'kanji';
+  if (cleanPath.startsWith('/tu-cua-toi')) return 'myvocab';
   if (cleanPath.startsWith('/tango') || cleanPath.startsWith('/vocabulary')) return 'vocabulary';
   if (cleanPath.startsWith('/cho') || cleanPath.startsWith('/listening')) return 'listening';
   if (cleanPath.startsWith('/shadowing')) return 'shadowing';
@@ -149,6 +153,9 @@ export function getRoutePageTitle(pathname: string): { title: string; subtitle?:
   }
   if (cleanPath.startsWith('/kanji')) {
     return { title: 'Hán tự (漢字)', subtitle: 'Tra cứu & luyện nhớ Kanji theo cấp độ' };
+  }
+  if (cleanPath.startsWith('/tu-cua-toi')) {
+    return { title: 'Từ vựng của tôi', subtitle: 'Các từ bạn đã lưu từ bài đọc, từ điển và sổ tay' };
   }
   if (cleanPath.startsWith('/tango')) {
     return { title: 'Từ vựng (単語)', subtitle: 'Từ vựng cốt lõi kèm âm thanh & flashcard' };

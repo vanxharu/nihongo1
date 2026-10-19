@@ -170,7 +170,7 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
               key={item.id}
               index={i}
               item={item}
-              isActive={isItemActive(item) || (item.id === 'grammar' && ['vocabulary', 'kanji'].includes(currentTab))}
+              isActive={isItemActive(item) || (item.id === 'grammar' && ['vocabulary', 'kanji', 'myvocab'].includes(currentTab))}
               onClick={() => { setCurrentTab(item.id); onClose(); }}
               radial={item.id === 'grammar' ? setTheoryRect : undefined}
             />

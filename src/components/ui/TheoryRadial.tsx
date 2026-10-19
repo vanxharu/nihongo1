@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Languages, PenLine } from 'lucide-react';
+import { BookOpen, Languages, PenLine, Bookmark } from 'lucide-react';
 import './theoryRadial.css';
 
 // Radial menu ported from Lucian UX/UI spec 011 (MIT).
@@ -9,10 +9,11 @@ export const THEORY_ITEMS = [
   { id: 'grammar', path: '/bunpo', label: 'Ngữ pháp', icon: BookOpen, c: 'linear-gradient(135deg,#2dd4bf,#0ea5e9)' },
   { id: 'vocabulary', path: '/tango', label: 'Từ vựng', icon: Languages, c: 'linear-gradient(135deg,#fbbf24,#f97316)' },
   { id: 'kanji', path: '/kanji', label: 'Kanji', icon: PenLine, c: 'linear-gradient(135deg,#f472b6,#a855f7)' },
+  { id: 'myvocab', path: '/tu-cua-toi', label: 'Của tôi', icon: Bookmark, c: 'linear-gradient(135deg,#34d399,#16a34a)' },
 ];
 const FAN = {
-  up: [[-84, -52], [0, -98], [84, -52]],
-  right: [[64, -54], [84, 0], [64, 54]],
+  up: [[-108, -40], [-38, -96], [38, -96], [108, -40]],
+  right: [[56, -84], [84, -28], [84, 28], [56, 84]],
 };
 
 export default function TheoryRadial({ rect, dir, onPick, onClose }: {

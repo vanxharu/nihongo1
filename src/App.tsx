@@ -30,6 +30,7 @@ import { getTabFromPathname, TAB_TO_ROUTE_MAP, getRoutePageTitle } from './route
 import AdminRoute from './components/AdminRoute';
 
 const KanjiExplorer = lazyWithRetry(() => import('./components/KanjiExplorer'));
+const MyVocabulary = lazyWithRetry(() => import('./components/MyVocabulary'));
 const DailyExamQuiz = lazyWithRetry(() => import('./components/DailyExamQuiz'));
 const Kaiwa = lazyWithRetry(() => import('./components/Kaiwa'));
 const AdminPanel = lazyWithRetry(() => import('./components/AdminPanel'));
@@ -645,6 +646,8 @@ export default function App() {
           />
         } 
       />
+
+      <Route path="/tu-cua-toi" element={<MyVocabulary userProfile={activeProfile} updateProfile={updateProfile} onEarnXp={handleEarnXp} />} />
 
       {/* 4. Từ vựng (Tango) & Deep link */}
       <Route 

@@ -52,6 +52,7 @@ import {
 , PenLine } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { VocabularyItem, UserProfile, LearningPosition, JLPTLevel } from '../types';
+import { getStoredWords, getStoredNotebooks } from '../utils/notebookStorage';
 import { VOCABULARY_DATA } from '../data';
 import { kanjiRowsToVocab, expandKanjiWords, type KanjiRow } from '../data/kanjiAsVocab';
 import { 
@@ -235,6 +236,8 @@ interface VocabularyPracticeProps {
   initialLevel?: JLPTLevel;
   /** Tab Kanji: dùng chung giao diện, dữ liệu là 209 chữ Hán của Kanji Master N4. */
   kanjiMode?: boolean;
+  /** Tab Từ vựng của tôi: dữ liệu là các từ đã lưu trong Sổ tay. */
+  myMode?: boolean;
 }
 
 const KANJI_COMMON_READINGS: Record<string, string[]> = {
@@ -690,7 +693,7 @@ const URL_VOCAB_MODE = () => {
   return (['flashcard', 'quiz', 'cram', 'conjugate', 'sentence', 'write', 'dokkai', 'shadowing'] as const).find(x => x === m);
 };
 
-export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel, kanjiMode }: VocabularyPracticeProps) {
+export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel, kanjiMode, myMode }: VocabularyPracticeProps) {
   const [vocabData, setVocabData] = useState<VocabularyItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -698,7 +701,24 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
 
   useEffect(() => {
     let isMounted = true;
+    let cleanup = () => {};
     const fetchVocabularies = async () => {
+      if (myMode) {
+        const load = () => {
+          const names = new Map(getStoredNotebooks().map(n => [n.id, n.name]));
+          const items = getStoredWords().filter(w => !w.id.startsWith('init_')).map((w): VocabularyItem => sanitizeVocabItem({
+            id: `my_${w.id}`, kanji: w.kanji, hiragana: w.furigana || w.kanji, romaji: w.romaji, meaning: w.meaning,
+            hanViet: w.hanViet || getHanViet(w.kanji || ''), exampleSentence: w.example || w.kanji, exampleTranslation: w.exampleMeaning || '',
+            notes: w.note || undefined, level: (w.level || 'N5') as JLPTLevel, curriculum: 'tango',
+            lessonId: `my_${w.notebookId}`, lessonName: names.get(w.notebookId) || 'Sổ tay của tôi',
+          } as VocabularyItem));
+          if (isMounted) { setVocabData(items); setLoading(false); }
+        };
+        load();
+        window.addEventListener('saved_words_updated', load);
+        cleanup = () => window.removeEventListener('saved_words_updated', load);
+        return;
+      }
       if (kanjiMode) {
         const r = await safeFetchJson<KanjiRow[]>('/api/kanji-master');
         if (isMounted) { setVocabData(r.ok && Array.isArray(r.data) ? kanjiRowsToVocab(r.data).map(v => sanitizeVocabItem(v)) : []); setLoading(false); }
@@ -729,8 +749,9 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     fetchVocabularies();
     return () => {
       isMounted = false;
+      cleanup();
     };
-  }, [kanjiMode]);
+  }, [kanjiMode, myMode]);
 
 
   const { user } = useAuth();
@@ -763,7 +784,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   // Filter vocab by selected level & selected curriculum
   const filteredVocab = useMemo(() => {
     const list = vocabData.filter(v => {
-      const matchLevel = levelFilter === 'ALL' ? true : v.level === levelFilter;
+      const matchLevel = myMode || levelFilter === 'ALL' ? true : v.level === levelFilter;
       const matchCurriculum = v.curriculum 
         ? v.curriculum === selectedCurriculum 
         : (selectedCurriculum === 'tango' ? v.id.startsWith('v_tango') : !v.id.startsWith('v_tango'));

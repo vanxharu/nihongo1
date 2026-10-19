@@ -1,5 +1,6 @@
 import Skeleton from './ui/Skeleton';
 import ReadingImage from './ReadingImage';
+import { addWordToNotebook } from '../utils/notebookStorage';
 import { PlayPauseMorph, WaveSeek } from './ui/AudioMorph';
 /**
  * @license
@@ -3507,6 +3508,8 @@ export default function AiReadingPractice({
         onClose={() => setClickedWordInfo(null)}
         onSaveVocab={(word, reading, meaning, level) => {
           setBasket(prev => prev.some(b => b.word === word) ? prev : [...prev, { word, reading, meaning, level }]);
+          // Cũng lưu vào "Từ vựng của tôi" (Sổ tay, mục từ đọc báo).
+          addWordToNotebook({ kanji: word, furigana: reading, meaning: meaning || '', level: level as any, notebookId: 'default_news', source: 'reading' });
           updateProfile({
             vocabStatus: {
               ...(userProfile.vocabStatus || {}),

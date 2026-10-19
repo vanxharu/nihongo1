@@ -101,7 +101,7 @@ export default function MobileBottomNav({
       path: '/bunpo',
       label: 'Lý thuyết',
       icon: BookOpen,
-      checkActive: (tab: string, pathname: string) => ['grammar', 'vocabulary', 'kanji'].includes(tab) || ['/bunpo', '/tango', '/kanji'].some((p) => pathname.startsWith(p)),
+      checkActive: (tab: string, pathname: string) => ['grammar', 'vocabulary', 'kanji', 'myvocab'].includes(tab) || ['/bunpo', '/tango', '/kanji', '/tu-cua-toi'].some((p) => pathname.startsWith(p)),
     },
     {
       id: 'roadmap',
