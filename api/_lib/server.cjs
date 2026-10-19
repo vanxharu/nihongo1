@@ -92726,6 +92726,18 @@ B\xE0i \u0111\u1ECDc ti\u1EBFng Nh\u1EADt \u0111\xE3 \u0111\u01B0\u1EE3c x\u1EED
     res.status(500).json({ error: "Internal Server Error", details: error.message });
   }
 });
+var readingLibCache = null;
+var readingLib = () => readingLibCache ||= JSON.parse(import_fs.default.readFileSync(import_path.default.join(process.cwd(), "src", "data", "readingLibraryN4.json"), "utf8"));
+app.get("/api/reading/library", (_req, res) => {
+  res.setHeader("Cache-Control", "public, max-age=300");
+  res.json(readingLib().map((a) => ({ id: a.id, title: a.title, titleVi: a.titleVi, topic: a.topic, level: a.level, imageUrl: a.imageUrl, thumb: a.thumb, questionCount: a.quizzes.length, wordCount: a.vocabularyList.length })));
+});
+app.get("/api/reading/library/:id", (req, res) => {
+  const a = readingLib().find((x) => x.id === req.params.id);
+  if (!a) return res.status(404).json({ error: "Kh\xF4ng t\xECm th\u1EA5y b\xE0i \u0111\u1ECDc." });
+  res.setHeader("Cache-Control", "public, max-age=300");
+  res.json(a);
+});
 app.get("/api/reading/image", readingImageHandler);
 app.get("/api/reading/todai/news-list", async (req, res) => {
   res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");

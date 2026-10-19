@@ -2566,6 +2566,20 @@ Hãy biên soạn 1 bài đọc hiểu tiếng Nhật đời sống tự nhiên 
   }
 });
 
+// Thư viện bài đọc N4 viết sẵn (src/data/readingLibraryN4.json): danh sách rút gọn + bài đầy đủ theo id.
+let readingLibCache: any[] | null = null;
+const readingLib = () => (readingLibCache ||= JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src', 'data', 'readingLibraryN4.json'), 'utf8')));
+app.get("/api/reading/library", (_req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=300');
+  res.json(readingLib().map((a: any) => ({ id: a.id, title: a.title, titleVi: a.titleVi, topic: a.topic, level: a.level, imageUrl: a.imageUrl, thumb: a.thumb, questionCount: a.quizzes.length, wordCount: a.vocabularyList.length })));
+});
+app.get("/api/reading/library/:id", (req, res) => {
+  const a = readingLib().find((x: any) => x.id === req.params.id);
+  if (!a) return res.status(404).json({ error: 'Không tìm thấy bài đọc.' });
+  res.setHeader('Cache-Control', 'public, max-age=300');
+  res.json(a);
+});
+
 app.get("/api/reading/image", readingImageHandler);
 
 // 2.7.1 API: Todaii Japanese News List (Lấy danh sách bài báo từ Todaii News japanese.todaiinews.com)

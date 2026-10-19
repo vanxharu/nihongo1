@@ -172,7 +172,7 @@ export default function AiReadingPractice({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Source mode: 'todai' (Báo Todaii News) | 'watanoc' (Tạp chí Watanoc) | 'custom' (Tự nhập văn bản)
-  const [readingSourceMode, setReadingSourceMode] = useState<'todai' | 'watanoc' | 'custom'>('todai');
+  const [readingSourceMode, setReadingSourceMode] = useState<'library' | 'todai' | 'watanoc' | 'custom'>('library');
 
   // Read status persistence state: holds Set of read article IDs / URLs / titles
   const [readArticleKeys, setReadArticleKeys] = useState<Set<string>>(() => {
@@ -254,6 +254,28 @@ export default function AiReadingPractice({
   const [selectedPosFilter, setSelectedPosFilter] = useState<'noun' | 'verb' | 'adjective' | null>(null);
   const [posMap, setPosMap] = useState<Record<string, 'noun' | 'verb' | 'adjective' | 'other'>>({});
   const [clickedWordInfo, setClickedWordInfo] = useState<JlptWordInfo | null>(null);
+  const [library, setLibrary] = useState<any[]>([]);
+  const [libraryError, setLibraryError] = useState<string | null>(null);
+  const [openingLibId, setOpeningLibId] = useState<string | null>(null);
+  useEffect(() => {
+    fetch('/api/reading/library').then(r => r.ok ? r.json() : Promise.reject()).then(setLibrary).catch(() => setLibraryError('Chưa tải được thư viện bài đọc. Hãy thử lại sau.'));
+  }, []);
+  const openLibraryLesson = async (id: string) => {
+    setOpeningLibId(id); setErrorMessage(null);
+    try {
+      const r = await fetch(`/api/reading/library/${id}`); if (!r.ok) throw new Error();
+      const lesson = await r.json();
+      try { ensureJlptStats(lesson); } catch { /* bài viết sẵn không có token, bỏ qua */ }
+      setReadingData(lesson); markArticleAsRead(lesson);
+      setUserAnswers({}); setShowExplanations({}); setIsQuizSubmitted(false); setEarnedXpAwarded(false); setActiveTab('quiz');
+    } catch { setErrorMessage('Không mở được bài đọc này. Hãy thử lại.'); }
+    finally { setOpeningLibId(null); }
+  };
+  // Bài viết sẵn: lấy nghĩa/cách đọc/cấp độ từ danh sách từ vựng đã lưu thay vì tra lại.
+  const enrichWord = (info: JlptWordInfo): JlptWordInfo => {
+    const v = readingData?.vocabularyList?.find(x => x.word === info.word || x.kanji === info.word);
+    return v ? { ...info, furigana: info.furigana || v.reading || v.hiragana, meaning: info.meaning || v.meaning, jlpt: info.jlpt || (v.level as any) } : info;
+  };
   const [activeLevelWordsDrawer, setActiveLevelWordsDrawer] = useState<'N1' | 'N2' | 'N3' | 'N4' | 'N5' | null>(null);
   const [isGrammarModalOpen, setIsGrammarModalOpen] = useState<boolean>(false);
   const [fontSize, setFontSize] = useState<'md' | 'lg' | 'xl'>('lg');
@@ -1375,10 +1397,11 @@ export default function AiReadingPractice({
       {!readingData ? (
         <>
           <nav className="study-nav" aria-label="Nguồn bài đọc">{[
+            { id: 'library', title: 'Bài đọc N4', note: '20 bài có sẵn, mở ngay', icon: BookOpen },
             { id: 'todai', title: 'Tin tức Todaii', note: 'Luyện đọc qua tin tức mỗi ngày', icon: Newspaper },
             { id: 'custom', title: 'Bài đọc của bạn', note: 'Nhập văn bản hoặc chọn bài mẫu', icon: PenTool }
           ].map(item => <button key={item.id} id={`btn-mode-${item.id}`} aria-pressed={readingSourceMode === item.id} onClick={() => setReadingSourceMode(item.id as typeof readingSourceMode)}><item.icon size={16} /><strong>{item.title}</strong></button>)}</nav>
-          {readingSourceMode !== 'custom' && <div className="study-reading-toolbar"><span className="text-xs text-[var(--ui-muted)]">Chọn bài bên dưới để bắt đầu.</span><button className="study-history-button" onClick={() => readingSourceMode === 'todai' ? setShowTodaiLinkInput(v => !v) : setShowWatanocLinkInput(v => !v)}><Plus size={15} />Thêm link bài viết</button></div>}
+          {readingSourceMode !== 'custom' && readingSourceMode !== 'library' && <div className="study-reading-toolbar"><span className="text-xs text-[var(--ui-muted)]">Chọn bài bên dưới để bắt đầu.</span><button className="study-history-button" onClick={() => readingSourceMode === 'todai' ? setShowTodaiLinkInput(v => !v) : setShowWatanocLinkInput(v => !v)}><Plus size={15} />Thêm link bài viết</button></div>}
         </>      ) : (
         <div className="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-2xl reading-surface border border-[var(--ui-line)] shadow-md backdrop-blur-md">
           {/* Left: Change article back button */}
@@ -1448,6 +1471,23 @@ export default function AiReadingPractice({
           className="reading-source-content"
         >
           {/* SUB-VIEW A: TODAII NEWS INTEGRATION */}
+          {readingSourceMode === 'library' && (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {libraryError && <p className="text-sm text-rose-400 col-span-full">{libraryError}</p>}
+              {!libraryError && library.length === 0 && <p className="text-sm text-[var(--ui-muted)] col-span-full">Đang tải thư viện…</p>}
+              {library.map(a => (
+                <button key={a.id} type="button" disabled={openingLibId === a.id} onClick={() => openLibraryLesson(a.id)}
+                  className="text-left reading-surface border border-[var(--ui-line)] rounded-2xl overflow-hidden hover:border-indigo-500 transition cursor-pointer disabled:opacity-60">
+                  <img src={a.imageUrl} alt="" loading="lazy" className="w-full aspect-video object-cover" />
+                  <div className="p-3 space-y-1">
+                    <div className="flex items-center gap-1.5 text-[10px]"><span className="px-1.5 rounded bg-indigo-500/20 text-indigo-300 font-bold">{a.level}</span><span className="text-[var(--ui-muted)]">{a.topic}</span>{isArticleRead(a) && <span className="text-emerald-400">✓ Đã đọc</span>}</div>
+                    <strong className="block text-sm text-[var(--ui-ink)] font-jp">{a.title}</strong>
+                    <span className="block text-xs text-[var(--ui-muted)]">{a.titleVi}</span>
+                    <span className="block text-[11px] text-[var(--ui-muted)]">{a.questionCount} câu hỏi · {a.wordCount} từ vựng</span>
+                  </div>
+                </button>))}
+            </div>
+          )}
           {readingSourceMode === 'todai' && (
             <div className="space-y-3">
               {/* Optional Collapsible Link Input */}
@@ -2804,7 +2844,7 @@ export default function AiReadingPractice({
                     }
                   }}
                   onToggleAutoScroll={() => setAutoScrollAudioText(prev => !prev)}
-                  onWordClick={(info) => setClickedWordInfo(info)}
+                  onWordClick={(info) => setClickedWordInfo(enrichWord(info))}
                   posMap={posMap}
                   vocabularyList={readingData.vocabularyList}
                   showPosHighlight={showPosHighlight}
@@ -2864,7 +2904,7 @@ export default function AiReadingPractice({
                   showJlptUnderline={showJlptUnderline}
                   selectedJlptFilter={selectedJlptFilter}
                   fontSize={fontSize === 'md' ? 'base' : fontSize}
-                  onWordClick={(info) => setClickedWordInfo(info)}
+                  onWordClick={(info) => setClickedWordInfo(enrichWord(info))}
                   posMap={posMap}
                   showPosHighlight={showPosHighlight}
                   selectedPosFilter={selectedPosFilter}
