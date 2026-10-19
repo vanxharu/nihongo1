@@ -3933,7 +3933,7 @@ if (loading) {
 
       {/* Responsive Cohesive Mode Selectors Bar */}
       <div className="w-full max-w-[780px] space-y-1.5 -mt-2">
-        <div className={`grid ${kanjiMode ? 'grid-cols-8' : 'grid-cols-7'} gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner`}>
+        <div className={`grid ${kanjiMode ? 'grid-cols-4 sm:grid-cols-8' : 'grid-cols-7'} gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner`}>
           <button 
             type="button"
             onClick={() => handleSwitchMode('flashcard')} 
