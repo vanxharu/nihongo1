@@ -24,7 +24,7 @@ const COLS: [keyof KanjiRow, string, string[]][] = [
 ];
 const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase().replace(/[^a-z0-9]/g, '');
 
-export default function AdminKanjiImport() {
+export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void }) {
   const { token } = useAuth();
   const [rows, setRows] = useState<KanjiRow[]>([]);
   const [skipped, setSkipped] = useState(0);
@@ -63,12 +63,12 @@ export default function AdminKanjiImport() {
   };
   const save = async () => {
     setBusy(true); setMsg(null);
-    try { let n = 0; for (let i = 0; i < rows.length; i += 200) n += (await call('/api/admin/kanji-master/import', { items: rows.slice(i, i + 200) })).count; setMsg({ ok: true, text: `Đã lưu ${n} chữ Kanji.` }); setRows([]); }
+    try { let n = 0; for (let i = 0; i < rows.length; i += 200) n += (await call('/api/admin/kanji-master/import', { items: rows.slice(i, i + 200) })).count; setMsg({ ok: true, text: `Đã lưu ${n} chữ Kanji.` }); setRows([]); onChanged?.(); }
     catch (e: any) { setMsg({ ok: false, text: e.message }); } finally { setBusy(false); }
   };
   const clear = async () => {
     setBusy(true); setMsg(null);
-    try { const j = await call('/api/admin/kanji-master/clear'); setMsg({ ok: true, text: `Đã xóa ${j.count} chữ Kanji.` }); }
+    try { const j = await call('/api/admin/kanji-master/clear'); setMsg({ ok: true, text: `Đã xóa ${j.count} chữ Kanji.` }); onChanged?.(); }
     catch (e: any) { setMsg({ ok: false, text: e.message }); } finally { setBusy(false); setConfirmClear(false); }
   };
   const btn = 'min-h-[44px] px-4 rounded-xl text-xs font-bold flex items-center gap-2 disabled:opacity-50';

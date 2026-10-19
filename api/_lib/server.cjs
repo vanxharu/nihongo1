@@ -94273,6 +94273,15 @@ app.post("/api/admin/kanji-master/import", requireAuth, requireAdmin, async (req
     res.status(503).json({ error: "Kh\xF4ng l\u01B0u \u0111\u01B0\u1EE3c d\u1EEF li\u1EC7u Kanji. B\u1EA1n c\xF3 th\u1EC3 th\u1EED l\u1EA1i." });
   }
 });
+app.post("/api/admin/kanji-master/delete", requireAuth, requireAdmin, async (req, res) => {
+  try {
+    if (!req.body.id) return res.status(400).json({ error: "id required" });
+    await firebaseDb().collection("kanji_master").doc(documentKey(req.body.id)).delete();
+    res.json({ success: true });
+  } catch {
+    res.status(503).json({ error: "Kh\xF4ng x\xF3a \u0111\u01B0\u1EE3c ch\u1EEF Kanji." });
+  }
+});
 app.post("/api/admin/kanji-master/clear", requireAuth, requireAdmin, async (_req, res) => {
   try {
     const snap = await firebaseDb().collection("kanji_master").get();

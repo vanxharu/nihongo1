@@ -24,7 +24,7 @@ void (async () => {
     console.warn('[hanviet] Could not load hanviet-pinyin-words:', e);
   }
 })();
-import { firebaseDb, listContent, bulkSaveContent, saveContent, removeContent, readRecord, writeRecord, listRecords } from './src/server/firebaseStore';
+import { documentKey, firebaseDb, listContent, bulkSaveContent, saveContent, removeContent, readRecord, writeRecord, listRecords } from './src/server/firebaseStore';
 import { GRAMMAR_SYSTEM_PROMPT, buildGrammarContentUserPrompt } from './src/prompts/grammarContentPrompt';
 import { VOCABULARY_DATA, GRAMMAR_DATA, KANJI_DATA, TANGO_N4_VOCABULARY } from './src/data';
 import { synthesizeAzureSpeech, ttsParams } from './src/server/azureTts';
@@ -4216,6 +4216,13 @@ app.post('/api/admin/kanji-master/import', requireAuth, requireAdmin, async (req
     await Promise.all(rows.map((r: any) => writeRecord('kanji_master', r.id, r)));
     res.json({ success: true, count: rows.length });
   } catch { res.status(503).json({ error: 'Không lưu được dữ liệu Kanji. Bạn có thể thử lại.' }); }
+});
+app.post('/api/admin/kanji-master/delete', requireAuth, requireAdmin, async (req: any, res) => {
+  try {
+    if (!req.body.id) return res.status(400).json({ error: 'id required' });
+    await firebaseDb().collection('kanji_master').doc(documentKey(req.body.id)).delete();
+    res.json({ success: true });
+  } catch { res.status(503).json({ error: 'Không xóa được chữ Kanji.' }); }
 });
 app.post('/api/admin/kanji-master/clear', requireAuth, requireAdmin, async (_req: any, res) => {
   try {

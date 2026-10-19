@@ -71,14 +71,14 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
       let endpoint = '';
       if (activeSubTab === 'vocab') endpoint = '/api/vocabularies';
       if (activeSubTab === 'grammar') endpoint = '/api/grammars';
-      if (activeSubTab === 'kanji') endpoint = '/api/kanjis';
+      if (activeSubTab === 'kanji') endpoint = '/api/kanji-master';
       
       const res = await fetch(endpoint, { cache: 'no-store' });
       if (!res.ok) throw new Error('Không tải được dữ liệu học tập. Vui lòng thử lại.');
       const resData = await res.json();
       if (request !== loadSequence.current) return;
       if (Array.isArray(resData)) {
-        setData(resData);
+        setData(activeSubTab === 'kanji' ? [...resData].sort((a, b) => a.chapter - b.chapter || a.lesson - b.lesson) : resData);
       } else {
         throw new Error('Dữ liệu trả về không hợp lệ. Vui lòng thử lại.');
       }
@@ -103,7 +103,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
           let endpoint = '';
           if (activeSubTab === 'vocab') endpoint = '/api/admin/vocabularies/delete';
           if (activeSubTab === 'grammar') endpoint = '/api/admin/grammars/delete';
-          if (activeSubTab === 'kanji') endpoint = '/api/admin/kanjis/delete';
+          if (activeSubTab === 'kanji') endpoint = '/api/admin/kanji-master/delete';
 
           const res = await fetch(endpoint, {
             method: 'POST',
@@ -475,7 +475,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
           </button>
         </div>
 
-        {activeSubTab === 'kanji' && <div className="w-full"><AdminKanjiImport /></div>}
+        {activeSubTab === 'kanji' && <div className="w-full"><AdminKanjiImport onChanged={fetchData} /></div>}
         {/* Action buttons */}
         <div className="admin-data-actions">
           {activeSubTab === 'vocab' && (
