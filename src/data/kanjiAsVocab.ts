@@ -11,8 +11,20 @@ export interface KanjiRow {
 }
 
 const splitList = (s: string) => s.split(/[,、;；・\/／]+/).map(x => x.trim()).filter(Boolean);
-/** Mọi cách đọc hợp lệ (On, Kun, phần Kun bỏ okurigana) để bài gõ chấp nhận một trong số đó. */
-const readingsOf = (r: KanjiRow) => [...new Set(splitList(`${r.onyomi},${r.kunyomi}`).flatMap(x => [x.replace(/[.\-]/g, ''), x.split('.')[0].replace(/-/g, '')]).filter(Boolean))];
+const toHira = (t: string) => t.replace(/[\u30a1-\u30f6]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+/** Mọi cách đọc hợp lệ (hiragana) để bài gõ chấp nhận một trong số đó. Cách đọc đầu tiên còn dùng làm furigana
+ * cho chữ này trong câu ví dụ: đứng trước hiragana (私の, 育てて) ưu tiên Kun (bỏ okurigana), còn lại ưu tiên On.
+ * shortcut: đoán theo ký tự liền sau, không biết ngữ cảnh thật; sai thì chèn furigana tay dạng 私{わたし} trong câu. */
+const readingsOf = (r: KanjiRow) => {
+  const on = splitList(r.onyomi).map(x => toHira(x.replace(/[.\-]/g, '')));
+  const kun = splitList(r.kunyomi);
+  const kunStem = kun.map(x => x.split('.')[0].replace(/-/g, ''));
+  const kunFull = kun.map(x => x.replace(/[.\-]/g, ''));
+  const next = r.sentence?.[r.sentence.indexOf(r.kanji) + 1] ?? '';
+  const preferKun = /[\u3041-\u3096]/.test(next);
+  const order = preferKun ? [...kunStem, ...kunFull, ...on] : [...on, ...kunStem, ...kunFull];
+  return [...new Set(order.filter(Boolean))];
+};
 const firstWord = (words: string) => {
   const m = words.split(/[;；]/)[0].trim().match(/^([^(（=]+)\s*(?:[(（]([^)）]*)[)）])?\s*=?\s*(.*)$/);
   return m ? { word: m[1].trim(), reading: m[2]?.trim() || '', meaning: m[3].trim() } : null;
@@ -32,7 +44,7 @@ export const kanjiRowsToVocab = (rows: KanjiRow[]): VocabularyItem[] =>
       exampleSentence: r.sentence || w?.word || r.kanji,
       exampleReading: w?.reading,
       exampleTranslation: r.sentence ? r.sentenceVi : w?.meaning || r.meaning,
-      partOfSpeech: r.strokes ? `Kanji;${r.strokes} nét` : 'Kanji',
+      partOfSpeech: r.strokes ? `Kanji · ${r.strokes} nét` : 'Kanji',
       relatedWords: r.words ? r.words.split(/[;；]/).map(x => x.trim()).filter(Boolean).join(' ・ ') : undefined,
       notes: r.mnemonic || undefined,
       curriculum: 'tango',
