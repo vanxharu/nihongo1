@@ -1,16 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { BookOpen, ListChecks, Keyboard, Languages, PenLine, Volume2, RotateCcw, ChevronLeft, ChevronRight, Shuffle } from 'lucide-react';
+import { BookOpen, ListChecks, Keyboard, Languages, PenLine, FileText, Volume2, RotateCcw, ChevronLeft, ChevronRight, Shuffle } from 'lucide-react';
 import SearchPicker from './ui/SearchPicker';
 import KanjiSentences from './KanjiSentences';
+import KanjiBookPages from './KanjiBookPages';
 import { KANJI_MASTER_N4, masterKanjiInfo } from '../data/kanjiMasterN4';
 
-type Mode = 'card' | 'quiz' | 'type' | 'words' | 'sentence';
+type Mode = 'card' | 'quiz' | 'type' | 'words' | 'sentence' | 'book';
 const MODES: { id: Mode; label: string; Icon: typeof BookOpen }[] = [
   { id: 'card', label: 'Lật thẻ', Icon: BookOpen },
   { id: 'quiz', label: 'Trắc nghiệm', Icon: ListChecks },
   { id: 'type', label: 'Luyện gõ', Icon: Keyboard },
   { id: 'words', label: 'Từ ghép', Icon: Languages },
   { id: 'sentence', label: 'Đặt câu', Icon: PenLine },
+  { id: 'book', label: 'Trang sách', Icon: FileText },
 ];
 const LS = 'nihon:kanji:study:v1'; // { known: string[] }
 const loadKnown = (): string[] => { try { return JSON.parse(localStorage.getItem(LS) || '{}').known || []; } catch { return []; } };
@@ -68,7 +70,7 @@ export default function KanjiStudy() {
         </div>
       </div>
 
-      <div className="grid grid-cols-5 gap-0.5 p-0.5 rounded-2xl border" style={{ background: '#151a2e', borderColor: '#2b3353' }} role="tablist">
+      <div className="grid grid-cols-6 gap-0.5 p-0.5 rounded-2xl border" style={{ background: '#151a2e', borderColor: '#2b3353' }} role="tablist">
         {MODES.map(({ id, label, Icon }) => (
           <button key={id} role="tab" aria-selected={mode === id} onClick={() => setMode(id)}
             className={`min-h-[48px] rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 text-[10.5px] sm:text-xs font-bold ${mode === id ? 'bg-blue-600 ring-1 ring-blue-400/50' : 'hover:bg-[#1f2642]'}`}
@@ -83,6 +85,7 @@ export default function KanjiStudy() {
       {mode === 'type' && <TypeMode key={lesson.id} glyphs={lesson.kanji} mark={mark} />}
       {mode === 'words' && <Words key={lesson.id} words={lesson.words} />}
       {mode === 'sentence' && <KanjiSentences />}
+      {mode === 'book' && <KanjiBookPages lessonId={lessonId} />}
     </div>
   );
 }
