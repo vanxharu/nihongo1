@@ -4210,7 +4210,8 @@ app.post('/api/admin/kanji-master/import', requireAuth, requireAdmin, async (req
       const t = (v: any) => String(v ?? '').trim().slice(0, 500);
       return { id: `${Number(i.chapter)}-${Number(i.lesson)}-${t(i.kanji)}`, chapter: Number(i.chapter), chapterTitle: t(i.chapterTitle), lesson: Number(i.lesson), lessonTitle: t(i.lessonTitle),
         kanji: t(i.kanji), onyomi: t(i.onyomi), kunyomi: t(i.kunyomi), hanViet: t(i.hanViet), meaning: t(i.meaning), strokes: Number(i.strokes) || 0,
-        word: t(i.word), wordReading: t(i.wordReading), wordMeaning: t(i.wordMeaning), sentence: t(i.sentence), sentenceVi: t(i.sentenceVi) };
+        level: /^N[1-5]$/.test(String(i.level).trim().toUpperCase()) ? String(i.level).trim().toUpperCase() : 'N4', mnemonic: t(i.mnemonic),
+        words: String(i.words ?? '').trim().slice(0, 2000), sentence: t(i.sentence), sentenceVi: t(i.sentenceVi) };
     });
     await Promise.all(rows.map((r: any) => writeRecord('kanji_master', r.id, r)));
     res.json({ success: true, count: rows.length });

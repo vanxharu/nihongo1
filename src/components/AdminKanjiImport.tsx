@@ -16,9 +16,9 @@ const COLS: [keyof KanjiRow, string, string[]][] = [
   ['hanViet', 'Hán Việt', ['hanviet']],
   ['meaning', 'Nghĩa', ['nghia', 'meaning']],
   ['strokes', 'Số nét', ['sonet', 'strokes']],
-  ['word', 'Từ ví dụ', ['tuvidu', 'word']],
-  ['wordReading', 'Cách đọc từ ví dụ', ['cachdoctuvidu', 'wordreading']],
-  ['wordMeaning', 'Nghĩa từ ví dụ', ['nghiatuvidu', 'wordmeaning']],
+  ['level', 'JLPT', ['jlpt', 'level', 'capdo']],
+  ['mnemonic', 'Mẹo nhớ', ['meonho', 'mnemonic']],
+  ['words', 'Từ ví dụ', ['tuvidu', 'words', 'word']],
   ['sentence', 'Câu ví dụ', ['cauvidu', 'sentence']],
   ['sentenceVi', 'Dịch câu', ['dichcau', 'sentencevi']],
 ];
@@ -33,7 +33,7 @@ export default function AdminKanjiImport() {
   const [confirmClear, setConfirmClear] = useState(false);
 
   const template = () => {
-    const ws = XLSX.utils.aoa_to_sheet([COLS.map(c => c[1]), [1, 'Tên chương', 1, 'Tên bài', '家', 'カ', 'いえ', 'GIA', 'nhà', 10, '', '', '', '', '']]);
+    const ws = XLSX.utils.aoa_to_sheet([COLS.map(c => c[1]), [1, 'Tên chương', 1, 'Tên bài', '家', 'カ, ケ', 'いえ, や', 'GIA', 'nhà', 10, 'N4', '', '家族(かぞく)=gia đình; 家(いえ)=nhà', '', '']]);
     const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Kanji'); XLSX.writeFile(wb, 'Mau_Nhap_Kanji.xlsx');
   };
   const parse = async (file: File) => {
@@ -77,7 +77,7 @@ export default function AdminKanjiImport() {
   return (
     <section className="rounded-2xl border border-slate-200 dark:border-slate-700 p-4 space-y-3" aria-label="Nhập Kanji Master từ Excel">
       <h3 className="font-bold text-sm">Nhập Kanji Master từ Excel</h3>
-      <p className="text-xs text-slate-500">Mỗi dòng là một chữ Hán. Cần cột Chương, Bài, Kanji; các cột còn lại tùy chọn. Nhập lại cùng Chương-Bài-Kanji sẽ cập nhật dòng cũ.</p>
+      <p className="text-xs text-slate-500">Mỗi dòng là một chữ Hán. Cần cột Chương, Bài, Kanji; các cột còn lại tùy chọn. Âm On/Kun và Từ ví dụ ngăn nhiều giá trị bằng dấu , hoặc ; (từ ví dụ: 家族(かぞく)=gia đình; 家(いえ)=nhà). Nhập lại cùng Chương-Bài-Kanji sẽ cập nhật dòng cũ.</p>
       <div className="flex flex-wrap gap-2">
         <button type="button" onClick={template} className={`${btn} bg-slate-100 dark:bg-slate-800`}><Download size={16} /> Tải file mẫu</button>
         <label className={`${btn} bg-emerald-600 text-white cursor-pointer`}><UploadCloud size={16} /> Chọn file Excel
