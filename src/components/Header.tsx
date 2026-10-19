@@ -213,7 +213,7 @@ export default function Header({
       {/* Desktop Header Dashboard (Shown ONLY on xl: screens >= 1280px) */}
       <header 
         id="app-header" 
-        className="hidden xl:flex h-14 sm:h-16 border-b border-[#1B223C] bg-[#0F1424]/95 backdrop-blur-md px-6 items-center justify-between sticky top-0 z-40 select-none shrink-0"
+        className="hidden xl:flex h-11 border-b border-[#1B223C] bg-[#0F1424]/95 backdrop-blur-md px-6 items-center justify-between sticky top-0 z-40 select-none shrink-0"
       >
         {/* Left side: Logo & Breadcrumb and Target Level */}
         <div id="header-pathway" className="flex items-center gap-3 min-w-0">
@@ -254,7 +254,7 @@ export default function Header({
               setTempTarget(userProfile.targetLevel);
               setIsProfileOpen(!isProfileOpen);
             }}
-            className="flex items-center gap-2 pl-1.5 pr-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer shrink-0"
+            className="flex items-center gap-1.5 pl-1 pr-2 py-0.5 text-xs rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer shrink-0"
             title="Hồ sơ học tập & Cài đặt hệ thống"
           >
             <div className="relative flex items-center justify-center w-6 h-6 rounded-full bg-white border border-slate-200 text-sm">

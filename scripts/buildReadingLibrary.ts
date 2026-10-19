@@ -48,6 +48,22 @@ async function furi(text: string): Promise<string> {
   }
   return merge(out);
 }
+// Token cho popup tra từ: tách theo từ kuromoji, mỗi mảnh (chữ Hán / okurigana) đều mang dạng từ điển (伝えました → 伝える).
+async function tokensOf(text: string) {
+  const out: { text: string; furigana?: string; word: string }[] = [];
+  const toks: any[] = await (kuro as any)._analyzer.parse(text);
+  for (const t of toks) {
+    const surface: string = t.surface_form;
+    if (/^\s+$/.test(surface)) { out.push({ text: surface, word: '' }); continue; }
+    const hasKanji = /[一-龯]/.test(surface);
+    const word = hasKanji && t.basic_form && t.basic_form !== '*' ? t.basic_form : surface;
+    if (!hasKanji) { out.push({ text: surface, word }); continue; }
+    for (const m of (await furi(surface)).matchAll(/\[([^\]]+)\]\(([^)]+)\)|([^\[]+)/g)) {
+      if (m[1]) out.push({ text: m[1], furigana: m[2], word }); else out.push({ text: m[3], word });
+    }
+  }
+  return out;
+}
 const plain = (s: string) => s.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
 
 async function main() {
@@ -62,6 +78,8 @@ async function main() {
     const paras: string[] = []; for (let i = 0; i < a.sentences.length; i += 3) paras.push(a.sentences.slice(i, i + 3).map(s => s[0]).join(''));
     const jp = paras.join('\n\n');
     const furiPassage = (await Promise.all(paras.map(furi))).join('\n\n');
+    const rawTokens: any[] = [];
+    for (let i = 0; i < paras.length; i++) { if (i) rawTokens.push({ text: '\n\n', word: '' }); rawTokens.push(...(await tokensOf(paras[i]))); }
     const breakdown = await Promise.all(a.sentences.map(async ([j, v]) => ({ japanese: j, furigana: await furi(j), vietnamese: v })));
     const quizzes = a.quizzes.map(q => {
       const quotes = [...q.exp.matchAll(/「([^」]+)」/g)].map(m => m[1]);
@@ -73,7 +91,7 @@ async function main() {
     out.push({
       id: a.id, topic: a.topic, title: a.title, titleVi: a.titleVi, level: 'N4', japanesePassage: jp, furiganaPassage: furiPassage,
       vietnamesePassage: paras.map((_, i) => a.sentences.slice(i * 3, i * 3 + 3).map(s => s[1]).join(' ')).join('\n\n'),
-      sentenceBreakdown: breakdown,
+      sentenceBreakdown: breakdown, rawTokens,
       vocabularyList: a.vocab.map(([k, h, m, lv]) => ({ kanji: k, word: k, hiragana: h, reading: h, hanViet: /[一-龯]/.test(k) ? getHanViet(k.replace(/する$/, '')) : '', meaning: m, level: lv })),
       usedGrammar: a.grammar.map(([s, m, u]) => ({ structure: s, meaning: m, usageInPassage: u })),
       quizzes, imageUrl: `/reading-thumbs/${a.id}.png`, thumb: { kanji: a.thumb, from: a.from, to: a.to },
