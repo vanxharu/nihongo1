@@ -277,6 +277,57 @@ function VocabListItemCardComponent({
   const posBadge = useMemo(() => getPartOfSpeechBadge(v), [v]);
   const numLabel = v.originalNumber ? `${v.originalNumber}` : `${index + 1}`;
 
+  if (v.id.startsWith('kj_')) {
+    const words: any[] = v.kanjiWords?.length ? v.kanjiWords : [{ word: '', reading: '', meaning: '', sentence: v.exampleSentence, sentenceVi: v.exampleTranslation }];
+    return (
+      <div className={`border border-slate-700/70 rounded-xl overflow-hidden shadow-sm w-full flex flex-col bg-[#272B3C] ${isMastered ? 'ring-1 ring-emerald-500/30' : ''}`}>
+        <div className="flex items-start gap-3 p-3 sm:p-3.5">
+          <span className="font-extrabold text-slate-100 font-serif text-lg tracking-tight">{numLabel}</span>
+          <div className="shrink-0 max-w-[40%] overflow-x-auto no-scrollbar">
+            {renderWordWithFuriganaInternal(v.kanji, v.hiragana, v.meaning, hanViet, onSelectKanji, true)}
+          </div>
+          <div className="flex flex-col flex-1 min-w-0 gap-1">
+            <div className="flex items-center gap-2"><span className="bg-slate-900 border border-slate-700 text-slate-200 font-bold px-1.5 py-0.5 rounded text-[11px] font-mono leading-none">{posBadge}</span>{hanViet && <span className="text-xs font-bold uppercase text-emerald-400">{hanViet}</span>}</div>
+            <div className="text-sm text-slate-200 font-bold leading-snug break-words">{v.meaning}</div>
+            {(v.onyomi || v.kunyomi) && (
+              <div lang="ja" className="text-xs text-slate-300 leading-snug break-words">
+                {v.onyomi && <span><b className="text-sky-300">音</b> {v.onyomi}</span>}
+                {v.onyomi && v.kunyomi && <span className="mx-1.5 text-slate-500">|</span>}
+                {v.kunyomi && <span><b className="text-amber-300">訓</b> {v.kunyomi}</span>}
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-0.5 shrink-0">
+            <span onClick={(e) => e.stopPropagation()}><HeartLike size={28} className="text-slate-400" pressed={!!isWordStarred} onToggle={(e) => { e.stopPropagation(); onToggleStar(v.id); }} label={isWordStarred ? 'Bỏ yêu thích' : 'Yêu thích'} /></span>
+            <button type="button" onClick={(e) => { e.stopPropagation(); onSpeak(v.kanji, false); }} className={`text-slate-400 hover:text-white p-1 rounded cursor-pointer${speakingText === v.kanji ? ' vocab-audio-playing' : ''}`} title="Phát âm chữ Hán"><Volume2 className="w-4 h-4" /></button>
+          </div>
+        </div>
+        <div className="border-t border-slate-700/70 bg-[#272B3C] px-3.5 py-2.5 flex flex-col gap-3">
+          {words.map((w, i) => (
+            <div key={i} className="border-l-2 border-emerald-500/50 pl-2.5">
+              {w.word && <div lang="ja" className="text-sm"><b className="text-emerald-300 text-base">{w.word}</b> <span className="text-slate-400">（{w.reading}）</span> <span className="text-slate-200">{w.meaning}</span></div>}
+              {w.sentence && (
+                <div className="flex items-start justify-between gap-2">
+                  <div className="text-sm sm:text-base text-slate-100 leading-relaxed flex-1 min-w-0">
+                    <JapaneseFuriganaText sentence={w.sentence} currentItem={{ kanji: v.kanji, hiragana: v.hiragana }} showFurigana={true} forceDark={true} size="base" onClickKanji={onSelectKanji} className="tracking-wide" />
+                  </div>
+                  <button type="button" onClick={(e) => { e.stopPropagation(); onSpeak(w.sentence, true); }} className={`text-slate-400 hover:text-white p-1 shrink-0 cursor-pointer${speakingText === w.sentence ? ' vocab-audio-playing' : ''}`} title="Nghe câu ví dụ"><Volume2 className="w-4 h-4" /></button>
+                </div>
+              )}
+              {w.sentenceVi && <div className="text-xs text-slate-400">{w.sentenceVi}</div>}
+            </div>
+          ))}
+          {v.notes && (
+            <div className="flex items-start gap-2.5 w-full">
+              <div className="bg-sky-900/60 border border-sky-500/50 rounded px-1.5 py-0.5 text-sky-300 shrink-0 text-[11px] font-bold flex items-center gap-1"><span>🧩</span><span>Mẹo nhớ</span></div>
+              <div className="text-slate-300 text-xs sm:text-sm leading-relaxed whitespace-pre-line pt-0.5 min-w-0 flex-1">{v.notes}</div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`border border-slate-700/70 rounded-xl overflow-hidden shadow-sm transition-all hover:border-slate-600/90 w-full flex flex-col ${isMastered ? 'ring-1 ring-emerald-500/30' : ''}`}>
       {/* TOP ROW (Mimics White Background in Textbook) */}
