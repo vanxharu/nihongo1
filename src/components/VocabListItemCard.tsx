@@ -76,7 +76,8 @@ function renderWordWithFuriganaInternal(
   hiragana: string,
   meaning = '',
   hanViet?: string,
-  onSelectKanji?: (k: string) => void
+  onSelectKanji?: (k: string) => void,
+  hideReading = false
 ) {
   if (!kanji) {
     return (
@@ -125,7 +126,7 @@ function renderWordWithFuriganaInternal(
       segReading = segReading.slice(0, -2) + 'る';
     }
 
-    const alignedParts = alignWordFurigana(seg, segReading);
+    const alignedParts = hideReading ? [{ text: seg }] : alignWordFurigana(seg, segReading);
     allSegments.push({ type: 'segment', text: seg, parts: alignedParts });
   }
 
@@ -291,7 +292,7 @@ function VocabListItemCardComponent({
           {/* Word (Kanji & Furigana) */}
           <div className="flex flex-col items-start gap-1 flex-1 min-w-0">
             <div className="max-w-full overflow-x-auto no-scrollbar">
-              {renderWordWithFuriganaInternal(v.kanji, v.hiragana, v.meaning, hanViet, onSelectKanji)}
+              {renderWordWithFuriganaInternal(v.kanji, v.hiragana, v.meaning, hanViet, onSelectKanji, v.id.startsWith('kj_'))}
             </div>
             {showPitchAccent && (
               <div className="origin-left scale-90 max-w-full overflow-x-auto no-scrollbar mt-1">
