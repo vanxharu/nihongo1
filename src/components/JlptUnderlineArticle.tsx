@@ -14,6 +14,7 @@ export interface JlptWordInfo {
   meaning?: string;
   hanViet?: string;
   partOfSpeech?: string;
+  stored?: boolean; // dữ liệu đã soạn sẵn trong bài: không cần tra lại bằng API
 }
 
 interface JlptUnderlineArticleProps {

@@ -3,7 +3,7 @@ import { getBootstrapAdminEmails, isBootstrapAdmin } from '../server/bootstrapAd
 export { getBootstrapAdminEmails } from '../server/bootstrapAdmin';
 export const ADMIN_EMAILS=getBootstrapAdminEmails();
 const collection=()=>firebaseDb().collection('app_users');
-const jsonFields=['studyDays','completedLessons','vocabStatus','grammarStatus','kanjiStatus','dailyTestResults','lastPosition','notificationSettings'];
+const jsonFields=['studyDays','completedLessons','vocabStatus','grammarStatus','kanjiStatus','dailyTestResults','lastPosition','notificationSettings','myWords'];
 export function profilePatch(fields:any,allowRoleChange=false) {
   const out:any={};
   for(const key of ['name','avatar','targetLevel','lastActiveDate'])if(typeof fields[key]==='string')out[key]=fields[key];

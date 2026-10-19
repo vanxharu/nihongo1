@@ -90196,7 +90196,7 @@ function isBootstrapAdmin(email, emailVerified) {
 // src/db/users.ts
 var ADMIN_EMAILS = getBootstrapAdminEmails();
 var collection = () => firebaseDb().collection("app_users");
-var jsonFields = ["studyDays", "completedLessons", "vocabStatus", "grammarStatus", "kanjiStatus", "dailyTestResults", "lastPosition", "notificationSettings"];
+var jsonFields = ["studyDays", "completedLessons", "vocabStatus", "grammarStatus", "kanjiStatus", "dailyTestResults", "lastPosition", "notificationSettings", "myWords"];
 function profilePatch(fields, allowRoleChange = false) {
   const out = {};
   for (const key of ["name", "avatar", "targetLevel", "lastActiveDate"]) if (typeof fields[key] === "string") out[key] = fields[key];
@@ -94181,11 +94181,12 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
       grammarStatus,
       kanjiStatus,
       dailyTestResults,
-      lastPosition
+      lastPosition,
+      myWords
     } = req.body;
     const badNum = (v) => v !== void 0 && v !== null && (typeof v !== "number" || !Number.isFinite(v) || v < 0 || v > 1e7);
     const tooBig = (v) => v !== void 0 && JSON.stringify(v).length > 1e6;
-    if (badNum(xp) || badNum(coins) || [studyDays, completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition].some(tooBig)) {
+    if (badNum(xp) || badNum(coins) || [studyDays, completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords].some(tooBig) || myWords !== void 0 && !Array.isArray(myWords)) {
       return res.status(400).json({ success: false, error: "Invalid profile data" });
     }
     try {
@@ -94201,7 +94202,8 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
         grammarStatus,
         kanjiStatus,
         dailyTestResults,
-        lastPosition
+        lastPosition,
+        myWords
       });
       res.json({ success: true, user: { ...updatedUser || dbUser, ...learning } });
     } catch (dbErr) {

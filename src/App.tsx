@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
+import { getStoredWords, saveStoredWords } from './utils/notebookStorage';
 import { Routes, Route, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -291,6 +292,26 @@ export default function App() {
       saveProfile(newProfile);
     }
   };
+
+  // "Từ vựng của tôi": trộn từ trên tài khoản vào máy khi đăng nhập, rồi đẩy thay đổi lên tài khoản (debounce).
+  const myWordsMergedRef = useRef(false);
+  useEffect(() => {
+    if (!dbUser || myWordsMergedRef.current) return;
+    myWordsMergedRef.current = true;
+    const remote = Array.isArray(dbUser.myWords) ? dbUser.myWords : [];
+    const local = getStoredWords();
+    const have = new Set(local.map(w => w.id));
+    const add = remote.filter(w => w?.id && !have.has(w.id));
+    if (add.length) saveStoredWords([...add, ...local]);
+  }, [dbUser]);
+  useEffect(() => {
+    if (!dbUser) return;
+    let t: any;
+    const push = () => { clearTimeout(t); t = setTimeout(() => { if (myWordsMergedRef.current) void updateProfile({ myWords: getStoredWords().filter(w => !w.id.startsWith('init_')) }); }, 1500); };
+    window.addEventListener('saved_words_updated', push);
+    return () => { window.removeEventListener('saved_words_updated', push); clearTimeout(t); };
+  }, [dbUser]);
+
 
   const [grammarInitialView, setGrammarInitialView] = useState<'overview' | 'lesson-list' | 'lesson-detail' | 'grammar-detail' | 'practice'>('lesson-list');
   const [grammarInitialLesson, setGrammarInitialLesson] = useState<number | undefined>(undefined);

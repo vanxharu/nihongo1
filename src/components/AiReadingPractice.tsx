@@ -274,7 +274,7 @@ export default function AiReadingPractice({
   // Bài viết sẵn: lấy nghĩa/cách đọc/cấp độ từ danh sách từ vựng đã lưu thay vì tra lại.
   const enrichWord = (info: JlptWordInfo): JlptWordInfo => {
     const v = readingData?.vocabularyList?.find(x => x.word === info.word || x.kanji === info.word);
-    return v ? { ...info, furigana: info.furigana || v.reading || v.hiragana, meaning: info.meaning || v.meaning, jlpt: info.jlpt || (v.level as any) } : info;
+    return v ? { ...info, furigana: v.reading || v.hiragana || info.furigana, meaning: v.meaning, jlpt: (v.level as any) || info.jlpt, hanViet: v.hanViet || info.hanViet, stored: !!readingData?.id?.startsWith('n4-') } : info;
   };
   const [activeLevelWordsDrawer, setActiveLevelWordsDrawer] = useState<'N1' | 'N2' | 'N3' | 'N4' | 'N5' | null>(null);
   const [isGrammarModalOpen, setIsGrammarModalOpen] = useState<boolean>(false);
@@ -1398,12 +1398,11 @@ export default function AiReadingPractice({
         <>
           <nav className="study-nav" aria-label="Nguồn bài đọc">{[
             { id: 'library', title: 'Bài đọc N4', note: '20 bài có sẵn, mở ngay', icon: BookOpen },
-            { id: 'todai', title: 'Tin tức Todaii', note: 'Luyện đọc qua tin tức mỗi ngày', icon: Newspaper },
             { id: 'custom', title: 'Bài đọc của bạn', note: 'Nhập văn bản hoặc chọn bài mẫu', icon: PenTool }
           ].map(item => <button key={item.id} id={`btn-mode-${item.id}`} aria-pressed={readingSourceMode === item.id} onClick={() => setReadingSourceMode(item.id as typeof readingSourceMode)}><item.icon size={16} /><strong>{item.title}</strong></button>)}</nav>
           {readingSourceMode !== 'custom' && readingSourceMode !== 'library' && <div className="study-reading-toolbar"><span className="text-xs text-[var(--ui-muted)]">Chọn bài bên dưới để bắt đầu.</span><button className="study-history-button" onClick={() => readingSourceMode === 'todai' ? setShowTodaiLinkInput(v => !v) : setShowWatanocLinkInput(v => !v)}><Plus size={15} />Thêm link bài viết</button></div>}
         </>      ) : (
-        <div className="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-2xl reading-surface border border-[var(--ui-line)] shadow-md backdrop-blur-md">
+        <div className="flex items-center justify-between gap-2 p-1.5 rounded-xl reading-surface border border-[var(--ui-line)] shadow-md backdrop-blur-md">
           {/* Left: Change article back button */}
           <button
             id="btn-change-article"
@@ -1434,16 +1433,6 @@ export default function AiReadingPractice({
               </button>
             )}
 
-            <button
-              id="btn-open-reading-options"
-              type="button"
-              onClick={() => setIsOptionsModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-bold transition cursor-pointer shadow-md shadow-indigo-600/30 active:scale-95"
-              title="Mở bảng Tùy chọn cài đặt đọc (Furigana, Dịch nghĩa, Từ loại, JLPT, Cỡ chữ...)"
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-              <span>Tùy chọn</span>
-            </button>
           </div>
         </div>
       )}
@@ -1478,7 +1467,7 @@ export default function AiReadingPractice({
               {library.map(a => (
                 <button key={a.id} type="button" disabled={openingLibId === a.id} onClick={() => openLibraryLesson(a.id)}
                   className="text-left reading-surface border border-[var(--ui-line)] rounded-2xl overflow-hidden hover:border-indigo-500 transition cursor-pointer disabled:opacity-60">
-                  <img src={a.imageUrl} alt="" loading="lazy" className="w-full aspect-video object-cover" />
+                  <img src={a.imageUrl} alt="" className="w-full aspect-video object-cover" />
                   <div className="p-3 space-y-1">
                     <div className="flex items-center gap-1.5 text-[10px]"><span className="px-1.5 rounded bg-indigo-500/20 text-indigo-300 font-bold">{a.level}</span><span className="text-[var(--ui-muted)]">{a.topic}</span>{isArticleRead(a) && <span className="text-emerald-400">✓ Đã đọc</span>}</div>
                     <strong className="block text-sm text-[var(--ui-ink)] font-jp">{a.title}</strong>
@@ -2588,20 +2577,6 @@ export default function AiReadingPractice({
                     );
                   })()}
 
-                  {/* Primary "Tùy chọn" Settings Button - Centralized reading settings */}
-                  <button
-                    id="btn-article-options"
-                    type="button"
-                    onClick={() => setIsOptionsModalOpen(true)}
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition cursor-pointer shadow-md shadow-indigo-600/30 active:scale-95"
-                    title="Mở cài đặt đọc (Furigana, Dịch nghĩa, Từ loại, JLPT, Cỡ chữ, Karaoke...)"
-                  >
-                    <SlidersHorizontal className="w-3.5 h-3.5" />
-                    <span>Tùy chọn đọc</span>
-                    <span className="text-[10px] text-indigo-200/90 hidden sm:inline">
-                      ({showFurigana ? 'Furi: Bật' : 'Furi: Tắt'} • {showVietnamese ? 'Dịch: Hiện' : 'Dịch: Ẩn'})
-                    </span>
-                  </button>
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -2713,97 +2688,6 @@ export default function AiReadingPractice({
                     </span>
                   </div>
                 </div>
-              </div>
-            )}
-
-            {/* POS (Part of Speech) Legend & Filter: Sleek & Compact */}
-            {showPosHighlight && (
-              <div className="flex flex-wrap items-center justify-between gap-2 reading-surface border border-[var(--ui-line)] rounded-2xl px-3.5 py-2 shadow-sm text-xs">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <div className="flex items-center gap-1.5 font-bold text-[var(--ui-ink)] mr-1">
-                    <Palette className="w-3.5 h-3.5 text-sky-400" />
-                    <span>Từ loại:</span>
-                  </div>
-
-                  {/* Danh từ Badge / Filter */}
-                  <button
-                    type="button"
-                    onClick={() => setSelectedPosFilter(prev => prev === 'noun' ? null : 'noun')}
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-bold transition cursor-pointer border active:scale-95 ${
-                      selectedPosFilter === 'noun'
-                        ? 'bg-sky-500/30 text-sky-200 border-sky-400 ring-2 ring-sky-400/40 shadow-sm'
-                        : 'bg-sky-500/10 text-sky-300 border-sky-500/30 hover:bg-sky-500/20'
-                    }`}
-                    title="Bấm để lọc Danh từ trong bài đọc"
-                  >
-                    <span className="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_6px_rgba(56,189,248,0.8)]" />
-                    <span>Danh từ</span>
-                    {posStats.nouns > 0 && (
-                      <span className="px-1.5 py-0.2 rounded-full bg-sky-400/20 text-sky-200 text-[10px] font-mono border border-sky-400/30">
-                        {posStats.nouns}
-                      </span>
-                    )}
-                  </button>
-
-                  {/* Động từ Badge / Filter */}
-                  <button
-                    type="button"
-                    onClick={() => setSelectedPosFilter(prev => prev === 'verb' ? null : 'verb')}
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-bold transition cursor-pointer border active:scale-95 ${
-                      selectedPosFilter === 'verb'
-                        ? 'bg-orange-500/30 text-orange-200 border-orange-400 ring-2 ring-orange-400/40 shadow-sm'
-                        : 'bg-orange-500/10 text-orange-300 border-orange-500/30 hover:bg-orange-500/20'
-                    }`}
-                    title="Bấm để lọc Động từ trong bài đọc"
-                  >
-                    <span className="w-2 h-2 rounded-full bg-orange-400 shadow-[0_0_6px_rgba(251,146,60,0.8)]" />
-                    <span>Động từ</span>
-                    {posStats.verbs > 0 && (
-                      <span className="px-1.5 py-0.2 rounded-full bg-orange-400/20 text-orange-200 text-[10px] font-mono border border-orange-400/30">
-                        {posStats.verbs}
-                      </span>
-                    )}
-                  </button>
-
-                  {/* Tính từ Badge / Filter */}
-                  <button
-                    type="button"
-                    onClick={() => setSelectedPosFilter(prev => prev === 'adjective' ? null : 'adjective')}
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-xs font-bold transition cursor-pointer border active:scale-95 ${
-                      selectedPosFilter === 'adjective'
-                        ? 'bg-emerald-500/30 text-emerald-200 border-emerald-400 ring-2 ring-emerald-400/40 shadow-sm'
-                        : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/20'
-                    }`}
-                    title="Bấm để lọc Tính từ trong bài đọc"
-                  >
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
-                    <span>Tính từ</span>
-                    {posStats.adjectives > 0 && (
-                      <span className="px-1.5 py-0.2 rounded-full bg-emerald-400/20 text-emerald-200 text-[10px] font-mono border border-emerald-400/30">
-                        {posStats.adjectives}
-                      </span>
-                    )}
-                  </button>
-
-                  {selectedPosFilter && (
-                    <button
-                      type="button"
-                      onClick={() => setSelectedPosFilter(null)}
-                      className="text-xs text-indigo-300 hover:text-indigo-200 underline cursor-pointer ml-1"
-                    >
-                      Xoá lọc
-                    </button>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setIsOptionsModalOpen(true)}
-                  className="text-[11px] text-[var(--ui-muted)] hover:text-slate-200 transition cursor-pointer flex items-center gap-1"
-                >
-                  <SlidersHorizontal className="w-3 h-3 text-indigo-400" />
-                  <span>Cài đặt hiển thị</span>
-                </button>
               </div>
             )}
 
@@ -2960,9 +2844,6 @@ export default function AiReadingPractice({
 
           {/* Navigation Tabs Bar for Analysis */}
           <div className="reading-analysis-tabs border-b border-[var(--ui-line)] pb-2">
-            <p className="col-span-2 text-xs text-[var(--ui-muted)] pb-2">
-              {readingData.questionOrigin === 'source' ? 'Câu hỏi gốc từ trang nguồn. Đáp án chưa được nguồn cung cấp sẽ được AI suy luận từ bài.' : 'Nguồn không có câu hỏi; câu hỏi luyện đọc được AI soạn theo bài viết.'}
-            </p>
             <button
               id="tab-reading-quiz"
               type="button"

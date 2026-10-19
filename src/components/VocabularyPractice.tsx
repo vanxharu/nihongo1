@@ -52,7 +52,7 @@ import {
 , PenLine } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { VocabularyItem, UserProfile, LearningPosition, JLPTLevel } from '../types';
-import { getStoredWords, getStoredNotebooks } from '../utils/notebookStorage';
+import { getStoredWords, getStoredNotebooks, addWordToNotebook, deleteWordFromNotebook } from '../utils/notebookStorage';
 import { VOCABULARY_DATA } from '../data';
 import { kanjiRowsToVocab, expandKanjiWords, type KanjiRow } from '../data/kanjiAsVocab';
 import { 
@@ -1079,12 +1079,15 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   }, [isSrsReviewActive]);
 
   // Local persistence for Starred words
+  const isStarredRef = useRef<Record<string, boolean>>({});
   const [isStarred, setIsStarred] = useState<Record<string, boolean>>(() => {
     try {
       const saved = localStorage.getItem('jlpt_starred_vocab');
       return saved ? JSON.parse(saved) : {};
     } catch { return {}; }
   });
+
+  isStarredRef.current = isStarred;
 
   // Intelligent Mode Defaults
   const initialModeSettings = useMemo(() => getVocabModeSettings(selectedMode), [selectedMode]);
@@ -2778,7 +2781,14 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     setShadowingSelectedIndices(prev => prev.filter((_, i) => i !== sIdx));
   };
 
-  const toggleStar = useCallback((vocabId: string) => {
+  // Trái tim = lưu/bỏ lưu vào "Từ vựng của tôi" (Sổ tay, mục yêu thích), đồng bộ theo tài khoản ở App.
+  const toggleStar = useCallback((vocabId: string, item?: VocabularyItem) => {
+    if (myMode) { deleteWordFromNotebook(vocabId.replace(/^my_/, '')); return; }
+    const adding = !isStarredRef.current[vocabId];
+    if (item) {
+      if (adding) addWordToNotebook({ kanji: item.kanji, furigana: item.hiragana, romaji: item.romaji, meaning: item.meaning, hanViet: item.hanViet, example: item.exampleSentence, exampleMeaning: item.exampleTranslation, level: item.level as JLPTLevel, notebookId: 'default_fav', source: 'lesson' });
+      else getStoredWords().filter(w => w.notebookId === 'default_fav' && w.kanji === item.kanji && !w.id.startsWith('init_')).forEach(w => deleteWordFromNotebook(w.id));
+    }
     setIsStarred(prev => {
       const next = { ...prev };
       if (next[vocabId]) delete next[vocabId];
@@ -2786,7 +2796,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       localStorage.setItem('jlpt_starred_vocab', JSON.stringify(next));
       return next;
     });
-  }, []);
+  }, [myMode]);
 
   const toggleMastered = useCallback((vocabId: string) => {
     const status = { ...(userProfile.vocabStatus || {}) };
@@ -3024,7 +3034,7 @@ if (loading) {
               </>
             )}
 
-            <HeartLike size={34} className="shrink-0 text-slate-300" pressed={!!isStarred[currentItem?.id || '']} onToggle={() => currentItem && toggleStar(currentItem.id)} label={isStarred[currentItem?.id || ''] ? 'Bỏ lưu' : 'Lưu từ vựng'} />
+            <HeartLike size={34} className="shrink-0 text-slate-300" pressed={myMode || !!isStarred[currentItem?.id || '']} onToggle={() => currentItem && toggleStar(currentItem.id, currentItem)} label={isStarred[currentItem?.id || ''] ? 'Bỏ lưu' : 'Lưu từ vựng'} />
             <button
               onClick={() => setShowOptions(prev => !prev)}
               className={`p-1 sm:p-1.5 rounded-lg sm:rounded-xl border transition-all cursor-pointer shrink-0 ${
@@ -3212,7 +3222,7 @@ if (loading) {
           {selectedMode === 'flashcard' && currentItem && (
             <div className="vocab-flashcard-block w-full min-w-0 bg-[#242b45] border border-[#343d5f] rounded-lg overflow-hidden shadow-md">
               <div className="vocab-flashcard-face relative">
-                <div className="vocab-flashcard-star absolute top-2 right-2 z-20"><HeartLike size={40} className="text-slate-400" pressed={!!isStarred[currentItem.id]} onToggle={() => toggleStar(currentItem.id)} label={isStarred[currentItem.id] ? 'Bỏ lưu từ vựng' : 'Lưu từ vựng'} /></div>
+                <div className="vocab-flashcard-star absolute top-2 right-2 z-20"><HeartLike size={40} className="text-slate-400" pressed={myMode || !!isStarred[currentItem.id]} onToggle={() => toggleStar(currentItem.id, currentItem)} label={isStarred[currentItem.id] ? 'Bỏ lưu từ vựng' : 'Lưu từ vựng'} /></div>
                 <button type="button" onClick={handlePrev} aria-label="Thẻ trước" title="Thẻ trước (←)" className="vocab-flashcard-arrow vocab-flashcard-arrow-prev absolute left-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-[#1a1f33]/90 text-slate-400 hover:text-white p-2"><ChevronLeft className="w-4 h-4" /></button>
                 <button type="button" onClick={handleNext} aria-label="Thẻ tiếp theo" title="Thẻ tiếp theo (→)" className="vocab-flashcard-arrow vocab-flashcard-arrow-next absolute right-2 top-1/2 -translate-y-1/2 z-20 rounded-full bg-[#1a1f33]/90 text-slate-400 hover:text-white p-2"><ChevronRight className="w-4 h-4" /></button>
               {/* Main Card Flip Area - Fixed Height so it never changes size when flipping */}
@@ -4187,7 +4197,7 @@ if (loading) {
 
         <div className="grid grid-cols-1 gap-3">
           {baseLessonItems.map((v, index) => {
-            const isWordStarred = isStarred[v.id] || false;
+            const isWordStarred = myMode || isStarred[v.id] || false;
             const statusVal = userProfile.vocabStatus?.[v.id];
             const isMastered = typeof statusVal === 'object' ? (statusVal as any)?.status === 'mastered' : statusVal === 'mastered';
             return (
@@ -4198,7 +4208,7 @@ if (loading) {
                 isWordStarred={isWordStarred}
                 isMastered={isMastered}
                 showPitchAccent={showPitchAccent}
-                onToggleStar={toggleStar}
+                onToggleStar={(id: string) => toggleStar(id, v)}
                 onToggleMastered={toggleMastered}
                 onSpeak={(text, isSentence) => handleSpeak(text, isSentence, v)}
                 speakingText={speakingText}

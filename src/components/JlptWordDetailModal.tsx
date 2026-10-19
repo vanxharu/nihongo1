@@ -430,6 +430,7 @@ export const JlptWordDetailModal: React.FC<JlptWordDetailModalProps> = ({
       relatedWords: []
     };
     setLookupData(initialData);
+    if (wordInfo?.stored && meaningHint) return; // từ đã có nghĩa/cách đọc lưu sẵn trong bài
     setIsLoading(true);
 
     try {

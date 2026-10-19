@@ -367,6 +367,7 @@ export interface AudioMark {
 }
 
 export interface LessonReadingData {
+  id?: string;
   questionOrigin?: 'source' | 'ai';
   title: string;
   level: JLPTLevel;
@@ -494,6 +495,7 @@ export interface UserProfile {
   studyDays: string[]; // YYYY-MM-DD
   completedLessons: (string | number)[]; // List of vocab lessonIds completed
   vocabStatus: Record<string, 'new' | 'learning' | 'mastered' | SRSStatus>;
+  myWords?: NotebookWord[]; // "Từ vựng của tôi": mọi từ đã tim/lưu, đồng bộ theo tài khoản
   grammarStatus: Record<string, any>; // true if passed or UserGrammarProgress state object
   kanjiStatus: Record<string, boolean>; // true if passed drawing test
   dailyTestResults: { date: string; score: number; total: number; level?: JLPTLevel; fullExam?: boolean; examId?: string; sections?: Record<'knowledge' | 'reading' | 'listening', { correct:number; total:number }> }[];

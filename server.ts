@@ -4147,19 +4147,19 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
     const dbUser = { ...req.dbUser, ...learning };
     const { 
       name, avatar, targetLevel, xp, coins, studyDays, 
-      completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition 
+      completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords 
     } = req.body;
     // Game counters come from the client: reject non-numeric/absurd values and oversized blobs.
     const badNum = (v: unknown) => v !== undefined && v !== null && (typeof v !== 'number' || !Number.isFinite(v) || v < 0 || v > 10_000_000);
     const tooBig = (v: unknown) => v !== undefined && JSON.stringify(v).length > 1_000_000;
-    if (badNum(xp) || badNum(coins) || [studyDays, completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition].some(tooBig)) {
+    if (badNum(xp) || badNum(coins) || [studyDays, completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords].some(tooBig) || (myWords !== undefined && !Array.isArray(myWords))) {
       return res.status(400).json({ success: false, error: 'Invalid profile data' });
     }
     
     try {
       const updatedUser = await updateUserProfile(dbUser.uid, {
         name, avatar, targetLevel, xp, coins, studyDays, 
-        completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition
+        completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords
       });
       res.json({ success: true, user: { ...(updatedUser || dbUser), ...learning } });
     } catch (dbErr) {

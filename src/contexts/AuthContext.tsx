@@ -142,6 +142,7 @@ const parseDbUser = (dbData: any): UserProfile => {
       studyDays: safeJson(dbData.studyDays, []),
       completedLessons: safeJson(dbData.completedLessons, []),
       vocabStatus: safeJson(dbData.vocabStatus, {}),
+      myWords: safeJson(dbData.myWords, []),
       grammarStatus: safeJson(dbData.grammarStatus, {}),
       kanjiStatus: safeJson(dbData.kanjiStatus, {}),
       dailyTestResults: safeJson(dbData.dailyTestResults, []),
