@@ -419,8 +419,8 @@ function VocabListItemCardComponent({
           {v.notes && (
             <div className="flex items-start gap-2.5 w-full">
               <div className="bg-sky-900/60 border border-sky-500/50 rounded px-1.5 py-0.5 text-sky-300 shrink-0 text-[11px] font-bold flex items-center gap-1 shadow-2xs">
-                <span>👉</span>
-                <span>Lưu ý</span>
+                <span>{v.id.startsWith('kj_') ? '🧩' : '👉'}</span>
+                <span>{v.id.startsWith('kj_') ? 'Mẹo nhớ' : 'Lưu ý'}</span>
               </div>
               <div className="text-slate-300 leading-relaxed font-sans break-words flex-1 min-w-0 whitespace-pre-line pt-0.5">
                 {v.notes}

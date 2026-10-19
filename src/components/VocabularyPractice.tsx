@@ -3292,6 +3292,7 @@ if (loading) {
                           {(currentItem.hanViet || (currentItem.kanji && getHanViet(currentItem.kanji))) && <p className="vocab-answer-hanviet text-sm font-semibold uppercase text-emerald-400">{currentItem.hanViet || getHanViet(currentItem.kanji)}</p>}
                           <h3 className="text-base sm:text-lg font-bold text-emerald-400">{currentItem.meaning}</h3>
                           {renderFlashcardWordTypes(currentItem)}
+                          {currentItem.id.startsWith('kj_') && currentItem.notes && <p className="w-full max-w-lg mt-2 pt-2 border-t border-[#343d5f]/40 text-left text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line">{currentItem.notes}</p>}
                           <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(currentItem.kanji || currentItem.hiragana); }} onKeyDown={e => e.stopPropagation()} aria-label="Phát âm từ vựng" className={`p-1 text-slate-400 hover:text-white rounded${speakClassFor(currentItem.kanji || currentItem.hiragana)}`}><Volume2 className="w-4 h-4" /></button>
                           {(() => {
                             const ex = ensureVocabExample(currentItem);
@@ -3313,6 +3314,7 @@ if (loading) {
                           {(currentItem.hanViet || (currentItem.kanji && getHanViet(currentItem.kanji))) && <p className="vocab-answer-hanviet text-sm font-semibold uppercase text-emerald-400">{currentItem.hanViet || getHanViet(currentItem.kanji)}</p>}
                           <h3 className="text-base sm:text-lg font-bold text-emerald-400">{currentItem.meaning}</h3>
                           {renderFlashcardWordTypes(currentItem)}
+                          {currentItem.id.startsWith('kj_') && currentItem.notes && <p className="w-full max-w-lg mt-2 pt-2 border-t border-[#343d5f]/40 text-left text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line">{currentItem.notes}</p>}
                         </div>
                       )}
                     </motion.div>
