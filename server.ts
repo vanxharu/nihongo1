@@ -2569,8 +2569,19 @@ Hãy biên soạn 1 bài đọc hiểu tiếng Nhật đời sống tự nhiên 
 
 // Thư viện bài đọc: do admin nhập từ Excel, lưu ở Firestore (collection reading_library).
 const sortLib = (rows: any[]) => rows.sort((a, b) => String(a.id).localeCompare(String(b.id), undefined, { numeric: true }));
+// 10 đề N4 tự soạn được nạp một lần (đánh dấu bằng reading_library_meta/seed-n4-v1); xóa đi sẽ không tự nạp lại.
+let seedChecked = false;
+async function seedReadingLibrary() {
+  if (seedChecked) return;
+  if (await readRecord('reading_library_meta', 'seed-n4-v1')) { seedChecked = true; return; }
+  const seed = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src', 'data', 'readingSeedN4.json'), 'utf8'));
+  for (const l of seed) if (!(await readRecord('reading_library', l.id))) await writeRecord('reading_library', l.id, l);
+  await writeRecord('reading_library_meta', 'seed-n4-v1', { at: new Date().toISOString(), count: seed.length });
+  seedChecked = true;
+}
 app.get("/api/reading/library", async (_req, res) => {
   try {
+    await seedReadingLibrary().catch(e => console.warn('reading seed failed', e));
     res.setHeader('Cache-Control', 'no-store');
     res.json(sortLib(await listRecords('reading_library')).map((a: any) => ({ id: a.id, title: a.title, titleVi: a.titleVi, topic: a.topic, level: a.level, imageUrl: a.imageUrl, thumb: a.thumb, questionCount: (a.quizzes || []).length, wordCount: (a.vocabularyList || []).length })));
   } catch { res.status(503).json({ error: 'Không đọc được thư viện bài đọc.' }); }
