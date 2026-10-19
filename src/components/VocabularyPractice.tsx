@@ -3302,6 +3302,13 @@ if (loading) {
                               {ex.exampleTranslation && <p className="mt-2 text-xs text-slate-400 leading-relaxed">{ex.exampleTranslation}</p>}
                             </div>;
                           })()}
+                          {currentItem.kanjiWords?.length > 1 && <div className="w-full max-w-lg mt-1 space-y-2 text-left">
+                            {currentItem.kanjiWords.slice(1).map((w: any, i: number) => <div key={i} className="pt-2 border-t border-[#343d5f]/40">
+                              <p lang="ja" className="text-sm"><b className="text-emerald-300 text-base">{w.word}</b> <span className="text-slate-400">（{w.reading}）</span> <span className="text-slate-300">{w.meaning}</span></p>
+                              {w.sentence && <div className="text-base text-slate-100 leading-relaxed">{renderExampleSentenceWithFurigana(w.sentence, currentItem)}</div>}
+                              {w.sentenceVi && <p className="text-xs text-slate-400">{w.sentenceVi}</p>}
+                            </div>)}
+                          </div>}
                         </div>
                       ) : (
                         <div className="space-y-2 flex flex-col items-center w-full">

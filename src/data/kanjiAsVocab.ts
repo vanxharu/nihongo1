@@ -32,24 +32,38 @@ const firstWord = (words: string) => {
   return m ? { word: m[1].trim(), reading: m[2]?.trim() || '', meaning: m[3].trim() } : null;
 };
 
-/** Mỗi dòng (một từ vựng của một chữ Hán) thành một "từ" để dùng chung giao diện Từ vựng. */
-export const kanjiRowsToVocab = (rows: KanjiRow[]): VocabularyItem[] =>
-  [...rows].sort((a, b) => a.chapter - b.chapter || a.lesson - b.lesson).map((r): VocabularyItem => {
-    const w = r.word ? { word: r.word, reading: r.wordReading, meaning: r.wordMeaning } : firstWord(r.words || '');
+export interface KanjiWord { word: string; reading: string; meaning: string; sentence: string; sentenceVi: string }
+
+/** Mỗi chữ Hán là MỘT thẻ; các dòng cùng chương-bài-chữ gộp lại thành danh sách từ, mỗi từ một câu ví dụ riêng. */
+export const kanjiRowsToVocab = (rows: KanjiRow[]): VocabularyItem[] => {
+  const groups = new Map<string, KanjiRow[]>();
+  for (const r of [...rows].sort((a, b) => a.chapter - b.chapter || a.lesson - b.lesson)) {
+    const k = `${r.chapter}-${r.lesson}_${r.kanji}`;
+    groups.set(k, [...(groups.get(k) || []), r]);
+  }
+  return [...groups.entries()].map(([key, g]): VocabularyItem => {
+    const r = g.find(x => x.onyomi || x.kunyomi || x.meaning) || g[0];
+    const words: KanjiWord[] = g.map(x => {
+      const w = x.word ? { word: x.word, reading: x.wordReading, meaning: x.wordMeaning } : firstWord(x.words || '');
+      return { word: w?.word || '', reading: w?.reading || '', meaning: w?.meaning || '', sentence: x.sentence || '', sentenceVi: x.sentenceVi || '' };
+    }).filter(w => w.word || w.sentence);
+    const w0 = words[0];
+    const first = g.find(x => x.sentence) || r;
     return {
-      id: `kj_${r.chapter}-${r.lesson}_${r.kanji}_${w?.word || ''}`,
+      id: `kj_${key}`,
       kanji: r.kanji,
-      hiragana: readingsOf(r).join(' / '),
+      hiragana: readingsOf({ ...r, sentence: first.sentence }).join(' / '),
       meaning: r.meaning,
       vietnameseMeaning: r.meaning,
       hanViet: r.hanViet,
       onyomi: r.onyomi || undefined,
       kunyomi: r.kunyomi || undefined,
-      exampleSentence: r.sentence || w?.word || r.kanji,
-      exampleReading: w?.reading,
-      exampleTranslation: r.sentence ? r.sentenceVi : w?.meaning || r.meaning,
+      exampleSentence: w0?.sentence || w0?.word || r.kanji,
+      exampleReading: w0?.reading,
+      exampleTranslation: w0?.sentence ? w0.sentenceVi : w0?.meaning || r.meaning,
       partOfSpeech: r.strokes ? `${r.strokes} nét` : 'Kanji',
-      relatedWords: w?.word ? `${w.word}${w.reading ? `(${w.reading})` : ''}${w.meaning ? `=${w.meaning}` : ''}` : undefined,
+      relatedWords: words.filter(w => w.word).map(w => `${w.word}${w.reading ? `(${w.reading})` : ''}${w.meaning ? `=${w.meaning}` : ''}`).join(' ・ ') || undefined,
+      kanjiWords: words,
       notes: r.mnemonic || undefined,
       curriculum: 'tango',
       level: (/^N[1-5]$/.test(r.level?.toUpperCase()) ? r.level.toUpperCase() : 'N4') as JLPTLevel,
@@ -60,3 +74,4 @@ export const kanjiRowsToVocab = (rows: KanjiRow[]): VocabularyItem[] =>
       section: String(r.lesson),
     };
   });
+};

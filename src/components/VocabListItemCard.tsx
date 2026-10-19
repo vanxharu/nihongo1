@@ -381,7 +381,7 @@ function VocabListItemCardComponent({
       </div>
 
       {/* NOTES ROW (Mimics Bottom Note in Textbook) */}
-      {(v.relatedWords || v.synonyms || v.antonyms || v.notes) ? (
+      {(v.relatedWords || v.synonyms || v.antonyms || v.notes || v.kanjiWords?.length > 1) ? (
         <div className="border-t border-slate-700/70 bg-[#272B3C] px-3.5 py-2.5 flex flex-col gap-2 text-xs sm:text-sm w-full">
           {v.synonyms && (
             <div className="flex items-start gap-2.5 w-full">
@@ -405,7 +405,18 @@ function VocabListItemCardComponent({
               </div>
             </div>
           )}
-          {v.relatedWords && (
+          {v.kanjiWords?.length > 0 && (
+            <div className="flex flex-col gap-2 w-full">
+              {v.kanjiWords.map((w: any, i: number) => (
+                <div key={i} className="border-l-2 border-emerald-500/50 pl-2.5">
+                  <div lang="ja" className="text-sm"><b className="text-emerald-300 text-base">{w.word}</b> <span className="text-slate-400">（{w.reading}）</span> <span className="text-slate-200">{w.meaning}</span></div>
+                  {i > 0 && w.sentence && <div className="text-sm text-slate-100 leading-relaxed"><JapaneseFuriganaText sentence={w.sentence} currentItem={{ kanji: v.kanji, hiragana: v.hiragana }} showFurigana={true} forceDark={true} size="base" onClickKanji={onSelectKanji} className="tracking-wide" /></div>}
+                  {i > 0 && w.sentenceVi && <div className="text-xs text-slate-400">{w.sentenceVi}</div>}
+                </div>
+              ))}
+            </div>
+          )}
+          {!v.kanjiWords && v.relatedWords && (
             <div className="flex items-start gap-2.5 w-full">
               <div className="bg-emerald-900/60 border border-emerald-500/50 rounded px-1 py-0.5 text-emerald-300 shrink-0 text-[11px] font-bold flex items-center gap-1 shadow-2xs">
                 <Plus className="w-3 h-3 stroke-[3]" />
