@@ -3947,7 +3947,41 @@ if (loading) {
 
       {/* Responsive Cohesive Mode Selectors Bar */}
       <div className="w-full max-w-[780px] space-y-1.5 -mt-2">
-        <div className={`grid ${kanjiMode ? 'grid-cols-4 sm:grid-cols-8' : 'grid-cols-7'} gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner`}>
+        {kanjiMode ? (() => {
+          // Kanji: 8 chế độ gom thành 5 nhóm; nhóm có 2 chế độ thì hiện thêm hàng nút nhỏ để chọn.
+          const GROUPS: { label: string; Icon: any; modes: { id: any; label: string }[] }[] = [
+            { label: 'Lật thẻ', Icon: BookOpen, modes: [{ id: 'flashcard', label: 'Lật thẻ' }] },
+            { label: 'Trắc nghiệm', Icon: Layers, modes: [{ id: 'quiz', label: 'Trắc nghiệm' }, { id: 'dokkai', label: 'Đọc hiểu' }] },
+            { label: 'Luyện gõ', Icon: TrendingUp, modes: [{ id: 'cram', label: 'Gõ cách đọc' }, { id: 'write', label: 'Viết Hán' }] },
+            { label: 'Chia từ', Icon: Layers, modes: [{ id: 'conjugate', label: 'Chia từ' }] },
+            { label: 'Luyện câu', Icon: PenLine, modes: [{ id: 'sentence', label: 'Đặt câu' }, { id: 'shadowing', label: 'Ghép câu' }] },
+          ];
+          const cur = GROUPS.find(g => g.modes.some(m => m.id === selectedMode)) || GROUPS[0];
+          return (
+            <div className="space-y-1">
+              <div className="grid grid-cols-5 gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
+                {GROUPS.map(g => {
+                  const on = g === cur;
+                  return (
+                    <button key={g.label} type="button" onClick={() => { if (!on) handleSwitchMode(g.modes[0].id); }}
+                      className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${on ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/50' : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'}`}>
+                      <g.Icon className="w-3.5 h-3.5 shrink-0" /><span className="truncate">{g.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              {cur.modes.length > 1 && (
+                <div className="flex gap-1.5 justify-center" role="group" aria-label="Kiểu luyện">
+                  {cur.modes.map(m => (
+                    <button key={m.id} type="button" onClick={() => handleSwitchMode(m.id)} aria-pressed={selectedMode === m.id}
+                      className={`px-3 py-1 rounded-full text-xs font-bold cursor-pointer border ${selectedMode === m.id ? 'bg-blue-600 border-blue-400 text-white' : 'border-[#2b3353] text-slate-400 hover:text-slate-200'}`}>{m.label}</button>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })() : (
+        <div className="grid grid-cols-7 gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
           <button 
             type="button"
             onClick={() => handleSwitchMode('flashcard')} 
@@ -4054,6 +4088,7 @@ if (loading) {
             <span className="truncate">Ghép câu</span>
           </button>
         </div>
+        )}
       </div>
     </div>
 
