@@ -473,6 +473,15 @@ const parseDbUser = (dbData: any): UserProfile => {
       if (currentUser) {
         setUser(currentUser);
         setLastAuthError(null);
+        // Đã có hồ sơ lưu máy của đúng tài khoản → vào app ngay, đồng bộ server chạy nền rồi cập nhật.
+        try {
+          const c = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || 'null');
+          if (c && c.uid === currentUser.uid && c.name && c.name !== 'Học viên JLPT' && isMounted) {
+            setDbUser({ ...c, role: 'user' }); // quyền admin chỉ tin server
+            setAuthStatus('AUTHENTICATED');
+            setLoading(false);
+          }
+        } catch { /* no cache */ }
         try {
           const profile = await loadOrCreateProfile(currentUser);
           if (isMounted) {
