@@ -264,6 +264,13 @@ export default function AiReadingPractice({
   const [showExplanations, setShowExplanations] = useState<Record<number, boolean>>({});
   const [isQuizSubmitted, setIsQuizSubmitted] = useState<boolean>(false);
   const [earnedXpAwarded, setEarnedXpAwarded] = useState<boolean>(false);
+  // Kiểu Todaii: chọn là chấm ngay, giải thích hiện liền và tô sáng đoạn chứng cứ trong bài.
+  const [instantAnswer, setInstantAnswer] = useState<boolean>(false);
+  const [focusQuiz, setFocusQuiz] = useState<number | null>(null);
+  const [passageView, setPassageView] = useState<'read' | 'translate'>('read');
+  const [basket, setBasket] = useState<{ word: string; reading?: string; meaning?: string; level?: string }[]>([]);
+  const [showBasket, setShowBasket] = useState<boolean>(false);
+  const passageRef = useRef<HTMLDivElement | null>(null);
 
   // History State
   const [savedHistory, setSavedHistory] = useState<LessonReadingData[]>(() => {
@@ -1261,11 +1268,50 @@ export default function AiReadingPractice({
   // Quiz Answer Selection
   const handleSelectOption = (quizIndex: number, optionIndex: number) => {
     if (isQuizSubmitted) return;
-    setUserAnswers(prev => ({ ...prev, [quizIndex]: optionIndex }));
+    if (!instantAnswer) { setUserAnswers(prev => ({ ...prev, [quizIndex]: optionIndex })); return; }
+    if (userAnswers[quizIndex] !== undefined) return;
+    const next = { ...userAnswers, [quizIndex]: optionIndex };
+    setUserAnswers(next);
+    setShowExplanations(prev => ({ ...prev, [quizIndex]: true }));
+    setFocusQuiz(quizIndex);
+    if (readingData?.quizzes && Object.keys(next).length === readingData.quizzes.length) handleSubmitQuiz(next);
   };
 
+  // Đoạn trong bài được giải thích trích trong 「…」 → tô sáng (CSS Custom Highlight API, không đụng vào DOM của bài).
+  const evidenceQuotes = useMemo(() => {
+    const q = focusQuiz !== null ? readingData?.quizzes?.[focusQuiz] : null;
+    if (!q?.explanation || !(instantAnswer || isQuizSubmitted)) return [] as string[];
+    return [...q.explanation.matchAll(/「([^」]{4,})」/g)].map(m => m[1].replace(/\s+/g, ''));
+  }, [focusQuiz, readingData, instantAnswer, isQuizSubmitted]);
+
+  useEffect(() => {
+    const reg = (globalThis as any).CSS?.highlights; const HL = (globalThis as any).Highlight;
+    if (!reg || !HL) return;
+    reg.delete('reading-evidence');
+    const root = passageRef.current;
+    if (!root || !evidenceQuotes.length) return;
+    const chars: { n: Text; o: number }[] = []; let full = '';
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode() as Text | null; n; n = walker.nextNode() as Text | null) {
+      if (n.parentElement?.closest('rt,rp')) continue;
+      [...n.data].forEach((c, o) => { if (!/\s/.test(c)) { chars.push({ n, o }); full += c; } });
+    }
+    const ranges: Range[] = [];
+    for (const raw of evidenceQuotes) {
+      for (const q of [raw, raw.replace(/[。、．，]+$/, '')]) {
+        const i = full.indexOf(q);
+        if (i < 0) continue;
+        const r = document.createRange();
+        r.setStart(chars[i].n, chars[i].o); r.setEnd(chars[i + q.length - 1].n, chars[i + q.length - 1].o + 1);
+        ranges.push(r); break;
+      }
+    }
+    if (ranges.length) { reg.set('reading-evidence', new HL(...ranges)); ranges[0].startContainer.parentElement?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+    return () => { reg.delete('reading-evidence'); };
+  }, [evidenceQuotes, passageView, readingData]);
+
   // Submit Quiz & Check answers
-  const handleSubmitQuiz = () => {
+  const handleSubmitQuiz = (answers: Record<number, number> = userAnswers) => {
     if (!readingData?.quizzes || readingData.quizzes.length === 0) return;
     setIsQuizSubmitted(true);
     markArticleAsRead(readingData);
@@ -1275,7 +1321,7 @@ export default function AiReadingPractice({
     let correctCount = 0;
     readingData.quizzes.forEach((q, idx) => {
       expMap[idx] = true;
-      if (userAnswers[idx] === q.correctIndex) {
+      if (answers[idx] === q.correctIndex) {
         correctCount++;
       }
     });
@@ -1297,6 +1343,7 @@ export default function AiReadingPractice({
   const handleResetQuiz = () => {
     setUserAnswers({});
     setShowExplanations({});
+    setFocusQuiz(null);
     setIsQuizSubmitted(false);
   };
 
@@ -2790,6 +2837,21 @@ export default function AiReadingPractice({
                   <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
                 </button>
 
+                <div className="flex items-center justify-between gap-2 flex-wrap">
+                  <div className="inline-flex p-0.5 rounded-xl reading-soft border border-[var(--ui-line)]" role="tablist" aria-label="Chế độ xem bài">
+                    {([['read', 'Bài đọc'], ['translate', 'Bản dịch']] as const).map(([id, label]) => (
+                      <button key={id} type="button" role="tab" aria-selected={passageView === id} onClick={() => setPassageView(id)}
+                        className={`px-4 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition ${passageView === id ? 'bg-indigo-600 text-white shadow' : 'text-[var(--ui-muted)] hover:text-slate-200'}`}>{label}</button>
+                    ))}
+                  </div>
+                  <button type="button" onClick={() => setShowBasket(true)}
+                    className="px-3 py-1.5 rounded-xl bg-[#6d44c9] hover:bg-[#5e38a8] text-white text-xs font-bold cursor-pointer flex items-center gap-1.5">
+                    <Bookmark className="w-3.5 h-3.5" /><span>Giỏ từ vựng</span><span className="px-1.5 rounded-full bg-white/20">{basket.length}</span>
+                  </button>
+                </div>
+
+                <div ref={passageRef}>
+                {passageView === 'read' ? (
                 <JlptUnderlineArticle
                   rawTokens={readingData.rawTokens}
                   japanesePassage={readingData.japanesePassage}
@@ -2806,6 +2868,21 @@ export default function AiReadingPractice({
                   showPosHighlight={showPosHighlight}
                   selectedPosFilter={selectedPosFilter}
                 />
+                ) : (
+                  <div className="space-y-4">
+                    {readingData.sentenceBreakdown?.length ? readingData.sentenceBreakdown.map((item, idx) => (
+                      <div key={idx} className="space-y-1.5">
+                        <div className="flex items-start gap-2 font-jp text-base leading-loose text-[var(--ui-ink)]">
+                          <span className="text-xs text-[var(--ui-muted)] pt-2 w-4 shrink-0">{idx + 1}</span>
+                          <JapaneseFuriganaText sentence={item.furigana || item.japanese} showFurigana={showFurigana} size="lg" forceDark={true}
+                            textClassName="text-[var(--ui-ink)]" kanjiClassName="text-white font-bold" furiganaClassName="text-[#43EEF7]" />
+                        </div>
+                        <p className="ml-6 pl-3 border-l-2 border-indigo-500/60 text-sm text-indigo-300 leading-relaxed">{item.vietnamese}</p>
+                      </div>
+                    )) : <p className="text-sm text-[var(--ui-muted)] italic">Bài này chưa có bản dịch từng câu.</p>}
+                  </div>
+                )}
+                </div>
 
                 {/* JLPT Stats Bar (Exact Todaii match) */}
                 <div className="pt-4 border-t border-zinc-800">
@@ -2909,6 +2986,13 @@ export default function AiReadingPractice({
               animate={{ opacity: 1, y: 0 }}
               className="space-y-6"
             >
+              <label className="flex items-center gap-2.5 text-sm font-semibold text-[var(--ui-ink)] cursor-pointer select-none w-fit">
+                <input type="checkbox" className="sr-only peer" checked={instantAnswer} disabled={isQuizSubmitted || Object.keys(userAnswers).length > 0}
+                  onChange={e => setInstantAnswer(e.target.checked)} />
+                <span className={`w-10 h-6 rounded-full relative transition shrink-0 ${instantAnswer ? 'bg-indigo-600' : 'bg-slate-400'} ${isQuizSubmitted || Object.keys(userAnswers).length > 0 ? 'opacity-50' : ''}`}><span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${instantAnswer ? 'translate-x-4' : ''}`} /></span>
+                <span>Hiện đáp án ngay <span className="text-xs font-normal text-[var(--ui-muted)]">(chọn là chấm, giải thích và tô sáng đoạn chứng cứ trong bài)</span></span>
+              </label>
+
               {/* Score banner if submitted */}
               {isQuizSubmitted && quizScore && (
                 <div className={`p-5 rounded-2xl border flex flex-col md:flex-row items-center justify-between gap-4 shadow-lg ${
@@ -3004,10 +3088,11 @@ export default function AiReadingPractice({
                         {quiz.options.map((opt, oIdx) => {
                           const isSelected = userAnswers[qIdx] === oIdx;
                           const isTheCorrectOption = quiz.correctIndex === oIdx;
+                          const reveal = isQuizSubmitted || (instantAnswer && isAnswered);
 
                           let optionClass = 'reading-surface border-[var(--ui-line)] text-[var(--ui-ink)] reading-hover hover:border-slate-700';
 
-                          if (isQuizSubmitted) {
+                          if (reveal) {
                             if (isTheCorrectOption) {
                               optionClass = 'reading-success border-emerald-500/80 text-emerald-200 shadow-sm';
                             } else if (isSelected) {
@@ -3024,14 +3109,14 @@ export default function AiReadingPractice({
                               key={oIdx}
                               id={`quiz-${qIdx}-option-${oIdx}`}
                               type="button"
-                              disabled={isQuizSubmitted}
-                              onClick={() => handleSelectOption(qIdx, oIdx)}
+                              disabled={reveal}
+                              onClick={() => { handleSelectOption(qIdx, oIdx); if (instantAnswer) setFocusQuiz(qIdx); }}
                               className={`w-full text-left p-3.5 rounded-xl border transition flex items-start gap-3 cursor-pointer ${optionClass}`}
                             >
                               <span className={`w-6 h-6 rounded-lg text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 border ${
-                                isQuizSubmitted && isTheCorrectOption
+                                reveal && isTheCorrectOption
                                   ? 'bg-emerald-500 text-slate-950 border-emerald-400'
-                                  : isQuizSubmitted && isSelected
+                                  : reveal && isSelected
                                   ? 'bg-rose-500 text-white border-rose-400'
                                   : isSelected
                                   ? 'bg-indigo-600 text-white border-indigo-400'
@@ -3042,10 +3127,10 @@ export default function AiReadingPractice({
                               <span className="text-sm font-jp leading-relaxed flex-1 pt-0.5">
                                 {opt}
                               </span>
-                              {isQuizSubmitted && isTheCorrectOption && (
+                              {reveal && isTheCorrectOption && (
                                 <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                               )}
-                              {isQuizSubmitted && isSelected && !isTheCorrectOption && (
+                              {reveal && isSelected && !isTheCorrectOption && (
                                 <XCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
                               )}
                             </button>
@@ -3080,7 +3165,7 @@ export default function AiReadingPractice({
                   <button
                     id="btn-submit-reading-quiz"
                     type="button"
-                    onClick={handleSubmitQuiz}
+                    onClick={() => handleSubmitQuiz()}
                     disabled={Object.keys(userAnswers).length === 0}
                     className={`w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 transition cursor-pointer shadow-xl ${
                       Object.keys(userAnswers).length === 0
@@ -3420,7 +3505,8 @@ export default function AiReadingPractice({
       <JlptWordDetailModal
         wordInfo={clickedWordInfo}
         onClose={() => setClickedWordInfo(null)}
-        onSaveVocab={(word) => {
+        onSaveVocab={(word, reading, meaning, level) => {
+          setBasket(prev => prev.some(b => b.word === word) ? prev : [...prev, { word, reading, meaning, level }]);
           updateProfile({
             vocabStatus: {
               ...(userProfile.vocabStatus || {}),
@@ -3429,6 +3515,25 @@ export default function AiReadingPractice({
           });
         }}
       />
+
+      {/* GIỎ TỪ VỰNG */}
+      {showBasket && (
+        <div className="fixed inset-0 z-[70] bg-black/60 flex items-end sm:items-center justify-center p-3" onClick={() => setShowBasket(false)}>
+          <div className="w-full max-w-md max-h-[75vh] overflow-auto reading-surface border border-[var(--ui-line)] rounded-2xl p-5 space-y-3 shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-[var(--ui-ink)]">Giỏ từ vựng ({basket.length})</h3>
+              <button type="button" onClick={() => setShowBasket(false)} aria-label="Đóng" className="text-xl px-2 cursor-pointer text-[var(--ui-muted)]">×</button>
+            </div>
+            {basket.length === 0 ? <p className="text-sm text-[var(--ui-muted)]">Chưa có từ nào. Bấm vào một từ trong bài đọc rồi chọn lưu để thêm vào giỏ; từ cũng được đánh dấu "đang học" trong phần Từ vựng.</p>
+              : basket.map(b => (
+                <div key={b.word} className="flex items-start justify-between gap-2 border-t border-[var(--ui-line)] pt-2 font-jp">
+                  <div><b className="text-amber-300 text-base">{b.word}</b>{b.reading && <span className="text-xs text-[var(--ui-muted)]"> （{b.reading}）</span>}{b.level && <span className="ml-1 text-[10px] px-1.5 rounded bg-indigo-500/20 text-indigo-300">{b.level}</span>}
+                    {b.meaning && <div className="text-sm text-[var(--ui-ink)]">{b.meaning}</div>}</div>
+                  <button type="button" onClick={() => setBasket(prev => prev.filter(x => x.word !== b.word))} className="text-xs text-rose-400 cursor-pointer shrink-0">Bỏ</button>
+                </div>))}
+          </div>
+        </div>
+      )}
 
       {/* JLPT LEVEL WORDS DRAWER MODAL */}
       <JlptLevelWordsDrawer

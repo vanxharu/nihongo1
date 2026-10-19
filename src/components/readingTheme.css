@@ -8,3 +8,5 @@
 #ai-reading-container .reading-info{background:color-mix(in srgb,var(--ui-info) 10%,var(--ui-surface))!important;color:var(--ui-info)!important;border-color:color-mix(in srgb,var(--ui-info) 30%,var(--ui-line))!important}
 #ai-reading-container .reading-primary{background:var(--ui-tint)!important;color:var(--ui-primary)!important;border-color:var(--ui-line)!important}
 #ai-reading-container .reading-error{background:var(--ui-error-soft)!important;color:var(--ui-error)!important;border-color:color-mix(in srgb,var(--ui-error) 30%,var(--ui-line))!important}
+
+::highlight(reading-evidence){background-color:rgba(250,204,21,.45);color:inherit}
