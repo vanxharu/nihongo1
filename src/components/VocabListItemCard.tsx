@@ -357,6 +357,13 @@ function VocabListItemCardComponent({
             <div className="text-xs sm:text-sm text-slate-200 font-bold leading-snug break-words">
               {v.meaning}
             </div>
+            {(v.onyomi || v.kunyomi) && (
+              <div lang="ja" className="text-[11px] sm:text-xs text-slate-300 leading-snug break-words">
+                {v.onyomi && <span><b className="text-sky-300">音</b> {v.onyomi}</span>}
+                {v.onyomi && v.kunyomi && <span className="mx-1.5 text-slate-500">|</span>}
+                {v.kunyomi && <span><b className="text-amber-300">訓</b> {v.kunyomi}</span>}
+              </div>
+            )}
           </div>
         </div>
 

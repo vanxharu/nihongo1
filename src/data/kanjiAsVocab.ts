@@ -41,6 +41,8 @@ export const kanjiRowsToVocab = (rows: KanjiRow[]): VocabularyItem[] =>
       meaning: r.meaning,
       vietnameseMeaning: r.meaning,
       hanViet: r.hanViet,
+      onyomi: r.onyomi || undefined,
+      kunyomi: r.kunyomi || undefined,
       exampleSentence: r.sentence || w?.word || r.kanji,
       exampleReading: w?.reading,
       exampleTranslation: r.sentence ? r.sentenceVi : w?.meaning || r.meaning,
