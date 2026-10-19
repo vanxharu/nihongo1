@@ -3297,8 +3297,19 @@ if (loading) {
                           {(currentItem.hanViet || (currentItem.kanji && getHanViet(currentItem.kanji))) && <p className="vocab-answer-hanviet text-sm font-semibold uppercase text-emerald-400">{currentItem.hanViet || getHanViet(currentItem.kanji)}</p>}
                           <h3 className="text-base sm:text-lg font-bold text-emerald-400">{currentItem.meaning}</h3>
                           {renderFlashcardWordTypes(currentItem)}
-                          {currentItem.id.startsWith('kj_') && currentItem.notes && <p className="w-full max-w-lg mt-2 pt-2 border-t border-[#343d5f]/40 text-left text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line">{currentItem.notes}</p>}
                           <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(currentItem.kanji || currentItem.hiragana); }} onKeyDown={e => e.stopPropagation()} aria-label="Phát âm từ vựng" className={`p-1 text-slate-400 hover:text-white rounded${speakClassFor(currentItem.kanji || currentItem.hiragana)}`}><Volume2 className="w-4 h-4" /></button>
+                          {currentItem.kanjiWords?.length ? <div className="w-full max-w-lg mt-1 space-y-3 text-left">
+                            {currentItem.kanjiWords.map((w: any, i: number) => <div key={i} className="pt-3 border-t border-[#343d5f]/40">
+                              {w.word && /[\u4e00-\u9faf]/.test(w.word) && getHanViet(w.word) && <div className="text-[10px] font-bold uppercase tracking-wide text-rose-500 leading-none mb-1">{getHanViet(w.word)}</div>}
+                              {w.word && <p lang="ja" className="text-sm"><b className="text-emerald-600 text-base">{w.word}</b> <span className="text-slate-500">（{w.reading}）</span> <span className="text-slate-700">{w.meaning}</span></p>}
+                              {w.sentence && <div className="mt-2 flex items-start gap-2">
+                                <div className="flex-1 min-w-0 text-base sm:text-lg text-slate-100 leading-[2.2] pt-1">{renderExampleSentenceWithFurigana(w.sentence, currentItem)}</div>
+                                <button type="button" onClick={e => { e.stopPropagation(); handleSpeak(w.sentence, true); }} onKeyDown={e => e.stopPropagation()} aria-label="Phát âm câu ví dụ" className={`p-1 shrink-0 text-slate-400 hover:text-white rounded${speakClassFor(w.sentence)}`}><Volume2 className="w-4 h-4" /></button>
+                              </div>}
+                              {w.sentenceVi && <p className="mt-1 text-xs text-slate-400 leading-relaxed">{w.sentenceVi}</p>}
+                            </div>)}
+                            {currentItem.notes && <div className="pt-3 border-t border-[#343d5f]/40"><div className="text-[11px] font-bold text-sky-600 mb-1">🧩 Mẹo nhớ</div><p className="text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line">{currentItem.notes}</p></div>}
+                          </div> : (<>
                           {(() => {
                             const ex = ensureVocabExample(currentItem);
                             return <div className="vocab-word-example w-full max-w-lg mt-2 pt-3 text-left relative border-t border-[#343d5f]/40">
@@ -3314,6 +3325,7 @@ if (loading) {
                               {w.sentenceVi && <p className="text-xs text-slate-400">{w.sentenceVi}</p>}
                             </div>)}
                           </div>}
+                          </>)}
                         </div>
                       ) : (
                         <div className="space-y-2 flex flex-col items-center w-full">
