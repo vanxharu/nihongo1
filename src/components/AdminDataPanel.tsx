@@ -1,4 +1,5 @@
 import Skeleton from './ui/Skeleton';
+import AdminKanjiImport from './AdminKanjiImport';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   BookOpen, Compass, Layers, Plus, Edit2, Trash2, Database, RefreshCw, X, 
@@ -474,6 +475,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
           </button>
         </div>
 
+        {activeSubTab === 'kanji' && <div className="w-full"><AdminKanjiImport /></div>}
         {/* Action buttons */}
         <div className="admin-data-actions">
           {activeSubTab === 'vocab' && (

@@ -94235,6 +94235,57 @@ app.post("/api/admin/users/delete", requireAuth, requireAdmin, async (req, res) 
     res.status(500).json({ error: error.message });
   }
 });
+app.get("/api/kanji-master", async (_req, res) => {
+  try {
+    res.json(await listRecords("kanji_master"));
+  } catch {
+    res.status(503).json({ error: "Kh\xF4ng \u0111\u1ECDc \u0111\u01B0\u1EE3c d\u1EEF li\u1EC7u Kanji." });
+  }
+});
+app.post("/api/admin/kanji-master/import", requireAuth, requireAdmin, async (req, res) => {
+  try {
+    const items = req.body.items;
+    if (!Array.isArray(items) || items.length > 400) return res.status(400).json({ error: "M\u1ED7i l\u1EA7n nh\u1EADp t\u1ED1i \u0111a 400 ch\u1EEF." });
+    const rows = items.filter((i) => i && String(i.kanji || "").trim() && Number(i.chapter) > 0 && Number(i.lesson) > 0).map((i) => {
+      const t = (v) => String(v ?? "").trim().slice(0, 500);
+      return {
+        id: `${Number(i.chapter)}-${Number(i.lesson)}-${t(i.kanji)}`,
+        chapter: Number(i.chapter),
+        chapterTitle: t(i.chapterTitle),
+        lesson: Number(i.lesson),
+        lessonTitle: t(i.lessonTitle),
+        kanji: t(i.kanji),
+        onyomi: t(i.onyomi),
+        kunyomi: t(i.kunyomi),
+        hanViet: t(i.hanViet),
+        meaning: t(i.meaning),
+        strokes: Number(i.strokes) || 0,
+        word: t(i.word),
+        wordReading: t(i.wordReading),
+        wordMeaning: t(i.wordMeaning),
+        sentence: t(i.sentence),
+        sentenceVi: t(i.sentenceVi)
+      };
+    });
+    await Promise.all(rows.map((r) => writeRecord("kanji_master", r.id, r)));
+    res.json({ success: true, count: rows.length });
+  } catch {
+    res.status(503).json({ error: "Kh\xF4ng l\u01B0u \u0111\u01B0\u1EE3c d\u1EEF li\u1EC7u Kanji. B\u1EA1n c\xF3 th\u1EC3 th\u1EED l\u1EA1i." });
+  }
+});
+app.post("/api/admin/kanji-master/clear", requireAuth, requireAdmin, async (_req, res) => {
+  try {
+    const snap = await firebaseDb().collection("kanji_master").get();
+    for (let i = 0; i < snap.docs.length; i += 300) {
+      const b = firebaseDb().batch();
+      snap.docs.slice(i, i + 300).forEach((d) => b.delete(d.ref));
+      await b.commit();
+    }
+    res.json({ success: true, count: snap.docs.length });
+  } catch {
+    res.status(503).json({ error: "Kh\xF4ng x\xF3a \u0111\u01B0\u1EE3c d\u1EEF li\u1EC7u Kanji." });
+  }
+});
 app.post("/api/admin/kanjis/delete", requireAuth, requireAdmin, async (req, res) => {
   try {
     if (!req.body.id) return res.status(400).json({ error: "id required" });

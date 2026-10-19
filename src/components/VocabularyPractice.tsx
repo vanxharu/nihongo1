@@ -52,7 +52,7 @@ import {
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { VocabularyItem, UserProfile, LearningPosition, JLPTLevel } from '../types';
 import { VOCABULARY_DATA } from '../data';
-import { KANJI_VOCAB } from '../data/kanjiAsVocab';
+import { kanjiRowsToVocab, type KanjiRow } from '../data/kanjiAsVocab';
 import { 
   getHanViet, 
   getSentenceFuriganaParts, 
@@ -696,7 +696,11 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   useEffect(() => {
     let isMounted = true;
     const fetchVocabularies = async () => {
-      if (kanjiMode) { setVocabData(KANJI_VOCAB.map(v => sanitizeVocabItem(v))); setLoading(false); return; }
+      if (kanjiMode) {
+        const r = await safeFetchJson<KanjiRow[]>('/api/kanji-master');
+        if (isMounted) { setVocabData(r.ok && Array.isArray(r.data) ? kanjiRowsToVocab(r.data).map(v => sanitizeVocabItem(v)) : []); setLoading(false); }
+        return;
+      }
       try {
         const result = await safeFetchJson<VocabularyItem[]>('/api/vocabularies');
         if (isMounted && result.ok && Array.isArray(result.data) && result.data.length > 0) {

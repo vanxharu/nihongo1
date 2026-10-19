@@ -4198,6 +4198,31 @@ app.post('/api/admin/users/delete', requireAuth, requireAdmin, async (req: any, 
   }
 });
 
+// Kanji Master: dữ liệu do admin nhập từ Excel, mỗi chữ một bản ghi.
+app.get('/api/kanji-master', async (_req, res) => {
+  try { res.json(await listRecords('kanji_master')); } catch { res.status(503).json({ error: 'Không đọc được dữ liệu Kanji.' }); }
+});
+app.post('/api/admin/kanji-master/import', requireAuth, requireAdmin, async (req: any, res) => {
+  try {
+    const items = req.body.items;
+    if (!Array.isArray(items) || items.length > 400) return res.status(400).json({ error: 'Mỗi lần nhập tối đa 400 chữ.' });
+    const rows = items.filter((i: any) => i && String(i.kanji || '').trim() && Number(i.chapter) > 0 && Number(i.lesson) > 0).map((i: any) => {
+      const t = (v: any) => String(v ?? '').trim().slice(0, 500);
+      return { id: `${Number(i.chapter)}-${Number(i.lesson)}-${t(i.kanji)}`, chapter: Number(i.chapter), chapterTitle: t(i.chapterTitle), lesson: Number(i.lesson), lessonTitle: t(i.lessonTitle),
+        kanji: t(i.kanji), onyomi: t(i.onyomi), kunyomi: t(i.kunyomi), hanViet: t(i.hanViet), meaning: t(i.meaning), strokes: Number(i.strokes) || 0,
+        word: t(i.word), wordReading: t(i.wordReading), wordMeaning: t(i.wordMeaning), sentence: t(i.sentence), sentenceVi: t(i.sentenceVi) };
+    });
+    await Promise.all(rows.map((r: any) => writeRecord('kanji_master', r.id, r)));
+    res.json({ success: true, count: rows.length });
+  } catch { res.status(503).json({ error: 'Không lưu được dữ liệu Kanji. Bạn có thể thử lại.' }); }
+});
+app.post('/api/admin/kanji-master/clear', requireAuth, requireAdmin, async (_req: any, res) => {
+  try {
+    const snap = await firebaseDb().collection('kanji_master').get();
+    for (let i = 0; i < snap.docs.length; i += 300) { const b = firebaseDb().batch(); snap.docs.slice(i, i + 300).forEach((d: any) => b.delete(d.ref)); await b.commit(); }
+    res.json({ success: true, count: snap.docs.length });
+  } catch { res.status(503).json({ error: 'Không xóa được dữ liệu Kanji.' }); }
+});
 app.post('/api/admin/kanjis/delete',requireAuth,requireAdmin,async(req,res)=>{try{if(!req.body.id)return res.status(400).json({error:'id required'});await removeContent('kanjis',req.body.id);res.json({success:true});}catch{res.status(503).json({error:'Không xóa được Kanji.'});}});
 app.post('/api/admin/kanjis/update', requireAuth, requireAdmin, async (req: any, res) => {
   try {
