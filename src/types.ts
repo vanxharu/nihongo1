@@ -368,6 +368,7 @@ export interface AudioMark {
 
 export interface LessonReadingData {
   id?: string;
+  fromLibrary?: boolean;
   questionOrigin?: 'source' | 'ai';
   title: string;
   level: JLPTLevel;

@@ -274,7 +274,7 @@ export default function AiReadingPractice({
   // Bài viết sẵn: lấy nghĩa/cách đọc/cấp độ từ danh sách từ vựng đã lưu thay vì tra lại.
   const enrichWord = (info: JlptWordInfo): JlptWordInfo => {
     const v = readingData?.vocabularyList?.find(x => x.word === info.word || x.kanji === info.word);
-    return v ? { ...info, furigana: v.reading || v.hiragana || info.furigana, meaning: v.meaning, jlpt: (v.level as any) || info.jlpt, hanViet: v.hanViet || info.hanViet, stored: !!readingData?.id?.startsWith('n4-') } : info;
+    return v ? { ...info, furigana: v.reading || v.hiragana || info.furigana, meaning: v.meaning, jlpt: (v.level as any) || info.jlpt, hanViet: v.hanViet || info.hanViet, partOfSpeech: (v as any).partOfSpeech || info.partOfSpeech, stored: !!readingData?.fromLibrary } : info;
   };
   const [activeLevelWordsDrawer, setActiveLevelWordsDrawer] = useState<'N1' | 'N2' | 'N3' | 'N4' | 'N5' | null>(null);
   const [isGrammarModalOpen, setIsGrammarModalOpen] = useState<boolean>(false);
@@ -1463,11 +1463,14 @@ export default function AiReadingPractice({
           {readingSourceMode === 'library' && (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {libraryError && <p className="text-sm text-rose-400 col-span-full">{libraryError}</p>}
-              {!libraryError && library.length === 0 && <p className="text-sm text-[var(--ui-muted)] col-span-full">Đang tải thư viện…</p>}
+              {!libraryError && library.length === 0 && <p className="text-sm text-[var(--ui-muted)] col-span-full">Chưa có bài đọc nào. Admin nhập bài ở Quản trị → Dữ liệu → Bài đọc.</p>}
               {library.map(a => (
                 <button key={a.id} type="button" disabled={openingLibId === a.id} onClick={() => openLibraryLesson(a.id)}
                   className="text-left reading-surface border border-[var(--ui-line)] rounded-2xl overflow-hidden hover:border-indigo-500 transition cursor-pointer disabled:opacity-60">
-                  <img src={a.imageUrl} alt="" className="w-full aspect-video object-cover" />
+                  <div className="w-full aspect-video relative flex items-center justify-center overflow-hidden" style={{ background: `linear-gradient(135deg, ${a.thumb?.from || '#2563eb'}, ${a.thumb?.to || '#38bdf8'})` }}>
+                    <span className="text-7xl font-black text-white/95 font-jp drop-shadow-lg">{a.thumb?.kanji || '読'}</span>
+                    {a.imageUrl && <img src={a.imageUrl} alt="" className="absolute inset-0 w-full h-full object-cover" onError={e => { e.currentTarget.style.display = 'none'; }} />}
+                  </div>
                   <div className="p-3 space-y-1">
                     <div className="flex items-center gap-1.5 text-[10px]"><span className="px-1.5 rounded bg-indigo-500/20 text-indigo-300 font-bold">{a.level}</span><span className="text-[var(--ui-muted)]">{a.topic}</span>{isArticleRead(a) && <span className="text-emerald-400">✓ Đã đọc</span>}</div>
                     <strong className="block text-sm text-[var(--ui-ink)] font-jp">{a.title}</strong>
@@ -2470,7 +2473,7 @@ export default function AiReadingPractice({
           {/* Passage Overview Card */}
           <div className="reading-surface border border-[var(--ui-line)] rounded-3xl p-5 sm:p-7 shadow-xl space-y-5">
             {/* Article Image Banner (If available from Todaii News) */}
-            {readingData.imageUrl && !readingData.id?.startsWith("n4-") && (
+            {readingData.imageUrl && !readingData.fromLibrary && (
               <div className="relative w-full h-44 sm:h-64 rounded-2xl overflow-hidden border border-[var(--ui-line)] shadow-md group">
                 <ReadingImage
                   src={readingData.imageUrl}
