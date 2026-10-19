@@ -46,7 +46,7 @@ export const kanjiRowsToVocab = (rows: KanjiRow[]): VocabularyItem[] =>
       exampleSentence: r.sentence || w?.word || r.kanji,
       exampleReading: w?.reading,
       exampleTranslation: r.sentence ? r.sentenceVi : w?.meaning || r.meaning,
-      partOfSpeech: r.strokes ? `Kanji · ${r.strokes} nét` : 'Kanji',
+      partOfSpeech: r.strokes ? `${r.strokes} nét` : 'Kanji',
       relatedWords: r.words ? r.words.split(/[;；]/).map(x => x.trim()).filter(Boolean).join(' ・ ') : undefined,
       notes: r.mnemonic || undefined,
       curriculum: 'tango',
