@@ -2470,7 +2470,7 @@ export default function AiReadingPractice({
           {/* Passage Overview Card */}
           <div className="reading-surface border border-[var(--ui-line)] rounded-3xl p-5 sm:p-7 shadow-xl space-y-5">
             {/* Article Image Banner (If available from Todaii News) */}
-            {readingData.imageUrl && (
+            {readingData.imageUrl && !readingData.id?.startsWith("n4-") && (
               <div className="relative w-full h-44 sm:h-64 rounded-2xl overflow-hidden border border-[var(--ui-line)] shadow-md group">
                 <ReadingImage
                   src={readingData.imageUrl}
