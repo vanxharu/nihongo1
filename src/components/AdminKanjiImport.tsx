@@ -35,19 +35,25 @@ export default function AdminKanjiImport({ onChanged }: { onChanged?: () => void
   const [confirmClear, setConfirmClear] = useState(false);
 
   const template = () => {
-    const ws = XLSX.utils.aoa_to_sheet([COLS.map(c => c[1]), [1, 'Tên chương', 1, 'Tên bài', '家', 'カ, ケ', 'いえ, や', 'GIA', 'nhà', 10, 'N4', '', '家族(かぞく)=gia đình; 家(いえ)=nhà', '', '']]);
+    const ws = XLSX.utils.aoa_to_sheet([COLS.map(c => c[1]),
+      [1, 'Gia đình', 1, 'Người trong nhà', '家', 'カ, ケ', 'いえ, や', 'GIA', 'nhà, gia đình', 10, 'N4', 'Mái nhà (宀) che con lợn (豕): nhà có người có của', '家族(かぞく)=gia đình; 家(いえ)=nhà', '私の家は駅の近くです。', 'Nhà tôi ở gần ga.'],
+      [1, 'Gia đình', 1, 'Người trong nhà', '兄', 'ケイ, キョウ', 'あに', 'HUYNH', 'anh trai', 5, 'N4', '', '兄(あに)=anh trai (của mình); 兄弟(きょうだい)=anh em', '兄は大学で勉強しています。', 'Anh trai tôi đang học ở đại học.'],
+      [1, 'Gia đình', 1, 'Người trong nhà', '育', 'イク', 'そだ.つ, そだ.てる', 'DỤC', 'nuôi dưỡng', 8, 'N4', '', '育てる(そだてる)=nuôi, trồng; 教育(きょういく)=giáo dục', '祖母は庭で花を育てています。', 'Bà tôi đang trồng hoa trong vườn.'],
+      [2, 'Nơi làm việc', 1, 'Công ty', '働', 'ドウ', 'はたら.く', 'ĐỘNG', 'làm việc', 13, 'N4', '', '働く(はたらく)=làm việc', '父は銀行で働いています。', 'Bố tôi làm việc ở ngân hàng.'],
+    ]);
+    ws['!cols'] = [8, 16, 6, 18, 8, 14, 18, 10, 16, 8, 7, 34, 44, 30, 32].map(wch => ({ wch }));
     const guide = XLSX.utils.aoa_to_sheet([
       ['Quy tắc điền'],
-      ['Mỗi dòng là một chữ Hán. Chỉ đọc sheet đầu tiên (sheet "Kanji"). Dòng 1 là tên cột.'],
+      ['Mỗi dòng là một chữ Hán. App chỉ đọc sheet "Kanji" (sheet đầu tiên); dòng 1 là tên cột. Xóa các dòng mẫu rồi nhập dữ liệu của bạn.'],
       ['Bắt buộc: Chương (số), Bài (số thứ tự trong chương), Kanji. Các cột còn lại tùy chọn.'],
       ['Một chữ được nhận diện bằng Chương + Bài + Kanji; nhập lại cùng bộ ba thì cập nhật dòng cũ.'],
       ['Âm On (katakana) và Âm Kun (hiragana): nhiều âm ngăn bằng dấu , ; phần okurigana ngăn bằng dấu . (ví dụ や.ぐ).'],
       ['Hán Việt: viết hoa (ví dụ GIA). JLPT: N1 đến N5, để trống hoặc sai thì mặc định N4.'],
       ['Từ ví dụ: nhiều từ trong một ô, ngăn bằng ; mỗi từ dạng từ(cách đọc)=nghĩa. Không dùng ; = ( ) trong phần nghĩa.'],
-      ['Câu ví dụ + Dịch câu cần có để dùng chế độ Đặt câu, Ghép câu, Đọc hiểu.'],
-      ['Mỗi ô tối đa 500 ký tự (Từ ví dụ tối đa 2000). Nội dung nên tự soạn, không chép ví dụ/bài tập của sách.'],
+      ['Câu ví dụ + Dịch câu cần có để dùng chế độ Đặt câu, Ghép câu, Đọc hiểu. Có thể viết furigana tay dạng 二人[ふたり].'],
+      ['Từ ví dụ dùng cho thẻ và chế độ Viết Hán. Mỗi ô tối đa 500 ký tự (Từ ví dụ tối đa 2000). Nội dung nên tự soạn, không chép ví dụ/bài tập của sách.'],
     ]);
-    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Kanji'); XLSX.utils.book_append_sheet(wb, guide, 'Hướng dẫn'); XLSX.writeFile(wb, 'Mau_Nhap_Kanji.xlsx');
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Kanji'); XLSX.utils.book_append_sheet(wb, guide, 'Hướng dẫn'); XLSX.writeFile(wb, 'Mau_Nhap_Kanji_Moi.xlsx');
   };
   const exportAll = async () => {
     try {
