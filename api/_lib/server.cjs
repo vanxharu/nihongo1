@@ -92850,21 +92850,23 @@ B\xE0i \u0111\u1ECDc ti\u1EBFng Nh\u1EADt \u0111\xE3 \u0111\u01B0\u1EE3c x\u1EED
   }
 });
 var sortLib = (rows) => rows.sort((a, b) => String(a.id).localeCompare(String(b.id), void 0, { numeric: true }));
-var seedChecked = false;
-async function seedReadingLibrary() {
-  if (seedChecked) return;
-  if (await readRecord("reading_library_meta", "seed-n4-v1")) {
-    seedChecked = true;
-    return;
+var purgeChecked = false;
+async function purgeReadingLibraryOnce() {
+  if (purgeChecked) return;
+  if (!await readRecord("reading_library_meta", "purge-v1")) {
+    const snap = await firebaseDb().collection("reading_library").get();
+    for (let k = 0; k < snap.docs.length; k += 300) {
+      const b = firebaseDb().batch();
+      snap.docs.slice(k, k + 300).forEach((d) => b.delete(d.ref));
+      await b.commit();
+    }
+    await writeRecord("reading_library_meta", "purge-v1", { at: (/* @__PURE__ */ new Date()).toISOString(), count: snap.docs.length });
   }
-  const seed2 = JSON.parse(import_fs.default.readFileSync(import_path.default.join(process.cwd(), "src", "data", "readingSeedN4.json"), "utf8"));
-  for (const l of seed2) if (!await readRecord("reading_library", l.id)) await writeRecord("reading_library", l.id, l);
-  await writeRecord("reading_library_meta", "seed-n4-v1", { at: (/* @__PURE__ */ new Date()).toISOString(), count: seed2.length });
-  seedChecked = true;
+  purgeChecked = true;
 }
 app.get("/api/reading/library", async (_req, res) => {
   try {
-    await seedReadingLibrary().catch((e) => console.warn("reading seed failed", e));
+    await purgeReadingLibraryOnce().catch((e) => console.warn("reading purge failed", e));
     res.setHeader("Cache-Control", "no-store");
     res.json(sortLib(await listRecords("reading_library")).map((a) => ({ id: a.id, title: a.title, titleVi: a.titleVi, topic: a.topic, level: a.level, imageUrl: a.imageUrl, thumb: a.thumb, questionCount: (a.quizzes || []).length, wordCount: (a.vocabularyList || []).length })));
   } catch {
