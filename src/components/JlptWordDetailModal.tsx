@@ -401,15 +401,18 @@ export const JlptWordDetailModal: React.FC<JlptWordDetailModalProps> = ({
       setSelectedKanjiIndex(0);
       fetchLookup(wordInfo.word, wordInfo.furigana, wordInfo.meaning, wordInfo.jlpt || undefined);
     } else {
+      lookupSeq.current++;
       setCurrentWord('');
       setSearchQuery('');
       setLookupData(null);
     }
   }, [wordInfo?.word]);
 
+  const lookupSeq = useRef(0); // bỏ qua kết quả của lần tra cũ khi người dùng đã chọn từ khác
   const fetchLookup = async (wordToLookup: string, readingHint?: string, meaningHint?: string, levelHint?: string) => {
     const clean = wordToLookup.trim();
     if (!clean) return;
+    const seq = ++lookupSeq.current;
 
     if (cacheRef.current.has(clean)) {
       setLookupData(cacheRef.current.get(clean)!);
@@ -449,13 +452,13 @@ export const JlptWordDetailModal: React.FC<JlptWordDetailModalProps> = ({
         const data = await res.json();
         if (data.success && data.data) {
           cacheRef.current.set(clean, data.data);
-          setLookupData(data.data);
+          if (seq === lookupSeq.current) setLookupData(data.data);
         }
       }
     } catch (e) {
       console.warn('Word lookup API error, using fallback:', e);
     } finally {
-      setIsLoading(false);
+      if (seq === lookupSeq.current) setIsLoading(false);
     }
   };
 
