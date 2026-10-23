@@ -1060,7 +1060,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     return <article key={exam.id} className="study-exam-card" data-level={exam.level}>
       <span className="study-level">{exam.level}</span>
       <div className="study-exam-main"><h3>{exam.title}</h3><div className="study-exam-spec"><span>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</span><span><FileText size={13} />{pickExamBatch(exam.questions === questions ? exam : { ...exam, questions }).questions.length} câu</span></div></div>
-      <div className="study-exam-actions">{savedProgress[exam.id] && <button onClick={() => handleResumeExam(exam)}>Tiếp tục</button>}<button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}>Luyện</button><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'booklet_pdf')}>Đề giấy</button></div>
+      <div className="study-exam-actions">{savedProgress[exam.id] ? <button onClick={() => handleResumeExam(exam)}>Tiếp tục</button> : <button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}>Luyện</button>}</div>
     </article>;
   };
   return (
