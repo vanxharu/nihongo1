@@ -849,7 +849,7 @@ export function roadmapDay(
       label: "Đọc hiểu",
       text: pick(chapter.reading),
       action: "Luyện đọc",
-      route: `/jlpt/${level}`,
+      route: `/jlpt/${level}/reading`,
       minutes: minutes[2],
       method:
         "Đọc không tra từ ở lượt đầu. Tìm bằng chứng cho đáp án; lượt sau mới tra từ và tóm tắt ý chính.",
