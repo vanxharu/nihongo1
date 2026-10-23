@@ -570,30 +570,38 @@ export default function App() {
     const upper = value?.toUpperCase();
     return upper && ['N5','N4','N3','N2','N1'].includes(upper) ? upper as JLPTLevel : undefined;
   }
-  function RoadmapVocabularyWrapper() {
-    const { level } = useParams();
-    return <VocabularyPractice userProfile={activeProfile} updateProfile={updateProfile} onEarnXp={handleEarnXp} initialLevel={validRouteLevel(level)} />;
-  }
-  function RoadmapKanjiWrapper() {
-    const { level } = useParams();
-    return <KanjiExplorer userProfile={{ ...activeProfile, targetLevel:validRouteLevel(level) || activeProfile.targetLevel }} updateProfile={updateProfile} onEarnXp={handleEarnXp} />;
-  }
-  function GrammarPracticeRouteWrapper() {
-    const { lessonId, level } = useParams();
-    const routeLevel = validRouteLevel(level);
-    const parsedLesson = lessonId ? parseInt(lessonId, 10) : undefined;
-
-    return (
-      <GrammarPractice onStudyReward={handleStudyXp}
-        userProfile={routeLevel ? { ...activeProfile, targetLevel:routeLevel } : activeProfile}
-        updateProfile={updateProfile}
-        onEarnXp={handleEarnXp}
-        onNavigateTab={handleTabChange}
-        initialViewMode={parsedLesson ? 'lesson-detail' : grammarInitialView}
-        initialLessonNumber={parsedLesson || grammarInitialLesson}
-      />
-    );
-  }
+  // Wrapper phải có danh tính cố định: nếu khai báo lại mỗi lần App render thì React mount lại màn hình
+  // (cuộn làm đổi showScrollTop -> render -> màn Ngữ pháp bị reset/thoát ra). Props mới đọc qua ref.
+  const routeCtx = useRef<any>({});
+  routeCtx.current = { activeProfile, updateProfile, handleEarnXp, handleStudyXp, handleTabChange, grammarInitialView, grammarInitialLesson };
+  const { RoadmapVocabularyWrapper, RoadmapKanjiWrapper, GrammarPracticeRouteWrapper } = useMemo(() => ({
+    RoadmapVocabularyWrapper() {
+      const { level } = useParams();
+      const c = routeCtx.current;
+      return <VocabularyPractice userProfile={c.activeProfile} updateProfile={c.updateProfile} onEarnXp={c.handleEarnXp} initialLevel={validRouteLevel(level)} />;
+    },
+    RoadmapKanjiWrapper() {
+      const { level } = useParams();
+      const c = routeCtx.current;
+      return <KanjiExplorer userProfile={{ ...c.activeProfile, targetLevel:validRouteLevel(level) || c.activeProfile.targetLevel }} updateProfile={c.updateProfile} onEarnXp={c.handleEarnXp} />;
+    },
+    GrammarPracticeRouteWrapper() {
+      const { lessonId, level } = useParams();
+      const c = routeCtx.current;
+      const routeLevel = validRouteLevel(level);
+      const parsedLesson = lessonId ? parseInt(lessonId, 10) : undefined;
+      return (
+        <GrammarPractice onStudyReward={c.handleStudyXp}
+          userProfile={routeLevel ? { ...c.activeProfile, targetLevel:routeLevel } : c.activeProfile}
+          updateProfile={c.updateProfile}
+          onEarnXp={c.handleEarnXp}
+          onNavigateTab={c.handleTabChange}
+          initialViewMode={parsedLesson ? 'lesson-detail' : c.grammarInitialView}
+          initialLessonNumber={parsedLesson || c.grammarInitialLesson}
+        />
+      );
+    },
+  }), []);
 
   const renderRoutes = () => (
     <Routes location={location}>
