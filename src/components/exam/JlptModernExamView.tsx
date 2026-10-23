@@ -90,6 +90,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
   const [isPaletteOpen, setIsPaletteOpen] = useState<boolean>(false);
   const [isSubmitConfirmOpen, setIsSubmitConfirmOpen] = useState<boolean>(false);
   const [isReadingDrawerOpen, setIsReadingDrawerOpen] = useState<boolean>(false);
+  const [isExitConfirmOpen, setIsExitConfirmOpen] = useState<boolean>(false);
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving'>('saved');
   const examContainerRef = useRef<HTMLDivElement>(null);
 
@@ -108,6 +109,12 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
     }, 350);
     return () => clearTimeout(timer);
   }, [userAnswers, currentQuestionIndex]);
+
+  // Ẩn menu dưới của app khi đang làm bài để không che nút Câu trước/Câu tiếp/Nộp bài.
+  useEffect(() => {
+    document.body.classList.add('exam-playing');
+    return () => document.body.classList.remove('exam-playing');
+  }, []);
 
   // Fullscreen toggling
   const toggleFullscreen = () => {
@@ -174,7 +181,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
           {/* Left: Exam Identifier & Section */}
           <div className="flex items-center gap-2 sm:gap-3">
             <button
-              onClick={onExit}
+              onClick={() => (isSubmitted ? onExit() : setIsExitConfirmOpen(true))}
               className="p-1.5 rounded-lg text-[#1F2639]/70 hover:text-[#1F2639] hover:bg-[#F4EDE2] transition cursor-pointer"
               title="Thoát bài thi về trang danh sách"
             >
@@ -202,15 +209,9 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
           {/* Right: Controls (Font Size, Focus Mode, Palette, Submit) */}
           <div className="flex items-center gap-1.5 sm:gap-2">
             
-            {/* Question Palette Trigger */}
-            <button
-              onClick={() => setIsPaletteOpen(true)}
-              className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#1F2639] hover:bg-[#2A344D] text-white font-bold text-xs transition cursor-pointer flex items-center gap-1.5 shadow-xs"
-              title="Mở danh sách câu hỏi"
-            >
-              <Grid className="w-3.5 h-3.5 text-[#F4A643]" />
-              <span className="font-mono">{answeredCount}/{activeQuestions.length}</span>
-            </button>
+            <span className="px-2 font-mono text-xs font-bold text-[#1F2639]" aria-label="Số câu đã làm">
+              {answeredCount}/{activeQuestions.length}
+            </span>
           </div>
         </div>
 
@@ -436,6 +437,19 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
         </div>
       )}
 
+      {isExitConfirmOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 border border-[#EADFCF] shadow-2xl space-y-4">
+            <h3 className="text-base font-black text-[#1F2639]">Thoát bài thi?</h3>
+            <p className="text-xs text-[#786D5E]">Đáp án đã chọn được lưu. Bạn có thể bấm "Tiếp tục" ở danh sách đề để làm tiếp (đồng hồ sẽ tính lại từ đầu).</p>
+            <div className="flex gap-2">
+              <button onClick={() => setIsExitConfirmOpen(false)} className="flex-1 h-11 rounded-xl border border-[#EADFCF] font-bold text-sm cursor-pointer">Làm tiếp</button>
+              <button onClick={onExit} className="flex-1 h-11 rounded-xl bg-[#D82B3A] text-white font-bold text-sm cursor-pointer">Thoát</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ================= PRE-SUBMISSION CONFIRMATION MODAL ================= */}
       {isSubmitConfirmOpen && (
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
@@ -590,6 +604,11 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
 
         {/* Question Text Body */}
         <div className="space-y-3">
+          <div className="flex items-center gap-2 text-[11px] font-bold tracking-wide text-[#786D5E]">
+            <span className="px-2 py-0.5 rounded-md border border-[#EADFCF]">{exam.level}</span>
+            <span>{JLPT_SECTION_METAS[currentQuestion.section]?.name}</span>
+            <span className="ml-auto font-mono">Câu {currentQuestionIndex + 1}/{activeQuestions.length}</span>
+          </div>
           <p className={`exam-prompt font-bold text-[#1F2639] whitespace-pre-line tracking-wide font-sans ${questionFontClass}`}>
             {renderFormattedQuestion(currentQuestion.question)}
           </p>
@@ -643,6 +662,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
                   <span className={`${optionFontClass} leading-relaxed`}>{option}</span>
                 </div>
 
+                {!isSubmitted && isSelected && <Check className="w-4 h-4 stroke-[3] shrink-0 ml-2 text-[#F4A643]" aria-hidden />}
                 {isSubmitted && isCorrect && (
                   <span className="text-[#10B981] font-bold text-xs flex items-center gap-1 shrink-0 ml-2">
                     <CheckCircle2 className="w-4 h-4" />

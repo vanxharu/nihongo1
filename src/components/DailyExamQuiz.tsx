@@ -42,7 +42,7 @@ import './learning/studyExperience.css';
 import { DailyExam, ExamQuestion, UserProfile, ExamHistoryRecord } from '../types';
 import { DAILY_EXAMS } from '../data';
 import { JLPT_PAST_EXAMS } from '../data/jlptExams';
-import { ensureFullExamQuestions } from '../data/jlptExamGenerator';
+import { ensureFullExamQuestions, JLPT_LEVEL_TARGETS } from '../data/jlptExamGenerator';
 import SrsSwitch from './ui/SrsSwitch';
 import { calculateSRS } from '../utils/srs';
 import { dueSrsQuestions, readSrsAuto, readSrsQuestions, useSrsAuto, writeSrsQuestions } from '../utils/srsMode';
@@ -708,25 +708,39 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     if (!isPlaying || !selectedExam || examViewFormat !== 'interactive') return;
     const all = readProgress();
     if (isSubmitted) delete all[selectedExam.id];
-    else if (Object.keys(userAnswers).length) all[selectedExam.id] = { mode: selectedSectionMode, answers: userAnswers, flagged: flaggedQuestions, index: currentQuestionIndex };
+    else if (Object.keys(userAnswers).length) all[selectedExam.id] = { mode: selectedSectionMode, answers: userAnswers, flagged: flaggedQuestions, index: currentQuestionIndex, ids: selectedExam.questions.map(q => q.id) };
     else return;
     try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(all)); } catch { /* storage blocked */ }
     setSavedProgress(all);
   }, [isPlaying, isSubmitted, userAnswers, flaggedQuestions, currentQuestionIndex]);
   const handleResumeExam = (exam: DailyExam) => {
     const saved = savedProgress[exam.id]; if (!saved) return;
-    handleStartExam(exam, saved.mode, 'interactive');
+    handleStartExam(exam, saved.mode, 'interactive', saved.ids);
     setUserAnswers(saved.answers || {}); setFlaggedQuestions(saved.flagged || {}); setCurrentQuestionIndex(saved.index || 0);
+  };
+
+  // Ngân hàng câu hỏi lớn (vd 542 câu) không thể làm trong 30 phút: mỗi lượt chỉ lấy ngẫu nhiên số câu của đề thật theo từng phần.
+  const pickExamBatch = (exam: DailyExam, ids?: string[]): DailyExam => {
+    if (ids) return { ...exam, questions: exam.questions.filter(q => ids.includes(q.id)) };
+    const t = JLPT_LEVEL_TARGETS[exam.level] || JLPT_LEVEL_TARGETS.N5;
+    const cap = { 'moji-goi': t.mojiGoi, bunpou: t.bunpou, dokkai: t.dokkai, choukai: t.choukai };
+    const keep = new Set<string>();
+    (Object.keys(cap) as (keyof typeof cap)[]).forEach(sec => {
+      const qs = exam.questions.filter(q => q.section === sec);
+      (qs.length <= cap[sec] * 1.5 ? qs : [...qs].sort(() => Math.random() - 0.5).slice(0, cap[sec])).forEach(q => keep.add(q.id));
+    });
+    return { ...exam, questions: exam.questions.filter(q => keep.has(q.id)) };
   };
 
   const handleStartExam = (
     examToStart?: DailyExam, 
     sectionMode: ExamSectionMode = 'ALL',
-    format: 'booklet_pdf' | 'interactive' = 'booklet_pdf'
+    format: 'booklet_pdf' | 'interactive' = 'booklet_pdf',
+    resumeIds?: string[]
   ) => {
     const rawExam = examToStart || selectedExam;
     if (!rawExam) return;
-    const exam = ensureFullExamQuestions(rawExam);
+    const exam = pickExamBatch(ensureFullExamQuestions(rawExam), resumeIds);
     
     setSelectedExam(exam);
     setSelectedSectionMode(sectionMode);
@@ -1045,7 +1059,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     const minutes = lobbyPracticeMode === 'ALL' ? exam.durationMinutes : Math.round(getSectionStandardDuration(lobbyPracticeMode, exam.level) / 60);
     return <article key={exam.id} className="study-exam-card" data-level={exam.level}>
       <span className="study-level">{exam.level}</span>
-      <div className="study-exam-main"><h3>{exam.title}</h3><div className="study-exam-spec"><span>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</span><span><FileText size={13} />{questions.length} câu</span></div></div>
+      <div className="study-exam-main"><h3>{exam.title}</h3><div className="study-exam-spec"><span>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</span><span><FileText size={13} />{pickExamBatch(exam.questions === questions ? exam : { ...exam, questions }).questions.length} câu</span></div></div>
       <div className="study-exam-actions">{savedProgress[exam.id] && <button onClick={() => handleResumeExam(exam)}>Tiếp tục</button>}<button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}>Luyện</button><button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'booklet_pdf')}>Đề giấy</button></div>
     </article>;
   };

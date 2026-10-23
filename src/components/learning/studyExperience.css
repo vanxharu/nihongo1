@@ -165,3 +165,6 @@
 .study-srs-bar b{font-size:14px}
 .study-srs-bar span{font-size:12px;font-weight:700;padding:6px 12px;border-radius:10px;background:var(--ui-primary,#e64556);color:#fff}
 .study-exam-head{align-items:center}
+
+body.exam-playing #mobile-bottom-navigation{display:none!important}
+@media(max-width:600px){.study-exam .exam-question-surface{padding:20px!important}.study-exam .exam-question-surface .exam-prompt{font-size:clamp(21px,5.6vw,26px)}.study-exam .exam-answer{min-height:60px}}
