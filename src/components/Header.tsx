@@ -127,8 +127,6 @@ export default function Header({
         return 'Lý thuyết (Ngữ pháp, Từ vựng, Hán tự)';
       case 'vocabulary':
         return 'Chữ – Từ vựng (文字・語彙)';
-      case 'reading':
-        return 'Đọc hiểu & Tin tức (読解)';
       case 'kaiwa':
         return 'Nghe hiểu & Hội thoại (聴解)';
       case 'exam':

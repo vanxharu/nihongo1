@@ -54,7 +54,6 @@ const PRIMARY_NAV: NavItem[] = [
   { id: 'exam',          path: '/jlpt',       label: 'Luyện thi JLPT',     icon: Award,         color: 'text-rose-400',   dot: '#FB7185' },
   { id: 'roadmap',       path: '/lo-trinh',   label: 'Lộ trình',           icon: Route,         color: 'text-violet-400', dot: '#A78BFA' },
   { id: 'grammar',       path: '/bunpo',      label: 'Lý thuyết',          icon: BookOpen,      color: 'text-teal-400',   dot: '#2DD4BF' },
-  { id: 'reading',       path: '/doc-hieu',   label: 'Đọc hiểu & Tin tức', icon: BookOpen,      color: 'text-indigo-400', dot: '#818CF8' },
   { id: 'japanese-chat', path: '/chat-ai',    label: 'Kaiwa · Hội thoại',  icon: MessagesSquare,color: 'text-orange-400', dot: '#FB923C' },
 ];
 

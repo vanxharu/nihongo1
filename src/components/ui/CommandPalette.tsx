@@ -9,7 +9,6 @@ const COMMANDS: [string, string, string][] = [
   ['Kanji', '/kanji', 'kanji hán tự'],
   ['Luyện thi JLPT', '/jlpt', 'jlpt exam thi đề'],
   ['Lộ trình', '/lo-trinh', 'roadmap lo trinh'],
-  ['Đọc hiểu', '/doc-hieu', 'reading doc hieu'],
   ['Shadowing', '/shadowing', 'shadowing nghe'],
   ['Sổ tay', '/so-tay', 'notebook so tay'],
   ['Từ điển', '/tu-dien', 'dictionary tu dien'],

@@ -286,7 +286,6 @@ export default function MobileBottomNav({
               {/* Secondary Navigation Items */}
               <div className="grid grid-cols-2 gap-2.5">
                 {[
-                  { id: 'reading', path: '/doc-hieu', label: 'Đọc hiểu & Tin tức', icon: BookOpen, color: 'text-indigo-400', desc: 'Báo chí & Hội thoại' },
                   { id: 'japanese-chat', path: '/chat-ai', label: 'Luyện Kaiwa', icon: MessagesSquare, color: 'text-amber-400', desc: 'Hội thoại giao tiếp' },
                   { id: 'notebook', path: '/so-tay', label: 'Sổ tay từ vựng', icon: Bookmark, color: 'text-amber-400', desc: 'Flashcard & Quiz' },
                   { id: 'achievements', path: '/thanh-tich', label: 'Thành tựu', icon: Trophy, color: 'text-amber-400', desc: `Mở khóa ${unlockedCount}/${TOTAL_ACHIEVEMENTS_COUNT}` },

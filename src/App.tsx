@@ -36,7 +36,6 @@ const DailyExamQuiz = lazyWithRetry(() => import('./components/DailyExamQuiz'));
 const Kaiwa = lazyWithRetry(() => import('./components/Kaiwa'));
 const AdminPanel = lazyWithRetry(() => import('./components/AdminPanel'));
 const JapaneseAiChat = lazyWithRetry(() => import('./components/JapaneseAiChat'));
-const ReadingExam = lazyWithRetry(() => import('./components/ReadingExam'));
 const MyBooks = lazyWithRetry(() => import('./components/MyBooks'));
 const NotebookManager = lazyWithRetry(() => import('./components/NotebookManager'));
 const DictionaryLookup = lazyWithRetry(() => import('./components/DictionaryLookup'));
@@ -379,32 +378,6 @@ export default function App() {
     }
   }, [activeProfile.lastPosition, user, location.pathname, navigate]);
 
-  // Listener for direct navigation to Reading with lesson details from Vocabulary or Grammar
-  const [readingLessonState, setReadingLessonState] = useState<{ 
-    level?: any; 
-    lessonNumber?: number;
-    curriculum?: 'minna' | 'tango';
-    lessonId?: string;
-  }>({});
-
-  useEffect(() => {
-    const handleNavigateReading = (e: any) => {
-      if (e.detail) {
-        setReadingLessonState({
-          level: e.detail.level,
-          lessonNumber: e.detail.lessonNumber,
-          curriculum: e.detail.curriculum,
-          lessonId: e.detail.lessonId
-        });
-      }
-      navigate('/doc-hieu');
-    };
-    window.addEventListener('navigate_to_reading', handleNavigateReading);
-    return () => {
-      window.removeEventListener('navigate_to_reading', handleNavigateReading);
-    };
-  }, [navigate]);
-
   // Daily Streak and Streak Freeze Protection Logic (Only for logged-in users)
   useEffect(() => {
     if (!user) return;
@@ -699,7 +672,6 @@ export default function App() {
       <Route path="/jlpt/:level/vocabulary" element={<RoadmapVocabularyWrapper />} />
       <Route path="/jlpt/:level/grammar" element={<GrammarPracticeRouteWrapper />} />
       <Route path="/jlpt/:level/kanji" element={<RoadmapKanjiWrapper />} />
-      <Route path="/jlpt/:level/reading" element={<ReadingExam />} />
 
       {/* 7. Lộ trình học tập */}
       <Route 
@@ -714,7 +686,6 @@ export default function App() {
       />
 
       {/* 8. Đọc hiểu & Tin tức */}
-      <Route path="/doc-hieu" element={<ReadingExam />} />
 
       <Route path="/sach" element={<Navigate to="/" replace />} />
 
@@ -806,7 +777,6 @@ export default function App() {
       <Route path="/grammar" element={<Navigate to="/bunpo" replace />} />
       <Route path="/vocabulary" element={<Navigate to="/tango" replace />} />
       <Route path="/listening" element={<Navigate to="/jlpt" replace />} />
-      <Route path="/reading" element={<Navigate to="/doc-hieu" replace />} />
       <Route path="/study-books" element={<Navigate to="/" replace />} />
       <Route path="/notebook" element={<Navigate to="/so-tay" replace />} />
       <Route path="/dictionary" element={<Navigate to="/tu-dien" replace />} />

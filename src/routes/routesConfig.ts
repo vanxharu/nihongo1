@@ -20,7 +20,6 @@ export const APP_ROUTES = {
   SHADOWING: '/shadowing',
   JLPT: '/jlpt',
   ROADMAP: '/lo-trinh',
-  READING: '/doc-hieu',
   CHAT_AI: '/chat-ai',
   COMMUNITY: '/cong-dong',
   NOTEBOOK: '/so-tay',
@@ -46,7 +45,6 @@ export const TAB_TO_ROUTE_MAP: Record<string, string> = {
   'daily-exam': APP_ROUTES.JLPT,
   'jlpt-exam': APP_ROUTES.JLPT,
   roadmap: APP_ROUTES.ROADMAP,
-  reading: APP_ROUTES.READING,
   'japanese-chat': APP_ROUTES.CHAT_AI,
   kaiwa: APP_ROUTES.COMMUNITY,
   notebook: APP_ROUTES.NOTEBOOK,
@@ -71,8 +69,6 @@ export const ROUTE_TO_TAB_MAP: Record<string, string> = {
   '/jlpt': 'exam',
   '/lo-trinh': 'roadmap',
   '/roadmap': 'roadmap',
-  '/doc-hieu': 'reading',
-  '/reading': 'reading',
   '/chat-ai': 'japanese-chat',
   '/japanese-chat': 'japanese-chat',
   '/cong-dong': 'kaiwa',
@@ -119,12 +115,10 @@ export function getTabFromPathname(pathname: string): string {
     if (cleanPath.includes('/listening')) return 'listening';
     if (cleanPath.includes('/grammar')) return 'grammar';
     if (cleanPath.includes('/kanji')) return 'kanji';
-    if (cleanPath.includes('/reading')) return 'reading';
     return 'exam';
   }
 
   if (cleanPath.startsWith('/lo-trinh') || cleanPath.startsWith('/roadmap')) return 'roadmap';
-  if (cleanPath.startsWith('/doc-hieu') || cleanPath.startsWith('/reading')) return 'reading';
   if (cleanPath.startsWith('/chat-ai') || cleanPath.startsWith('/japanese-chat')) return 'japanese-chat';
   if (cleanPath.startsWith('/cong-dong') || cleanPath.startsWith('/kaiwa')) return 'kaiwa';
   if (cleanPath.startsWith('/so-tay') || cleanPath.startsWith('/notebook')) return 'notebook';
@@ -178,9 +172,6 @@ export function getRoutePageTitle(pathname: string): { title: string; subtitle?:
   }
   if (cleanPath.startsWith('/lo-trinh')) {
     return { title: 'Lộ trình JLPT', subtitle: 'Lộ trình từ N5 đến N1 bài bản' };
-  }
-  if (cleanPath.startsWith('/doc-hieu')) {
-    return { title: 'Đọc hiểu & Tin tức (読解)', subtitle: 'Luyện đọc bài báo & hội thoại' };
   }
   if (cleanPath.startsWith('/chat-ai')) {
     return { title: 'Chat AI Tiếng Nhật', subtitle: 'Luyện giao tiếp cùng gia sư AI' };
