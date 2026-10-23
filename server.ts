@@ -38,7 +38,6 @@ import { requireAuth, requireAdmin } from './src/middleware/auth';
 import { adminAuth } from './src/lib/firebase-admin';
 import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid, findUserByIdentifier, importBrowserProfile } from './src/db/users';
 import { readLearningProfile, saveLearningProfile } from './src/server/learningProfile';
-import { buildReadingLesson } from './src/server/readingImport';
 
 const KuroshiroClass = (Kuroshiro as any).default || Kuroshiro;
 const KuromojiAnalyzerClass = (KuromojiAnalyzer as any).default || KuromojiAnalyzer;
@@ -2569,67 +2568,6 @@ Hãy biên soạn 1 bài đọc hiểu tiếng Nhật đời sống tự nhiên 
 
 // Thư viện bài đọc: do admin nhập từ Excel, lưu ở Firestore (collection reading_library).
 const sortLib = (rows: any[]) => rows.sort((a, b) => String(a.id).localeCompare(String(b.id), undefined, { numeric: true }));
-// Dọn một lần dữ liệu bài đọc cũ (bài tự soạn); đánh dấu bằng reading_library_meta/purge-v1 để không xóa lại bài admin nhập sau đó.
-let purgeChecked = false;
-async function purgeReadingLibraryOnce() {
-  if (purgeChecked) return;
-  if (!(await readRecord('reading_library_meta', 'purge-v1'))) {
-    const snap = await firebaseDb().collection('reading_library').get();
-    for (let k = 0; k < snap.docs.length; k += 300) { const b = firebaseDb().batch(); snap.docs.slice(k, k + 300).forEach((d: any) => b.delete(d.ref)); await b.commit(); }
-    await writeRecord('reading_library_meta', 'purge-v1', { at: new Date().toISOString(), count: snap.docs.length });
-  }
-  purgeChecked = true;
-}
-app.get("/api/reading/library", async (_req, res) => {
-  try {
-    await purgeReadingLibraryOnce().catch(e => console.warn('reading purge failed', e));
-    res.setHeader('Cache-Control', 'no-store');
-    res.json(sortLib(await listRecords('reading_library')).map((a: any) => ({ id: a.id, title: a.title, titleVi: a.titleVi, topic: a.topic, level: a.level, imageUrl: a.imageUrl, thumb: a.thumb, questionCount: (a.quizzes || []).length, wordCount: (a.vocabularyList || []).length })));
-  } catch { res.status(503).json({ error: 'Không đọc được thư viện bài đọc.' }); }
-});
-app.get("/api/reading/library/:id", async (req, res) => {
-  try {
-    const a = await readRecord('reading_library', req.params.id);
-    if (!a) return res.status(404).json({ error: 'Không tìm thấy bài đọc.' });
-    res.setHeader('Cache-Control', 'no-store');
-    res.json(a);
-  } catch { res.status(503).json({ error: 'Không đọc được bài đọc.' }); }
-});
-app.post('/api/admin/reading-library/import', requireAuth, requireAdmin, async (req: any, res) => {
-  try {
-    const t = (v: any, n = 2000) => String(v ?? '').trim().slice(0, n);
-    const b = req.body?.lesson || {};
-    const id = t(b.id, 60).replace(/[^\w-]/g, '_');
-    const sentences: [string, string][] = (Array.isArray(b.sentences) ? b.sentences : []).slice(0, 200).map((x: any) => [t(x?.[0]), t(x?.[1])]).filter((x: any) => x[0]);
-    const quizzes = (Array.isArray(b.quizzes) ? b.quizzes : []).slice(0, 30).map((q: any) => ({ question: t(q.question), options: (Array.isArray(q.options) ? q.options : []).slice(0, 4).map((o: any) => t(o, 500)), correct: Number(q.correct), explanation: t(q.explanation), type: t(q.type, 60) }))
-      .filter((q: any) => q.question && q.options.length === 4 && q.options.every(Boolean) && q.correct >= 0 && q.correct <= 3);
-    if (!id || !t(b.title) || !sentences.length) return res.status(400).json({ error: 'Bài đọc cần Mã bài, Tiêu đề và nội dung.' });
-    const img = t(b.imageUrl, 600);
-    const lesson = await buildReadingLesson(await getKuroshiro(), {
-      id, title: t(b.title, 200), titleVi: t(b.titleVi, 200), topic: t(b.topic, 60), level: /^N[1-5]$/.test(t(b.level).toUpperCase()) ? t(b.level).toUpperCase() : 'N4',
-      imageUrl: /^(https:\/\/|\/)/.test(img) ? img : '', sentences, quizzes,
-      vocab: (Array.isArray(b.vocab) ? b.vocab : []).slice(0, 200).map((v: any) => ({ word: t(v.word, 100), reading: t(v.reading, 100), pos: t(v.pos, 60), hanViet: t(v.hanViet, 100), meaning: t(v.meaning, 300), level: /^N[1-5]$/.test(t(v.level).toUpperCase()) ? t(v.level).toUpperCase() : 'N4' })).filter((v: any) => v.word),
-    } as any, getHanVietWord);
-    await writeRecord('reading_library', id, lesson);
-    res.json({ success: true, id });
-  } catch (e) { console.error('reading-library import', e); res.status(503).json({ error: 'Không lưu được bài đọc. Bạn có thể thử lại.' }); }
-});
-app.post('/api/admin/reading-library/delete', requireAuth, requireAdmin, async (req: any, res) => {
-  try {
-    const ids: string[] = Array.isArray(req.body.ids) ? req.body.ids.map(String) : [];
-    if (!ids.length || ids.length > 500) return res.status(400).json({ error: 'id required' });
-    const db = firebaseDb(); const b = db.batch(); ids.forEach(id => b.delete(db.collection('reading_library').doc(documentKey(id)))); await b.commit();
-    res.json({ success: true, count: ids.length });
-  } catch { res.status(503).json({ error: 'Không xóa được bài đọc.' }); }
-});
-app.post('/api/admin/reading-library/clear', requireAuth, requireAdmin, async (_req: any, res) => {
-  try {
-    const snap = await firebaseDb().collection('reading_library').get();
-    for (let i = 0; i < snap.docs.length; i += 300) { const b = firebaseDb().batch(); snap.docs.slice(i, i + 300).forEach((d: any) => b.delete(d.ref)); await b.commit(); }
-    res.json({ success: true, count: snap.docs.length });
-  } catch { res.status(503).json({ error: 'Không xóa được dữ liệu bài đọc.' }); }
-});
-
 app.get("/api/reading/image", readingImageHandler);
 
 // 2.7.1 API: Todaii Japanese News List (Lấy danh sách bài báo từ Todaii News japanese.todaiinews.com)

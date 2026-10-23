@@ -1,6 +1,5 @@
 import Skeleton from './ui/Skeleton';
 import AdminKanjiImport from './AdminKanjiImport';
-import AdminReadingImport from './AdminReadingImport';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   BookOpen, Compass, Layers, Plus, Edit2, Trash2, Database, RefreshCw, X, 
@@ -22,7 +21,7 @@ interface AdminDataPanelProps {
 
 export default function AdminDataPanel({ initialOpenImportModal = false, onCloseImportModal }: AdminDataPanelProps) {
   const { token } = useAuth();
-  const [activeSubTab, setActiveSubTab] = useState<'vocab' | 'grammar' | 'kanji' | 'reading'>('vocab');
+  const [activeSubTab, setActiveSubTab] = useState<'vocab' | 'grammar' | 'kanji'>('vocab');
   
   const [data, setData] = useState<any[]>([]);
   const loadSequence = useRef(0);
@@ -69,7 +68,6 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
     setLoading(true);
     setError('');
     try {
-      if (activeSubTab === 'reading') { setLoading(false); return; }
       let endpoint = '';
       if (activeSubTab === 'vocab') endpoint = '/api/vocabularies';
       if (activeSubTab === 'grammar') endpoint = '/api/grammars';
@@ -475,20 +473,9 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
           >
             <Layers className="w-3.5 h-3.5" /> Kanji
           </button>
-          <button
-            onClick={() => setActiveSubTab('reading')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeSubTab === 'reading' 
-                ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-xs' 
-                : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'
-            }`}
-          >
-            <FileSpreadsheet className="w-3.5 h-3.5" /> Bài đọc
-          </button>
         </div>
 
         {activeSubTab === 'kanji' && <div className="w-full"><AdminKanjiImport onChanged={fetchData} /></div>}
-        {activeSubTab === 'reading' && <div className="w-full"><AdminReadingImport /></div>}
         {/* Action buttons */}
         <div className="admin-data-actions">
           {activeSubTab === 'vocab' && (
@@ -522,7 +509,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
       </div>
 
       {/* Main Database Table Container */}
-      {activeSubTab !== 'reading' && <div className="admin-data-card bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-3 sm:p-5 space-y-4">
+      <div className="admin-data-card bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800 p-3 sm:p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Database className="w-4 h-4 text-indigo-500" />
@@ -655,7 +642,7 @@ export default function AdminDataPanel({ initialOpenImportModal = false, onClose
             </table>
           </div>
         )}
-      </div>}
+      </div>
 
       {/* Excel Import Modal */}
       <AnimatePresence>

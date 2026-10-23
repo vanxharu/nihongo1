@@ -36,7 +36,7 @@ const DailyExamQuiz = lazyWithRetry(() => import('./components/DailyExamQuiz'));
 const Kaiwa = lazyWithRetry(() => import('./components/Kaiwa'));
 const AdminPanel = lazyWithRetry(() => import('./components/AdminPanel'));
 const JapaneseAiChat = lazyWithRetry(() => import('./components/JapaneseAiChat'));
-const AiReadingPractice = lazyWithRetry(() => import('./components/AiReadingPractice'));
+const ReadingExam = lazyWithRetry(() => import('./components/ReadingExam'));
 const MyBooks = lazyWithRetry(() => import('./components/MyBooks'));
 const NotebookManager = lazyWithRetry(() => import('./components/NotebookManager'));
 const DictionaryLookup = lazyWithRetry(() => import('./components/DictionaryLookup'));
@@ -81,11 +81,6 @@ function ExamRouteScreen(props: React.ComponentProps<typeof DailyExamQuiz>) {
   return <DailyExamQuiz {...props} userProfile={routeLevel ? { ...props.userProfile, targetLevel: routeLevel } : props.userProfile} />;
 }
 
-function ReadingRouteScreen(props: React.ComponentProps<typeof AiReadingPractice>) {
-  const { level } = useParams();
-  const routeLevel = level && /^n[1-5]$/i.test(level) ? level.toUpperCase() as JLPTLevel : undefined;
-  return <AiReadingPractice {...props} initialLevel={routeLevel || props.initialLevel} />;
-}
 export default function App() {
   const [cloudRestoreVersion,setCloudRestoreVersion]=useState(0);
   useEffect(()=>{const restored=()=>setCloudRestoreVersion(n=>n+1);window.addEventListener('learning-cloud-restored',restored);return()=>window.removeEventListener('learning-cloud-restored',restored);},[]);
@@ -704,7 +699,7 @@ export default function App() {
       <Route path="/jlpt/:level/vocabulary" element={<RoadmapVocabularyWrapper />} />
       <Route path="/jlpt/:level/grammar" element={<GrammarPracticeRouteWrapper />} />
       <Route path="/jlpt/:level/kanji" element={<RoadmapKanjiWrapper />} />
-      <Route path="/jlpt/:level/reading" element={<ReadingRouteScreen userProfile={activeProfile} updateProfile={updateProfile} onEarnXp={handleEarnXp} initialLevel={readingLessonState.level} initialLessonNumber={readingLessonState.lessonNumber} initialCurriculum={readingLessonState.curriculum} initialLessonId={readingLessonState.lessonId} />} />
+      <Route path="/jlpt/:level/reading" element={<ReadingExam />} />
 
       {/* 7. Lộ trình học tập */}
       <Route 
@@ -719,7 +714,7 @@ export default function App() {
       />
 
       {/* 8. Đọc hiểu & Tin tức */}
-      <Route path="/doc-hieu" element={<ReadingRouteScreen userProfile={activeProfile} updateProfile={updateProfile} onEarnXp={handleEarnXp} initialLevel={readingLessonState.level} initialLessonNumber={readingLessonState.lessonNumber} initialCurriculum={readingLessonState.curriculum} initialLessonId={readingLessonState.lessonId} />} />
+      <Route path="/doc-hieu" element={<ReadingExam />} />
 
       <Route path="/sach" element={<Navigate to="/" replace />} />
 
