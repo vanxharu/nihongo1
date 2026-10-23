@@ -26,3 +26,16 @@
 .profile-danger-actions{display:flex;flex-wrap:wrap;gap:8px}
 .profile-danger-btn{min-height:44px;padding:0 16px;border-radius:12px;border:1px solid #f87171;color:#b91c1c;font-weight:700;font-size:13px;background:#fff}
 .profile-danger-btn.solid{background:#dc2626;border-color:#dc2626;color:#fff}
+
+/* Gọn khoảng trống tab Cá nhân */
+.profile-page{padding:0}
+.profile-heading{margin-bottom:10px}.profile-heading h1{font-size:24px;margin:2px 0}
+.profile-identity{padding:12px;gap:10px;border-radius:18px}.profile-avatar{width:52px;height:52px;font-size:26px;border-radius:16px}.profile-identity h2{font-size:18px;margin:2px 0}.profile-edit{padding:7px 10px;margin-left:62px}
+.profile-grid{gap:10px;margin:10px 0}
+.profile-xp,.profile-rhythm,.profile-achievements,.profile-settings{padding:14px;border-radius:16px}
+.profile-achievements{margin-bottom:10px}
+.profile-section-heading{margin-bottom:10px}
+.profile-xp>strong{font-size:30px}.profile-xp>p{margin:2px 0 10px}.profile-xp-caption{margin:6px 0 8px}
+.profile-rhythm-icon{width:40px;height:40px;margin-bottom:8px}.profile-rhythm>strong{font-size:28px}
+.profile-badges{gap:8px}.profile-badge{padding:10px 6px;gap:6px}
+.profile-row{padding:11px 0}.profile-danger{margin-top:10px;padding:14px}
