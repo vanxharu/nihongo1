@@ -44,3 +44,31 @@
 .profile-xp>p{display:none}
 .profile-rhythm{align-items:center;flex-direction:row;flex-wrap:wrap;gap:4px 12px}.profile-rhythm-icon{margin-bottom:0}
 .profile-rhythm{justify-content:flex-start}.profile-xp-caption{margin-bottom:2px}
+
+/* Gọn hết cỡ trên điện thoại */
+@media(max-width:639px){
+.profile-heading{display:none}
+.profile-identity{flex-wrap:nowrap;align-items:center;padding:8px 10px;gap:10px;border-radius:14px}
+.profile-avatar{width:44px;height:44px;font-size:22px;border-radius:12px}
+.profile-identity-copy{flex:1 1 auto}.profile-identity h2{font-size:16px;margin:0}.profile-label{font-size:9px}
+.profile-edit{margin-left:0;padding:6px 8px;font-size:11px!important}
+.profile-grid{grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.profile-xp,.profile-rhythm,.profile-achievements,.profile-settings{padding:10px 12px;border-radius:14px}
+.profile-section-heading{margin-bottom:6px}.profile-section-heading h2{font-size:14px}
+.profile-xp>strong{font-size:24px}.profile-xp>strong small{font-size:11px;margin-left:4px}
+.profile-xp-caption{font-size:10px;margin:4px 0}.profile-xp-caption span:last-child{display:none}
+.profile-text-action{min-height:28px;font-size:11px!important}
+.profile-rhythm{flex-direction:column;align-items:flex-start;justify-content:center;gap:2px}
+.profile-rhythm-icon{width:28px;height:28px;border-radius:10px}.profile-rhythm-icon svg{width:16px;height:16px}
+.profile-rhythm>strong{font-size:24px}.profile-rhythm small{font-size:11px;margin-left:4px}
+.profile-rhythm>p{display:none}
+.profile-achievements{margin-bottom:8px}.profile-achievements .profile-section-heading p{display:none}
+.profile-badges{grid-template-columns:repeat(4,1fr);gap:6px}.profile-badge{padding:6px 2px;gap:2px;border-radius:12px}
+.profile-badge strong{font-size:9px;line-height:1.25}.profile-badge>span:last-child{display:none}
+.profile-settings .profile-section-heading{display:none}
+.profile-row{padding:8px 0;gap:10px}.profile-row-icon{width:30px;height:30px;border-radius:10px}.profile-row small{display:none}
+.profile-danger{margin-top:8px;padding:10px 12px;border-radius:14px}.profile-danger p{display:none}.profile-danger h2{margin-bottom:6px}.profile-danger-btn{min-height:38px}
+.profile-xp{padding-bottom:6px}.profile-xp .profile-section-heading{margin-bottom:2px}.profile-meter{height:5px}
+.profile-switch{width:38px;height:22px}.profile-switch span{width:16px;height:16px}.profile-switch.on span{transform:translateX(16px)}
+.profile-achievements .profile-section-heading{margin-bottom:4px}.profile-settings{padding-top:2px;padding-bottom:2px}.profile-row:first-child{border-top:0}
+}
