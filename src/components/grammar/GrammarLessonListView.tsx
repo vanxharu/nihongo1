@@ -52,7 +52,7 @@ export const GrammarLessonListView: React.FC<GrammarLessonListViewProps> = ({
 
   for (let lNum = startLesson; lNum <= endLesson; lNum++) {
     const lessonGrammars = levelGrammars.filter(g => g.lessonNumber === lNum);
-    const grammarCount = lessonGrammars.length > 0 ? lessonGrammars.length : (isN4 ? 4 : 4);
+    const grammarCount = lessonGrammars.length;
     const title = themesForLevel[lNum] || `Chuyên đề ngữ pháp bài ${lNum}`;
 
     // Completion status

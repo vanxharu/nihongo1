@@ -50,28 +50,9 @@ export const GrammarLessonDetailView: React.FC<GrammarLessonDetailViewProps> = (
     );
   }, [grammars, level, lessonNumber]);
 
-  let lessonGrammars = useMemo(() => {
+  const lessonGrammars = useMemo(() => {
     return deduplicateGrammars(rawLessonGrammars);
   }, [rawLessonGrammars]);
-
-  // Fallback if specific lesson has 0 grammars loaded
-  if (lessonGrammars.length === 0) {
-    lessonGrammars = [
-      {
-        id: `g_${level}_${lessonNumber}_1`,
-        lessonNumber,
-        lessonName: `Bài ${lessonNumber}`,
-        structure: 'TTT + んです',
-        meaning: 'Nhấn mạnh ý muốn nói/giải thích',
-        explanation: 'Dùng khi muốn giải thích lý do, bộc lộ cảm xúc hoặc hỏi han xác nhận thông tin.',
-        exampleSentence: 'かおがあかいですね。―― はずかしいんです。',
-        exampleTranslation: 'Mặt bạn đỏ nhỉ. — Vì tôi ngượng ấy mà.',
-        level,
-        wordsToReorder: ['かおがあかいですね', 'はずかしいんです'],
-        correctSentence: 'かおがあかいですね。はずかしいんです。'
-      }
-    ];
-  }
 
   return (
     <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 animate-fadeIn font-sans text-slate-100">
@@ -126,6 +107,9 @@ export const GrammarLessonDetailView: React.FC<GrammarLessonDetailViewProps> = (
       </div>
 
       {/* 2-Column Grid of Grammar Cards */}
+      {lessonGrammars.length === 0 && (
+        <p className="text-sm text-slate-400 py-10 text-center">Bài này chưa có mẫu ngữ pháp.</p>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
         {lessonGrammars.map((grammar) => {
           return (
