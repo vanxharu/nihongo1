@@ -41,18 +41,6 @@
     "api/tts.ts": {
       "maxDuration": 30
     },
-    "api/reading/generate.ts": {
-      "maxDuration": 60
-    },
-    "api/reading/sync.ts": {
-      "maxDuration": 60
-    },
-    "api/reading/todai/*.ts": {
-      "maxDuration": 60
-    },
-    "api/reading/watanoc/*.ts": {
-      "maxDuration": 60
-    },
     "api/shadowing/video.ts": {
       "includeFiles": "public/shadowing-prepared/*.json",
       "maxDuration": 60
@@ -70,19 +58,13 @@
       "maxDuration": 60
     }
   },
-  "crons": [
-    {
-      "path": "/api/reading/sync",
-      "schedule": "0 23 * * *"
-    }
-  ],
   "rewrites": [
     {
       "source": "/__/auth/(.*)",
       "destination": "https://nihongo-fd01e.firebaseapp.com/__/auth/$1"
     },
     {
-      "source": "/api/((?!reading/(?:generate$|sync$|todai/|watanoc/)|shadowing/(?:video|transcript|analyze|prepare)$|tts$).*)",
+      "source": "/api/((?!shadowing/(?:video|transcript|analyze|prepare)$|tts$).*)",
       "destination": "/api/server"
     },
     {
