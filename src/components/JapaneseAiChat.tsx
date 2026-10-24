@@ -73,11 +73,29 @@ export interface AiPersona {
   }>;
 }
 
-// Crop the correct portrait from the locally bundled three-person photo strip.
+// The avatar asset is a horizontal strip of three square portraits.
+// object-position on a regular <img> shows the entire strip because the full
+// image already fits at width:100%; a 300%-wide CSS background crops it correctly.
 const personaPortraitPosition = (id: string): string =>
   id === 'tanaka-sensei' ? '0% center' :
   id === 'yuki-chan' ? '50% center' :
   '100% center';
+
+function PersonaPortrait({ persona }: { persona: AiPersona }) {
+  return (
+    <div
+      role="img"
+      aria-label={`Ảnh đại diện ${persona.name}`}
+      className="h-full w-full shrink-0"
+      style={{
+        backgroundImage: `url("${persona.avatar}")`,
+        backgroundSize: '300% 100%',
+        backgroundPosition: personaPortraitPosition(persona.id),
+        backgroundRepeat: 'no-repeat'
+      }}
+    />
+  );
+}
 
 const JAPANESE_PERSONAS: AiPersona[] = [
   {
@@ -1200,7 +1218,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                       {p.id === 'nihon-shiba' ? (
                         <ShibaMascot pose="waving" size={36} animated={false} />
                       ) : (
-                        <img src={p.avatar} alt={`Ảnh đại diện ${p.name}`} loading="eager" decoding="async" className="h-full w-full object-cover" style={{ objectPosition: personaPortraitPosition(p.id) }} />
+                        <PersonaPortrait persona={p} />
                       )}
                     </div>
                   </div>
@@ -1251,7 +1269,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                   {selectedPersona.id === 'nihon-shiba' ? (
                     <ShibaMascot pose="waving" size={(isKeyboardOpen || isInputFocused) ? 26 : 36} animated={false} />
                   ) : (
-                    <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="eager" decoding="async" className="h-full w-full object-cover" style={{ objectPosition: personaPortraitPosition(selectedPersona.id) }} />
+                    <PersonaPortrait persona={selectedPersona} />
                   )}
                 </div>
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500 border-2 border-[#0F1424] shadow-xs" />
@@ -1376,7 +1394,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                       {selectedPersona.id === 'nihon-shiba' ? (
                         <ShibaMascot pose="waving" size={26} animated={false} />
                       ) : (
-                        <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="eager" decoding="async" className="h-full w-full object-cover" style={{ objectPosition: personaPortraitPosition(selectedPersona.id) }} />
+                        <PersonaPortrait persona={selectedPersona} />
                       )}
                     </div>
                   )}
@@ -1551,7 +1569,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                   {selectedPersona.id === 'nihon-shiba' ? (
                     <ShibaMascot pose="waving" size={26} animated={false} />
                   ) : (
-                    <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="eager" decoding="async" className="h-full w-full object-cover" style={{ objectPosition: personaPortraitPosition(selectedPersona.id) }} />
+                    <PersonaPortrait persona={selectedPersona} />
                   )}
                 </div>
                 <div className="px-3.5 py-2.5 bg-[#1B223C] border border-[#2B355A]/60 rounded-2xl rounded-tl-xs flex items-center gap-2 text-xs text-slate-400 shadow-sm">
@@ -1850,7 +1868,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                           {p.id === 'nihon-shiba' ? (
                             <ShibaMascot pose="waving" size={38} animated={false} />
                           ) : (
-                            <img src={p.avatar} alt={`Ảnh đại diện ${p.name}`} loading="eager" decoding="async" className="h-full w-full object-cover" style={{ objectPosition: personaPortraitPosition(p.id) }} />
+                            <PersonaPortrait persona={p} />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
