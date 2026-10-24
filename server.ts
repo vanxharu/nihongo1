@@ -2696,28 +2696,34 @@ ${conversationHistory}
 上記の会話を踏まえて、学習者の最後の発言に【100%日本語】で自然に返答してください。
 必ず単なる1文ではなく、リアクション＋話題の展開＋問いかけを含む2〜4文の豊かな対話を行ってください。`;
 
-    let chatData: any = null;
+    // Never fabricate a plausible AI message when the external model fails.
+    // Return an explicit non-2xx response so the client can let the learner retry.
+    let chatData: any;
     try {
-      chatData = JSON.parse(await callLLM({ prompt, systemInstruction, json: true }));
-    } catch (aiErr) {
-      console.warn("[Japanese Chat] model miễn phí lỗi:", (aiErr as any)?.message || aiErr);
-    }
-    const usedProviderName = (getLlmConfig().model || DEFAULT_GEMINI_MODEL);
-
-    if (chatData) {
-      chatData.provider = usedProviderName;
-    }
-
-    if (!chatData) {
-      chatData = {
-        japaneseResponse: "素晴らしいですね！そのお話、とても興味深いです。もっと詳しく聞かせていただけますか？",
-        furiganaText: "すばらしいですね！そのおはなし、とても きょうみぶかいです。もっと くわしく きかせていただけますか？",
-        romajiText: "Subarashii desu ne! Sono ohanashi, totemo kyoumibukai desu. Motto kuwashiku kikasete itadakemasu ka?",
-        japaneseExplanation: "「興味深い（きょうみぶかい）」は「とても面白い・関心がある」という意味の上品な表現です。",
-        correctionAdvice: "",
-        vietnameseTranslation: "Tuyệt vời quá! Câu chuyện của bạn rất thú vị. Bạn có thể kể cho tôi nghe chi tiết hơn được không?",
-        hints: ["はい、喜んでお話しします！", "例えば、こんなことがありました。", "先生はどう思いますか？"]
-      };
+      const result = await callLLM({ prompt, systemInstruction, json: true });
+      chatData = JSON.parse(result);
+      if (!chatData || typeof chatData !== 'object' ||
+          typeof chatData.japaneseResponse !== 'string' ||
+          !chatData.japaneseResponse.trim()) {
+        throw new Error('INVALID_AI_RESPONSE');
+      }
+      chatData.provider = 'AI (live model)';
+    } catch (aiErr: any) {
+      const detail = String(aiErr?.message || aiErr);
+      // Keep provider errors in server logs; do not send API keys or upstream
+      // provider details back to browsers.
+      console.error('[Japanese Chat] Live model request failed:', detail.slice(0, 400));
+      const rateLimited = /(?:429|rate.limit|resource.exhausted|quota)/i.test(detail);
+      const notConfigured = /(?:api.key|chưa có.*key|missing.*key|no api key)/i.test(detail);
+      return res.status(rateLimited ? 429 : notConfigured ? 503 : 502).json({
+        error: rateLimited
+          ? 'AI đang bị giới hạn lượt gọi. Vui lòng thử lại sau.'
+          : notConfigured
+          ? 'Chưa cấu hình được dịch vụ AI. Vui lòng liên hệ quản trị viên.'
+          : 'Không thể nhận phản hồi từ mô hình AI. Vui lòng thử lại.',
+        code: rateLimited ? 'AI_RATE_LIMITED' : notConfigured ? 'AI_NOT_CONFIGURED' : 'AI_UNAVAILABLE',
+        provider: null
+      });
     }
 
     // Generate accurate HTML ruby furigana tags for kanji characters
@@ -2732,14 +2738,11 @@ ${conversationHistory}
 
     res.json(chatData);
   } catch (error: any) {
-    res.json({
-      japaneseResponse: "はい、よくわかりました！とても良い話題ですね。他にも何か話したいことはありますか？",
-      furiganaText: "はい、よくわかりました！とても よい わだいですね。ほかにも なにか はなしたいことは ありますか？",
-      romajiText: "Hai, yoku wakarimashita! Totemo yoi wadai desu ne. Hoka ni mo nanika hanashitai koto wa arimasu ka?",
-      japaneseExplanation: "「良い話題（よいわだい）」は会話のテーマを褒める自然な表現です。",
-      correctionAdvice: "",
-      vietnameseTranslation: "Vâng, tôi hiểu rõ rồi! Đây là một chủ đề rất hay. Bạn còn muốn nói về điều gì khác nữa không?",
-      hints: ["日本の食べ物について話したいです。", "最近観たアニメについて話しましょう。", "ありがとうございます。"]
+    console.error('[Japanese Chat] Unexpected endpoint failure:', String(error?.message || error).slice(0, 400));
+    return res.status(500).json({
+      error: 'Dịch vụ AI đang gặp sự cố. Vui lòng thử lại.',
+      code: 'AI_SERVER_ERROR',
+      provider: null
     });
   }
 });
