@@ -35,47 +35,65 @@ export function getGeminiClient(apiKey = getLlmConfig().apiKey): GoogleGenAI {
 
 // generateContent với tự chuyển model khi quá tải (503/429/404). Model người dùng chọn được thử trước.
 export async function generateGemini(options: { contents: any; model?: string; config?: any; apiKey?: string }) {
-  // Groq is the primary server-side provider when configured.
+  // Prefer the server-side Groq model when available. If it fails, try
+  // another genuinely configured model rather than fabricating a reply.
   const groqKey = process.env.GROQ_API_KEY;
-  if (groqKey && !options.apiKey && !perRequest.getStore()?.apiKey) {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: { Authorization: 'Bearer ' + groqKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
-        temperature: 0.1,
-        max_completion_tokens: Math.min(options.config?.maxOutputTokens || 4096, 8192),
-        ...(options.config?.responseMimeType === 'application/json' ? { response_format: { type: 'json_object' } } : {}),
-        messages: [
-          ...(options.config?.systemInstruction ? [{ role: 'system', content: String(options.config.systemInstruction) }] : []),
-          { role: 'user', content: typeof options.contents === 'string' ? options.contents : JSON.stringify(options.contents) },
-        ],
-      }),
-      signal: AbortSignal.timeout(85000),
-    });
-    const data: any = await response.json();
-    if (!response.ok) throw new Error('Groq API (' + response.status + '): ' + (data.error?.message || 'Request failed'));
-    return { text: data.choices?.[0]?.message?.content || '' } as any;
+  const hasUserGeminiKey = Boolean(options.apiKey || perRequest.getStore()?.apiKey);
+  if (groqKey && !hasUserGeminiKey) {
+    try {
+      const model = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + groqKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model,
+          temperature: 0.1,
+          max_completion_tokens: Math.min(options.config?.maxOutputTokens || 4096, 8192),
+          ...(options.config?.responseMimeType === 'application/json' ? { response_format: { type: 'json_object' } } : {}),
+          messages: [
+            ...(options.config?.systemInstruction ? [{ role: 'system', content: String(options.config.systemInstruction) }] : []),
+            { role: 'user', content: typeof options.contents === 'string' ? options.contents : JSON.stringify(options.contents) },
+          ],
+        }),
+        signal: AbortSignal.timeout(55000),
+      });
+      const data: any = await response.json();
+      if (!response.ok) throw new Error('Groq API (' + response.status + '): ' + (data.error?.message || 'Request failed'));
+      const text = data.choices?.[0]?.message?.content;
+      if (!text || !String(text).trim()) throw new Error('Groq API returned an empty response');
+      return { text, provider: 'groq', modelUsed: model } as any;
+    } catch (err: any) {
+      console.warn('[LLM] Groq failed; checking configured backup provider:', String(err?.message || err).slice(0, 220));
+      if (!process.env.ANTHROPIC_API_KEY && !process.env.GEMINI_API_KEY) throw err;
+    }
   }
-  // Claude is the primary provider when configured; existing callers retain their JSON contract.
+  // Anthropic is another real provider fallback, never a simulated response.
   const claudeKey = process.env.ANTHROPIC_API_KEY || '';
-  if (claudeKey) {
-    const system = String(options.config?.systemInstruction || '');
-    const contents = typeof options.contents === 'string' ? options.contents : JSON.stringify(options.contents);
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': claudeKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({
-        model: process.env.CLAUDE_MODEL || 'claude-sonnet-4-5',
-        max_tokens: options.config?.maxOutputTokens || 4096,
-        ...(system ? { system: system + (options.config?.responseMimeType === 'application/json' ? '\\nReturn ONLY valid JSON.' : '') } : {}),
-        messages: [{ role: 'user', content: contents }],
-      }),
-      signal: AbortSignal.timeout(90000),
-    });
-    const data: any = await response.json();
-    if (!response.ok) throw new Error('Claude API: ' + (data.error?.message || response.status));
-    return { text: (data.content || []).filter((c: any) => c.type === 'text').map((c: any) => c.text).join('') } as any;
+  if (claudeKey && !hasUserGeminiKey) {
+    try {
+      const model = process.env.CLAUDE_MODEL || 'claude-sonnet-4-5';
+      const system = String(options.config?.systemInstruction || '');
+      const contents = typeof options.contents === 'string' ? options.contents : JSON.stringify(options.contents);
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': claudeKey, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({
+          model,
+          max_tokens: options.config?.maxOutputTokens || 4096,
+          ...(system ? { system: system + (options.config?.responseMimeType === 'application/json' ? '\\nReturn ONLY valid JSON.' : '') } : {}),
+          messages: [{ role: 'user', content: contents }],
+        }),
+        signal: AbortSignal.timeout(60000),
+      });
+      const data: any = await response.json();
+      if (!response.ok) throw new Error('Claude API: ' + (data.error?.message || response.status));
+      const text = (data.content || []).filter((c: any) => c.type === 'text').map((c: any) => c.text).join('');
+      if (!text.trim()) throw new Error('Claude API returned an empty response');
+      return { text, provider: 'anthropic', modelUsed: model } as any;
+    } catch (err: any) {
+      console.warn('[LLM] Anthropic failed; checking Gemini fallback:', String(err?.message || err).slice(0, 220));
+      if (!process.env.GEMINI_API_KEY) throw err;
+    }
   }
   const client = getGeminiClient(options.apiKey);
   const primary = getLlmConfig().model || options.model || DEFAULT_GEMINI_MODEL;
@@ -99,7 +117,8 @@ export async function generateGemini(options: { contents: any; model?: string; c
 }
 
 // Gọi nhanh dạng prompt → chuỗi (kèm JSON nếu json=true).
-export async function callLLM(options: { prompt: string; systemInstruction?: string; json?: boolean; maxTokens?: number; override?: { apiKey?: string; model?: string } }): Promise<string> {
+// Metadata is only returned after a real upstream model call has succeeded.
+export async function callLLMWithInfo(options: { prompt: string; systemInstruction?: string; json?: boolean; maxTokens?: number; override?: { apiKey?: string; model?: string } }): Promise<{ text: string; provider: string; modelUsed: string }> {
   const res = await generateGemini({
     contents: options.prompt,
     apiKey: options.override?.apiKey,
@@ -108,5 +127,13 @@ export async function callLLM(options: { prompt: string; systemInstruction?: str
   });
   const text = (res.text || '').trim();
   if (!text) throw new Error('AI trả về nội dung rỗng');
-  return text;
+  return {
+    text,
+    provider: (res as any).provider || 'gemini',
+    modelUsed: (res as any).modelUsed || (res as any).modelVersion || getLlmConfig().model || DEFAULT_GEMINI_MODEL
+  };
+}
+
+export async function callLLM(options: { prompt: string; systemInstruction?: string; json?: boolean; maxTokens?: number; override?: { apiKey?: string; model?: string } }): Promise<string> {
+  return (await callLLMWithInfo(options)).text;
 }
