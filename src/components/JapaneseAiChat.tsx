@@ -124,7 +124,7 @@ const JAPANESE_PERSONAS: AiPersona[] = [
     id: 'tanaka-sensei',
     name: 'Thầy Tanaka',
     japaneseName: '田中先生',
-    avatar: '👨‍🏫',
+    avatar: 'https://i.pravatar.cc/150?img=12',
     voice: 'ja-JP-KeitaNeural',
     role: 'Giáo viên tiếng Nhật',
     roleJapanese: '日本語ベテラン講師',
@@ -174,7 +174,7 @@ const JAPANESE_PERSONAS: AiPersona[] = [
     id: 'yuki-chan',
     name: 'Yuki-chan',
     japaneseName: 'ユキちゃん',
-    avatar: '👧',
+    avatar: 'https://i.pravatar.cc/150?img=47',
     voice: 'ja-JP-NanamiNeural',
     role: 'Bạn thân ở Tokyo',
     roleJapanese: '東京在住の同世代の友人',
@@ -224,7 +224,7 @@ const JAPANESE_PERSONAS: AiPersona[] = [
     id: 'sato-buchou',
     name: 'Trưởng phòng Sato',
     japaneseName: '佐藤部長',
-    avatar: '👨‍💼',
+    avatar: 'https://i.pravatar.cc/150?img=13',
     voice: 'ja-JP-NaokiNeural',
     role: 'Trưởng phòng doanh nghiệp Nhật',
     roleJapanese: 'IT企業の厳格で優しい部長',
@@ -986,7 +986,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                       {p.id === 'nihon-shiba' ? (
                         <ShibaMascot pose="waving" size={36} animated={false} />
                       ) : (
-                        <span>{p.avatar}</span>
+                        <img src={p.avatar} alt={`Ảnh đại diện ${p.name}`} loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
                       )}
                     </div>
                   </div>
@@ -1037,7 +1037,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                   {selectedPersona.id === 'nihon-shiba' ? (
                     <ShibaMascot pose="waving" size={(isKeyboardOpen || isInputFocused) ? 26 : 36} animated={false} />
                   ) : (
-                    <span>{selectedPersona.avatar}</span>
+                    <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
                   )}
                 </div>
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500 border-2 border-[#0F1424] shadow-xs" />
@@ -1154,7 +1154,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                       {selectedPersona.id === 'nihon-shiba' ? (
                         <ShibaMascot pose="waving" size={26} animated={false} />
                       ) : (
-                        <span>{selectedPersona.avatar}</span>
+                        <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
                       )}
                     </div>
                   )}
@@ -1320,7 +1320,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                   {selectedPersona.id === 'nihon-shiba' ? (
                     <ShibaMascot pose="waving" size={26} animated={false} />
                   ) : (
-                    <span>{selectedPersona.avatar}</span>
+                    <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
                   )}
                 </div>
                 <div className="px-3.5 py-2.5 bg-[#1B223C] border border-[#2B355A]/60 rounded-2xl rounded-tl-xs flex items-center gap-2 text-xs text-slate-400 shadow-sm">
@@ -1555,7 +1555,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                           {p.id === 'nihon-shiba' ? (
                             <ShibaMascot pose="waving" size={38} animated={false} />
                           ) : (
-                            <span>{p.avatar}</span>
+                            <img src={p.avatar} alt={`Ảnh đại diện ${p.name}`} loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
