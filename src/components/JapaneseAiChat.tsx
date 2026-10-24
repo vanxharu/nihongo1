@@ -975,36 +975,6 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                   onClick={() => handlePersonaOrLevelChange(p, selectedLevel)}
                   className={`w-full p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-3 ${
                     isSelected
-                      // Level Badge Colors
-  const getLevelBadgeColor = (lvl: string) => {
-    switch (lvl) {
-      case 'N5': return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
-      case 'N4': return 'bg-amber-500/20 text-amber-300 border-amber-500/40';
-      case 'N3': return 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40';
-      case 'N2': return 'bg-purple-500/20 text-purple-300 border-purple-500/40';
-      case 'N1': return 'bg-rose-500/20 text-rose-300 border-rose-500/40';
-      default: return 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40';
-    }
-  };
-
-  return (
-    <div className="ai-messenger w-full h-full flex-1 flex flex-col min-h-0 overflow-hidden bg-[#0A0E1A] text-slate-100" style={{ '--chat-height': `${chatViewport.height}px`, '--chat-top': `${chatViewport.top}px` } as React.CSSProperties}>
-      <div className="flex h-full w-full min-h-0 overflow-hidden">
-        
-        {/* Left Sidebar (Desktop Only: lg: >= 1024px) - Messenger Contacts List Style */}
-        <aside className="hidden lg:flex w-72 xl:w-80 flex-col border-r border-slate-800/80 bg-[#0F1424] shrink-0 min-h-0 select-none">
-
-          {/* Personas Contact List */}
-          <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {JAPANESE_PERSONAS.map(p => {
-              const isSelected = p.id === selectedPersona.id;
-              return (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => handlePersonaOrLevelChange(p, selectedLevel)}
-                  className={`w-full p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-3 ${
-                    isSelected
                       ? 'bg-blue-950/50 border-blue-500/50 shadow-xs'
                       : 'bg-transparent hover:bg-slate-800/50 border-transparent text-slate-400 hover:text-slate-200'
                   }`}
