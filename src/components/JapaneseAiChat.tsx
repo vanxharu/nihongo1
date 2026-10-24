@@ -444,7 +444,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
         furigana: initialGreeting.furigana,
         explanation: initialGreeting.explanation,
         vietnameseTranslation: initialGreeting.vietnamese,
-        provider: 'AI',
+        provider: 'Lời chào mẫu',
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ];
@@ -711,6 +711,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
       furigana: greeting.furigana,
       explanation: greeting.explanation,
       vietnameseTranslation: greeting.vietnamese,
+      provider: 'Lời chào mẫu',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setMessages([newGreetingMsg]);
@@ -732,6 +733,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
       furigana: greeting.furigana,
       explanation: greeting.explanation,
       vietnameseTranslation: greeting.vietnamese,
+      provider: 'Lời chào mẫu',
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setMessages([newGreetingMsg]);
@@ -1168,6 +1170,15 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                       }`}
                     >
                       {m.quote && <span className="u078-q">{m.quote}</span>}
+                      {isAi && m.provider && (
+                        <div className="mb-1.5 text-[10px] font-semibold text-slate-400">
+                          {m.provider === 'Lời chào mẫu'
+                            ? 'Lời chào có sẵn'
+                            : m.provider === 'AI'
+                              ? 'AI'
+                              : `AI trực tuyến · ${m.provider}`}
+                        </div>
+                      )}
                       {/* Japanese Text */}
                       <div className="text-[13.5px] sm:text-[15px] font-medium leading-relaxed font-jp">
                         {streaming?.id === m.id ? (
