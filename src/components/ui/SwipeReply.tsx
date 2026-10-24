@@ -24,7 +24,18 @@ export default function SwipeReply({ children, onReply, label = 'Trả lời tin
       <span className={`u078-rep${dx >= THRESHOLD ? ' full' : ''}`} style={{ '--ro': Math.min(1, dx / THRESHOLD).toFixed(2) } as React.CSSProperties} aria-hidden="true"><Arrow /></span>
       <div
         className="u078-bub" style={{ transform: `translateX(${d}px)` }}
-        onPointerDown={(e) => { if (e.button !== 0) return; start.current = e.clientX; raw.current = 0; setDrag(true); e.currentTarget.setPointerCapture(e.pointerId); }}
+        onPointerDown={(e) => {
+          if (e.button !== 0) return;
+          // Pointer capture retargets pointerup/click to the bubble on mobile,
+          // swallowing actions such as Dịch, Ngữ pháp, Nghe and Sao chép.
+          // Only start a swipe from non-interactive message content.
+          const target = e.target as Element;
+          if (target.closest('button, a, input, textarea, select, [role="button"], [data-no-swipe]')) return;
+          start.current = e.clientX;
+          raw.current = 0;
+          setDrag(true);
+          e.currentTarget.setPointerCapture(e.pointerId);
+        }}
         onPointerMove={(e) => { if (!drag) return; raw.current = Math.max(0, e.clientX - start.current); setDx(raw.current); }}
         onPointerUp={end} onPointerCancel={end}
       >
