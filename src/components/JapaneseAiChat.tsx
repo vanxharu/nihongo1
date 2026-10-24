@@ -49,6 +49,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { speakJapanese, AzureVoiceChoice } from '../utils/audio';
 import JapaneseLiveVoiceCall from './JapaneseLiveVoiceCall';
 import ShibaMascot from './mascot/ShibaMascot';
+import { AI_PERSONA_PORTRAIT_STRIP } from '../data/aiPersonaPortraitStrip';
 
 import { sanitizeRubyHtml } from '../utils/sanitizeHtml';
 export interface AiPersona {
@@ -71,6 +72,12 @@ export interface AiPersona {
     hints: string[];
   }>;
 }
+
+// Crop the correct portrait from the locally bundled three-person photo strip.
+const personaPortraitPosition = (id: string): string =>
+  id === 'tanaka-sensei' ? '0% center' :
+  id === 'yuki-chan' ? '50% center' :
+  '100% center';
 
 const JAPANESE_PERSONAS: AiPersona[] = [
   {
@@ -127,7 +134,7 @@ const JAPANESE_PERSONAS: AiPersona[] = [
     id: 'tanaka-sensei',
     name: 'Thầy Tanaka',
     japaneseName: '田中先生',
-    avatar: 'https://i.pravatar.cc/150?img=12',
+    avatar: AI_PERSONA_PORTRAIT_STRIP,
     voice: 'ja-JP-KeitaNeural',
     role: 'Giáo viên tiếng Nhật',
     roleJapanese: '日本語ベテラン講師',
@@ -177,7 +184,7 @@ const JAPANESE_PERSONAS: AiPersona[] = [
     id: 'yuki-chan',
     name: 'Yuki-chan',
     japaneseName: 'ユキちゃん',
-    avatar: 'https://i.pravatar.cc/150?img=47',
+    avatar: AI_PERSONA_PORTRAIT_STRIP,
     voice: 'ja-JP-NanamiNeural',
     role: 'Bạn thân ở Tokyo',
     roleJapanese: '東京在住の同世代の友人',
@@ -227,7 +234,7 @@ const JAPANESE_PERSONAS: AiPersona[] = [
     id: 'sato-buchou',
     name: 'Trưởng phòng Sato',
     japaneseName: '佐藤部長',
-    avatar: 'https://i.pravatar.cc/150?img=13',
+    avatar: AI_PERSONA_PORTRAIT_STRIP,
     voice: 'ja-JP-NaokiNeural',
     role: 'Trưởng phòng doanh nghiệp Nhật',
     roleJapanese: 'IT企業の厳格で優しい部長',
@@ -1193,7 +1200,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                       {p.id === 'nihon-shiba' ? (
                         <ShibaMascot pose="waving" size={36} animated={false} />
                       ) : (
-                        <img src={p.avatar} alt={`Ảnh đại diện ${p.name}`} loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+                        <img src={p.avatar} alt={`Ảnh đại diện ${p.name}`} loading="eager" decoding="async" className="h-full w-full object-cover" style={{ objectPosition: personaPortraitPosition(p.id) }} />
                       )}
                     </div>
                   </div>
@@ -1244,7 +1251,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                   {selectedPersona.id === 'nihon-shiba' ? (
                     <ShibaMascot pose="waving" size={(isKeyboardOpen || isInputFocused) ? 26 : 36} animated={false} />
                   ) : (
-                    <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+                    <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="eager" decoding="async" className="h-full w-full object-cover" style={{ objectPosition: personaPortraitPosition(selectedPersona.id) }} />
                   )}
                 </div>
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500 border-2 border-[#0F1424] shadow-xs" />
@@ -1369,7 +1376,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                       {selectedPersona.id === 'nihon-shiba' ? (
                         <ShibaMascot pose="waving" size={26} animated={false} />
                       ) : (
-                        <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+                        <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="eager" decoding="async" className="h-full w-full object-cover" style={{ objectPosition: personaPortraitPosition(selectedPersona.id) }} />
                       )}
                     </div>
                   )}
@@ -1544,7 +1551,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                   {selectedPersona.id === 'nihon-shiba' ? (
                     <ShibaMascot pose="waving" size={26} animated={false} />
                   ) : (
-                    <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+                    <img src={selectedPersona.avatar} alt={`Ảnh đại diện ${selectedPersona.name}`} loading="eager" decoding="async" className="h-full w-full object-cover" style={{ objectPosition: personaPortraitPosition(selectedPersona.id) }} />
                   )}
                 </div>
                 <div className="px-3.5 py-2.5 bg-[#1B223C] border border-[#2B355A]/60 rounded-2xl rounded-tl-xs flex items-center gap-2 text-xs text-slate-400 shadow-sm">
@@ -1843,7 +1850,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                           {p.id === 'nihon-shiba' ? (
                             <ShibaMascot pose="waving" size={38} animated={false} />
                           ) : (
-                            <img src={p.avatar} alt={`Ảnh đại diện ${p.name}`} loading="lazy" referrerPolicy="no-referrer" className="h-full w-full object-cover" />
+                            <img src={p.avatar} alt={`Ảnh đại diện ${p.name}`} loading="eager" decoding="async" className="h-full w-full object-cover" style={{ objectPosition: personaPortraitPosition(p.id) }} />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
