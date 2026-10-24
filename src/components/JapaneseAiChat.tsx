@@ -40,7 +40,10 @@ import {
   GraduationCap,
   Briefcase,
   HeartHandshake,
-  PhoneCall
+  PhoneCall,
+  History,
+  Plus,
+  Trash2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { speakJapanese, AzureVoiceChoice } from '../utils/audio';
@@ -326,47 +329,101 @@ function SwipeReplyIf({ enabled, onReply, children }: { enabled: boolean; onRepl
 }
 
 const CHAT_STORAGE_KEY = 'nhai_japanese_ai_chat_session_v2';
+const CHAT_HISTORY_KEY = 'nhai_japanese_ai_chat_history_v3';
+type ChatLevel = 'N5' | 'N4' | 'N3' | 'N2' | 'N1';
+
+interface SavedChatThread {
+  id: string;
+  personaId: string;
+  level: ChatLevel;
+  messages: ChatMessage[];
+  hints: string[];
+  draft: string;
+  updatedAt: number;
+}
 const LEGACY_FAKE_AI_REPLIES = new Set([
   'はい、よく分かりました！とても興味深いお話ですね。もっと詳しく聞かせていただけますか？',
   'はい、よくわかりました！とても良い話題ですね。他にも何か話したいことはありますか？',
   '素晴らしいですね！そのお話、とても興味深いです。もっと詳しく聞かせていただけますか？'
 ]);
+const createChatId = () => `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+const normalizeChatMessages = (raw: unknown): ChatMessage[] =>
+  Array.isArray(raw)
+    ? raw.filter((message): message is ChatMessage =>
+        !!message && (message.sender === 'user' || message.sender === 'ai') &&
+        typeof message.text === 'string' &&
+        !(message.sender === 'ai' && LEGACY_FAKE_AI_REPLIES.has(message.text)))
+    : [];
+const isChatLevel = (value: unknown): value is ChatLevel =>
+  value === 'N5' || value === 'N4' || value === 'N3' || value === 'N2' || value === 'N1';
 
+// V3 archives separate conversations; import V2 once without discarding older chat.
 const getSavedChatState = () => {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem(CHAT_STORAGE_KEY) || localStorage.getItem('nhai_japanese_ai_chat_session_v1');
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && Array.isArray(parsed.messages) && parsed.messages.length > 0) {
-        const persona = JAPANESE_PERSONAS.find(p => p.id === parsed.selectedPersonaId) || JAPANESE_PERSONAS[0];
-        const level = (['N5', 'N4', 'N3', 'N2', 'N1'] as const).includes(parsed.selectedLevel)
-          ? parsed.selectedLevel
-          : 'N4';
-        return {
-          persona,
-          level,
-          // Earlier versions inserted these hard-coded lines on API failure.
-          // Never present them as genuine model-generated chat history.
-          messages: (parsed.messages as ChatMessage[]).filter(
-            message => !(message.sender === 'ai' && LEGACY_FAKE_AI_REPLIES.has(message.text))
-          ),
-          hints: Array.isArray(parsed.hints) ? parsed.hints : persona.greeting[level].hints,
-          showFurigana: parsed.showFurigana ?? true,
-          showRomaji: parsed.showRomaji ?? false,
-          showVietnamese: parsed.showVietnamese ?? false,
-          autoSpeech: parsed.autoSpeech ?? true,
-          speechRate: parsed.speechRate ?? 1.0,
-          responseLength: (['natural', 'detailed', 'concise'] as const).includes(parsed.responseLength)
-            ? parsed.responseLength
-            : 'natural'
-        };
+    const archiveRaw = localStorage.getItem(CHAT_HISTORY_KEY);
+    const legacyRaw = !archiveRaw
+      ? localStorage.getItem(CHAT_STORAGE_KEY) || localStorage.getItem('nhai_japanese_ai_chat_session_v1')
+      : null;
+    const parsed = JSON.parse(archiveRaw || legacyRaw || 'null');
+    if (!parsed || typeof parsed !== 'object') return null;
+
+    const legacyLevel: ChatLevel = isChatLevel(parsed.selectedLevel) ? parsed.selectedLevel : 'N4';
+    const legacyPersonaId = JAPANESE_PERSONAS.some(p => p.id === parsed.selectedPersonaId)
+      ? parsed.selectedPersonaId : JAPANESE_PERSONAS[0].id;
+    let conversations: SavedChatThread[] = [];
+    if (archiveRaw && Array.isArray(parsed.conversations)) {
+      conversations = parsed.conversations
+        .filter((item: any) => item && typeof item.id === 'string' &&
+          JAPANESE_PERSONAS.some(p => p.id === item.personaId))
+        .map((item: any) => ({
+          id: item.id,
+          personaId: item.personaId,
+          level: isChatLevel(item.level) ? item.level : 'N4',
+          messages: normalizeChatMessages(item.messages),
+          hints: Array.isArray(item.hints) ? item.hints.filter((h: unknown) => typeof h === 'string') : [],
+          draft: typeof item.draft === 'string' ? item.draft : '',
+          updatedAt: Number.isFinite(item.updatedAt) ? item.updatedAt : Date.now()
+        }));
+    } else if (!archiveRaw) {
+      const legacyMessages = normalizeChatMessages(parsed.messages);
+      if (legacyMessages.some(message => message.sender === 'user' ||
+          (message.sender === 'ai' && message.provider !== 'Lời chào mẫu')) ||
+          (typeof parsed.draft === 'string' && parsed.draft.trim())) {
+        conversations = [{
+          id: createChatId(), personaId: legacyPersonaId, level: legacyLevel,
+          messages: legacyMessages,
+          hints: Array.isArray(parsed.hints) ? parsed.hints : [],
+          draft: typeof parsed.draft === 'string' ? parsed.draft : '',
+          updatedAt: Date.now()
+        }];
       }
     }
-  } catch (e) {
-    console.warn('Failed to load saved chat state:', e);
+
+    // Respect a newly opened empty conversation instead of reviving an older one.
+    const current = conversations.find(thread => thread.id === parsed.activeConversationId) ||
+      (parsed.activeConversationId ? undefined : conversations[0]);
+    const persona = JAPANESE_PERSONAS.find(p => p.id === (current?.personaId || legacyPersonaId)) || JAPANESE_PERSONAS[0];
+    const level = current?.level || legacyLevel;
+    return {
+      persona, level, conversations,
+      activeConversationId: current?.id ||
+        (typeof parsed.activeConversationId === 'string' ? parsed.activeConversationId : createChatId()),
+      messages: current?.messages || (!archiveRaw ? normalizeChatMessages(parsed.messages) : []),
+      hints: current?.hints?.length ? current.hints :
+        (Array.isArray(parsed.hints) ? parsed.hints : persona.greeting[level].hints),
+      draft: current?.draft || '',
+      showFurigana: parsed.showFurigana ?? true,
+      showVietnamese: parsed.showVietnamese ?? false,
+      autoSpeech: parsed.autoSpeech ?? true,
+      speechRate: parsed.speechRate ?? 1.0,
+      responseLength: (['natural', 'detailed', 'concise'] as const).includes(parsed.responseLength)
+        ? parsed.responseLength as 'natural' | 'detailed' | 'concise' : 'natural'
+    };
+  } catch (error) {
+    console.warn('[Japanese Chat] Could not read chat history:', error);
+    return null;
   }
-  return null;
 };
 
 export interface JapaneseAiChatProps {
@@ -375,6 +432,11 @@ export interface JapaneseAiChatProps {
 
 export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   const savedSession = useRef(getSavedChatState());
+  const [conversations, setConversations] = useState<SavedChatThread[]>(savedSession.current?.conversations || []);
+  const conversationsRef = useRef<SavedChatThread[]>(savedSession.current?.conversations || []);
+  const [activeConversationId, setActiveConversationId] = useState(savedSession.current?.activeConversationId || createChatId());
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [historySaveError, setHistorySaveError] = useState(false);
 
   const [selectedLevel, setSelectedLevel] = useState<'N5' | 'N4' | 'N3' | 'N2' | 'N1'>(
     savedSession.current?.level || 'N4'
@@ -453,7 +515,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   const [hints, setHints] = useState<string[]>(
     savedSession.current?.hints || initialGreeting.hints
   );
-  const [inputText, setInputText] = useState<string>('');
+  const [inputText, setInputText] = useState<string>(savedSession.current?.draft || '');
   const [replyTo, setReplyTo] = useState<{ text: string; who: string } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [chatError, setChatError] = useState<string | null>(null);
@@ -590,35 +652,86 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
     };
   }, [stopAudioVisualizer]);
 
-  // Persist conversation & settings to LocalStorage
-  useEffect(() => {
+  // Automatically preserve every real conversation, including unsent drafts.
+  const saveArchive = useCallback((
+    nextConversations: SavedChatThread[],
+    activeId = activeConversationId,
+    personaId = selectedPersona.id,
+    level: ChatLevel = selectedLevel
+  ) => {
+    conversationsRef.current = nextConversations;
+    setConversations(nextConversations);
     try {
-      const payload = {
-        selectedPersonaId: selectedPersona.id,
-        selectedLevel,
-        messages,
-        hints,
-        showFurigana,
-        showVietnamese,
-        autoSpeech,
-        speechRate,
-        responseLength
-      };
-      localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(payload));
-    } catch (e) {
-      console.warn('Failed to save chat session:', e);
+      localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify({
+        version: 3, conversations: nextConversations,
+        activeConversationId: activeId,
+        selectedPersonaId: personaId,
+        selectedLevel: level,
+        showFurigana, showVietnamese, autoSpeech, speechRate, responseLength
+      }));
+      setHistorySaveError(false);
+    } catch (error) {
+      // Do not silently delete chat history on quota failures.
+      setHistorySaveError(true);
+      console.warn('[Japanese Chat] Chat history could not be saved:', error);
     }
-  }, [
-    selectedPersona.id,
-    selectedLevel,
-    messages,
-    hints,
-    showFurigana,
-    showVietnamese,
-    autoSpeech,
-    speechRate,
-    responseLength
-  ]);
+  }, [activeConversationId, selectedPersona.id, selectedLevel,
+      showFurigana, showVietnamese, autoSpeech, speechRate, responseLength]);
+
+  const persistActiveConversation = useCallback(() => {
+    const shouldArchive = messages.some(message => message.sender === 'user' ||
+      (message.sender === 'ai' && message.provider !== 'Lời chào mẫu')) || !!inputText.trim();
+    const previous = conversationsRef.current;
+    const next: SavedChatThread[] = shouldArchive ? [
+      { id: activeConversationId, personaId: selectedPersona.id, level: selectedLevel,
+        messages, hints, draft: inputText, updatedAt: Date.now() },
+      ...previous.filter(thread => thread.id !== activeConversationId)
+    ] : previous;
+    saveArchive(next);
+  }, [activeConversationId, selectedPersona.id, selectedLevel, messages, hints, inputText, saveArchive]);
+
+  useEffect(() => { persistActiveConversation(); }, [persistActiveConversation]);
+
+  const cancelChatRequest = () => {
+    chatAbortRef.current?.abort();
+    chatAbortRef.current = null;
+    setIsLoading(false);
+    setStreaming(null);
+  };
+  const restoreConversation = (thread: SavedChatThread) => {
+    persistActiveConversation();
+    cancelChatRequest();
+    const persona = JAPANESE_PERSONAS.find(p => p.id === thread.personaId) || JAPANESE_PERSONAS[0];
+    setActiveConversationId(thread.id);
+    setSelectedPersona(persona);
+    setSelectedLevel(thread.level);
+    setMessages(thread.messages);
+    setHints(thread.hints.length ? thread.hints : persona.greeting[thread.level].hints);
+    setInputText(thread.draft);
+    setReplyTo(null);
+    setChatError(null);
+    setIsHistoryOpen(false);
+  };
+  const deleteConversation = (id: string) => {
+    if (!window.confirm('Xóa vĩnh viễn cuộc trò chuyện đã lưu này trên thiết bị?')) return;
+    const remaining = conversationsRef.current.filter(thread => thread.id !== id);
+    if (id === activeConversationId) {
+      cancelChatRequest();
+      const nextId = createChatId();
+      saveArchive(remaining, nextId);
+      setActiveConversationId(nextId);
+      const greeting = selectedPersona.greeting[selectedLevel];
+      setMessages([{
+        id: Date.now(), sender: 'ai', text: greeting.japanese,
+        furigana: greeting.furigana, explanation: greeting.explanation,
+        vietnameseTranslation: greeting.vietnamese, provider: 'Lời chào mẫu',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }]);
+      setHints(greeting.hints);
+      setInputText('');
+      setChatError(null);
+    } else saveArchive(remaining);
+  };
 
   // Convert initial greeting to Furigana Ruby on mount / change if missing
   useEffect(() => {
@@ -700,9 +813,18 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   // Switch persona or level
   const handlePersonaOrLevelChange = (persona: AiPersona, level: 'N5' | 'N4' | 'N3' | 'N2' | 'N1') => {
     if (persona.id === selectedPersona.id && level === selectedLevel) return;
-
+    persistActiveConversation();
+    cancelChatRequest();
+    const previous = conversationsRef.current.find(thread => thread.personaId === persona.id && thread.level === level);
+    if (previous) {
+      restoreConversation(previous);
+      return;
+    }
+    setActiveConversationId(createChatId());
     setSelectedPersona(persona);
     setSelectedLevel(level);
+    setChatError(null);
+    setReplyTo(null);
     const greeting = persona.greeting[level];
     const newGreetingMsg: ChatMessage = {
       id: Date.now(),
@@ -723,8 +845,13 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
     }
   };
 
-  // Reset conversation
+  // Start a fresh conversation while retaining archived chats.
   const handleResetChat = () => {
+    persistActiveConversation();
+    cancelChatRequest();
+    setActiveConversationId(createChatId());
+    setChatError(null);
+    setReplyTo(null);
     const greeting = selectedPersona.greeting[selectedLevel];
     const newGreetingMsg: ChatMessage = {
       id: Date.now(),
@@ -939,7 +1066,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
       setChatError(err instanceof Error ? err.message : 'Chưa nhận được phản hồi từ AI. Vui lòng gửi lại.');
       console.warn('[Japanese Chat] Request failed; message was restored to the composer.');
     } finally {
-      chatAbortRef.current = null;
+      if (chatAbortRef.current === controller) chatAbortRef.current = null;
       if (!controller.signal.aborted) {
         setIsLoading(false);
         setTimeout(() => inputRef.current?.focus(), 100);
@@ -1089,6 +1216,12 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
               >
                 <PhoneCall className="w-3.5 h-3.5 text-rose-400 animate-pulse" />
                 <span className="hidden md:inline">Live Call</span>
+              </button>
+
+              <button type="button" onClick={() => setIsHistoryOpen(true)}
+                className="w-8 h-8 rounded-full bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 flex items-center justify-center cursor-pointer"
+                title="Lịch sử trò chuyện" aria-label="Mở lịch sử trò chuyện">
+                <History className="w-4 h-4" />
               </button>
 
               {/* Furigana Quick Toggle */}
@@ -1415,6 +1548,11 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
               </div>
             </div>
           </div>
+          {historySaveError && (
+            <div role="alert" className="px-3 py-2 text-xs text-amber-300 bg-amber-950/40 border border-amber-700/50">
+              Không thể lưu lịch sử trên thiết bị này (bộ nhớ trình duyệt bị chặn hoặc đã đầy).
+            </div>
+          )}
           {chatError && (
             <div role="alert" aria-live="polite" className="flex items-center justify-between gap-3 px-3 py-2 bg-rose-950/50 border-t border-rose-500/40 text-rose-200 text-xs shrink-0">
               <span className="min-w-0">{chatError} Tin nhắn đã được giữ lại.</span>
@@ -1485,6 +1623,65 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
           </footer>
         </div>
       </div>
+
+      {/* Saved conversations, available after returning to chat or refreshing. */}
+      <AnimatePresence>
+        {isHistoryOpen && (
+          <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3" role="dialog" aria-modal="true" aria-label="Lịch sử trò chuyện">
+            <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              className="bg-[#0F1424] border border-slate-700 rounded-2xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+              <div className="flex items-center justify-between gap-2 p-4 border-b border-slate-800">
+                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                  <History className="w-4 h-4 text-blue-400" /> Lịch sử trò chuyện
+                </h3>
+                <button type="button" aria-label="Đóng lịch sử" onClick={() => setIsHistoryOpen(false)}
+                  className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <p className="px-4 pt-3 text-xs text-slate-400">
+                Tự động lưu trên trình duyệt của thiết bị này. Chưa đồng bộ lịch sử giữa các thiết bị.
+              </p>
+              <div className="overflow-y-auto flex-1 p-3 space-y-2">
+                {conversations.length === 0 ? (
+                  <p className="text-sm text-slate-400 py-10 text-center">Chưa có cuộc trò chuyện được lưu.</p>
+                ) : conversations.map(thread => {
+                  const persona = JAPANESE_PERSONAS.find(p => p.id === thread.personaId);
+                  const preview = [...thread.messages].reverse().find(m => m.sender === 'user')?.text ||
+                    thread.draft || 'Cuộc trò chuyện tiếng Nhật';
+                  return (
+                    <div key={thread.id} className={`rounded-xl border flex items-center gap-2 p-2 ${thread.id === activeConversationId ? 'border-blue-500/60 bg-blue-950/30' : 'border-slate-800 bg-slate-900/70'}`}>
+                      <button type="button" onClick={() => restoreConversation(thread)}
+                        className="text-left flex-1 min-w-0 p-1.5 rounded-lg hover:bg-slate-800/70">
+                        <span className="block text-sm font-bold text-white truncate">
+                          {persona?.name || 'Đối tác AI'} · {thread.level}
+                          {thread.id === activeConversationId && <span className="ml-2 text-xs font-normal text-blue-300">Đang mở</span>}
+                        </span>
+                        <span className="block text-xs text-slate-300 truncate mt-1">{preview}</span>
+                        <span className="block text-[11px] text-slate-500 mt-1">
+                          {new Date(thread.updatedAt).toLocaleString('vi-VN')}
+                        </span>
+                      </button>
+                      <button type="button" title="Xóa cuộc trò chuyện này" aria-label="Xóa cuộc trò chuyện"
+                        onClick={() => deleteConversation(thread.id)}
+                        className="p-2 rounded-lg text-slate-400 hover:text-rose-300 hover:bg-rose-950/40 shrink-0">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="p-3 border-t border-slate-800">
+                <button type="button" onClick={() => { handleResetChat(); setIsHistoryOpen(false); }}
+                  className="w-full bg-blue-600 hover:bg-blue-500 rounded-xl px-4 py-2.5 text-white font-bold text-sm flex items-center justify-center gap-2">
+                  <Plus className="w-4 h-4" /> Cuộc trò chuyện mới
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Persona & JLPT Level Drawer (Mobile & Quick Switcher) */}
       <AnimatePresence>
@@ -1685,7 +1882,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                     className="w-full py-2.5 rounded-xl bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-500/40 font-bold transition cursor-pointer flex items-center justify-center gap-2"
                   >
                     <RotateCcw className="w-4 h-4" />
-                    <span>Làm mới & Xóa lịch sử đoạn chat này</span>
+                    <span>Cuộc trò chuyện mới (giữ lịch sử cũ)</span>
                   </button>
                 </div>
               </div>
