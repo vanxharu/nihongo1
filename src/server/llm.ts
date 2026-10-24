@@ -38,8 +38,9 @@ export function getGeminiClient(apiKey = getLlmConfig().apiKey): GoogleGenAI {
 // GPT-OSS 120B and 20B are supported replacement model IDs.
 const GROQ_PRIMARY_MODEL = 'openai/gpt-oss-120b';
 const GROQ_BACKUP_MODEL = 'openai/gpt-oss-20b';
-const GROQ_TIMEOUT_MS = 14000;
-const GEMINI_TIMEOUT_MS = 11000;
+// Keep sequential failovers well within Vercel's serverless execution limit.
+const GROQ_TIMEOUT_MS = 9000;
+const GEMINI_TIMEOUT_MS = 9000;
 
 // A finite time budget is essential on Vercel (60s serverless limit).
 async function withLlmTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
@@ -78,7 +79,8 @@ export async function generateGemini(options: { contents: any; model?: string; c
             model,
             temperature: 0.1,
             max_completion_tokens: Math.min(options.config?.maxOutputTokens || 2800, 4000),
-            ...(model.startsWith('openai/gpt-oss-') ? { reasoning_effort: 'low', reasoning_format: 'hidden' } : {}),
+            // GPT-OSS rejects reasoning_format (Groq 400); include_reasoning is supported.
+            ...(model.startsWith('openai/gpt-oss-') ? { reasoning_effort: 'low', include_reasoning: false } : {}),
             ...(options.config?.responseMimeType === 'application/json' ? { response_format: { type: 'json_object' } } : {}),
             messages: [
               ...(options.config?.systemInstruction ? [{ role: 'system', content: String(options.config.systemInstruction) }] : []),
