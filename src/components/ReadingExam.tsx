@@ -1,5 +1,5 @@
 import './readingTheme.css';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import exams from '../data/readingExams.json';
 
 type Q = { n: number; q: string; qF: string; options: string[]; optionsF: string[]; answer: number; exp: string };
@@ -27,6 +27,15 @@ function Jp({ f, plain, furi }: { f: string; plain: string; furi: boolean }) {
 
 export default function ReadingExam() {
   const [examId, setExamId] = useState<string | null>(null);
+  const [minnaPdfUrl, setMinnaPdfUrl] = useState<string | null>(null);
+  const [minnaPage, setMinnaPage] = useState(21);
+  const [minnaFileName, setMinnaFileName] = useState('');
+  useEffect(() => () => { if (minnaPdfUrl) URL.revokeObjectURL(minnaPdfUrl); }, [minnaPdfUrl]);
+  const onMinnaPdf = (file?: File) => {
+    if (!file || (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf'))) return;
+    setMinnaPdfUrl(URL.createObjectURL(file));
+    setMinnaFileName(file.name);
+  };
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
   const [furi, setFuri] = useState(true);
@@ -53,6 +62,24 @@ export default function ReadingExam() {
           <p>Đã thêm bài luyện tập biên soạn mới theo các chủ đề thường gặp. Đọc bài gốc và lời giải tại <a href="https://www.vnjpclub.com/luyen-doc-n4/" target="_blank" rel="noopener noreferrer" className="text-indigo-500 underline">VNJPCLUB ↗</a>.</p>
         </div>
         <section className="space-y-2"><h2 className="text-base font-bold text-[var(--ui-ink)]">VNJPCLUB · 20 bài đọc gốc</h2><p className="text-xs text-[var(--ui-muted)]">Bài 01 đã nhập vào NIHON. Các bài còn lại mở nội dung nguyên gốc trên VNJPCLUB; chưa được nhập để chấm điểm trực tiếp.</p><div className="grid gap-2 sm:grid-cols-2">{VNJP_ORIGINAL_LINKS.map(b => <a key={b.number} href={b.url} target="_blank" rel="noopener noreferrer" className="reading-surface border border-[var(--ui-line)] rounded-xl p-3 text-sm hover:border-indigo-500"><strong className="block text-[var(--ui-ink)]">Bài {String(b.number).padStart(2,'0')} · {b.title}</strong><span className="text-xs text-indigo-400">Xem bài gốc ↗</span></a>)}</div></section>
+        <section className="reading-surface rounded-2xl border border-[var(--ui-line)] p-4 space-y-3">
+          <h2 className="text-base font-bold text-[var(--ui-ink)]">Minna no Nihongo II · トピック25 (bài 26–50)</h2>
+          <p className="text-xs text-[var(--ui-muted)]">Tài liệu gốc gồm 25 chủ đề đọc hiểu. Chọn PDF từ máy để xem trực tiếp trong NIHON; tệp chỉ mở trong trình duyệt, không tải lên máy chủ. Chưa chuyển toàn bộ câu hỏi thành bài chấm điểm.</p>
+          <label className="block text-sm font-semibold text-[var(--ui-ink)]">Mở sách PDF trên máy
+            <input type="file" accept="application/pdf,.pdf" onChange={e => onMinnaPdf(e.target.files?.[0])} className="mt-2 block w-full text-xs text-[var(--ui-muted)]" />
+          </label>
+          {minnaFileName && <p className="text-xs text-emerald-500">Đang xem: {minnaFileName}</p>}
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+            {Array.from({ length: 25 }, (_, i) => i + 26).map(n => (
+              <button key={n} type="button" onClick={() => setMinnaPage(n === 26 ? 21 : n === 27 ? 23 : 0)}
+                className={`rounded-lg border px-2 py-2 text-xs font-semibold ${(n === 26 && minnaPage === 21) || (n === 27 && minnaPage === 23) ? 'border-indigo-500 text-indigo-400' : 'border-[var(--ui-line)] text-[var(--ui-ink)]'}`}>
+                Bài {n}{n > 27 && <span className="block text-[10px] font-normal text-[var(--ui-muted)]">Tra mục lục</span>}
+              </button>
+            ))}
+          </div>
+          {minnaPage === 0 && <p className="text-xs text-[var(--ui-muted)]">Với bài 28–50, hãy dùng mục lục trong PDF để đến trang chính xác. Chưa xác minh được số trang tương ứng.</p>}
+          {minnaPdfUrl && <iframe key={minnaPage} title="Minna no Nihongo II Topikku 25" src={`${minnaPdfUrl}#page=${minnaPage || 1}`} className="w-full rounded-lg border border-[var(--ui-line)]" style={{ height: 'min(75vh, 780px)' }} />}
+        </section>
         {EXAMS.length === 0 && <p className="text-sm text-[var(--ui-muted)]">Chưa có đề nào.</p>}
         <ul className="grid gap-3 sm:grid-cols-2">
           {EXAMS.map(e => (
