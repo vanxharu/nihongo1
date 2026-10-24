@@ -1,5 +1,5 @@
 // JPStudy PWA Service Worker with Background Notification & Offline Support
-const CACHE_NAME = 'jpstudy-pwa-v10-network-navigation';
+const CACHE_NAME = 'jpstudy-pwa-v11-safe-updates';
 const DATA_CACHE_NAME = 'jpstudy-data-cache-v1';
 const ASSETS_TO_CACHE = [
   '/',
@@ -755,12 +755,14 @@ async function triggerVocabNotification(customWord) {
 }
 
 // Install event
+// Do not call skipWaiting() unconditionally: activating a new worker while a
+// lesson is open deletes the old asset cache. The running app may still need
+// those hashed chunks and must not be interrupted by a deployment.
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
   );
+  // The new worker activates naturally when previous tabs are closed.
 });
 
 // Activate event
