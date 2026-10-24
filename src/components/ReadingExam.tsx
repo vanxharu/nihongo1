@@ -14,6 +14,7 @@ const MINNA_LESSON_PAGES: Record<number, number> = {
   46:87,47:91,48:95,49:99,50:103
 };
 const MINNA_APPENDIX_PAGES = [110,112,114,116,118,120,122,124] as const;
+const MINNA_REFERENCE_PAGES = [{ page: 126, label: 'Từ vựng bài 34–50' }, { page: 162, label: 'Đáp án chính thức' }, { page: 167, label: 'Hướng dẫn giáo viên' }, { page: 179, label: 'Bìa sau' }] as const;
 const SCORE_KEY = 'reading_exam_scores_v1';
 const readScores = (): Record<string, number> => { try { return JSON.parse(localStorage.getItem(SCORE_KEY) || '{}'); } catch { return {}; } };
 const totalQ = (e: Exam) => e.parts.reduce((n, p) => n + p.items.reduce((m, i) => m + i.questions.length, 0), 0);
@@ -89,6 +90,15 @@ export default function ReadingExam() {
               <button key={n} type="button" onClick={() => setMinnaPage(n)}
                 className={`rounded-lg border px-2 py-1.5 text-xs ${minnaPage === n ? 'border-indigo-500 text-indigo-400' : 'border-[var(--ui-line)] text-[var(--ui-ink)]'}`}>
                 Trang {n}
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-[var(--ui-muted)]">Các phần còn lại của tài liệu (đã xác minh vị trí theo trang PDF):</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {MINNA_REFERENCE_PAGES.map(({ page, label }) => (
+              <button key={page} type="button" onClick={() => setMinnaPage(page)}
+                className={`rounded-lg border px-2 py-2 text-xs ${minnaPage === page ? 'border-indigo-500 text-indigo-400' : 'border-[var(--ui-line)] text-[var(--ui-ink)]'}`}>
+                {label}<span className="block text-[10px] opacity-75">PDF trang {page}</span>
               </button>
             ))}
           </div>
