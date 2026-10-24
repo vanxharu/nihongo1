@@ -521,6 +521,14 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   const [replyTo, setReplyTo] = useState<{ text: string; who: string } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [chatError, setChatError] = useState<string | null>(null);
+  const [assistStatus, setAssistStatus] = useState<Record<string, { loading: boolean; error?: string }>>({});
+  const assistAbortRef = useRef<Map<string, AbortController>>(new Map());
+  const activeConversationIdRef = useRef(activeConversationId);
+  activeConversationIdRef.current = activeConversationId;
+  useEffect(() => () => {
+    assistAbortRef.current.forEach(controller => controller.abort());
+    assistAbortRef.current.clear();
+  }, []);
   // 086: câu trả lời hiện dần từng chữ (id tin đang chạy + số ký tự đã hiện)
   const [streaming, setStreaming] = useState<{ id: number; n: number } | null>(null);
   const streamRef = useRef<{ id: number; n: number } | null>(null);
@@ -697,6 +705,9 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
   const cancelChatRequest = () => {
     chatAbortRef.current?.abort();
     chatAbortRef.current = null;
+    assistAbortRef.current.forEach(controller => controller.abort());
+    assistAbortRef.current.clear();
+    setAssistStatus({});
     setIsLoading(false);
     setStreaming(null);
   };
@@ -1076,6 +1087,73 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
     }
   };
 
+  // Keep the action buttons usable even when an old/new model response omits
+  // optional translation or grammar fields. Fetch them only when requested.
+  const handleMessageAssist = async (message: ChatMessage, action: 'translation' | 'grammar') => {
+    const isTranslation = action === 'translation';
+    const visible = isTranslation
+      ? (expandedTranslations[message.id] ?? showVietnamese)
+      : !!expandedExplanations[message.id];
+    const existing = isTranslation ? message.vietnameseTranslation : message.explanation;
+    const key = `${message.id}:${action}`;
+    const status = assistStatus[key];
+
+    const setVisible = (next: boolean) => {
+      if (isTranslation) setExpandedTranslations(prev => ({ ...prev, [message.id]: next }));
+      else setExpandedExplanations(prev => ({ ...prev, [message.id]: next }));
+    };
+
+    if (visible && (existing?.trim() || status?.loading)) {
+      setVisible(false);
+      return;
+    }
+    setVisible(true);
+    if (existing?.trim() || assistAbortRef.current.has(key)) return;
+
+    const controller = new AbortController();
+    const threadId = activeConversationIdRef.current;
+    assistAbortRef.current.set(key, controller);
+    setAssistStatus(prev => ({ ...prev, [key]: { loading: true } }));
+
+    try {
+      const response = await fetch('/api/japanese-chat/assist', {
+        method: 'POST',
+        signal: controller.signal,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, text: message.text })
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(
+        typeof data?.error === 'string' ? data.error : 'Không thể tải nội dung, vui lòng thử lại.'
+      );
+      const value = typeof data?.value === 'string' ? data.value.trim() : '';
+      if (!value) throw new Error('AI chưa trả về nội dung. Vui lòng thử lại.');
+      if (controller.signal.aborted || activeConversationIdRef.current !== threadId) return;
+
+      setMessages(prev => prev.map(item =>
+        item.id === message.id && item.text === message.text
+          ? (isTranslation ? { ...item, vietnameseTranslation: value } : { ...item, explanation: value })
+          : item
+      ));
+      setAssistStatus(prev => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
+    } catch (error) {
+      if (controller.signal.aborted || activeConversationIdRef.current !== threadId) return;
+      setAssistStatus(prev => ({
+        ...prev,
+        [key]: {
+          loading: false,
+          error: error instanceof Error ? error.message : 'Không thể tải nội dung. Nhấn lại để thử.'
+        }
+      }));
+    } finally {
+      if (assistAbortRef.current.get(key) === controller) assistAbortRef.current.delete(key);
+    }
+  };
+
   // Level Badge Colors
   const getLevelBadgeColor = (lvl: string) => {
     switch (lvl) {
@@ -1243,7 +1321,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
               {/* Vietnamese Translation Quick Toggle */}
               <button
                 type="button"
-                onClick={() => setShowVietnamese(!showVietnamese)}
+                onClick={() => { setShowVietnamese(!showVietnamese); setExpandedTranslations({}); }}
                 className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition active:scale-95 cursor-pointer ${
                   showVietnamese
                     ? 'bg-sky-500/20 text-sky-300 border border-sky-500/50'
@@ -1277,6 +1355,8 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
               const isSpeaking = currentlySpeakingId === m.id;
               const isExplExpanded = expandedExplanations[m.id];
               const isTransExpanded = expandedTranslations[m.id] ?? showVietnamese;
+              const translationStatus = assistStatus[`${m.id}:translation`];
+              const grammarStatus = assistStatus[`${m.id}:grammar`];
 
               return (
                 <div
@@ -1330,10 +1410,15 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                       </div>
 
                       {/* Vietnamese Translation */}
-                      {isAi && streaming?.id !== m.id && (isTransExpanded || showVietnamese) && m.vietnameseTranslation && (
+                      {isAi && streaming?.id !== m.id && isTransExpanded &&
+                        (m.vietnameseTranslation || translationStatus) && (
                         <div className="mt-2 pt-2 border-t border-slate-700/60 text-xs text-sky-200 font-medium leading-relaxed flex items-start gap-1.5">
                           <Globe className="w-3.5 h-3.5 text-sky-400 shrink-0 mt-0.5" />
-                          <span>{m.vietnameseTranslation}</span>
+                          <span className="whitespace-pre-wrap">
+                            {m.vietnameseTranslation ||
+                              (translationStatus?.loading ? 'Đang dịch bằng AI...' :
+                               translationStatus?.error ? `${translationStatus.error} Nhấn Dịch để thử lại.` : '')}
+                          </span>
                         </div>
                       )}
 
@@ -1357,10 +1442,11 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                             </button>
 
                             {/* Translation Toggle */}
-                            {!showVietnamese && m.vietnameseTranslation && (
+                            {(
                               <button
                                 type="button"
-                                onClick={() => setExpandedTranslations(prev => ({ ...prev, [m.id]: !prev[m.id] }))}
+                                onClick={() => handleMessageAssist(m, 'translation')}
+                                aria-expanded={isTransExpanded}
                                 className={`px-2 py-0.5 rounded-full text-[11px] font-bold border transition cursor-pointer flex items-center gap-1 ${
                                   isTransExpanded
                                     ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
@@ -1368,15 +1454,16 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                                 }`}
                               >
                                 <Globe className="w-3 h-3 text-sky-400" />
-                                <span>{isTransExpanded ? 'Ẩn dịch' : 'Dịch'}</span>
+                                <span>{translationStatus?.loading ? 'Đang dịch...' : isTransExpanded && m.vietnameseTranslation ? 'Ẩn dịch' : 'Dịch'}</span>
                               </button>
                             )}
 
                             {/* Grammar Point Toggle */}
-                            {m.explanation && (
+                            {(
                               <button
                                 type="button"
-                                onClick={() => setExpandedExplanations(prev => ({ ...prev, [m.id]: !prev[m.id] }))}
+                                onClick={() => handleMessageAssist(m, 'grammar')}
+                                aria-expanded={!!isExplExpanded}
                                 className={`px-2 py-0.5 rounded-full text-[11px] font-bold border transition cursor-pointer flex items-center gap-1 ${
                                   isExplExpanded
                                     ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
@@ -1384,7 +1471,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                                 }`}
                               >
                                 <Lightbulb className="w-3 h-3 text-amber-400" />
-                                <span>Ngữ pháp</span>
+                                <span>{grammarStatus?.loading ? 'Đang phân tích...' : 'Ngữ pháp'}</span>
                               </button>
                             )}
 
@@ -1428,7 +1515,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                     )}
 
                     {/* Grammar Explanation Box */}
-                    {isAi && m.explanation && isExplExpanded && (
+                    {isAi && isExplExpanded && (m.explanation || grammarStatus) && (
                       <motion.div
                         initial={{ opacity: 0, y: -4 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -1439,7 +1526,9 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                           <span>Điểm biểu đạt & Ngữ pháp:</span>
                         </div>
                         <p className="text-slate-200 leading-snug font-jp text-[11.5px]">
-                          {m.explanation}
+                          {m.explanation ||
+                            (grammarStatus?.loading ? 'Đang phân tích ngữ pháp bằng AI...' :
+                             grammarStatus?.error ? `${grammarStatus.error} Nhấn Ngữ pháp để thử lại.` : '')}
                         </p>
                       </motion.div>
                     )}
