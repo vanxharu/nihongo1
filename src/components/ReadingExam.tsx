@@ -8,6 +8,12 @@ type Part = { title: string; instruction: string; items: Item[] };
 type Exam = { id: string; title: string; level: string; source: string; parts: Part[] };
 const EXAMS = exams as Exam[];
 const VNJP_ORIGINAL_LINKS = [{"number":1,"title":"Thay đổi giờ học","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-e-1.html"},{"number":2,"title":"Thông báo nghỉ học đột xuất","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-e.html"},{"number":3,"title":"Thông báo trong ký túc xá","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-e-3.html"},{"number":4,"title":"Thông báo nơi làm việc","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-e-4.html"},{"number":5,"title":"Thông báo trong cửa hàng","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee5.html"},{"number":6,"title":"Hướng dẫn sử dụng dịch vụ","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee6.html"},{"number":7,"title":"Lưu ý khi tham gia sự kiện","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee7.html"},{"number":8,"title":"Hướng dẫn đăng ký","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee8.html"},{"number":9,"title":"Email liên lạc công việc","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee9.html"},{"number":10,"title":"Email xin nghỉ làm","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee10.html"},{"number":11,"title":"Email hỏi thông tin","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee11.html"},{"number":12,"title":"Email xác nhận lịch hẹn","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-e12.html"},{"number":13,"title":"Thư cảm ơn","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee13.html"},{"number":16,"title":"Sinh hoạt hằng ngày","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee16.html"},{"number":17,"title":"Kế hoạch cuối tuần","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee17.html"},{"number":18,"title":"Lịch sinh hoạt gia đình","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee18.html"},{"number":19,"title":"Thói quen buổi sáng","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee19.html"},{"number":20,"title":"Cuộc sống du học sinh","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee20.html"},{"number":21,"title":"Chia sẻ trải nghiệm cá nhân","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee21.html"},{"number":22,"title":"Sở thích và thời gian rảnh","url":"https://www.vnjpclub.com/luyen-doc-n4/n4-ee22.html"}];
+const MINNA_LESSON_PAGES: Record<number, number> = {
+  26:21,27:23,28:25,29:27,30:29,31:33,32:37,33:41,34:45,35:47,
+  36:51,37:53,38:57,39:61,40:65,41:69,42:71,43:75,44:79,45:83,
+  46:87,47:91,48:95,49:99,50:103
+};
+const MINNA_APPENDIX_PAGES = [110,112,114,116,118,120,122,124] as const;
 const SCORE_KEY = 'reading_exam_scores_v1';
 const readScores = (): Record<string, number> => { try { return JSON.parse(localStorage.getItem(SCORE_KEY) || '{}'); } catch { return {}; } };
 const totalQ = (e: Exam) => e.parts.reduce((n, p) => n + p.items.reduce((m, i) => m + i.questions.length, 0), 0);
@@ -64,20 +70,28 @@ export default function ReadingExam() {
         <section className="space-y-2"><h2 className="text-base font-bold text-[var(--ui-ink)]">VNJPCLUB · 20 bài đọc gốc</h2><p className="text-xs text-[var(--ui-muted)]">Bài 01 đã nhập vào NIHON. Các bài còn lại mở nội dung nguyên gốc trên VNJPCLUB; chưa được nhập để chấm điểm trực tiếp.</p><div className="grid gap-2 sm:grid-cols-2">{VNJP_ORIGINAL_LINKS.map(b => <a key={b.number} href={b.url} target="_blank" rel="noopener noreferrer" className="reading-surface border border-[var(--ui-line)] rounded-xl p-3 text-sm hover:border-indigo-500"><strong className="block text-[var(--ui-ink)]">Bài {String(b.number).padStart(2,'0')} · {b.title}</strong><span className="text-xs text-indigo-400">Xem bài gốc ↗</span></a>)}</div></section>
         <section className="reading-surface rounded-2xl border border-[var(--ui-line)] p-4 space-y-3">
           <h2 className="text-base font-bold text-[var(--ui-ink)]">Minna no Nihongo II · トピック25 (bài 26–50)</h2>
-          <p className="text-xs text-[var(--ui-muted)]">Tài liệu gốc gồm 25 chủ đề đọc hiểu. Chọn PDF từ máy để xem trực tiếp trong NIHON; tệp chỉ mở trong trình duyệt, không tải lên máy chủ. Chưa chuyển toàn bộ câu hỏi thành bài chấm điểm.</p>
+          <p className="text-xs text-[var(--ui-muted)]">25 bài (26–50) có đề chấm điểm tự động; các câu hỏi hình ảnh hoặc tự luận đôi khi được chuyển thể thành trắc nghiệm. Chọn đúng PDF sách từ máy để mở và so sánh trực tiếp; tệp chỉ được mở trong trình duyệt, không tải lên máy chủ. Số trang bên dưới là trang PDF thực tế.</p>
           <label className="block text-sm font-semibold text-[var(--ui-ink)]">Mở sách PDF trên máy
             <input type="file" accept="application/pdf,.pdf" onChange={e => onMinnaPdf(e.target.files?.[0])} className="mt-2 block w-full text-xs text-[var(--ui-muted)]" />
           </label>
           {minnaFileName && <p className="text-xs text-emerald-500">Đang xem: {minnaFileName}</p>}
           <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
             {Array.from({ length: 25 }, (_, i) => i + 26).map(n => (
-              <button key={n} type="button" onClick={() => setMinnaPage(n === 26 ? 21 : n === 27 ? 23 : 0)}
-                className={`rounded-lg border px-2 py-2 text-xs font-semibold ${(n === 26 && minnaPage === 21) || (n === 27 && minnaPage === 23) ? 'border-indigo-500 text-indigo-400' : 'border-[var(--ui-line)] text-[var(--ui-ink)]'}`}>
-                Bài {n}{n > 27 && <span className="block text-[10px] font-normal text-[var(--ui-muted)]">Tra mục lục</span>}
+              <button key={n} type="button" onClick={() => setMinnaPage(MINNA_LESSON_PAGES[n])}
+                className={`rounded-lg border px-2 py-2 text-xs font-semibold ${minnaPage === MINNA_LESSON_PAGES[n] ? 'border-indigo-500 text-indigo-400' : 'border-[var(--ui-line)] text-[var(--ui-ink)]'}`}>
+                Bài {n}<span className="block text-[10px] font-normal text-[var(--ui-muted)]">PDF trang {MINNA_LESSON_PAGES[n]}</span>
               </button>
             ))}
           </div>
-          {minnaPage === 0 && <p className="text-xs text-[var(--ui-muted)]">Với bài 28–50, hãy dùng mục lục trong PDF để đến trang chính xác. Chưa xác minh được số trang tương ứng.</p>}
+          <p className="text-xs text-[var(--ui-muted)]">Phụ lục từ vựng đa ngôn ngữ (bắt đầu từ trang PDF 110; nội dung từ vựng được số hóa có chọn lọc):</p>
+          <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+            {MINNA_APPENDIX_PAGES.map(n => (
+              <button key={n} type="button" onClick={() => setMinnaPage(n)}
+                className={`rounded-lg border px-2 py-1.5 text-xs ${minnaPage === n ? 'border-indigo-500 text-indigo-400' : 'border-[var(--ui-line)] text-[var(--ui-ink)]'}`}>
+                Trang {n}
+              </button>
+            ))}
+          </div>
           {minnaPdfUrl && <iframe key={minnaPage} title="Minna no Nihongo II Topikku 25" src={`${minnaPdfUrl}#page=${minnaPage || 1}`} className="w-full rounded-lg border border-[var(--ui-line)]" style={{ height: 'min(75vh, 780px)' }} />}
         </section>
         {EXAMS.length === 0 && <p className="text-sm text-[var(--ui-muted)]">Chưa có đề nào.</p>}
