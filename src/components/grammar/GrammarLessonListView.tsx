@@ -1,3 +1,4 @@
+import { Button as AnimatedButton } from '@animate-ui/react/primitives/buttons/button';
 import React, { useMemo } from 'react';
 import { ChevronLeft, Lock, FileText, ChevronRight, BookOpen, CheckCircle } from 'lucide-react';
 import { JLPTLevel, UserProfile, GrammarItem } from '../../types';
@@ -85,16 +86,16 @@ export const GrammarLessonListView: React.FC<GrammarLessonListViewProps> = ({
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 animate-fadeIn font-sans text-slate-100">
+    <div className="grammar-lessons-page w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 animate-fadeIn font-sans text-slate-100">
       {/* Breadcrumb Back Link */}
-      <button
+      <AnimatedButton
         type="button"
         onClick={onBackToOverview}
         className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-blue-400 hover:text-blue-300 font-medium mb-3 cursor-pointer transition-colors"
       >
         <ChevronLeft className="w-4 h-4" />
         <span>Lý thuyết</span>
-      </button>
+      </AnimatedButton>
 
       {/* Level Header */}
       <div className="flex items-start justify-between gap-4 mb-4">
@@ -120,7 +121,7 @@ export const GrammarLessonListView: React.FC<GrammarLessonListViewProps> = ({
         </div>
         <div className="w-full h-2 bg-[#21262d] rounded-full overflow-hidden">
           <div
-            className="h-full bg-blue-500 rounded-full transition-all duration-500 ease-out"
+            className="h-full bg-blue-500 rounded-full transition-colors duration-500 ease-out"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -139,7 +140,7 @@ export const GrammarLessonListView: React.FC<GrammarLessonListViewProps> = ({
                   onSelectLesson(item.lessonNumber);
                 }
               }}
-              className={`p-4 rounded-xl border transition-all duration-200 flex items-center justify-between ${
+              className={`p-4 rounded-xl border transition-colors duration-200 flex items-center justify-between ${
                 isAvailable
                   ? item.isCurrent
                     ? 'bg-[#161b22] border-blue-500/70 hover:border-blue-400 cursor-pointer shadow-sm ring-1 ring-blue-500/30'

@@ -1,3 +1,5 @@
+import { Tabs, TabsList, TabsTrigger, TabsHighlight, TabsHighlightItem, TabsContents, TabsContent } from '@animate-ui/react/primitives/tabs';
+import { Button as AnimatedButton } from '@animate-ui/react/primitives/buttons/button';
 import React, { useState, useMemo } from 'react';
 import {
   ChevronLeft,
@@ -18,6 +20,7 @@ import {
 } from 'lucide-react';
 import { GrammarItem, UserProfile } from '../../types';
 import JlptMascot from './JlptMascot';
+import JapaneseFuriganaText from '../JapaneseFuriganaText';
 import { speakJapanese, playCorrectSound, playIncorrectSound } from '../../utils/audio';
 import {
   generateVietToJapExercises,
@@ -31,6 +34,8 @@ import {
 import { safeFetchJson } from '../../utils/safeApi';
 
 interface GrammarPracticeViewProps {
+  showFurigana?: boolean;
+  onToggleFurigana?: () => void;
   grammar: GrammarItem;
   aiContent?: any;
   userProfile: UserProfile;
@@ -43,6 +48,8 @@ type PracticeTab = 'viet-to-jap' | 'jap-to-viet' | 'ordering';
 
 export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
   grammar,
+  showFurigana = false,
+  onToggleFurigana,
   aiContent,
   userProfile,
   onBackToDetail,
@@ -323,16 +330,17 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 animate-fadeIn font-sans text-slate-100">
+    <Tabs value={activeTab} onValueChange={value => setActiveTab(value as PracticeTab)} className="grammar-exercise-page w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 animate-fadeIn font-sans text-slate-100">
+      {onToggleFurigana && <AnimatedButton type="button" onClick={onToggleFurigana} aria-pressed={showFurigana} className="grammar-exercise-furigana">{showFurigana ? <Eye size={14} /> : <EyeOff size={14} />} Furigana</AnimatedButton>}
       {/* Top Bar Navigation */}
-      <button
+      <AnimatedButton
         type="button"
         onClick={onBackToDetail}
         className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-blue-400 hover:text-blue-300 font-medium mb-2 cursor-pointer transition-colors"
       >
         <ChevronLeft className="w-4 h-4" />
         <span>Quay lại mẫu ngữ pháp</span>
-      </button>
+      </AnimatedButton>
 
       <div className="text-xs text-slate-400 mb-2">
         第{grammar.lessonNumber || 26}課 – Bài {grammar.lessonNumber || 26}
@@ -352,60 +360,26 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
       </div>
 
       <p className="text-xs text-slate-400 mb-3">
-        Bài tập gồm 10 câu Việt → Nhật, 10 câu Nhật → Việt và 10 câu sắp xếp ★ tập trung vào mẫu này.
+        Bài tập gồm {vietToJapItems.length} câu Việt → Nhật, {japToVietItems.length} câu Nhật → Việt và {orderingItems.length} câu sắp xếp ★ tập trung vào mẫu này.
       </p>
 
       {/* Answered counter badge */}
       <div className="mb-5">
         <span className="inline-flex items-center px-3 py-1 rounded-md bg-[#21262d] border border-[#30363d] text-xs text-slate-300">
-          Đã trả lời {activeTab === 'viet-to-jap' ? totalAnsweredV2j : activeTab === 'jap-to-viet' ? totalAnsweredJ2v : totalAnsweredOrd}/10 câu
+          Đã trả lời {activeTab === 'viet-to-jap' ? totalAnsweredV2j : activeTab === 'jap-to-viet' ? totalAnsweredJ2v : totalAnsweredOrd}/{activeTab === 'viet-to-jap' ? vietToJapItems.length : activeTab === 'jap-to-viet' ? japToVietItems.length : orderingItems.length} câu
         </span>
       </div>
 
-      {/* 3 Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#30363d] mb-6 overflow-x-auto pb-1">
-        <button
-          type="button"
-          onClick={() => setActiveTab('viet-to-jap')}
-          className={`px-4 py-2.5 text-xs sm:text-sm font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
-            activeTab === 'viet-to-jap'
-              ? 'border-blue-500 text-blue-400 bg-blue-950/20'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <ArrowRightLeft className="w-4 h-4" />
-          <span>Việt → Nhật 10</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('jap-to-viet')}
-          className={`px-4 py-2.5 text-xs sm:text-sm font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
-            activeTab === 'jap-to-viet'
-              ? 'border-blue-500 text-blue-400 bg-blue-950/20'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Languages className="w-4 h-4" />
-          <span>Nhật → Việt 10</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab('ordering')}
-          className={`px-4 py-2.5 text-xs sm:text-sm font-medium border-b-2 transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 ${
-            activeTab === 'ordering'
-              ? 'border-blue-500 text-blue-400 bg-blue-950/20'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Star className="w-4 h-4 text-amber-400 fill-amber-400/20" />
-          <span>Sắp xếp ★ 10</span>
-        </button>
-      </div>
-
+      <TabsHighlight mode="parent" className="grammar-tab-surface">
+        <TabsList className="grammar-exercise-tabs flex items-center border-b border-[#30363d] mb-6 overflow-x-auto pb-1" aria-label="Dạng bài tập ngữ pháp">
+          <TabsHighlightItem value="viet-to-jap" asChild><TabsTrigger value="viet-to-jap" className="grammar-animated-tab"><ArrowRightLeft size={16} /><span>Việt → Nhật <small>{vietToJapItems.length}</small></span></TabsTrigger></TabsHighlightItem>
+          <TabsHighlightItem value="jap-to-viet" asChild><TabsTrigger value="jap-to-viet" className="grammar-animated-tab"><Languages size={16} /><span>Nhật → Việt <small>{japToVietItems.length}</small></span></TabsTrigger></TabsHighlightItem>
+          <TabsHighlightItem value="ordering" asChild><TabsTrigger value="ordering" className="grammar-animated-tab"><Star size={16} /><span>Sắp xếp ★ <small>{orderingItems.length}</small></span></TabsTrigger></TabsHighlightItem>
+        </TabsList>
+      </TabsHighlight>
+      <TabsContents>
       {/* TAB 1: VIỆT → NHẬT */}
-      {activeTab === 'viet-to-jap' && (
+      <TabsContent value="viet-to-jap">
         <div className="space-y-6">
           <div className="p-3 bg-[#161b22] border border-[#30363d] rounded-lg text-xs text-slate-300">
             Đọc câu tiếng Việt, gõ bản dịch tiếng Nhật vào ô bên dưới. Nhấn <strong>"Kiểm tra"</strong> để so với đáp án mẫu, hoặc <strong>"AI đánh giá"</strong> để Gemini chấm điểm + góp ý.
@@ -431,14 +405,14 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
 
                 {/* Hint toggle */}
                 <div className="mb-3">
-                  <button
+                  <AnimatedButton
                     type="button"
                     onClick={() => setV2jHints(prev => ({ ...prev, [item.id]: !isHintOpen }))}
                     className="text-xs text-amber-400/90 hover:text-amber-300 flex items-center gap-1 cursor-pointer"
                   >
                     <Lightbulb className="w-3.5 h-3.5" />
                     <span>{isHintOpen ? 'Ẩn gợi ý' : 'Hiện gợi ý'}</span>
-                  </button>
+                  </AnimatedButton>
                   {isHintOpen && (
                     <div className="mt-1.5 p-2.5 bg-[#0d1117] rounded border border-amber-500/30 text-xs text-amber-200">
                       {item.hint}
@@ -452,17 +426,18 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                     BẢN DỊCH CỦA BẠN (日本語)
                   </label>
                   <textarea
+                    aria-label={`Bản dịch tiếng Nhật câu ${idx + 1}`}
                     value={v2jInputs[item.id] || ''}
                     onChange={(e) => setV2jInputs(prev => ({ ...prev, [item.id]: e.target.value }))}
                     rows={2}
                     placeholder="Gõ bản dịch tiếng Nhật ở đây..."
-                    className="w-full px-3.5 py-2 bg-[#0d1117] border border-[#30363d] rounded-lg text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-japanese transition-all"
+                    className="w-full px-3.5 py-2 bg-[#0d1117] border border-[#30363d] rounded-lg text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-japanese transition-colors"
                   />
                 </div>
 
                 {/* Buttons */}
                 <div className="flex flex-wrap items-center gap-2">
-                  <button
+                  <AnimatedButton
                     type="button"
                     onClick={() => handleV2jCheck(item)}
                     disabled={!v2jInputs[item.id]?.trim()}
@@ -470,9 +445,9 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                   >
                     <Check className="w-3.5 h-3.5" />
                     <span>Kiểm tra</span>
-                  </button>
+                  </AnimatedButton>
 
-                  <button
+                  <AnimatedButton
                     type="button"
                     onClick={() => handleV2jAiEvaluate(item)}
                     disabled={!v2jInputs[item.id]?.trim() || checkInfo?.isLoadingAi}
@@ -484,9 +459,9 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                       <GraduationCap className="w-3.5 h-3.5 text-purple-400" />
                     )}
                     <span>Chấm điểm nhận xét</span>
-                  </button>
+                  </AnimatedButton>
 
-                  <button
+                  <AnimatedButton
                     type="button"
                     onClick={() => {
                       setV2jChecked(prev => ({
@@ -501,7 +476,7 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                   >
                     <Eye className="w-3.5 h-3.5" />
                     <span>{checkInfo?.showAnswer ? 'Ẩn đáp án' : 'Xem đáp án'}</span>
-                  </button>
+                  </AnimatedButton>
                 </div>
 
                 {/* Feedback / Result */}
@@ -524,14 +499,14 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                     <div className="p-3 bg-[#0d1117] rounded-lg border border-[#21262d]">
                       <div className="text-xs text-slate-400 mb-1">Đáp án mẫu:</div>
                       <div className="text-sm font-bold text-white font-japanese flex items-center justify-between">
-                        <span>{item.japanese}</span>
-                        <button
+                        <span><JapaneseFuriganaText sentence={item.japanese} showFurigana={showFurigana} size="base" /></span>
+                        <AnimatedButton
                           type="button"
                           onClick={() => speakJapanese(item.japanese)}
                           className="p-1 text-slate-400 hover:text-white"
                         >
                           <Volume2 className="w-4 h-4" />
-                        </button>
+                        </AnimatedButton>
                       </div>
                       <div className="text-xs text-slate-400 mt-1">
                         {item.grammarNote}
@@ -592,10 +567,10 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
             );
           })}
         </div>
-      )}
+      </TabsContent>
 
       {/* TAB 2: NHẬT → VIỆT */}
-      {activeTab === 'jap-to-viet' && (
+      <TabsContent value="jap-to-viet">
         <div className="space-y-6">
           <div className="p-3 bg-[#161b22] border border-[#30363d] rounded-lg text-xs text-slate-300">
             Đọc câu tiếng Nhật, gõ bản dịch tiếng Việt vào ô bên dưới. Nhấn <strong>"Kiểm tra"</strong> để so với đáp án mẫu.
@@ -615,14 +590,14 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                   TIẾNG NHẬT
                 </div>
                 <div className="text-base sm:text-lg font-bold text-white mb-3 font-japanese flex items-center justify-between gap-3">
-                  <span>{item.japanese}</span>
-                  <button
+                  <span><JapaneseFuriganaText sentence={item.japanese} showFurigana={showFurigana} size="base" /></span>
+                  <AnimatedButton
                     type="button"
                     onClick={() => speakJapanese(item.japanese)}
                     className="p-1.5 rounded-lg bg-[#21262d] hover:bg-[#30363d] text-slate-300 hover:text-white transition-colors shrink-0"
                   >
                     <Volume2 className="w-4 h-4" />
-                  </button>
+                  </AnimatedButton>
                 </div>
 
                 {/* Input area */}
@@ -631,17 +606,18 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                     BẢN DỊCH CỦA BẠN (TIẾNG VIỆT)
                   </label>
                   <textarea
+                    aria-label={`Bản dịch tiếng Việt câu ${idx + 1}`}
                     value={j2vInputs[item.id] || ''}
                     onChange={(e) => setJ2vInputs(prev => ({ ...prev, [item.id]: e.target.value }))}
                     rows={2}
                     placeholder="Gõ bản dịch tiếng Việt ở đây..."
-                    className="w-full px-3.5 py-2 bg-[#0d1117] border border-[#30363d] rounded-lg text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                    className="w-full px-3.5 py-2 bg-[#0d1117] border border-[#30363d] rounded-lg text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                   />
                 </div>
 
                 {/* Buttons */}
                 <div className="flex flex-wrap items-center gap-2">
-                  <button
+                  <AnimatedButton
                     type="button"
                     onClick={() => handleJ2vCheck(item)}
                     disabled={!j2vInputs[item.id]?.trim()}
@@ -649,9 +625,9 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                   >
                     <Check className="w-3.5 h-3.5" />
                     <span>Kiểm tra</span>
-                  </button>
+                  </AnimatedButton>
 
-                  <button
+                  <AnimatedButton
                     type="button"
                     onClick={() => handleJ2vAiEvaluate(item)}
                     disabled={!j2vInputs[item.id]?.trim() || checkInfo?.isLoadingAi}
@@ -663,9 +639,9 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                       <GraduationCap className="w-3.5 h-3.5 text-purple-400" />
                     )}
                     <span>Chấm điểm nhận xét</span>
-                  </button>
+                  </AnimatedButton>
 
-                  <button
+                  <AnimatedButton
                     type="button"
                     onClick={() => {
                       setJ2vChecked(prev => ({
@@ -680,7 +656,7 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                   >
                     <Eye className="w-3.5 h-3.5" />
                     <span>{checkInfo?.showAnswer ? 'Ẩn đáp án' : 'Xem đáp án'}</span>
-                  </button>
+                  </AnimatedButton>
                 </div>
 
                 {/* Feedback */}
@@ -752,10 +728,10 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
             );
           })}
         </div>
-      )}
+      </TabsContent>
 
       {/* TAB 3: SẮP XẾP CÂU ★ (Image 6) */}
-      {activeTab === 'ordering' && (
+      <TabsContent value="ordering">
         <div className="space-y-6">
           {orderingItems.length === 0 && (
             <p className="rounded-2xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">Mẫu ngữ pháp này chưa có bài sắp xếp câu ★. Hãy thử các tab khác.</p>
@@ -799,14 +775,14 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                         {!isStar && <div className="h-4" />}
 
                         {/* Slot Box */}
-                        <button
+                        <AnimatedButton
                           type="button"
                           onClick={() => {
                             if (filledOption) {
                               handleOrderingRemoveSlot(item.id, slotIdx);
                             }
                           }}
-                          className={`min-w-[70px] sm:min-w-[90px] h-12 px-3 rounded-lg border flex items-center justify-center font-japanese text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                          className={`min-w-[70px] sm:min-w-[90px] h-12 px-3 rounded-lg border flex items-center justify-center font-japanese text-xs sm:text-sm font-bold transition-colors cursor-pointer ${
                             isStar
                               ? 'border-amber-500/80 bg-amber-950/20 text-amber-300'
                               : 'border-dashed border-slate-600 bg-[#0d1117] text-white'
@@ -815,7 +791,7 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                           }`}
                         >
                           {filledOption ? filledOption.text : ''}
-                        </button>
+                        </AnimatedButton>
                       </div>
                     );
                   })}
@@ -828,12 +804,12 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                     const isSelected = currentSlots.includes(opt.id);
 
                     return (
-                      <button
+                      <AnimatedButton
                         key={opt.id}
                         type="button"
                         disabled={isSelected}
                         onClick={() => handleOrderingSelectOption(item.id, opt.id)}
-                        className={`p-3 rounded-lg border text-left flex items-center gap-3 transition-all cursor-pointer ${
+                        className={`p-3 rounded-lg border text-left flex items-center gap-3 transition-colors cursor-pointer ${
                           isSelected
                             ? 'bg-[#12161c] border-[#252b33] text-slate-600 cursor-not-allowed opacity-50'
                             : 'bg-[#0d1117] hover:bg-[#21262d] border-[#30363d] hover:border-slate-500 text-slate-200'
@@ -845,23 +821,23 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                         <span className="font-japanese font-bold text-sm text-white">
                           {opt.text}
                         </span>
-                      </button>
+                      </AnimatedButton>
                     );
                   })}
                 </div>
 
                 {/* Controls */}
                 <div className="flex items-center justify-between pt-2">
-                  <button
+                  <AnimatedButton
                     type="button"
                     onClick={() => handleOrderingReset(item.id)}
                     className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-200 cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Reset</span>
-                  </button>
+                  </AnimatedButton>
 
-                  <button
+                  <AnimatedButton
                     type="button"
                     onClick={() => handleOrderingCheck(item)}
                     disabled={!isFull}
@@ -869,7 +845,7 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                   >
                     <Check className="w-3.5 h-3.5" />
                     <span>Kiểm tra</span>
-                  </button>
+                  </AnimatedButton>
                 </div>
 
                 {/* Checked result */}
@@ -893,13 +869,13 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
                       <div className="text-xs text-slate-400 mb-1">Câu hoàn chỉnh:</div>
                       <div className="text-sm font-bold text-white font-japanese flex items-center justify-between">
                         <span>{item.correctSentence}</span>
-                        <button
+                        <AnimatedButton
                           type="button"
                           onClick={() => speakJapanese(item.correctSentence)}
                           className="p-1 text-slate-400 hover:text-white"
                         >
                           <Volume2 className="w-4 h-4" />
-                        </button>
+                        </AnimatedButton>
                       </div>
                       <div className="text-xs text-cyan-300 mt-1">
                         {item.explanation}
@@ -911,8 +887,9 @@ export const GrammarPracticeView: React.FC<GrammarPracticeViewProps> = ({
             );
           })}
         </div>
-      )}
-    </div>
+      </TabsContent>
+      </TabsContents>
+    </Tabs>
   );
 };
 

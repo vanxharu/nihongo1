@@ -4,12 +4,15 @@ import { GRAMMAR_DATA } from '../data';
 import { safeFetchJson } from '../utils/safeApi';
 import { deduplicateGrammars, getGrammarStatusWithAliases } from '../utils/grammarDeduplicator';
 import GrammarMindmapOverview from './grammar/GrammarMindmapOverview';
-import GrammarMasterDetail from './grammar/GrammarMasterDetail';
+import './grammar/grammarLayout.css';
 import GrammarLessonListView from './grammar/GrammarLessonListView';
 import GrammarLessonDetailView from './grammar/GrammarLessonDetailView';
 import GrammarPointDetailView from './grammar/GrammarPointDetailView';
 import GrammarPracticeView from './grammar/GrammarPracticeView';
 import fallbackAiContents from '../data/grammarAiContents.json';
+import { FALLBACK_PATTERNS } from './grammarData';
+
+const LOCAL_GRAMMARS: GrammarItem[] = GRAMMAR_DATA.length ? GRAMMAR_DATA : Object.entries(FALLBACK_PATTERNS).flatMap(([level, lessons]) => Object.entries(lessons).flatMap(([lesson, patterns]) => patterns.map((pattern, index) => ({ ...pattern, id: `local_${level}_${lesson}_${index}`, level: level as JLPTLevel, lessonNumber: Number(lesson), lessonName: `Bài ${lesson}` }))));
 
 interface GrammarPracticeProps {
   onStudyReward?: (activity: string, amount: number) => boolean;
@@ -32,15 +35,8 @@ export default function GrammarPractice({
   initialLessonNumber
 }: GrammarPracticeProps) {
   // Navigation state - Show TheoryHubView (overview) by default
-  const [isDesktop, setIsDesktop] = useState(() => window.matchMedia('(min-width: 1024px)').matches);
-  useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)');
-    const on = () => setIsDesktop(mq.matches);
-    mq.addEventListener('change', on);
-    return () => mq.removeEventListener('change', on);
-  }, []);
   const [viewMode, setViewMode] = useState<GrammarViewMode>(initialViewMode === 'overview' ? 'lesson-list' : initialViewMode);
-  const [selectedLevel, setSelectedLevel] = useState<JLPTLevel>((userProfile.targetLevel as JLPTLevel) || 'N4');
+  const [selectedLevel, setSelectedLevel] = useState<JLPTLevel>(initialLessonNumber ? (initialLessonNumber >= 26 ? 'N4' : 'N5') : (userProfile.targetLevel as JLPTLevel) || 'N4');
   const [selectedLessonNumber, setSelectedLessonNumber] = useState<number>(
     initialLessonNumber || (userProfile.targetLevel === 'N5' ? 1 : 26)
   );
@@ -66,6 +62,7 @@ export default function GrammarPractice({
   useEffect(() => {
     if (initialLessonNumber) {
       setSelectedLessonNumber(initialLessonNumber);
+      setSelectedLevel(initialLessonNumber >= 26 ? 'N4' : 'N5');
     }
   }, [initialLessonNumber]);
 
@@ -84,7 +81,7 @@ export default function GrammarPractice({
   };
 
   // Grammars data state
-  const [grammars, setGrammars] = useState<GrammarItem[]>(() => deduplicateGrammars(GRAMMAR_DATA));
+  const [grammars, setGrammars] = useState<GrammarItem[]>(() => deduplicateGrammars(LOCAL_GRAMMARS));
   const [aiContents, setAiContents] = useState<Record<string, any>>(fallbackAiContents as Record<string, any>);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -304,39 +301,9 @@ export default function GrammarPractice({
   }, [grammars, selectedLevel, selectedLessonNumber]);
 
   return (
-    <div className="min-h-screen bg-[#0f1217] bg-[radial-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:24px_24px] text-slate-100 selection:bg-blue-600 selection:text-white pb-16">
+    <div className="grammar-reference-layout min-h-screen bg-[#0f1217] bg-[radial-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:24px_24px] text-slate-100 selection:bg-blue-600 selection:text-white pb-16">
       {/* 2. LESSON LIST SCREEN (Screen 2) */}
-      {isDesktop && (viewMode === 'lesson-list' || viewMode === 'lesson-detail' || viewMode === 'grammar-detail') ? (
-        <GrammarMasterDetail
-          level={selectedLevel}
-          userProfile={userProfile}
-          grammars={grammars}
-          lessonNumber={selectedLessonNumber}
-          selectedGrammar={selectedGrammar}
-          onBack={() => onNavigateTab?.('practice')}
-          onSelectLesson={setSelectedLessonNumber}
-          onSelectGrammar={setSelectedGrammar}
-          onPractice={(g) => { setSelectedGrammar(g); setViewMode('practice'); }}
-          detail={selectedGrammar && (
-            <GrammarPointDetailView embedded onCompleteReading={() => onStudyReward?.(`grammar-reading:${selectedGrammar.id}`, 5) ?? false}
-              grammar={selectedGrammar}
-              aiContent={currentAiContent}
-              allGrammarsInLesson={allGrammarsInCurrentLesson}
-              userProfile={userProfile}
-              showFurigana={showFurigana}
-              onToggleFurigana={toggleFurigana}
-              onBackToLesson={() => {}}
-              onStartPractice={() => setViewMode('practice')}
-              onSelectRelatedGrammar={setSelectedGrammar}
-              onSelectNextGrammar={setSelectedGrammar}
-              onToggleBookmark={handleToggleBookmark}
-              onToggleSrsReview={handleToggleSrsReview}
-            />
-          )}
-        />
-      ) : null}
-
-      {!isDesktop && viewMode === 'lesson-list' && (
+      {viewMode === 'lesson-list' && (
         <GrammarLessonListView
           level={selectedLevel}
           userProfile={userProfile}
@@ -350,7 +317,7 @@ export default function GrammarPractice({
       )}
 
       {/* 3. LESSON DETAIL SCREEN (Screen 3) */}
-      {!isDesktop && viewMode === 'lesson-detail' && (
+      {viewMode === 'lesson-detail' && (
         <GrammarLessonDetailView
           level={selectedLevel}
           lessonNumber={selectedLessonNumber}
@@ -374,7 +341,7 @@ export default function GrammarPractice({
       )}
 
       {/* 4. GRAMMAR POINT DETAIL SCREEN (Screen 4) */}
-      {!isDesktop && viewMode === 'grammar-detail' && selectedGrammar && (
+      {viewMode === 'grammar-detail' && selectedGrammar && (
         <GrammarPointDetailView onCompleteReading={() => onStudyReward?.(`grammar-reading:${selectedGrammar.id}`, 5) ?? false}
           grammar={selectedGrammar}
           aiContent={currentAiContent}
@@ -398,6 +365,9 @@ export default function GrammarPractice({
       {/* 5. PRACTICE SCREEN (Screen 5 & 6) */}
       {viewMode === 'practice' && selectedGrammar && (
         <GrammarPracticeView
+          key={selectedGrammar.id}
+          showFurigana={showFurigana}
+          onToggleFurigana={toggleFurigana}
           grammar={selectedGrammar}
           aiContent={currentAiContent}
           userProfile={userProfile}

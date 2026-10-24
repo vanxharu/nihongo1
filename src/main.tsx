@@ -7,6 +7,8 @@ import './index.css';
 import './brandTheme.css';
 import './brandUtilities.css';
 import './responsive.css';
+import { AnimateUIProvider } from '@animate-ui/react/provider';
+import { ReducedMotionConfig } from '@animate-ui/react/utils/motion';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { getDefaultReminderSettings, syncRemindersWithServiceWorker } from './utils/notifications';
@@ -25,7 +27,7 @@ createRoot(document.getElementById('root')!).render(
     <AppErrorBoundary fallbackTitle="Trang học chưa tải được">
     <BrowserRouter>
       <ThemeProvider><AuthProvider>
-        <App />
+        <AnimateUIProvider tempo={1}><ReducedMotionConfig><App /></ReducedMotionConfig></AnimateUIProvider>
         <StartupReady />
       </AuthProvider></ThemeProvider>
     </BrowserRouter>

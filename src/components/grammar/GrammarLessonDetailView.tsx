@@ -1,3 +1,5 @@
+import { ExpressiveReveal } from '../ui/ExpressiveReveal';
+import { Button as AnimatedButton } from '@animate-ui/react/primitives/buttons/button';
 import React, { useMemo } from 'react';
 import { ChevronLeft, ChevronRight, PenTool, Eye, EyeOff } from 'lucide-react';
 import { JLPTLevel, UserProfile, GrammarItem } from '../../types';
@@ -55,27 +57,27 @@ export const GrammarLessonDetailView: React.FC<GrammarLessonDetailViewProps> = (
   }, [rawLessonGrammars]);
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 animate-fadeIn font-sans text-slate-100">
+    <div className="grammar-lesson-page w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 animate-fadeIn font-sans text-slate-100">
       {/* Top Bar: Back button & Next Lesson button */}
       <div className="flex items-center justify-between gap-2 mb-4">
-        <button
+        <AnimatedButton
           type="button"
           onClick={onBackToLessonList}
           className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-blue-400 hover:text-blue-300 font-medium cursor-pointer transition-colors"
         >
           <ChevronLeft className="w-4 h-4" />
           <span>Quay lại</span>
-        </button>
+        </AnimatedButton>
 
         {hasNextLesson && onSelectNextLesson && (
-          <button
+          <AnimatedButton
             type="button"
             onClick={() => onSelectNextLesson(nextLessonNumber)}
             className="inline-flex items-center gap-1 text-xs sm:text-sm text-blue-400 hover:text-blue-300 font-medium cursor-pointer transition-colors truncate max-w-[240px] sm:max-w-none"
           >
             <span>Bài {nextLessonNumber} · {nextLessonTheme}</span>
             <ChevronRight className="w-4 h-4 shrink-0" />
-          </button>
+          </AnimatedButton>
         )}
       </div>
 
@@ -92,10 +94,10 @@ export const GrammarLessonDetailView: React.FC<GrammarLessonDetailViewProps> = (
         </div>
 
         {/* Furigana Toggle Button */}
-        <button
+        <AnimatedButton
           type="button"
           onClick={onToggleFurigana}
-          className={`px-3 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-2 transition-all cursor-pointer shadow-sm self-start sm:self-auto ${
+          className={`px-3 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-2 transition-colors cursor-pointer shadow-sm self-start sm:self-auto ${
             showFurigana
               ? 'bg-purple-950/70 border-purple-600/60 text-purple-200'
               : 'bg-[#161b22] border-[#30363d] text-slate-400 hover:text-slate-200'
@@ -103,7 +105,7 @@ export const GrammarLessonDetailView: React.FC<GrammarLessonDetailViewProps> = (
         >
           {showFurigana ? <Eye className="w-3.5 h-3.5 text-purple-400" /> : <EyeOff className="w-3.5 h-3.5" />}
           <span>Furigana</span>
-        </button>
+        </AnimatedButton>
       </div>
 
       {/* 2-Column Grid of Grammar Cards */}
@@ -111,39 +113,39 @@ export const GrammarLessonDetailView: React.FC<GrammarLessonDetailViewProps> = (
         <p className="text-sm text-slate-400 py-10 text-center">Bài này chưa có mẫu ngữ pháp.</p>
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-        {lessonGrammars.map((grammar) => {
+        {lessonGrammars.map((grammar, index) => {
           return (
-            <div
+            <ExpressiveReveal key={grammar.id} index={index}><div
               key={grammar.id}
-              onClick={() => onSelectGrammar(grammar)}
-              className="p-4 rounded-xl bg-[#161b22] hover:bg-[#1c2128] border border-[#30363d] hover:border-blue-500/60 transition-all duration-200 cursor-pointer shadow-sm group flex items-center justify-between gap-3"
+              className="grammar-pattern-card rounded-xl bg-[#161b22] border border-[#30363d] shadow-sm group flex items-center justify-between gap-3"
             >
               {/* Left: Structure & Meaning */}
-              <div className="min-w-0 flex-1">
+              <AnimatedButton type="button" onClick={() => onSelectGrammar(grammar)} className="grammar-pattern-open min-w-0 flex-1 text-left p-4">
                 <div className="text-base font-bold text-white group-hover:text-blue-300 transition-colors font-japanese tracking-tight truncate">
                   {grammar.structure}
                 </div>
                 <div className="text-xs text-slate-400 truncate mt-1">
                   {grammar.meaning}
                 </div>
-              </div>
+              </AnimatedButton>
 
               {/* Right: Chevron & Practice Button */}
               <div className="flex items-center gap-2 shrink-0">
                 <ChevronRight className="w-4 h-4 text-slate-500 group-hover:text-slate-300 transition-colors" />
-                <button
+                <AnimatedButton
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     onStartPractice(grammar);
                   }}
                   title="Luyện tập ngữ pháp này"
+                  aria-label={`Luyện tập: ${grammar.structure}`}
                   className="w-8 h-8 rounded-lg bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center transition-colors shadow-sm cursor-pointer"
                 >
                   <PenTool className="w-4 h-4" />
-                </button>
+                </AnimatedButton>
               </div>
-            </div>
+            </div></ExpressiveReveal>
           );
         })}
       </div>

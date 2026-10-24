@@ -15,6 +15,7 @@ import { parseShadowingAnalysisFile, type ShadowingAnalysisFile } from '../../ut
 import { auth } from '../../lib/firebase';
 import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings, visibleShadowingCue, parsePreparedShadowingCaptions } from '../../utils/shadowing';
 import './shadowing.css';
+import ShadowingLibrary from './ShadowingLibrary';
 
 const field = 'w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 focus:border-amber-400 focus:outline-none';
 const compactButton = 'inline-flex min-h-8 items-center justify-center gap-1.5 rounded-lg bg-slate-800 px-3 text-xs font-semibold hover:bg-slate-700 disabled:opacity-40';
@@ -247,20 +248,8 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
   const sources = [...new Set(library.map(v => v.source))];
   const sourceTitle = customTitle || SHADOWING_VIDEOS.find(v => v.youtube_video_id === videoId)?.title;
   return <div className="shadowing-page mx-auto max-w-7xl space-y-3 px-3 py-3 pb-28 text-slate-100 sm:px-6">
-    {!videoId && <header className="shadowing-banner flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl p-3">
-      <form className="flex min-w-0 flex-1 flex-wrap gap-2 sm:flex-nowrap" onSubmit={e => { e.preventDefault(); chooseVideo(urlInput); }}>
-        <label className="sr-only" htmlFor="shadowing-youtube">Đường dẫn video YouTube</label>
-        <input id="shadowing-youtube" className={`${field} basis-full sm:basis-auto`} value={urlInput} onChange={e => setUrlInput(e.target.value)} placeholder="Dán link YouTube hoặc ID video…" />
-        <button className={`${button} shrink-0 bg-amber-400 text-slate-950 hover:bg-amber-300`}><Link2 size={16} />Mở video</button>
-        <button type="button" className={`${button} shrink-0`} onClick={() => chooseVideo(urlInput, true)}>Soạn phụ đề</button>
-      </form>
-    </header>}
     {notice && <p role="status" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">{notice}</p>}
-    {!videoId ? <section className="space-y-3">
-      {sources.length > 1 && <nav aria-label="Nguồn video" className="flex gap-2 overflow-x-auto border-b border-slate-500/30 pb-3">{['Tất cả', ...sources].map(source => <button key={source} onClick={() => setCategory(source)} className={`shrink-0 rounded-lg px-3 py-2 text-sm ${category === source ? 'bg-violet-500 text-white' : 'bg-slate-950/40 text-slate-300'}`}>{source}</button>)}</nav>}
-      {personalVideos.length > 0 && <section><h3 className="mb-3 font-bold">Video của tôi</h3><div className="grid gap-3 sm:grid-cols-2">{personalVideos.map(v => <button className={button} key={v.videoId} onClick={() => chooseVideo(v.videoId)}>{v.title} · {v.cueCount} câu</button>)}</div></section>}
-      {sources.filter(source => category === 'Tất cả' || category === source).map(source => <section key={source}><div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6">{library.filter(v => v.source === source).map(v => <button key={v.id} onClick={() => chooseVideo(v.youtube_video_id)} className="overflow-hidden rounded-xl bg-slate-950/40 text-left hover:ring-2 hover:ring-violet-400"><div className="relative"><img src={v.thumbnail} alt="" referrerPolicy="no-referrer" onError={e => { const t = e.currentTarget; if (!t.dataset.f) { t.dataset.f = "1"; t.src = `https://i.ytimg.com/vi/${v.youtube_video_id}/mqdefault.jpg`; } }} className="aspect-video w-full bg-slate-800 object-cover" /><span className="absolute bottom-2 right-2 rounded bg-black/80 px-1 text-xs">{v.duration}</span></div><div className="p-3"><h4 className="line-clamp-2 text-sm font-bold">{v.title}</h4></div></button>)}</div></section>)}
-    </section> : <>
+    {!videoId ? <ShadowingLibrary videos={library} personalVideos={personalVideos} onOpen={chooseVideo} onMode={setMode} /> : <>
       <div className="flex flex-col gap-2 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="max-lg:contents lg:space-y-4">
           {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} revision={analysisRevision} time={currentTime} furigana={furigana} showTranslation={translation} /></div>}

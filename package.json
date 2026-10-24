@@ -17,6 +17,7 @@
     "import:shadowing": "tsx scripts/import-shadowing.ts"
   },
   "dependencies": {
+    "@animate-ui/react": "^2.2.1",
     "@google/genai": "^2.4.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
@@ -35,7 +36,7 @@
     "kuroshiro-analyzer-kuromoji": "^1.1.0",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.546.0",
-    "motion": "^12.23.24",
+    "motion": "^14.6.0",
     "openai": "^7.10.0",
     "pdfjs-dist": "3.11.174",
     "react": "^19.0.1",
