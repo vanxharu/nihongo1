@@ -10,7 +10,7 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { GoogleGenAI, Type } from "@google/genai";
 import OpenAI from "openai";
-import { callLLM, generateGemini, getGeminiClient, getLlmConfig, userLlmMiddleware, DEFAULT_GEMINI_MODEL } from "./src/server/llm.js";
+import { callLLM, callLLMWithInfo, generateGemini, getGeminiClient, getLlmConfig, userLlmMiddleware, DEFAULT_GEMINI_MODEL } from "./src/server/llm.js";
 import Kuroshiro from 'kuroshiro';
 import KuromojiAnalyzer from 'kuroshiro-analyzer-kuromoji';
 // hanviet-pinyin-words is ESM-only; use dynamic import so CJS bundling doesn't break
@@ -2700,14 +2700,15 @@ ${conversationHistory}
     // Return an explicit non-2xx response so the client can let the learner retry.
     let chatData: any;
     try {
-      const result = await callLLM({ prompt, systemInstruction, json: true });
-      chatData = JSON.parse(result);
+      const result = await callLLMWithInfo({ prompt, systemInstruction, json: true });
+      chatData = JSON.parse(result.text);
       if (!chatData || typeof chatData !== 'object' ||
           typeof chatData.japaneseResponse !== 'string' ||
           !chatData.japaneseResponse.trim()) {
         throw new Error('INVALID_AI_RESPONSE');
       }
-      chatData.provider = 'AI (live model)';
+      // Verified source of this reply; do not trust provider fields invented by the model.
+      chatData.provider = result.modelUsed;
     } catch (aiErr: any) {
       const detail = String(aiErr?.message || aiErr);
       // Keep provider errors in server logs; do not send API keys or upstream
