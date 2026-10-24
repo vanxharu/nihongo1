@@ -34,42 +34,86 @@ export function getGeminiClient(apiKey = getLlmConfig().apiKey): GoogleGenAI {
 }
 
 // generateContent với tự chuyển model khi quá tải (503/429/404). Model người dùng chọn được thử trước.
+// Groq retired llama-3.3-70b-versatile for public API users on 2026-08-16.
+// GPT-OSS 120B and 20B are supported replacement model IDs.
+const GROQ_PRIMARY_MODEL = 'openai/gpt-oss-120b';
+const GROQ_BACKUP_MODEL = 'openai/gpt-oss-20b';
+const GROQ_TIMEOUT_MS = 14000;
+const GEMINI_TIMEOUT_MS = 11000;
+
+// A finite time budget is essential on Vercel (60s serverless limit).
+async function withLlmTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_, reject) => {
+        timer = setTimeout(() => reject(new Error('AI_PROVIDER_TIMEOUT')), ms);
+      })
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
 export async function generateGemini(options: { contents: any; model?: string; config?: any; apiKey?: string }) {
-  // Prefer the server-side Groq model when available. If it fails, try
-  // another genuinely configured model rather than fabricating a reply.
+  const userKey = options.apiKey || perRequest.getStore()?.apiKey;
   const groqKey = process.env.GROQ_API_KEY;
-  const hasUserGeminiKey = Boolean(options.apiKey || perRequest.getStore()?.apiKey);
-  if (groqKey && !hasUserGeminiKey) {
-    try {
-      const model = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: { Authorization: 'Bearer ' + groqKey, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model,
-          temperature: 0.1,
-          max_completion_tokens: Math.min(options.config?.maxOutputTokens || 4096, 8192),
-          ...(options.config?.responseMimeType === 'application/json' ? { response_format: { type: 'json_object' } } : {}),
-          messages: [
-            ...(options.config?.systemInstruction ? [{ role: 'system', content: String(options.config.systemInstruction) }] : []),
-            { role: 'user', content: typeof options.contents === 'string' ? options.contents : JSON.stringify(options.contents) },
-          ],
-        }),
-        signal: AbortSignal.timeout(55000),
-      });
-      const data: any = await response.json();
-      if (!response.ok) throw new Error('Groq API (' + response.status + '): ' + (data.error?.message || 'Request failed'));
-      const text = data.choices?.[0]?.message?.content;
-      if (!text || !String(text).trim()) throw new Error('Groq API returned an empty response');
-      return { text, provider: 'groq', modelUsed: model } as any;
-    } catch (err: any) {
-      console.warn('[LLM] Groq failed; checking configured backup provider:', String(err?.message || err).slice(0, 220));
-      if (!process.env.ANTHROPIC_API_KEY && !process.env.GEMINI_API_KEY) throw err;
+
+  // The server-level Groq key is tried first for visitors without a personal
+  // Gemini key. Never return a fabricated response when a provider fails.
+  if (groqKey && !userKey) {
+    const candidates = [...new Set([
+      process.env.GROQ_MODEL || GROQ_PRIMARY_MODEL,
+      GROQ_PRIMARY_MODEL,
+      GROQ_BACKUP_MODEL,
+    ])];
+    let groqError: unknown;
+    for (const model of candidates) {
+      try {
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { Authorization: 'Bearer ' + groqKey, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            temperature: 0.1,
+            max_completion_tokens: Math.min(options.config?.maxOutputTokens || 2800, 4000),
+            ...(model.startsWith('openai/gpt-oss-') ? { reasoning_effort: 'low', reasoning_format: 'hidden' } : {}),
+            ...(options.config?.responseMimeType === 'application/json' ? { response_format: { type: 'json_object' } } : {}),
+            messages: [
+              ...(options.config?.systemInstruction ? [{ role: 'system', content: String(options.config.systemInstruction) }] : []),
+              { role: 'user', content: typeof options.contents === 'string' ? options.contents : JSON.stringify(options.contents) }
+            ]
+          }),
+          signal: AbortSignal.timeout(GROQ_TIMEOUT_MS)
+        });
+        const data: any = await response.json();
+        if (!response.ok) {
+          const reason = String(data?.error?.message || response.statusText || 'Request failed');
+          const err = new Error(`Groq ${response.status}: ${reason.slice(0, 180)}`);
+          (err as any).status = response.status;
+          throw err;
+        }
+        const content = data.choices?.[0]?.message?.content;
+        if (typeof content !== 'string' || !content.trim()) throw new Error('Groq returned empty content');
+        return { text: content, provider: 'groq', modelUsed: data.model || model } as any;
+      } catch (err: any) {
+        groqError = err;
+        // Do not log secrets; record only the model and the upstream failure class.
+        const status = err?.status || (err?.name === 'TimeoutError' ? 'timeout' : 'connection');
+        console.warn('[LLM] Groq model failed:', model, status);
+        // 401 means a bad key; 429 means the account quota is exhausted.
+        // Trying another Groq model won't repair either problem.
+        if (status === 401 || status === 429) break;
+      }
+    }
+    if (!process.env.ANTHROPIC_API_KEY && !process.env.GEMINI_API_KEY) {
+      throw groqError || new Error('GROQ_UNAVAILABLE');
     }
   }
-  // Anthropic is another real provider fallback, never a simulated response.
+
   const claudeKey = process.env.ANTHROPIC_API_KEY || '';
-  if (claudeKey && !hasUserGeminiKey) {
+  if (claudeKey && !userKey) {
     try {
       const model = process.env.CLAUDE_MODEL || 'claude-sonnet-4-5';
       const system = String(options.config?.systemInstruction || '');
@@ -79,41 +123,49 @@ export async function generateGemini(options: { contents: any; model?: string; c
         headers: { 'Content-Type': 'application/json', 'x-api-key': claudeKey, 'anthropic-version': '2023-06-01' },
         body: JSON.stringify({
           model,
-          max_tokens: options.config?.maxOutputTokens || 4096,
+          max_tokens: Math.min(options.config?.maxOutputTokens || 2800, 4000),
           ...(system ? { system: system + (options.config?.responseMimeType === 'application/json' ? '\\nReturn ONLY valid JSON.' : '') } : {}),
-          messages: [{ role: 'user', content: contents }],
+          messages: [{ role: 'user', content: contents }]
         }),
-        signal: AbortSignal.timeout(60000),
+        signal: AbortSignal.timeout(12000)
       });
       const data: any = await response.json();
-      if (!response.ok) throw new Error('Claude API: ' + (data.error?.message || response.status));
-      const text = (data.content || []).filter((c: any) => c.type === 'text').map((c: any) => c.text).join('');
-      if (!text.trim()) throw new Error('Claude API returned an empty response');
-      return { text, provider: 'anthropic', modelUsed: model } as any;
+      if (!response.ok) throw new Error('Claude API: ' + response.status);
+      const content = (data.content || []).filter((c: any) => c.type === 'text').map((c: any) => c.text).join('');
+      if (!content.trim()) throw new Error('Claude returned empty content');
+      return { text: content, provider: 'anthropic', modelUsed: data.model || model } as any;
     } catch (err: any) {
-      console.warn('[LLM] Anthropic failed; checking Gemini fallback:', String(err?.message || err).slice(0, 220));
+      console.warn('[LLM] Anthropic fallback failed:', err?.name || 'error');
       if (!process.env.GEMINI_API_KEY) throw err;
     }
   }
+
   const client = getGeminiClient(options.apiKey);
   const primary = getLlmConfig().model || options.model || DEFAULT_GEMINI_MODEL;
-  let lastError: any = null;
-  for (const model of [primary, ...FALLBACK_MODELS.filter(m => m !== primary)]) {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      try {
-        return await client.models.generateContent({ contents: options.contents, config: options.config, model });
-      } catch (err: any) {
-        lastError = err;
-        const status = err?.status || err?.code || '';
-        const msg = (err?.message || '').toLowerCase();
-        const isNotFound = status === 404 || status === 'NOT_FOUND' || msg.includes('not found') || msg.includes('no longer available');
-        const transient = status === 503 || status === 429 || status === 'UNAVAILABLE' || status === 'RESOURCE_EXHAUSTED' || msg.includes('high demand') || msg.includes('quota') || msg.includes('rate') || isNotFound;
-        if (!transient) throw err;
-        if (attempt === 0) await new Promise(r => setTimeout(r, 350));
-      }
+  // Avoid the old 4-model × 2-retry loop that ran past Vercel's 60-second limit.
+  const candidates = [...new Set([primary, 'gemini-3.6-flash'])].slice(0, 2);
+  let lastError: any;
+  for (const model of candidates) {
+    try {
+      const response: any = await withLlmTimeout(
+        client.models.generateContent({
+          contents: options.contents,
+          config: {
+            ...options.config,
+            httpOptions: { ...(options.config?.httpOptions || {}), timeout: GEMINI_TIMEOUT_MS }
+          },
+          model
+        }),
+        GEMINI_TIMEOUT_MS
+      );
+      if (!response?.text) throw new Error('Gemini returned empty content');
+      return { text: response.text, provider: 'gemini', modelUsed: response.modelVersion || model } as any;
+    } catch (err: any) {
+      lastError = err;
+      console.warn('[LLM] Gemini candidate failed:', model, err?.status || err?.name || 'error');
     }
   }
-  throw lastError;
+  throw lastError || new Error('ALL_AI_PROVIDERS_FAILED');
 }
 
 // Gọi nhanh dạng prompt → chuỗi (kèm JSON nếu json=true).
