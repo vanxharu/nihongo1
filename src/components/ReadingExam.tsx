@@ -47,6 +47,10 @@ export default function ReadingExam() {
     return (
       <div id="ai-reading-container" className="w-full max-w-3xl mx-auto space-y-4 p-1">
         <header><h1 className="text-xl font-bold text-[var(--ui-ink)]">Đọc hiểu</h1><p className="text-sm text-[var(--ui-muted)]">Chọn một đề, làm xong bấm Nộp bài để xem điểm và giải thích.</p></header>
+        <div className="reading-surface rounded-xl border border-[var(--ui-line)] p-3 text-sm text-[var(--ui-muted)]">
+          <strong className="block text-[var(--ui-ink)]">Luyện đọc N4 theo chủ đề VNJPCLUB</strong>
+          <p>Đã thêm bài luyện tập biên soạn mới theo các chủ đề thường gặp. Đọc bài gốc và lời giải tại <a href="https://www.vnjpclub.com/luyen-doc-n4/" target="_blank" rel="noopener noreferrer" className="text-indigo-500 underline">VNJPCLUB ↗</a>.</p>
+        </div>
         {EXAMS.length === 0 && <p className="text-sm text-[var(--ui-muted)]">Chưa có đề nào.</p>}
         <ul className="grid gap-3 sm:grid-cols-2">
           {EXAMS.map(e => (
