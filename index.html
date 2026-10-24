@@ -91,7 +91,7 @@
           if (target && target.tagName === 'SCRIPT' && target.type === 'module') {
             reportBootstrapFailure();
           } else if (!window.nihongoStarted && event.filename &&
-                     /\\/(?:assets|src)\\//.test(event.filename)) {
+                     (event.filename.includes('/assets/') || event.filename.includes('/src/'))) {
             reportBootstrapFailure();
           }
         }, true);
