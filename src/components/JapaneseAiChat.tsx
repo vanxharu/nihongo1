@@ -431,7 +431,9 @@ export interface JapaneseAiChatProps {
 }
 
 export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
-  const savedSession = useRef(getSavedChatState());
+  // Read the archive only on first mount, not on every keystroke/render.
+  const savedSession = useRef<ReturnType<typeof getSavedChatState> | undefined>(undefined);
+  if (savedSession.current === undefined) savedSession.current = getSavedChatState();
   const [conversations, setConversations] = useState<SavedChatThread[]>(savedSession.current?.conversations || []);
   const conversationsRef = useRef<SavedChatThread[]>(savedSession.current?.conversations || []);
   const [activeConversationId, setActiveConversationId] = useState(savedSession.current?.activeConversationId || createChatId());
