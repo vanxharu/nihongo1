@@ -49,36 +49,62 @@
   <body>
     <div id="root"></div>
     <script>
+      // Never refresh the whole page automatically: doing so can erase an unfinished lesson/exam.
+      // If initial JavaScript loading genuinely fails, show a user-controlled recovery action.
       (() => {
-        let recovering = false;
-        const refresh = () => {
-          const url = new URL(location.href);
-          url.searchParams.set('__refresh', Date.now().toString());
-          location.replace(url.href);
+        window.nihongoRefreshPage = () => window.location.reload();
+
+        let recoveryScheduled = false;
+        const showManualRecovery = () => {
+          if (window.nihongoStarted) return;
+          const root = document.getElementById('root');
+          // Don't overwrite React's own error boundary or an app that is still rendering.
+          if (!root || root.childElementCount > 0 || root.dataset.recoveryShown) return;
+          root.dataset.recoveryShown = 'true';
+
+          const panel = document.createElement('section');
+          panel.setAttribute('role', 'alert');
+          panel.style.cssText = 'max-width:440px;margin:12vh auto;padding:24px;border-radius:16px;border:1px solid #64748b;background:var(--ui-canvas);color:var(--ui-ink);font-family:system-ui,sans-serif;text-align:center;line-height:1.6';
+          const heading = document.createElement('h2');
+          heading.textContent = 'Không thể tải ứng dụng';
+          heading.style.cssText = 'font-size:20px;font-weight:700;margin:0 0 8px';
+          const note = document.createElement('p');
+          note.textContent = 'Kết nối hoặc dữ liệu vừa cập nhật có thể bị gián đoạn. Trang sẽ không tự tải lại để tránh mất bài đang làm.';
+          note.style.cssText = 'font-size:14px;margin:0 0 16px';
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.textContent = 'Thử tải lại';
+          button.style.cssText = 'background:#4f46e5;color:white;border:0;padding:10px 18px;border-radius:10px;font-weight:600;cursor:pointer';
+          button.addEventListener('click', () => window.nihongoRefreshPage());
+          panel.append(heading, note, button);
+          root.appendChild(panel);
         };
-        window.nihongoRefreshPage = refresh;
-        window.nihongoRecoverModule = () => {
-          if (recovering || navigator.onLine === false) return false;
-          try {
-            const last = Number(sessionStorage.getItem('nihongo_module_recovery') || 0);
-            if (Date.now() - last < 600000) return false;
-            sessionStorage.setItem('nihongo_module_recovery', Date.now().toString());
-          } catch { return false; }
-          recovering = true;
-          refresh();
-          return true;
+        const reportBootstrapFailure = () => {
+          if (recoveryScheduled || window.nihongoStarted) return;
+          recoveryScheduled = true;
+          setTimeout(showManualRecovery, 1500);
         };
-        // Không còn màn chờ/nút "Tải lại trang": khi nạp lỗi thì tự tải lại (tối đa 1 lần / 10 phút).
-        const failed = () => { window.nihongoRecoverModule(); };
-        window.addEventListener('vite:preloadError', () => window.nihongoRecoverModule());
-        window.addEventListener('error', event => {
-          if (event.target && event.target.tagName === 'SCRIPT' && event.target.type === 'module') {
-            failed(); window.nihongoRecoverModule();
-          } else if (!window.nihongoStarted) failed();
+
+        window.addEventListener('vite:preloadError', reportBootstrapFailure);
+        window.addEventListener('error', (event) => {
+          const target = event.target;
+          if (target && target.tagName === 'SCRIPT' && target.type === 'module') {
+            reportBootstrapFailure();
+          } else if (!window.nihongoStarted && event.filename &&
+                     /\\/(?:assets|src)\\//.test(event.filename)) {
+            reportBootstrapFailure();
+          }
         }, true);
-        window.addEventListener('unhandledrejection', () => { if (!window.nihongoStarted) failed(); });
+        window.addEventListener('unhandledrejection', (event) => {
+          if (window.nihongoStarted) return;
+          const reason = String(event.reason?.message || event.reason || '');
+          if (/dynamically imported module|Importing a module script|Loading chunk/i.test(reason)) {
+            reportBootstrapFailure();
+          }
+        });
         window.nihongoAppStarted = () => { window.nihongoStarted = true; };
-        setTimeout(() => { if (!window.nihongoStarted) failed(); }, 20000);
+        // Slow startup may offer a manual retry, but must never trigger a reload itself.
+        setTimeout(showManualRecovery, 30000);
       })();
     </script>
     <script type="module" src="/src/main.tsx"></script>
