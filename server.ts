@@ -2748,6 +2748,43 @@ ${conversationHistory}
   }
 });
 
+// Japanese chat help buttons: generate missing translation / grammar explanation
+// on demand, including older messages that lack these optional model fields.
+app.post("/api/japanese-chat/assist", async (req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  const action = req.body?.action;
+  const text = typeof req.body?.text === "string" ? req.body.text.trim() : "";
+  if ((action !== "translation" && action !== "grammar") || !text || text.length > 2000) {
+    return res.status(400).json({ error: "Nội dung hoặc tác vụ không hợp lệ." });
+  }
+
+  const systemInstruction = action === "translation"
+    ? "Bạn là biên dịch viên tiếng Nhật-Việt. Dịch chính xác đoạn tiếng Nhật sang tiếng Việt tự nhiên; giữ nghĩa và sắc thái. Chỉ trả về bản dịch tiếng Việt, không giải thích hoặc thêm lời chào."
+    : "Bạn là giáo viên tiếng Nhật dạy người Việt. Hãy giải thích bằng tiếng Việt tối đa 3 điểm ngữ pháp hoặc cách diễn đạt đáng chú ý TRONG đoạn được cung cấp, ngắn gọn, dễ hiểu, phù hợp cấp JLPT. Nếu không có cấu trúc đặc biệt, giải thích cách dùng của một mẫu câu xuất hiện thật trong đoạn. Chỉ trả về phần giải thích, không tạo nội dung ngoài đoạn văn.";
+  try {
+    const result = await callLLMWithInfo({
+      systemInstruction,
+      prompt: action === "translation"
+        ? `Dịch sang tiếng Việt:\n${text}`
+        : `Phân tích điểm ngữ pháp và cách diễn đạt trong đoạn tiếng Nhật sau:\n${text}`,
+      maxTokens: 720
+    });
+    const value = result.text.trim();
+    if (!value) throw new Error("EMPTY_ASSIST_RESPONSE");
+    return res.json({ value, provider: result.modelUsed });
+  } catch (error: any) {
+    const detail = String(error?.message || error);
+    console.error("[Japanese Chat] Assist request failed:", detail.slice(0, 240));
+    const limited = /(?:429|rate.limit|resource.exhausted|quota)/i.test(detail);
+    return res.status(limited ? 429 : 502).json({
+      error: limited
+        ? "AI đang giới hạn lượt gọi. Vui lòng thử lại sau."
+        : "Chưa thể lấy bản dịch hoặc giải thích. Vui lòng thử lại.",
+      code: limited ? "AI_RATE_LIMITED" : "AI_ASSIST_UNAVAILABLE"
+    });
+  }
+});
+
 // 3.2 API: Audio Transcription Fallback using Gemini Multimodal Audio (音声書き起こし)
 app.post("/api/transcribe-audio", async (req, res) => {
   try {
