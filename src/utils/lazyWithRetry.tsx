@@ -31,8 +31,11 @@ export function lazyWithRetry<T extends React.ComponentType<any>>(
        lastError.message.includes('Importing a module script failed') ||
        lastError.message.includes('error loading dynamically imported module'));
     
-    if (isChunkError && typeof window !== 'undefined') {
-      (window as any).nihongoRecoverModule?.();
+    // A stale chunk or a temporary network failure must not force a full-page
+    // refresh: the user may be halfway through an exercise or an exam.
+    // Let AppErrorBoundary show a manual retry button instead.
+    if (isChunkError) {
+      console.warn('[NIHON] Dynamic module failed after retries; waiting for user action.', lastError);
     }
 
     throw lastError;
