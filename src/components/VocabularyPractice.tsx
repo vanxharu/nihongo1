@@ -1,3 +1,4 @@
+import VocabularyIllustration from './VocabularyIllustration';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -3269,6 +3270,7 @@ if (loading) {
                       style={{ transformPerspective: 1200, backfaceVisibility: 'hidden' }}
                 className="vocab-flashcard-content w-full flex flex-col items-center justify-center text-center space-y-2"
                     >
+                      {flashcardView === 'word' ? <VocabularyIllustration key={currentItem.id} item={currentItem} /> : null}
                       {flashcardView === 'word' ? (
                         flashcardDirection === 'JP_VI' ? (
                           <div className="flex flex-col items-center gap-1 w-full">

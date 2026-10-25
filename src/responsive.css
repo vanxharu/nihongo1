@@ -267,3 +267,8 @@ html[data-theme] #app-root-container .kmn4-hero :is(.text-white,[class*="text-wh
 /* khối Kanji nền sáng cố định: giữ chữ tối khi theme tối để không mất chữ */
 html[data-theme=dark] #app-root-container .kmn4-light :is(h2,p){color:#0f172a!important}
 html[data-theme=dark] #app-root-container .kmn4-light p{color:#334155!important}
+
+/* Word-specific illustrations are small, local assets, above the word. */
+.vocab-word-illustration{width:112px;height:112px;flex-shrink:0;align-self:center;margin:0 auto 12px;background:#fff;border-radius:10px;overflow:hidden;border:1px solid var(--ui-line)}
+#app-root-container .vocab-word-illustration img{display:block;width:100%;height:100%;object-fit:contain;opacity:1!important;user-select:none;pointer-events:none}
+@media(max-width:639px){.vocab-word-illustration{width:104px;height:104px;margin-bottom:10px}}
