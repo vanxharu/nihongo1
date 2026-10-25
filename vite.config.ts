@@ -16,7 +16,11 @@ export default defineConfig({
   },
   server: {
     hmr: process.env.DISABLE_HMR !== 'true',
-    watch: process.env.DISABLE_HMR === 'true' ? null : {},
+    watch: process.env.DISABLE_HMR === 'true' ? null : {
+      // Bulk image/prompt imports write hundreds of files; they must not trigger
+      // a full page reload each time (dev server log floods and the UI keeps resetting).
+      ignored: ['**/imports/**', '**/*.log', '**/dev-server.log'],
+    },
   },
   build: {
     chunkSizeWarningLimit: 2000,

@@ -3217,13 +3217,79 @@ app.get('/api/lessons', async (req, res) => {
 });
 
 let cachedMappedVocabularies: any[] | null = null;
+// Local dev has no Firebase credentials; without this flag every request prints a full stack trace.
+let contentStoreUnavailable = false;
+
+// Dev helper: lets a browser tool page (flow.google.com) read the exact prompt list
+// without any per-word file reads. CORS is needed because the caller is not localhost.
+app.get('/api/vocab-prompts', async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  try {
+    const file = path.join(process.cwd(), 'imports/vocab-n4/prompts.jsonl');
+    const raw = await fs.promises.readFile(file, 'utf8');
+    const items = raw.trim().split(/\r?\n/).filter(Boolean).map(line => {
+      const { id, prompt } = JSON.parse(line);
+      return { id, number: Number(String(id).split('_').pop()), prompt };
+    });
+    return res.json({ count: items.length, items });
+  } catch (error) {
+    console.error('Error in /api/vocab-prompts route:', error);
+    return res.status(500).json({ error: String(error) });
+  }
+});
+
+// Batch download of Flow-generated images: the page POSTs signed CDN URLs here,
+// the server fetches them and writes canonical tango_n4_<n>.png files.
+app.options(['/api/vocab-prompts', '/api/vocab-flow-done'], (_req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  return res.status(204).end();
+});
+app.post('/api/vocab-flow-done', async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  const items = Array.isArray(req.body?.items) ? req.body.items.slice(0, 40) : [];
+  const saved = [];
+  const failed = [];
+  for (const item of items) {
+    const number = Number(item?.number);
+    const src = String(item?.src || '');
+    if (!Number.isFinite(number) || number < 1 || number > 10000 || !/^https:\/\/flow-content\.google\//.test(src)) {
+      failed.push({ number: item?.number || null, reason: 'bad payload' });
+      continue;
+    }
+    const target = path.join(process.cwd(), 'imports/vocab-n4', `tango_n4_${number}.png`);
+    try {
+      const response = await fetch(src, { signal: AbortSignal.timeout(60_000) });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const buffer = Buffer.from(await response.arrayBuffer());
+      if (buffer.length < 1024) throw new Error(`too small: ${buffer.length} bytes`);
+      await fs.promises.writeFile(target, buffer);
+      saved.push(number);
+    } catch (error) {
+      failed.push({ number, reason: String(error?.message || error).slice(0, 200) });
+    }
+  }
+  return res.json({ saved, failed });
+});
 
 app.get('/api/vocabularies', async (req, res) => {
+  if (contentStoreUnavailable) return res.json(VOCABULARY_DATA);
   try {
     const enrichedStatic = (await listContent('vocabularies')).map(v=>sanitizeVocabItem({...v,hanViet:v.hanViet||getHanVietWord(v.kanji||'')}));
     res.setHeader('X-Data-Store','firestore');return res.json(enrichedStatic);
   } catch (error) {
-    console.error('Error in /api/vocabularies route, falling back to static data:', error);
+    if ((error as any)?.message === 'DATABASE_NOT_CONFIGURED') {
+      contentStoreUnavailable = true;
+      console.warn('[api/vocabularies] Content database not configured — serving static vocabulary data.');
+    } else {
+      console.error('Error in /api/vocabularies route, falling back to static data:', error);
+    }
     return res.json(VOCABULARY_DATA);
   }
 });

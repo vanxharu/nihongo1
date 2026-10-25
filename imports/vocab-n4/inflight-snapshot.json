@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-10-25T13:45:00+07:00",
+  "note": "Ngung pump cuoi ngay 25-10: HET HAN MUC TAO ANH cua tai khoan Flow (user xac nhan). Toan bo 5 tab Flow cu + tab moi da dong. Viec dfeengine v5 da cai tren tab moi nhung chi kiem 3-lan submit cua so 315 truoc khi het han muc - khong tile nao bind duoc (pending=0), khong capture them nao.",
+  "lastSubmittedUncaptured": [315],
+  "submittedNote": "So 315 da submit x3 (commit thanh cong x3 - do bug 'submitting' chua release) nhung tile chua kip xuat hien; neu hot dem nay hoan thanh thi mai harvest mien phi trong project cu (so 315 van nam trong danh sách can tao).",
+  "tabs": {
+    "cca3-fresh-project": {
+      "projectTitle": "Tháng 10 25 - 13:31",
+      "submitted": ["315", "315", "315"],
+      "captured": [],
+      "state": "tab closed by user"
+    }
+  },
+  "engineState": {
+    "dead": [],
+    "pending": [],
+    "note": "Tab dong -> trang thai engine mat; khong mat du lieu vi prompts.jsonl + todo.json tren dia la nguon that duy nhat."
+  },
+  "quotaNote": "Han muc tao anh Flow het ngay 25-10 chieu. Mai kiem tra tai khoan da reset han muc roi chay tiep."
+}

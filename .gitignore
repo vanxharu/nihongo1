@@ -14,3 +14,7 @@ youtube-listening-attempts.json
 youtube-listening-resume.json
 userGrammarProgress.json
 public/audio/tango_n4.mp3
+
+# Raw generated PNG archives (kept locally, already imported to webp)
+imports/vocab-n4/done/
+imports/vocab-n4/*.png

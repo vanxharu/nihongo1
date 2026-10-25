@@ -1,0 +1,1133 @@
+### BATCH 1/67 - images 1-10 (tango_n4_229 .. tango_n4_238)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+1. tango_n4_229 - "salary": Today, I received my first salary payment.
+2. tango_n4_230 - "bonus": There are bonuses in the summer and in the winter.
+3. tango_n4_231 - "savings": I'm saving for a trip.
+4. tango_n4_232 - "reception": The reception desk is on the third floor.
+5. tango_n4_233 - "business card": The name on the business card is wrong.
+6. tango_n4_234 - "sales": Working in sales is fun.
+7. tango_n4_235 - "greeting": I always greet people enthusiastically.
+8. tango_n4_236 - "meeting": Today's meeting is from 3:00.
+9. tango_n4_237 - "meeting": Let's have a meeting while eating lunch.
+10. tango_n4_238 - "opinion": Let's listen carefully to people's opinions.
+
+
+### BATCH 2/67 - images 11-20 (tango_n4_239 .. tango_n4_248)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+11. tango_n4_239 - "idea": The department chief's idea is interesting.
+12. tango_n4_240 - "schedule": Do you know the president's schedule?
+13. tango_n4_241 - "business trip": My father often goes to America on business trips.
+14. tango_n4_242 - "to return, to come back": A: What time is Tanaka-san coming back? B: I think around 3:00.
+15. tango_n4_243 - "to return, to give back": Please return the newspapers here after you read them.
+16. tango_n4_244 - "main office": I'm going to the main office in Tokyo starting in the spring.
+17. tango_n4_245 - "president": The president of my company is young.
+18. tango_n4_246 - "rule": Please read the company rules carefully.
+19. tango_n4_247 - "rule, regulation": Do you know this company's rules and regulations?
+20. tango_n4_248 - "to be decided": My new part-time job has been decided.
+
+
+### BATCH 3/67 - images 21-30 (tango_n4_249 .. tango_n4_258)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+21. tango_n4_249 - "to decide": Let's decide the time of the meeting.
+22. tango_n4_250 - "permission": Please receive permission when you want to take time off.
+23. tango_n4_251 - "to stamp (a seal)": Please stamp your seal here.
+24. tango_n4_252 - "to be late, being late": You mustn't be late by even one minute.
+25. tango_n4_253 - "technology": What kind of technology does this company have?
+26. tango_n4_254 - "computer": After staring at my computer, my eyes get tired.
+27. tango_n4_255 - "software": I want to have a job where I make computer software.
+28. tango_n4_256 - "document": Please submit these documents by tomorrow.
+29. tango_n4_257 - "file": I'm going to put these materials in the file.
+30. tango_n4_258 - "input": Please input things here in English.
+
+
+### BATCH 4/67 - images 31-40 (tango_n4_259 .. tango_n4_268)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+31. tango_n4_259 - "translation": I will translate Chinese into Japanese.
+32. tango_n4_260 - "interpreting": I've wanted to be an interpreter since I was an elementary school student.
+33. tango_n4_261 - "method": Please teach me how to get better at Japanese.
+34. tango_n4_262 - "way of doing something": I immediately memorized how to do the job.
+35. tango_n4_263 - "to get used to": I've recently gotten used to my job.
+36. tango_n4_264 - "to go well": I wonder if the speech tomorrow will go well.
+37. tango_n4_265 - "success": Tanaka-san succeeded at his job.
+38. tango_n4_266 - "to ask, to request": I was asked to do a job by the store manager.
+39. tango_n4_267 - "to help": Please help us interpret French.
+40. tango_n4_268 - "working overtime": When I am busy, I work overtime.
+
+
+### BATCH 5/67 - images 41-50 (tango_n4_269 .. tango_n4_278)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+41. tango_n4_269 - "the impossible/impossible": Please don't say such impossible things. It's impossible to work part-time everyday.
+42. tango_n4_270 - "to hurry": We don't have much time, so let's hurry.
+43. tango_n4_271 - "lunch break": My lunch break is one hour starting at 12:00.
+44. tango_n4_272 - "break": It's 3:00, so let's take a break.
+45. tango_n4_273 - "year-end party": Why don't we have our year-end party next week?
+46. tango_n4_274 - "civil servant": Both my father and my mother are civil servants.
+47. tango_n4_275 - "lawyer": It's difficult to become a lawyer.
+48. tango_n4_276 - "factory": I worked part-time at a bread factory.
+49. tango_n4_277 - "office": I'm eating lunch at the office.
+50. tango_n4_278 - "guidebook": I bought a guidebook at a book store.
+
+
+### BATCH 6/67 - images 51-60 (tango_n4_279 .. tango_n4_288)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+51. tango_n4_279 - "timetable": Where is the train timetable?
+52. tango_n4_280 - "plan": This year, I plan to go a trip with my family.
+53. tango_n4_281 - "far (away)": Sometimes, I like to travel to someplace far away.
+54. tango_n4_282 - "overseas": I would like to travel overseas during summer vacation.
+55. tango_n4_283 - "domestic, in the country": In the summer, I'm going to travel the country with my mother.
+56. tango_n4_284 - "scenery": The scenery visible from here is really beautiful.
+57. tango_n4_285 - "festival": There are many interesting festivals in Japan.
+58. tango_n4_286 - "fireworks": Japanese fireworks engineering is the best in the world.
+59. tango_n4_287 - "extended weekend, ~day weekend": I'm happy for the four-day weekend we're about to have.
+60. tango_n4_288 - "New Year's": I intend to go back to my company during the New Year's holiday.
+
+
+### BATCH 7/67 - images 61-70 (tango_n4_289 .. tango_n4_298)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+61. tango_n4_289 - "travel agency": The travel agency near the station is really kind.
+62. tango_n4_290 - "to apply": I applied for a trip to Hawaii with my friend.
+63. tango_n4_291 - "room with a single bed": I reserved a room with a single bed.
+64. tango_n4_292 - "reservation": You should make a hotel reservation soon.
+65. tango_n4_293 - "preparations": I'm making preparations for my trip.
+66. tango_n4_294 - "airport": I'm going from here to the airport by bus.
+67. tango_n4_295 - "exchange": Where should I exchange money into Japanese yen?
+68. tango_n4_296 - "departing": The plane will depart soon.
+69. tango_n4_297 - "arrival": What time will you arrive in Japan?
+70. tango_n4_298 - "returning to one's country": I must go back to my country next month.
+
+
+### BATCH 8/67 - images 71-80 (tango_n4_299 .. tango_n4_308)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+71. tango_n4_299 - "Japanese-style inn": This Japanese-style inn is very famous.
+72. tango_n4_300 - "front desk": I will show my passport at the hotel front desk.
+73. tango_n4_301 - "to stay": I want to stay at that famous Japanese-style inn.
+74. tango_n4_302 - "to spend": I want to spend my time living leisurely in a warm country.
+75. tango_n4_303 - "experience": I will experience a lot when I am young.
+76. tango_n4_304 - "sightseeing": I got on a bus and went sightseeing in Tokyo.
+77. tango_n4_305 - "postcard": My friend sent me a beautiful postcard.
+78. tango_n4_306 - "Japanese food": Japanese cuisine is called washoku.
+79. tango_n4_307 - "Western food": Today, I want to eat Western food.
+80. tango_n4_308 - "steak": I ate a 400 gram steak by myself.
+
+
+### BATCH 9/67 - images 81-90 (tango_n4_309 .. tango_n4_318)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+81. tango_n4_309 - "hamburger steak": Tofu hamburger steak is good for you.
+82. tango_n4_310 - "salad": I eat a lot of salad every day.
+83. tango_n4_311 - "cake": I eat cake at 3:00 every day.
+84. tango_n4_312 - "menu": What's on the menu for dinner tonight?
+85. tango_n4_313 - "all-you-can-eat": That restaurant has an all-you-can-eat menu for 2,000 yen.
+86. tango_n4_314 - "order": I ordered a lot of food with meat.
+87. tango_n4_315 - "treating to a meal": On my birthday, my friend treated me to a meal.
+88. tango_n4_316 - "alcohol": I can't drink alcohol, so I ordered some oolong tea.
+89. tango_n4_317 - "toast": Let's have a toast with beer.
+90. tango_n4_318 - "to get drunk": I drank too much wine and got drunk.
+
+
+### BATCH 10/67 - images 91-100 (tango_n4_319 .. tango_n4_328)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+91. tango_n4_319 - "soy sauce": Soy sauce is used in this dish.
+92. tango_n4_320 - "sauce": This dish goes well with sauce.
+93. tango_n4_321 - "to put in soy sauce": This is good if you put it in soy sauce.
+94. tango_n4_322 - "taste, flavor": I love the way the food at this restaurant tastes.
+95. tango_n4_323 - "thin (flavor)": The miso soup is a little thin today.
+96. tango_n4_324 - "rich, thick (flavor)": I like thick tea.
+97. tango_n4_325 - "bitter": Beer is bitter, so I don't drink it much.
+98. tango_n4_326 - "smell": There is a nice smell coming from the kitchen.
+99. tango_n4_327 - "to chew, to bite": Make sure to chew your food thoroughly when eating.
+100. tango_n4_328 - "amount, portion": This restaurant's spaghetti's portions are big.
+
+
+### BATCH 11/67 - images 101-110 (tango_n4_329 .. tango_n4_338)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+101. tango_n4_329 - "to leave": I left a little rice.
+102. tango_n4_330 - "to remain, to be left over": If there is any left over food, let's eat it tomorrow.
+103. tango_n4_331 - "challenge": I want to try Thai food.
+104. tango_n4_332 - "ingredient": I'm going to make a dish with the ingredients in the refrigerator.
+105. tango_n4_333 - "half": Please cut the tomato in half.
+106. tango_n4_334 - "to measure": I measure the salt and sugar with a spoon.
+107. tango_n4_335 - "to mix": Please mix the meat and onions well.
+108. tango_n4_336 - "tool": I bought some convenient tools for the kitchen.
+109. tango_n4_337 - "pot": Please put water in the pot.
+110. tango_n4_338 - "lid": Where is the lid for this bottle?
+
+
+### BATCH 12/67 - images 111-120 (tango_n4_339 .. tango_n4_348)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+111. tango_n4_339 - "plate": Let's use a white plate for this dish.
+112. tango_n4_340 - "bowl": Whose large bowl is this?
+113. tango_n4_341 - "preparations": Please prepare a large bowl.
+114. tango_n4_342 - "to line up": There are a lot of people lined up outside of the ramen shop.
+115. tango_n4_343 - "to put in a line, to line up": There are dishes lined up on the table.
+116. tango_n4_344 - "heat, fire": The heat is a little high, so please lower it.
+117. tango_n4_345 - "to cook, to bake": I will cook the fish for about 10 minutes.
+118. tango_n4_346 - "to be cooked, to be baked": The bread will soon be baked.
+119. tango_n4_347 - "kettle": Is there water in the kettle?
+120. tango_n4_348 - "to boil": Let's boil water in the kettle.
+
+
+### BATCH 13/67 - images 121-130 (tango_n4_349 .. tango_n4_358)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+121. tango_n4_349 - "to heat up": Please heat up this soup.
+122. tango_n4_350 - "to chill, to cool": I'm going to cool this off in the refrigerator for 30 minutes.
+123. tango_n4_351 - "to make tea": Shall I make some tea?
+124. tango_n4_352 - "to go bad": The meat in the refrigerator has gone bad.
+125. tango_n4_353 - "to throw away": Please don't throw these vegetables away.
+126. tango_n4_354 - "rice": I like rice more than bread.
+127. tango_n4_355 - "boxed lunch": I make my own boxed lunch every day.
+128. tango_n4_356 - "side dish": Today's side dish is tempura.
+129. tango_n4_357 - "instant food": I often eat instant food.
+130. tango_n4_358 - "canned food": Canned food is convenient for cooking.
+
+
+### BATCH 14/67 - images 131-140 (tango_n4_359 .. tango_n4_368)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+131. tango_n4_359 - "house chore": Cooking is my favorite house chore.
+132. tango_n4_360 - "price": I buy shoes after looking at the price.
+133. tango_n4_361 - "to increase": The price of food has increased.
+134. tango_n4_362 - "bargain": Summer bargains start tomorrow.
+135. tango_n4_363 - "discount": This restaurant offers a student discount.
+136. tango_n4_364 - "free": This magazine is free.
+137. tango_n4_365 - "having a fee/charge": You have to pay a fee to use this toilet.
+138. tango_n4_366 - "wallet": I left my wallet at home.
+139. tango_n4_367 - "(cash) register": There are about 10 lined up in front of the register.
+140. tango_n4_368 - "calculation": It will take some time to calculate.
+
+
+### BATCH 15/67 - images 141-150 (tango_n4_369 .. tango_n4_378)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+141. tango_n4_369 - "store employee": The store employees at this supermarket are kind.
+142. tango_n4_370 - "to count": Please count the bananas.
+143. tango_n4_371 - "to pay": Where should I pay the money?
+144. tango_n4_372 - "signature": Please sign here.
+145. tango_n4_373 - "to be enough, to be sufficient": There's not quite enough money.
+146. tango_n4_374 - "change": I forgot to get my change.
+147. tango_n4_375 - "receipt": I get receipts when I go shopping.
+148. tango_n4_376 - "formal receipt": I got a formal receipt at the restaurant.
+149. tango_n4_377 - "bag": I always take a bag when I go shopping.
+150. tango_n4_378 - "to exchange, to replace": I had them exchange the shoes.
+
+
+### BATCH 16/67 - images 151-160 (tango_n4_379 .. tango_n4_388)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+151. tango_n4_379 - "to look for": I've been looking for a pink sweater for a while.
+152. tango_n4_380 - "to choose, to pick": I'm glad that I can pick the present.
+153. tango_n4_381 - "to wrap": Please wrap this shirt.
+154. tango_n4_382 - "to withdraw (money)": I withdraw money at the bank.
+155. tango_n4_383 - "to sell well, to be selling": The bread here is selling really well.
+156. tango_n4_384 - "food product": This store's food products are inexpensive.
+157. tango_n4_385 - "toy": The toy sales department is on the fifth floor.
+158. tango_n4_386 - "pamphlet": I'm going to buy a computer after I read the pamphlet.
+159. tango_n4_387 - "Japanese-made": This is a Japanese-made TV.
+160. tango_n4_388 - "real, authentic": If this is real, I'd buy it even if it were expensive.
+
+
+### BATCH 17/67 - images 161-170 (tango_n4_389 .. tango_n4_398)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+161. tango_n4_389 - "place, location": There are places I want to go.
+162. tango_n4_390 - "in front of the station": A new store opened in front of the station.
+163. tango_n4_391 - "police box": I asked for directions at the police box in front of the station.
+164. tango_n4_392 - "city hall, city office": There is a bus that goes from the station to the city office.
+165. tango_n4_393 - "bus stop": There is a bus stop right by my house.
+166. tango_n4_394 - "wide open area, field": Let's play with the children in the field.
+167. tango_n4_395 - "castle": This castle was built 450 years ago.
+168. tango_n4_396 - "shrine": On New Year's Day, I went to a shrine with my friend.
+169. tango_n4_397 - "church": There is an old church in my neighborhood.
+170. tango_n4_398 - "harbor": Sometimes I walk to the harbor.
+
+
+### BATCH 18/67 - images 171-180 (tango_n4_399 .. tango_n4_408)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+171. tango_n4_399 - "zoo": I'm going to the zoo to see the pandas.
+172. tango_n4_400 - "art museum": On my days off, I often go to the art museum.
+173. tango_n4_401 - "amusement park": My family is going to the amusement park on Sunday.
+174. tango_n4_402 - "ski resort, snow resort": We will arrive at the snow resort in one hour.
+175. tango_n4_403 - "hot springs": There are many hot springs in Japan.
+176. tango_n4_404 - "parking lot": There is a big parking lot by the condominium building.
+177. tango_n4_405 - "roof": You can't go out on the roof of this building.
+178. tango_n4_406 - "basement": I'm going to buy a cake in the basement of this department store.
+179. tango_n4_407 - "countryside": I want to live in the countryside.
+180. tango_n4_408 - "suburbs": I moved to the suburbs of Tokyo last year.
+
+
+### BATCH 19/67 - images 181-190 (tango_n4_409 .. tango_n4_418)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+181. tango_n4_409 - "dialect": In the countryside where I'm from, we have our own dialect.
+182. tango_n4_410 - "no smoking": There is no smoking here, but please help yourself over there.
+183. tango_n4_411 - "no entrance, entrance prohibited": Entrance is prohibited in this area.
+184. tango_n4_412 - "street": This is the widest street in the city.
+185. tango_n4_413 - "right-side": There is a bank on the right side of this street.
+186. tango_n4_414 - "in between, between": There is a café between the flower shop and the bookstore.
+187. tango_n4_415 - "in the middle": The is a large park in the middle of the city.
+188. tango_n4_416 - "on the other side": A hotel opened on the other side of the mountain.
+189. tango_n4_417 - "to ask": A old woman asked me for directions.
+190. tango_n4_418 - "to stop by, to drop by": I'm going to stop by the bank before going to school.
+
+
+### BATCH 20/67 - images 191-200 (tango_n4_419 .. tango_n4_428)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+191. tango_n4_419 - "(a building) to be opened": A large building opened up in front of the station.
+192. tango_n4_420 - "weather forecast": I check the weather report every day.
+193. tango_n4_421 - "blue sky": Today, there are very beautiful blue skies.
+194. tango_n4_422 - "to be clear": The weather is probably going to be clear tomorrow.
+195. tango_n4_423 - "cloudy weather": It's going to be cloudy every day this week.
+196. tango_n4_424 - "wind": The trains were stopped due to strong winds.
+197. tango_n4_425 - "to blow": Today, there are very strong winds blowing.
+198. tango_n4_426 - "to stop": The rain is probably going to stop soon.
+199. tango_n4_427 - "typhoon": A large typhoon might come.
+200. tango_n4_428 - "thunder": I really hate thunder.
+
+
+### BATCH 21/67 - images 201-210 (tango_n4_429 .. tango_n4_438)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+201. tango_n4_429 - "raincoat": I'm going to wear a raincoat when I go out tomorrow.
+202. tango_n4_430 - "to hold (an umbrella)": There are many people holding umbrellas.
+203. tango_n4_431 - "to get wet": I didn't have an umbrella, so my clothes got wet.
+204. tango_n4_432 - "wave": The waves are high today.
+205. tango_n4_433 - "(atmospheric) temperature": The temperature seems like it's going to rise today.
+206. tango_n4_434 - "to be chilled, to be cold": I was outside for a while, so my body got cold.
+207. tango_n4_435 - "to compare": Compared to Japan, my country is very cold.
+208. tango_n4_436 - "earthquake": There was a small earthquake last night.
+209. tango_n4_437 - "tsunami": Tsunamis are a concern when there are earthquakes.
+210. tango_n4_438 - "sun": In the summer, the sun gets very high in the sky.
+
+
+### BATCH 22/67 - images 211-220 (tango_n4_439 .. tango_n4_448)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+211. tango_n4_439 - "sky": It's a beautiful cloudless sky.
+212. tango_n4_440 - "moon": The moon looks so bright tonight.
+213. tango_n4_441 - "star": There are a lot of visible stars tonight.
+214. tango_n4_442 - "to light up, to shine": The stars are shining beautifully.
+215. tango_n4_443 - "space, universe": Some day, I want to go into space.
+216. tango_n4_444 - "atmosphere": The air is very clear in the countryside.
+217. tango_n4_445 - "island": I hear there are 6,800 islands in Japan.
+218. tango_n4_446 - "beach, coast": There is a clean beach in this town.
+219. tango_n4_447 - "woods": There are many different animals in the woods.
+220. tango_n4_448 - "lake": There is a large lake in the park.
+
+
+### BATCH 23/67 - images 221-230 (tango_n4_449 .. tango_n4_458)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+221. tango_n4_449 - "pond": In the past, I often swam in this pond.
+222. tango_n4_450 - "insect": I often went to catch bugs with my older brother.
+223. tango_n4_451 - "bird": I was awoken by the cute sound of birds chirping.
+224. tango_n4_452 - "season": My favorite season is fall.
+225. tango_n4_453 - "autumn foliage, leaves turning color in the fall": It is almost the season for the leaves to change color.
+226. tango_n4_454 - "flower viewing": I intent to go flower viewing this weekend.
+227. tango_n4_455 - "to bloom": The flowers are in bloom in the park.
+228. tango_n4_456 - "leaf": The leaves of this flower are beautiful.
+229. tango_n4_457 - "branch": There is a bird perched on the branch of a tree.
+230. tango_n4_458 - "to be broken, to be cracked": The tree cracked due to the typhoon.
+
+
+### BATCH 24/67 - images 231-240 (tango_n4_459 .. tango_n4_468)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+231. tango_n4_459 - "to break to crack": You mustn't break the branches of cherry blossom trees.
+232. tango_n4_460 - "to grow, to plant": I planted a cherry blossom tree in the garden.
+233. tango_n4_461 - "Shinkansen, bullet train": It takes about 2.5 hours to Osaka by Shinkansen.
+234. tango_n4_462 - "express (train)": It's about 15 minutes to Tokyo Station on the express.
+235. tango_n4_463 - "night bus, overnight bus": The night bus arrived in Kyoto around 8:00 in the morning.
+236. tango_n4_464 - "car, automobile": Small cars are popular.
+237. tango_n4_465 - "motorcycle": On the weekends, I go out with my friend on a motorcycle.
+238. tango_n4_466 - "boat, ship": Someday, I want to travel the world on a boat.
+239. tango_n4_467 - "traffic, transportation": Transportation is very convenient in Tokyo.
+240. tango_n4_468 - "use, usage": I always use the subway.
+
+
+### BATCH 25/67 - images 241-250 (tango_n4_469 .. tango_n4_478)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+241. tango_n4_469 - "to get off (of ~)": I'm getting off the bus here.
+242. tango_n4_470 - "to transfer": Please transfer here to the metro.
+243. tango_n4_471 - "rush hour": You can find a seat on this train even during rush hour.
+244. tango_n4_472 - "to be crowded": The morning trains are really crowded.
+245. tango_n4_473 - "to become empty": This bus is always empty.
+246. tango_n4_474 - "to pass through": Many different trains pass through this station.
+247. tango_n4_475 - "to pass": Once it passed A Station, the train emptied.
+248. tango_n4_476 - "to open": Doors on the right side will open at the next stop.
+249. tango_n4_477 - "to open, to make open": It's hot, so let's open a window.
+250. tango_n4_478 - "to close": Doors on the right side will close.
+
+
+### BATCH 26/67 - images 251-260 (tango_n4_479 .. tango_n4_488)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+251. tango_n4_479 - "to close, to make close, to shut": It's cold, so please shut the window.
+252. tango_n4_480 - "driver": When I was a child, I wanted to be a bus driver.
+253. tango_n4_481 - "passenger, customer": There are many foreign passengers on this bus.
+254. tango_n4_482 - "seat": Are there still seats on this plane.
+255. tango_n4_483 - "adult": Please give me two adult tickets and two children's tickets.
+256. tango_n4_484 - "senior citizen, elderly person": These seats are for elderly people.
+257. tango_n4_485 - "to proceed, to move forward": The road is congested, so the cars can't move forward.
+258. tango_n4_486 - "to head to": I'm heading to the airport in a car now.
+259. tango_n4_487 - "to stop, to make stop": You mustn't park your car near a bus stop.
+260. tango_n4_488 - "to stop, to come to a stop": There is a big bus parked in the street.
+
+
+### BATCH 27/67 - images 261-270 (tango_n4_489 .. tango_n4_498)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+261. tango_n4_489 - "to carry": Please carry this luggage along, too.
+262. tango_n4_490 - "operation": The car doors are operated by a remote control.
+263. tango_n4_491 - "to turn": I turn the wheel of the car.
+264. tango_n4_492 - "accident": Yesterday, I saw an accident on the street.
+265. tango_n4_493 - "to get into an accident": I got into an accident at an intersection.
+266. tango_n4_494 - "to bump into something, to hit": Two taxis hit each other at the traffic light.
+267. tango_n4_495 - "to slip": It's easy to slip on snowy days.
+268. tango_n4_496 - "safety/safe": When it comes to driving, safety comes first. Let's take a safe street.
+269. tango_n4_497 - "danger/dangerous": Here, there is a danger of getting into an accident. This road is dangerous because there are many cars.
+270. tango_n4_498 - "caution": ① Let's be careful of both cars and bikes. ② I got a warning from the teacher for being late.
+
+
+### BATCH 28/67 - images 271-280 (tango_n4_499 .. tango_n4_508)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+271. tango_n4_499 - "baby": My older sister had a baby.
+272. tango_n4_500 - "break down, disrepair": My car broke down again.
+273. tango_n4_501 - "in the middle of, on the way": I saw an accident on the way to the airport.
+274. tango_n4_502 - "~bound, bound for ~, on the way to": The streets were empty going there.
+275. tango_n4_503 - "on the way back": On the way home, it was very crowded.
+276. tango_n4_504 - "gasoline": The price of gas has risen again.
+277. tango_n4_505 - "engine": The engine in that car is loud.
+278. tango_n4_506 - "traffic light": The traffic light is still red.
+279. tango_n4_507 - "arrow": In the art museum, please proceed by looking at (and following) the arrows.
+280. tango_n4_508 - "kilometer": There are two kilometers from here to her house.
+
+
+### BATCH 29/67 - images 281-290 (tango_n4_509 .. tango_n4_518)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+281. tango_n4_509 - "population": Japan's population is getting smaller.
+282. tango_n4_510 - "hundred million, 100,000,000": There are 7,000,000,000 people in the world.
+283. tango_n4_511 - "economy": What do you think will happen to Asia's economy from now?
+284. tango_n4_512 - "trade": I want to graduate from university and work in trade.
+285. tango_n4_513 - "exporting": Japan exports a lot of cars.
+286. tango_n4_514 - "importing": Japan imports things like oil and raw materials.
+287. tango_n4_515 - "raw materials": A Company imports its raw materials for beer.
+288. tango_n4_516 - "oil, petroleum": The price of oil has gone up again.
+289. tango_n4_517 - "price of commodities, cost of living": The cost of living in this country is high.
+290. tango_n4_518 - "politics": I'm studying Japanese politics.
+
+
+### BATCH 30/67 - images 291-300 (tango_n4_519 .. tango_n4_528)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+291. tango_n4_519 - "prime minister": The prime ministers of Japan and England greeted each other.
+292. tango_n4_520 - "president": The president of A Country came to Japan.
+293. tango_n4_521 - "peace/peaceful": What can we do for peace? I want to live in a peaceful country.
+294. tango_n4_522 - "war": I'd like to see a world without war.
+295. tango_n4_523 - "culture": I want to know about foreign cultures.
+296. tango_n4_524 - "World Heritage Site": How many World Heritage Sites are there in Japan?
+297. tango_n4_525 - "century": The 21st century started in 2001.
+298. tango_n4_526 - "period, age": This is the age of working robots.
+299. tango_n4_527 - "international": I want to go on an exchange and find an international job.
+300. tango_n4_528 - "around the world": Let's make friends around the world.
+
+
+### BATCH 31/67 - images 301-310 (tango_n4_529 .. tango_n4_538)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+301. tango_n4_529 - "mail address": Do you know Tanaka-san's mail address?
+302. tango_n4_530 - "reply": My friend won't respond to my mail.
+303. tango_n4_531 - "to get to know": I was introduced to her by a friend.
+304. tango_n4_532 - "introduction": A friend introduced her to me.
+305. tango_n4_533 - "to go well with": Those shoes go well with the clothes you're wearing today.
+306. tango_n4_534 - "consultation": I consult with my mother about everything.
+307. tango_n4_535 - "agreement": Everyone is in agreement with his marriage.
+308. tango_n4_536 - "opposition": My parents were against my going on an exchange.
+309. tango_n4_537 - "to visit": I want to visit my Chinese friend's house.
+310. tango_n4_538 - "guidance": Next month, I'm going to show my friend from my country around Tokyo.
+
+
+### BATCH 32/67 - images 311-320 (tango_n4_539 .. tango_n4_548)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+311. tango_n4_539 - "to give": I gave my dad a necktie for Father's Day.
+312. tango_n4_540 - "to give, to be given": My older sister didn't give me anything for my birthday.
+313. tango_n4_541 - "to receive": I got this pen from my friend.
+314. tango_n4_542 - "to present, to give (as a gift)": What should I give my friend who is going back to her home country?
+315. tango_n4_543 - "gift, present": This necklace is a gift from him.
+316. tango_n4_544 - "celebration": I gave a present to my friend to celebrate her/his acceptance to a new school.
+317. tango_n4_545 - "to give, to pass, to hand": I gave the teacher flowers.
+318. tango_n4_546 - "to be happy, to be glad": My mother was very happy at the gift I gave her.
+319. tango_n4_547 - "thanks to ~": Every day is fun thanks to my friends.
+320. tango_n4_548 - "appreciation, thanks": I always give thanks for my friends.
+
+
+### BATCH 33/67 - images 321-330 (tango_n4_549 .. tango_n4_558)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+321. tango_n4_549 - "gratitude": I wrote a letter of gratitude to my teacher.
+322. tango_n4_550 - "to apologize": Be sure to apologize when you've done something wrong.
+323. tango_n4_551 - "restraint, declining": Please don't hesitate to tell me anything.
+324. tango_n4_552 - "to realize, to notice": I cut my hair, but my husband didn't even notice.
+325. tango_n4_553 - "good friend, close friend": I have three close friends.
+326. tango_n4_554 - "senior": My senior at my part-time job always looks after me.
+327. tango_n4_555 - "they": A: Who is that person? B: Oh, they're a high school classmates of mine.
+328. tango_n4_556 - "everyone": Everyone in my family doing all right.
+329. tango_n4_557 - "popular": Maria-san is popular with everyone.
+330. tango_n4_558 - "date": I'm so busy I don't even have time to date.
+
+
+### BATCH 34/67 - images 331-340 (tango_n4_559 .. tango_n4_568)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+331. tango_n4_559 - "to date, to be in a relationship with; to spend time with": ① Since when have those two been dating? ② Please come shopping with me tomorrow.
+332. tango_n4_560 - "to take (a person) with": I want to take my partner to the beach.
+333. tango_n4_561 - "to bring (a person) along": My younger brother brought a girl home.
+334. tango_n4_562 - "arranged meeting to find a marriage partner": Next week, I'm going to an arrange meeting to find a marriage partner at a restaurant.
+335. tango_n4_563 - "engagement": My older sister got engaged to my friend.
+336. tango_n4_564 - "marriage": My older sister is getting married next month.
+337. tango_n4_565 - "to inform, to let (someone) know": I told my friends I got engaged.
+338. tango_n4_566 - "sign, signal": The two people signaled to each other with their eyes.
+339. tango_n4_567 - "fight": Those two are always fighting.
+340. tango_n4_568 - "lie": You mustn't lie to your friend.
+
+
+### BATCH 35/67 - images 341-350 (tango_n4_569 .. tango_n4_578)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+341. tango_n4_569 - "to separate, to break up": The two of them broke up.
+342. tango_n4_570 - "obstacle, hindrance": Something got in the way of our date. This big luggage is a big hindrance.
+343. tango_n4_571 - "he, him; boyfriend": ① My boyfriend is very gentle. ② Is he Tanaka-san's husband?
+344. tango_n4_572 - "her, she; girlfriend": ① After I came to Japan, I got a girlfriend. ② Do you know her name?
+345. tango_n4_573 - "you": He calls me kimi.
+346. tango_n4_574 - "me": I love you.
+347. tango_n4_575 - "single": All of my college friends are still single.
+348. tango_n4_576 - "relationship": What is the relationship between those two?
+349. tango_n4_577 - "important": She is an important person to me.
+350. tango_n4_578 - "special": She is a special person to me.
+
+
+### BATCH 36/67 - images 351-360 (tango_n4_579 .. tango_n4_588)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+351. tango_n4_579 - "to be in trouble, to have trouble with": Are you having any problems with life in Japan?
+352. tango_n4_580 - "forgotten item": I forgot something on the overhead rack on the train.
+353. tango_n4_581 - "to go missing, to be gone": My electronic dictionary is missing.
+354. tango_n4_582 - "to lose": I lost my wallet somewhere yesterday.
+355. tango_n4_583 - "to drop": I dropped my smartphone on the street.
+356. tango_n4_584 - "to fall": My bag fell down there.
+357. tango_n4_585 - "to break, to fall apart": The TV remote broke.
+358. tango_n4_586 - "to fix": Please fix the broken air conditioner.
+359. tango_n4_587 - "to be torn": The book I borrowed from the library was torn.
+360. tango_n4_588 - "to tear": I tore up the letter I got from him.
+
+
+### BATCH 37/67 - images 361-370 (tango_n4_589 .. tango_n4_598)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+361. tango_n4_589 - "to get dirty, to make dirty": I got the shirt I just bought dirty.
+362. tango_n4_590 - "to be dirty": The table is a little dirty.
+363. tango_n4_591 - "to crack, to break, to smash": I broke the department chief's cup.
+364. tango_n4_592 - "to be cracked, to be broken, to be smashed": The windows in the house were shattered by the typhoon.
+365. tango_n4_593 - "sound": There is a loud noise coming from outside.
+366. tango_n4_594 - "to make noise, to be noisy": The people in the room above me are noisy late at night.
+367. tango_n4_595 - "loud, noisy": The sound of cars is very loud in this apartment.
+368. tango_n4_596 - "thief, burglar": A thief got into my home yesterday.
+369. tango_n4_597 - "to steal, to take": A diamond was stolen.
+370. tango_n4_598 - "to catch, to grab": My mother caught the thief.
+
+
+### BATCH 38/67 - images 371-380 (tango_n4_599 .. tango_n4_608)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+371. tango_n4_599 - "to bully, to abuse": Please don't abuse animals.
+372. tango_n4_600 - "to touch": If you press this button, it will make a sound.
+373. tango_n4_601 - "to step on, to stomp": The person next to me on the train stepped on my foot.
+374. tango_n4_602 - "reason": The reason I was late is that I overslept.
+375. tango_n4_603 - "cause, origin": What is the cause of yesterday's fight?
+376. tango_n4_604 - "110 (the number to call the police in Japan)": If I see a burglar, I will call 110.
+377. tango_n4_605 - "emergency exit": Let's confirm the emergency exits of the hotel.
+378. tango_n4_606 - "to run away, to escape": The thief escaped from this window.
+379. tango_n4_607 - "dislikable": There is a dislikable senior at my company.
+380. tango_n4_608 - "no good, useless": My father said no to having a pet.
+
+
+### BATCH 39/67 - images 381-390 (tango_n4_609 .. tango_n4_618)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+381. tango_n4_609 - "not good, wrong, of no use": A: This won't do. B: What's wrong? A: I left my wallet at home.
+382. tango_n4_610 - "fishing": I often go fishing on my days off.
+383. tango_n4_611 - "mountain hiking, mountain climbing": I sometime go mountain hiking with my father.
+384. tango_n4_612 - "camping": Let's go camping once it's spring.
+385. tango_n4_613 - "manga, Japanese comic": Japanese manga are read abroad, too.
+386. tango_n4_614 - "anime, Japanese animation": I came to like Japan from watching anime.
+387. tango_n4_615 - "illustration": In the future, I want to have a job that has to do with illustrations.
+388. tango_n4_616 - "game": I played video games late into the night and overslept.
+389. tango_n4_617 - "tea ceremony": I had my friend teach me tea ceremony.
+390. tango_n4_618 - "kabuki, a form of Japanese theater": I want to go to see kabuki at least one time.
+
+
+### BATCH 40/67 - images 391-400 (tango_n4_619 .. tango_n4_628)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+391. tango_n4_619 - "dance": I want to learn dances from all around the world.
+392. tango_n4_620 - "drama, TV show": I don't watch the news, but I often watch TV shows.
+393. tango_n4_621 - "actor": I'm going to see a movie that features one of my favorite actors.
+394. tango_n4_622 - "song": I'm always listening to Japanese songs.
+395. tango_n4_623 - "classical music": I like classical music.
+396. tango_n4_624 - "concert": I'm going to a concert tomorrow.
+397. tango_n4_625 - "novel": I want to read a Japanese novel.
+398. tango_n4_626 - "cooking class": I've been going to a cooking class since last month.
+399. tango_n4_627 - "contest": I'm going to try entering an essay writing contest.
+400. tango_n4_628 - "to enjoy, to have fun": I'm enjoying life in Japan.
+
+
+### BATCH 41/67 - images 401-410 (tango_n4_629 .. tango_n4_638)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+401. tango_n4_629 - "something looked forward to/to look forward to": I have many things to look forward to. I'm looking forward to going back to my country on New Year's.
+402. tango_n4_630 - "interest": I've always been interested in flower arrangement.
+403. tango_n4_631 - "recording": I forgot to record the movie on TV.
+404. tango_n4_632 - "to gather, to collect": I collected stamps when I was a child.
+405. tango_n4_633 - "exercise": It's best to exercise for your health.
+406. tango_n4_634 - "to run": I run three kilometers every morning.
+407. tango_n4_635 - "to walk": I walk for an hour or more every day.
+408. tango_n4_636 - "jogging": I jog for 30 minutes every morning.
+409. tango_n4_637 - "to stretch, to reach": Let's stretch before we start jogging.
+410. tango_n4_638 - "match, game": We have a match even if it rains.
+
+
+### BATCH 42/67 - images 411-420 (tango_n4_639 .. tango_n4_648)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+411. tango_n4_639 - "tournament, competition, convention": Soon there will be a judo tournament.
+412. tango_n4_640 - "World Cup": I want to win the World Cup.
+413. tango_n4_641 - "to hold, to execute": The Winter Olympics were held in Japan in 1998.
+414. tango_n4_642 - "suspension, temporary stoppage": I heard that they are going to suspend the match if a typhoon comes.
+415. tango_n4_643 - "athlete, player": In the future, I want to be an Olympic athlete.
+416. tango_n4_644 - "team": My favorite team lost.
+417. tango_n4_645 - "to win": Japan won yesterday's game.
+418. tango_n4_646 - "winning a championship": I won the tennis tournament.
+419. tango_n4_647 - "to lose": Even if you lose, there's always next time.
+420. tango_n4_648 - "cheering": I'm going to cheer for my favorite team.
+
+
+### BATCH 43/67 - images 421-430 (tango_n4_649 .. tango_n4_658)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+421. tango_n4_649 - "course": My jogging course is five kilometers.
+422. tango_n4_650 - "venue, meeting place": The kendo venue is over here.
+423. tango_n4_651 - "start": The athletes started together.
+424. tango_n4_652 - "failure, mistake": If you make a mistake, just try again.
+425. tango_n4_653 - "judo": Judo is a sport that was born in Japan.
+426. tango_n4_654 - "swimming": I hated swimming when I was a child.
+427. tango_n4_655 - "baseball": Baseball is a popular sport in Japan.
+428. tango_n4_656 - "to throw": The balls he throws are really fast.
+429. tango_n4_657 - "sports club": The sports club near my house is inexpensive and convenient.
+430. tango_n4_658 - "hair (on one's head)": Yamada-san's hair is long.
+
+
+### BATCH 44/67 - images 431-440 (tango_n4_659 .. tango_n4_668)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+431. tango_n4_659 - "forehead": When you have a fever, you should cool your forehead.
+432. tango_n4_660 - "chin, jaw": I hear that chewing gum is good for your jaw.
+433. tango_n4_661 - "facial hair": My father had facial hair when he was young.
+434. tango_n4_662 - "lip": Her lips are really cute.
+435. tango_n4_663 - "neck": When I woke up, my neck hurt.
+436. tango_n4_664 - "throat": Do you have any good medicine for the throat?
+437. tango_n4_665 - "shoulder": My shoulder hurts.
+438. tango_n4_666 - "arm": Please rotate your arms.
+439. tango_n4_667 - "elbow": My right elbow is red.
+440. tango_n4_668 - "back": Please straighten your back.
+
+
+### BATCH 45/67 - images 441-450 (tango_n4_669 .. tango_n4_678)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+441. tango_n4_669 - "stomach": I ate too much, and now my stomach hurts.
+442. tango_n4_670 - "waist, hip, lower back": My lower back hurts so much I can't walk.
+443. tango_n4_671 - "knee": After running, my knees got sore.
+444. tango_n4_672 - "butt": I was sitting for a while, so my butt hurts.
+445. tango_n4_673 - "finger": I broke a bone in my finger playing volleyball.
+446. tango_n4_674 - "nail": I neatly polish my nails every day.
+447. tango_n4_675 - "bone": I hear calcium is good for the bones.
+448. tango_n4_676 - "blood": I slipped and my foot started bleeding.
+449. tango_n4_677 - "strength, power": My younger sister has more strength than I do.
+450. tango_n4_678 - "height": My height increased by 10 centimeters in one year.
+
+
+### BATCH 46/67 - images 451-460 (tango_n4_679 .. tango_n4_688)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+451. tango_n4_679 - "weight": I check my weight every day.
+452. tango_n4_680 - "woman": The doctor at the hospital I go to is a woman.
+453. tango_n4_681 - "man": The men's bathroom is on the second floor.
+454. tango_n4_682 - "health; healthy": I'm eating vegetables for my health. Let's build a healthy body.
+455. tango_n4_683 - "healthy": Once I started exercising, my body got more healthy.
+456. tango_n4_684 - "vitamin": There aren't enough vitamins in this meal.
+457. tango_n4_685 - "to gain weight": I ate before I went to sleep, so I gained weight.
+458. tango_n4_686 - "to lose weight": I can't lose weight even if I exercise.
+459. tango_n4_687 - "diet": Let's not go on any impossible diets.
+460. tango_n4_688 - "to stop, to quit": My father quit smoking last month.
+
+
+### BATCH 47/67 - images 461-470 (tango_n4_689 .. tango_n4_698)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+461. tango_n4_689 - "to be careful": Be care of your health.
+462. tango_n4_690 - "to get thirsty": I'm really thirsty.
+463. tango_n4_691 - "to get empty (stomach), to get hungry": After playing sports, I've gotten hungry.
+464. tango_n4_692 - "influenza, the flu": I've been absent from school for five days due to the flu.
+465. tango_n4_693 - "to catch a cold": I often caught colds when I was a child.
+466. tango_n4_694 - "fever": I have a fever of 39 degrees, so I can't go to school.
+467. tango_n4_695 - "thermometer": I'm going to take my temperature with a thermometer.
+468. tango_n4_696 - "burn": I burned myself with the hot water in the kettle.
+469. tango_n4_697 - "injury": I injured my knee playing soccer.
+470. tango_n4_698 - "wound, cut": I'm sure this wound will get better right away.
+
+
+### BATCH 48/67 - images 471-480 (tango_n4_699 .. tango_n4_708)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+471. tango_n4_699 - "condition": My stomach's condition is a little strange, so I took some medicine.
+472. tango_n4_700 - "strange, funny": My stomach's feeling funny, so I'm going to take time off from school.
+473. tango_n4_701 - "condition, status": My body's been in bad condition since yesterday.
+474. tango_n4_702 - "feeling sick, feeling ill": I drank too much alcohol, and now I feel sick.
+475. tango_n4_703 - "to collapse; to fall down": ① The house collapsed from the earthquake. ② My grandmother collapsed last night.
+476. tango_n4_704 - "to examine": I always get examined by the doctor in my neighborhood.
+477. tango_n4_705 - "to lie down": Doctor: Please lie down over there.
+478. tango_n4_706 - "to sleep, to rest": Apply this medicine to your wound three times a day.
+479. tango_n4_707 - "to fix, to heal": Please go to sleep early so your cold can heal.
+480. tango_n4_708 - "to heal, to recover": After taking some medicine, I recovered from my cold.
+
+
+### BATCH 49/67 - images 481-490 (tango_n4_709 .. tango_n4_718)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+481. tango_n4_709 - "hospitalization": I was hospitalized due to an injury to my foot.
+482. tango_n4_710 - "leaving a hospital": I've recovered from my illness, so I'm going to leave the hospital tomorrow.
+483. tango_n4_711 - "sick visit, visit someone in the hospital": I went to visit my friend in the hospital.
+484. tango_n4_712 - "to live": I want to live to 100.
+485. tango_n4_713 - "to die, to pass away": The elderly woman in the house next door passed away.
+486. tango_n4_714 - "ambulance": I'll call 119 and request an ambulance.
+487. tango_n4_715 - "dentist": The child is crying at the dentist's.
+488. tango_n4_716 - "nurse": My older sister works as a nurse.
+489. tango_n4_717 - "suit": I wear a suit to work every day.
+490. tango_n4_718 - "kimono": Many people wear kimono to the Coming-of-age Ceremony.
+
+
+### BATCH 50/67 - images 491-500 (tango_n4_719 .. tango_n4_728)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+491. tango_n4_719 - "sock": I sleep with my socks on in the winter.
+492. tango_n4_720 - "underwear": I put underwear in my bag for my trip.
+493. tango_n4_721 - "glove": In the winter, I wear gloves when I go out.
+494. tango_n4_722 - "ring": This is a ring I got from my mother.
+495. tango_n4_723 - "sandals": I'm looking for some sandals that are easy to walk in.
+496. tango_n4_724 - "backpack": There are a lot of textbooks in this backpack.
+497. tango_n4_725 - "accessory": I don't wear any accessories at work.
+498. tango_n4_726 - "pocket": This bag has a lot of pockets.
+499. tango_n4_727 - "string, lace": These shoelaces are pretty.
+500. tango_n4_728 - "hairstyle": What kind of hairstyle do you like?
+
+
+### BATCH 51/67 - images 501-510 (tango_n4_729 .. tango_n4_738)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+501. tango_n4_729 - "hair salon": That hair salon is very expensive.
+502. tango_n4_730 - "cut": I always get my hair cut at that hair salon.
+503. tango_n4_731 - "mirror": I check myself in the mirror before I go out.
+504. tango_n4_732 - "cool": I want to have a cool hairstyle.
+505. tango_n4_733 - "cute": My younger sister loves cute clothes.
+506. tango_n4_734 - "just right, just enough": This bag is just the right size.
+507. tango_n4_735 - "appearance, situation, condition": It so dark I can't see the conditions outside.
+508. tango_n4_736 - "shape": This cookie is in the shape of a star.
+509. tango_n4_737 - "~ times, double, twice as ~": This is twice the cost of that cake.
+510. tango_n4_738 - "~ or more": There were several days in the summer that were 30 degrees Celsius or more.
+
+
+### BATCH 52/67 - images 511-520 (tango_n4_739 .. tango_n4_748)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+511. tango_n4_739 - "~ or less": I always get 50 points or less on kanji tests.
+512. tango_n4_740 - "within, under": I want to buy a watch for under 20,000 yen.
+513. tango_n4_741 - "outside of, except for": Everyone is going on the trip next week except for my older brother.
+514. tango_n4_742 - "both": I'll both this red shirt and this blue shirt.
+515. tango_n4_743 - "leisure, free time/free, available": I'm so busy, I don't have any free time to play. In my free time, I read books.
+516. tango_n4_744 - "normality, regular/ normal, regular, average": I enjoy every normal day. The food and the service at that restaurant is average.
+517. tango_n4_745 - "freedom/free": When I become an adult, I want freedom. Live in Japan is very free.
+518. tango_n4_746 - "polite, courteous": I got a courteous letter from my teacher.
+519. tango_n4_747 - "big, large": There is a large tree in front of the house.
+520. tango_n4_748 - "small, little": The small flowers in the garden are in bloom.
+
+
+### BATCH 53/67 - images 521-530 (tango_n4_749 .. tango_n4_758)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+521. tango_n4_749 - "strange": My younger sister likes strange fashion.
+522. tango_n4_750 - "sufficient, satisfactory": If I can do this, my studying for the N4 will be sufficient.
+523. tango_n4_751 - "beautiful": I've never seen such beautiful scenery.
+524. tango_n4_752 - "dirty, messy": My older brother's room is really messy.
+525. tango_n4_753 - "skillful": He's good at soccer and baseball.
+526. tango_n4_754 - "soft, flexible": The new sofa is really soft.
+527. tango_n4_755 - "hard, stiff": This bread is hard, but delicious.
+528. tango_n4_756 - "detailed, well-informed": The explanations in this dictionary are detailed.
+529. tango_n4_757 - "fine, minute": Please cut the onions finely.
+530. tango_n4_758 - "scary, fearful": This road gets dark and scary at night.
+
+
+### BATCH 54/67 - images 531-540 (tango_n4_759 .. tango_n4_768)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+531. tango_n4_759 - "amazing, dreadful": The rain last night was dreadful.
+532. tango_n4_760 - "magnificent": I was able to have some amazing experiences on my exchange.
+533. tango_n4_761 - "correct": I don't know if this answer is correct or not.
+534. tango_n4_762 - "terrible": I got a terrible score on yesterday's test.
+535. tango_n4_763 - "fat, thick": This Japanese radish is really thick.
+536. tango_n4_764 - "thin, slender": Her legs are really slender.
+537. tango_n4_765 - "thick": It's cold, so I want a thick coat.
+538. tango_n4_766 - "shallow": This river is shallow, so children can play in it.
+539. tango_n4_767 - "deep": The middle of this pool is very deep.
+540. tango_n4_768 - "sleepy": My stomach is full, so I'm a little sleepy.
+
+
+### BATCH 55/67 - images 541-550 (tango_n4_769 .. tango_n4_778)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+541. tango_n4_769 - "rare, uncommon": A diamond this bog is rare.
+542. tango_n4_770 - "to increase": The foreign customers in this restaurant are increasing.
+543. tango_n4_771 - "to increase (something)": I want to get a part-time job and increase my savings.
+544. tango_n4_772 - "to decrease": In Japan, the population is decreasing.
+545. tango_n4_773 - "to decrease (something)": I exercised and decreased my weight.
+546. tango_n4_774 - "to be different, to be wrong": My older sister and I go to different colleges.
+547. tango_n4_775 - "to change": I'm going to change my hairstyle when spring comes.
+548. tango_n4_776 - "to be changed": After getting my hair cut, my mood changed.
+549. tango_n4_777 - "to be visible": Mt. Fuji is clearly visible from the window.
+550. tango_n4_778 - "to be audible, to be able to hear": I can hear children's voices from the neighborhood.
+
+
+### BATCH 56/67 - images 551-560 (tango_n4_779 .. tango_n4_788)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+551. tango_n4_779 - "to be vacant": This hotel is really popular, so it has no vacancies.
+552. tango_n4_780 - "to come undone": My shirt button came undone.
+553. tango_n4_781 - "to tear, to rip": My little brother's shoelace ripped.
+554. tango_n4_782 - "newspaper company": Starting next month, I'll be working at a newspaper company in Tokyo.
+555. tango_n4_783 - "TV station": I want to take a test for a TV station.
+556. tango_n4_784 - "(TV, radio) program, show": What kind of shows are you watching?
+557. tango_n4_785 - "online news": I read online news every day.
+558. tango_n4_786 - "information": On the Internet, you can find out world news right away.
+559. tango_n4_787 - "data": I gathered data from around the world.
+560. tango_n4_788 - "keyword": Let's write down keywords from the news.
+
+
+### BATCH 57/67 - images 561-570 (tango_n4_789 .. tango_n4_798)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+561. tango_n4_789 - "broadcast": This program is being broadcast overseas, too.
+562. tango_n4_790 - "to convey, to report": They report difficult news in a simple manner.
+563. tango_n4_791 - "fire": There was a fire near the station.
+564. tango_n4_792 - "to break out (fire)": There are many accidents on this road.
+565. tango_n4_793 - "discovery": An elementary school student discovered a new star.
+566. tango_n4_794 - "to be found": I found the documents I left on the train.
+567. tango_n4_795 - "to find": I found the dog that went missing in the park.
+568. tango_n4_796 - "announcement": My favorite author announced the release of a new novel.
+569. tango_n4_797 - "speech": The president's speech was magnificent.
+570. tango_n4_798 - "to be continued": Rainy days have continued for two weeks.
+
+
+### BATCH 58/67 - images 571-580 (tango_n4_799 .. tango_n4_808)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+571. tango_n4_799 - "to continue": I intend to keep studying Japanese from now on.
+572. tango_n4_800 - "promise": I promised to go play with my friend.
+573. tango_n4_801 - "to keep (a promise)": You must keep your promises.
+574. tango_n4_802 - "to break (a promise)": It's not good to break your promises.
+575. tango_n4_803 - "to make it in time": I won't make it to the concert in time, even if I take a taxi.
+576. tango_n4_804 - "to be late": I was an hour late to my date.
+577. tango_n4_805 - "cancellation": I cancelled my trip due to the typhoon.
+578. tango_n4_806 - "reason, explanation": I don't know why my little sister is crying.
+579. tango_n4_807 - "to invite": Let's invite Maria-san to the party, too.
+580. tango_n4_808 - "notice, communication": I'm going to communicate the time of the party to everyone.
+
+
+### BATCH 59/67 - images 581-590 (tango_n4_809 .. tango_n4_818)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+581. tango_n4_809 - "to have a call": There was a call from my friend from my home country.
+582. tango_n4_810 - "meal, dining": Let's have a meal with everyone next week.
+583. tango_n4_811 - "participation": I'm going to participate in the employee trip next week.
+584. tango_n4_812 - "convenience, schedule": Everyone, please tell me your schedules for next week.
+585. tango_n4_813 - "plan": I plan to take a trip to Hokkaido during the extended weekend.
+586. tango_n4_814 - "partner, opponent, person": The person who called just now was my mother.
+587. tango_n4_815 - "chance, opportunity": Nowadays, I have more opportunities to drink alcohol.
+588. tango_n4_816 - "happy, glad": I was really happy to get a ring from him.
+589. tango_n4_817 - "to laugh, to smile": Something good is bound to happen if you're always smiling.
+590. tango_n4_818 - "happiness, fortune/fortunate, happy": What color do you think happiness is? Everyone in my family is in good health and happy.
+
+
+### BATCH 60/67 - images 591-600 (tango_n4_819 .. tango_n4_828)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+591. tango_n4_819 - "easy, comfortable": I want a comfortable chair to rest in at home.
+592. tango_n4_820 - "relief/secure, stable": I was relieved to find the wallet I had lost. It would be a relief if I had a friend that lived nearby.
+593. tango_n4_821 - "to believe, to trust": I believe his words.
+594. tango_n4_822 - "to pray": I pray for world peace.
+595. tango_n4_823 - "sad": My friend went back to her home country, so I'm very sad.
+596. tango_n4_824 - "lonely": I was so lonely for about a month after I came to Japan.
+597. tango_n4_825 - "to cry, to weep": A baby was crying on the train.
+598. tango_n4_826 - "tear": I saw a movie about animals and cried.
+599. tango_n4_827 - "worry, unease/worrisome, uneasy": You don't have to worry about anything. I'm worried about whether I'll be able to pass the test.
+600. tango_n4_828 - "boring, not interesting": That movie was boring.
+
+
+### BATCH 61/67 - images 601-610 (tango_n4_829 .. tango_n4_838)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+601. tango_n4_829 - "disappointment": I was disappointed to hear that an actor that I liked got married.
+602. tango_n4_830 - "to give up": You mustn't give up on everything so easily.
+603. tango_n4_831 - "nervousness": I was really nervous during my speech yesterday.
+604. tango_n4_832 - "embarrassing, shameful": I'm embarrassed that I can't read simple kanji.
+605. tango_n4_833 - "surprise": A: I hear there is a 10,000,000-yen plate at Tanaka-san's house. B: What? That's a surprise!
+606. tango_n4_834 - "to be surprised, to be astonished": I was surprised by a loud voice on the street in the middle of the night.
+607. tango_n4_835 - "to get angry": When my father gets angry, his face turns red.
+608. tango_n4_836 - "mood, feeling": On day when I wake up early, my mood is good.
+609. tango_n4_837 - "bad mood": I've been feeling bad since this morning.
+610. tango_n4_838 - "heart, mind, spirit": My body and my mind are healthy.
+
+
+### BATCH 62/67 - images 611-620 (tango_n4_839 .. tango_n4_848)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+611. tango_n4_839 - "stress": There is no one who is without stress.
+612. tango_n4_840 - "homesick": Sometimes I get homesick and cry.
+613. tango_n4_841 - "absolutely, be sure to ~": Please be sure to bring your homework tomorrow.
+614. tango_n4_842 - "surely": If you do your best, I'm sure you'll pass.
+615. tango_n4_843 - "tightly, firmly, strongly": Please hang the poster securely.
+616. tango_n4_844 - "neatly, accurately": Please put the books back neatly on the bookshelf.
+617. tango_n4_845 - "properly": Be sure to turn off the light when you leave the bathroom.
+618. tango_n4_846 - "absolutely": I absolutely want to win the match tomorrow.
+619. tango_n4_847 - "certainly, without fail": Please be certain to contact me when you come to Japan.
+620. tango_n4_848 - "as much as possible": A typhoon is coming, so please try to go home as soon as possible.
+
+
+### BATCH 63/67 - images 621-630 (tango_n4_849 .. tango_n4_858)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+621. tango_n4_849 - "clearly": On clear days, Mt. Fuji can be seen clearly.
+622. tango_n4_850 - "fairly, quite": You've gotten quite good at Japanese.
+623. tango_n4_851 - "pretty, quite": That French restaurant looks pretty expensive.
+624. tango_n4_852 - "largely": I've come to largely understand the Japanese people's way of thinking.
+625. tango_n4_853 - "more, ~er": You won't be able to pass if you don't try harder.
+626. tango_n4_854 - "mostly": The report is mostly finished.
+627. tango_n4_855 - "usually": On my days off, I usually stay at home.
+628. tango_n4_856 - "occasionally": Occasionally, I go to restaurants in the neighborhood.
+629. tango_n4_857 - "(not) at all, completely": I don't understand Japanese news at all.
+630. tango_n4_858 - "never, absolutely (not)": Please don't ever touch this painting.
+
+
+### BATCH 64/67 - images 631-640 (tango_n4_859 .. tango_n4_868)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+631. tango_n4_859 - "not even a little": I don't understand Japanese news even a little bit.
+632. tango_n4_860 - "still, (not) yet": ① I'm still using this dictionary. ② I haven't eaten lunch yet.
+633. tango_n4_861 - "mostly": Even though I studied kanji, I've mostly forgotten it.
+634. tango_n4_862 - "considerably, rather, (not) really": Buses aren't really running due to the snow.
+635. tango_n4_863 - "suddenly": The sky suddenly got dark in the afternoon.
+636. tango_n4_864 - "for a while, for a bit": Please wait for a bit.
+637. tango_n4_865 - "continuously, for a long time": ① I had always wanted to go on an exchange to Japan. ② My younger sister is much smarter than I am.
+638. tango_n4_866 - "as is, just like that": The coat I took off is still lying just as I left it.
+639. tango_n4_867 - "soon": It's already 9:00, so I'm going home soon.
+640. tango_n4_868 - "finally, ultimately": Those two fight often, and they've finally broken up.
+
+
+### BATCH 65/67 - images 641-650 (tango_n4_869 .. tango_n4_878)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+641. tango_n4_869 - "at last, finally": I finally met someone I want to marry.
+642. tango_n4_870 - "certainly, surely": I'm sure the meeting tomorrow starts at 3:00.
+643. tango_n4_871 - "somehow, seemingly": It would seem that something good has happened to my brother.
+644. tango_n4_872 - "for example": During New Year's, I want to travel somewhere in Asia, like Thailand for example.
+645. tango_n4_873 - "direct": Please talk to her yourself directly.
+646. tango_n4_874 - "especially": Among sweet things, I especially love cakes.
+647. tango_n4_875 - "steadily, rapidly": The number of exchange students is steadily increasing.
+648. tango_n4_876 - "I see": A: This book is good because it also has practice questions. B: I see. That does look good.
+649. tango_n4_877 - "first, for the first time": I was able to go to Hokkaido for the first time last month.
+650. tango_n4_878 - "at first, first": First, please finely chop the carrots.
+
+
+### BATCH 66/67 - images 651-660 (tango_n4_879 .. tango_n4_888)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+651. tango_n4_879 - "if, in the event of ~": If you have time, would you like to get lunch?
+652. tango_n4_880 - "of course": If I'm invited to the wedding, I would of course like to attend.
+653. tango_n4_881 - "as expected": As expected, Team A won the match yesterday.
+654. tango_n4_882 - "actually, the truth is ~": Actually, I'll be going back to my country next month.
+655. tango_n4_883 - "how": How would you like some coffee?
+656. tango_n4_884 - "to one's best ability/ with all one's might": I study as best as I can everyday.
+657. tango_n4_885 - "a great number of (something)": This beach is famous, so many people come here.
+658. tango_n4_886 - "therefore": I love children. Therefore, I want to be a kindergarten teacher.
+659. tango_n4_887 - "then, so": I had a fever yesterday. So, I took the day off from school.
+660. tango_n4_888 - "also, or": Please contact me by phone or e-mail.
+
+
+### BATCH 67/67 - images 661-666 (tango_n4_889 .. tango_n4_894)
+
+Generate 6 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+661. tango_n4_889 - "besides": Hotel fairs are expensive during extended weekends. Besides, it's crowded no matter where you go.
+662. tango_n4_890 - "furthermore, in addition": He's handsome. Furthermore, he's very rich.
+663. tango_n4_891 - "in such case, then": The sky suddenly got dark. Then, it started raining heavily.
+664. tango_n4_892 - "however, but": Japan is an easy place to live. But the cost of living is high.
+665. tango_n4_893 - "then, if so, then ~": A: This is my first time coming to Japan. B: Then let me show you around Tokyo.
+666. tango_n4_894 - "by the way": A: The rain yesterday was terrible. B: Yeah. By the way, are you free tomorrow night?

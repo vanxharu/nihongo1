@@ -14,7 +14,15 @@
     "align:shadowing": "tsx scripts/align-shadowing.ts",
     "prepare:shadowing": "tsx scripts/prepare-shadowing.ts",
     "prepare:shadowing:sentences": "tsx scripts/prepare-shadowing-sentences.ts",
-    "import:shadowing": "tsx scripts/import-shadowing.ts"
+    "import:shadowing": "tsx scripts/import-shadowing.ts",
+    "vocab:prompts": "node scripts/build-vocab-prompts.mjs",
+    "import:vocab": "node scripts/import-vocab-illustrations.mjs",
+    "vocab:manifest": "node scripts/import-vocab-illustrations.mjs --manifest",
+    "vocab:inbox": "node scripts/import-ordered-images.mjs",
+    "vocab:inbox:apply": "node scripts/import-ordered-images.mjs --apply",
+    "vocab:inbox:sheet": "node scripts/import-ordered-images.mjs --sheet",
+    "image:gemini": "node scripts/generate-images-gemini.mjs",
+    "image:probe": "node scripts/generate-images-gemini.mjs --probe"
   },
   "dependencies": {
     "@animate-ui/react": "^2.2.1",
@@ -57,6 +65,8 @@
     "@types/ws": "^8.18.1",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
+    "lucide-static": "^1.61.0",
+    "sharp": "^0.35.5",
     "tailwindcss": "^4.1.14",
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",

@@ -1,0 +1,5234 @@
+[
+  {
+    "id": "tango_n4_231",
+    "word": "貯金〈する〉",
+    "meaning": "savings",
+    "example": "I'm saving for a trip.",
+    "icon": "piggy-bank",
+    "reason": "override:savings"
+  },
+  {
+    "id": "tango_n4_233",
+    "word": "名刺",
+    "meaning": "business card",
+    "example": "The name on the business card is wrong.",
+    "icon": "contact",
+    "reason": "override:business card"
+  },
+  {
+    "id": "tango_n4_234",
+    "word": "営業〈する〉",
+    "meaning": "sales",
+    "example": "Working in sales is fun.",
+    "icon": "chart-no-axes-combined",
+    "reason": "override:sales"
+  },
+  {
+    "id": "tango_n4_235",
+    "word": "あいさつ〈する〉",
+    "meaning": "greeting",
+    "example": "I always greet people enthusiastically.",
+    "icon": "hand-heart",
+    "reason": "override:greeting"
+  },
+  {
+    "id": "tango_n4_236",
+    "word": "会議〈する〉",
+    "meaning": "meeting",
+    "example": "Today's meeting is from 3:00.",
+    "icon": "users",
+    "reason": "override:meeting"
+  },
+  {
+    "id": "tango_n4_237",
+    "word": "ミーティング",
+    "meaning": "meeting",
+    "example": "Let's have a meeting while eating lunch.",
+    "icon": "users",
+    "reason": "override:meeting"
+  },
+  {
+    "id": "tango_n4_239",
+    "word": "アイディア",
+    "meaning": "idea",
+    "example": "The department chief's idea is interesting.",
+    "icon": "lightbulb",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_240",
+    "word": "スケジュール",
+    "meaning": "schedule",
+    "example": "Do you know the president's schedule?",
+    "icon": "calendar-clock",
+    "reason": "override:schedule"
+  },
+  {
+    "id": "tango_n4_241",
+    "word": "出張〈する〉",
+    "meaning": "business trip",
+    "example": "My father often goes to America on business trips.",
+    "icon": "luggage",
+    "reason": "override:business trip"
+  },
+  {
+    "id": "tango_n4_242",
+    "word": "もどる",
+    "meaning": "to return, to come back",
+    "example": "A: What time is Tanaka-san coming back?\nB: I think around 3:00.",
+    "icon": "undo",
+    "reason": "override:return"
+  },
+  {
+    "id": "tango_n4_243",
+    "word": "もどす",
+    "meaning": "to return, to give back",
+    "example": "Please return the newspapers here after you read them.",
+    "icon": "undo",
+    "reason": "override:return"
+  },
+  {
+    "id": "tango_n4_244",
+    "word": "本社",
+    "meaning": "main office",
+    "example": "I'm going to the main office in Tokyo starting in the spring.",
+    "icon": "building-2",
+    "reason": "override:main office"
+  },
+  {
+    "id": "tango_n4_245",
+    "word": "社長",
+    "meaning": "president",
+    "example": "The president of my company is young.",
+    "icon": "user-round",
+    "reason": "override:president"
+  },
+  {
+    "id": "tango_n4_247",
+    "word": "規則",
+    "meaning": "rule, regulation",
+    "example": "Do you know this company's rules and regulations?",
+    "icon": "scroll-text",
+    "reason": "override:rule"
+  },
+  {
+    "id": "tango_n4_248",
+    "word": "決まる",
+    "meaning": "to be decided",
+    "example": "My new part-time job has been decided.",
+    "icon": "check-check",
+    "reason": "override:decided"
+  },
+  {
+    "id": "tango_n4_249",
+    "word": "決める",
+    "meaning": "to decide",
+    "example": "Let's decide the time of the meeting.",
+    "icon": "check-check",
+    "reason": "override:decide"
+  },
+  {
+    "id": "tango_n4_250",
+    "word": "きょか〈する〉",
+    "meaning": "permission",
+    "example": "Please receive permission when you want to take time off.",
+    "icon": "key-round",
+    "reason": "override:permission"
+  },
+  {
+    "id": "tango_n4_251",
+    "word": "(はんこを) 押す",
+    "meaning": "to stamp (a seal)",
+    "example": "Please stamp your seal here.",
+    "icon": "stamp",
+    "reason": "override:stamp"
+  },
+  {
+    "id": "tango_n4_252",
+    "word": "ちこく〈する〉",
+    "meaning": "to be late, being late",
+    "example": "You mustn't be late by even one minute.",
+    "icon": "alarm-clock",
+    "reason": "override:late"
+  },
+  {
+    "id": "tango_n4_253",
+    "word": "技術",
+    "meaning": "technology",
+    "example": "What kind of technology does this company have?",
+    "icon": "cpu",
+    "reason": "override:technology"
+  },
+  {
+    "id": "tango_n4_255",
+    "word": "ソフト",
+    "meaning": "software",
+    "example": "I want to have a job where I make computer software.",
+    "icon": "folder-code",
+    "reason": "override:software"
+  },
+  {
+    "id": "tango_n4_256",
+    "word": "書類",
+    "meaning": "document",
+    "example": "Please submit these documents by tomorrow.",
+    "icon": "file-text",
+    "reason": "override:document"
+  },
+  {
+    "id": "tango_n4_257",
+    "word": "ファイル",
+    "meaning": "file",
+    "example": "I'm going to put these materials in the file.",
+    "icon": "file-text",
+    "reason": "override:file"
+  },
+  {
+    "id": "tango_n4_258",
+    "word": "入力〈する〉",
+    "meaning": "input",
+    "example": "Please input things here in English.",
+    "icon": "text-cursor-input",
+    "reason": "override:input"
+  },
+  {
+    "id": "tango_n4_259",
+    "word": "ほんやく〈する〉",
+    "meaning": "translation",
+    "example": "I will translate Chinese into Japanese.",
+    "icon": "languages",
+    "reason": "override:translation"
+  },
+  {
+    "id": "tango_n4_260",
+    "word": "通訳〈する〉",
+    "meaning": "interpreting",
+    "example": "I've wanted to be an interpreter since I was an elementary school student.",
+    "icon": "languages",
+    "reason": "override:interpreting"
+  },
+  {
+    "id": "tango_n4_261",
+    "word": "方法",
+    "meaning": "method",
+    "example": "Please teach me how to get better at Japanese.",
+    "icon": "workflow",
+    "reason": "override:method"
+  },
+  {
+    "id": "tango_n4_263",
+    "word": "慣れる",
+    "meaning": "to get used to",
+    "example": "I've recently gotten used to my job.",
+    "icon": "repeat",
+    "reason": "override:get used to"
+  },
+  {
+    "id": "tango_n4_264",
+    "word": "(うまく) いく",
+    "meaning": "to go well",
+    "example": "I wonder if the speech tomorrow will go well.",
+    "icon": "thumbs-up",
+    "reason": "override:go well"
+  },
+  {
+    "id": "tango_n4_265",
+    "word": "成功〈する〉",
+    "meaning": "success",
+    "example": "Tanaka-san succeeded at his job.",
+    "icon": "trophy",
+    "reason": "override:success"
+  },
+  {
+    "id": "tango_n4_266",
+    "word": "たのむ",
+    "meaning": "to ask, to request",
+    "example": "I was asked to do a job by the store manager.",
+    "icon": "message-circle-question-mark",
+    "reason": "override:ask"
+  },
+  {
+    "id": "tango_n4_267",
+    "word": "手伝う",
+    "meaning": "to help",
+    "example": "Please help us interpret French.",
+    "icon": "life-buoy",
+    "reason": "override:help"
+  },
+  {
+    "id": "tango_n4_269",
+    "word": "むり〈な〉",
+    "meaning": "the impossible/impossible",
+    "example": "Please don't say such impossible things.\nIt's impossible to work part-time everyday.",
+    "icon": "circle-slash",
+    "reason": "override:impossible"
+  },
+  {
+    "id": "tango_n4_270",
+    "word": "急ぐ",
+    "meaning": "to hurry",
+    "example": "We don't have much time, so let's hurry.",
+    "icon": "timer",
+    "reason": "override:hurry"
+  },
+  {
+    "id": "tango_n4_271",
+    "word": "昼休み",
+    "meaning": "lunch break",
+    "example": "My lunch break is one hour starting at 12:00.",
+    "icon": "split",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_272",
+    "word": "休けい〈する〉",
+    "meaning": "break",
+    "example": "It's 3:00, so let's take a break.",
+    "icon": "triangle-alert",
+    "reason": "override:break"
+  },
+  {
+    "id": "tango_n4_273",
+    "word": "忘年会",
+    "meaning": "year-end party",
+    "example": "Why don't we have our year-end party next week?",
+    "icon": "list-end",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_274",
+    "word": "公務員",
+    "meaning": "civil servant",
+    "example": "Both my father and my mother are civil servants.",
+    "icon": "landmark",
+    "reason": "override:civil servant"
+  },
+  {
+    "id": "tango_n4_275",
+    "word": "弁護士",
+    "meaning": "lawyer",
+    "example": "It's difficult to become a lawyer.",
+    "icon": "scale",
+    "reason": "override:lawyer"
+  },
+  {
+    "id": "tango_n4_276",
+    "word": "工場",
+    "meaning": "factory",
+    "example": "I worked part-time at a bread factory.",
+    "icon": "robot-arm",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_277",
+    "word": "事務所",
+    "meaning": "office",
+    "example": "I'm eating lunch at the office.",
+    "icon": "building-2",
+    "reason": "override:office"
+  },
+  {
+    "id": "tango_n4_278",
+    "word": "ガイドブック",
+    "meaning": "guidebook",
+    "example": "I bought a guidebook at a book store.",
+    "icon": "book-open",
+    "reason": "override:guidebook"
+  },
+  {
+    "id": "tango_n4_279",
+    "word": "時こく表",
+    "meaning": "timetable",
+    "example": "Where is the train timetable?",
+    "icon": "calendar-clock",
+    "reason": "override:timetable"
+  },
+  {
+    "id": "tango_n4_280",
+    "word": "計画〈する〉",
+    "meaning": "plan",
+    "example": "This year, I plan to go a trip with my family.",
+    "icon": "clipboard-list",
+    "reason": "override:plan"
+  },
+  {
+    "id": "tango_n4_281",
+    "word": "遠く",
+    "meaning": "far (away)",
+    "example": "Sometimes, I like to travel to someplace far away.",
+    "icon": "map-pin-off",
+    "reason": "override:far"
+  },
+  {
+    "id": "tango_n4_282",
+    "word": "海外",
+    "meaning": "overseas",
+    "example": "I would like to travel overseas during summer vacation.",
+    "icon": "globe",
+    "reason": "override:overseas"
+  },
+  {
+    "id": "tango_n4_283",
+    "word": "国内",
+    "meaning": "domestic, in the country",
+    "example": "In the summer, I'm going to travel the country with my mother.",
+    "icon": "guitar",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_284",
+    "word": "景色",
+    "meaning": "scenery",
+    "example": "The scenery visible from here is really beautiful.",
+    "icon": "image",
+    "reason": "override:scenery"
+  },
+  {
+    "id": "tango_n4_285",
+    "word": "[お]祭り",
+    "meaning": "festival",
+    "example": "There are many interesting festivals in Japan.",
+    "icon": "balloon",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_286",
+    "word": "花火",
+    "meaning": "fireworks",
+    "example": "Japanese fireworks engineering is the best in the world.",
+    "icon": "sparkles",
+    "reason": "override:fireworks"
+  },
+  {
+    "id": "tango_n4_287",
+    "word": "連休",
+    "meaning": "extended weekend, ~day weekend",
+    "example": "I'm happy for the four-day weekend we're about to have.",
+    "icon": "sunrise",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_288",
+    "word": "[お]正月",
+    "meaning": "New Year's",
+    "example": "I intend to go back to my company during the New Year's holiday.",
+    "icon": "calendar-plus",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_289",
+    "word": "旅行社",
+    "meaning": "travel agency",
+    "example": "The travel agency near the station is really kind.",
+    "icon": "map",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_291",
+    "word": "シングル(ベッド)",
+    "meaning": "room with a single bed",
+    "example": "I reserved a room with a single bed.",
+    "icon": "bed-single",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_292",
+    "word": "予約〈する〉",
+    "meaning": "reservation",
+    "example": "You should make a hotel reservation soon.",
+    "icon": "calendar-check",
+    "reason": "override:reservation"
+  },
+  {
+    "id": "tango_n4_293",
+    "word": "したく〈する〉",
+    "meaning": "preparations",
+    "example": "I'm making preparations for my trip.",
+    "icon": "list-checks",
+    "reason": "override:preparations"
+  },
+  {
+    "id": "tango_n4_294",
+    "word": "空港",
+    "meaning": "airport",
+    "example": "I'm going from here to the airport by bus.",
+    "icon": "plane",
+    "reason": "override:airport"
+  },
+  {
+    "id": "tango_n4_295",
+    "word": "両替〈する〉",
+    "meaning": "exchange",
+    "example": "Where should I exchange money into Japanese yen?",
+    "icon": "badge-japanese-yen",
+    "reason": "score:3.3"
+  },
+  {
+    "id": "tango_n4_296",
+    "word": "出発〈する〉",
+    "meaning": "departing",
+    "example": "The plane will depart soon.",
+    "icon": "plane-takeoff",
+    "reason": "override:departing"
+  },
+  {
+    "id": "tango_n4_297",
+    "word": "到着〈する〉",
+    "meaning": "arrival",
+    "example": "What time will you arrive in Japan?",
+    "icon": "plane-landing",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_298",
+    "word": "帰国〈する〉",
+    "meaning": "returning to one's country",
+    "example": "I must go back to my country next month.",
+    "icon": "guitar",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_299",
+    "word": "旅館",
+    "meaning": "Japanese-style inn",
+    "example": "This Japanese-style inn is very famous.",
+    "icon": "line-style",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_300",
+    "word": "フロント",
+    "meaning": "front desk",
+    "example": "I will show my passport at the hotel front desk.",
+    "icon": "lamp-desk",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_301",
+    "word": "泊まる",
+    "meaning": "to stay",
+    "example": "I want to stay at that famous Japanese-style inn.",
+    "icon": "bed-double",
+    "reason": "override:stay"
+  },
+  {
+    "id": "tango_n4_302",
+    "word": "すごす",
+    "meaning": "to spend",
+    "example": "I want to spend my time living leisurely in a warm country.",
+    "icon": "hourglass",
+    "reason": "override:spend"
+  },
+  {
+    "id": "tango_n4_303",
+    "word": "経験〈する〉",
+    "meaning": "experience",
+    "example": "I will experience a lot when I am young.",
+    "icon": "award",
+    "reason": "override:experience"
+  },
+  {
+    "id": "tango_n4_304",
+    "word": "見物〈する〉",
+    "meaning": "sightseeing",
+    "example": "I got on a bus and went sightseeing in Tokyo.",
+    "icon": "binoculars",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_305",
+    "word": "はがき",
+    "meaning": "postcard",
+    "example": "My friend sent me a beautiful postcard.",
+    "icon": "mail",
+    "reason": "override:postcard"
+  },
+  {
+    "id": "tango_n4_306",
+    "word": "和食",
+    "meaning": "Japanese food",
+    "example": "Japanese cuisine is called washoku.",
+    "icon": "beef",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_307",
+    "word": "洋食",
+    "meaning": "Western food",
+    "example": "Today, I want to eat Western food.",
+    "icon": "beef",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_308",
+    "word": "ステーキ",
+    "meaning": "steak",
+    "example": "I ate a 400 gram steak by myself.",
+    "icon": "beef",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_309",
+    "word": "ハンバーグ",
+    "meaning": "hamburger steak",
+    "example": "Tofu hamburger steak is good for you.",
+    "icon": "menu",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_310",
+    "word": "サラダ",
+    "meaning": "salad",
+    "example": "I eat a lot of salad every day.",
+    "icon": "leafy-green",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_311",
+    "word": "ケーキ",
+    "meaning": "cake",
+    "example": "I eat cake at 3:00 every day.",
+    "icon": "cake-slice",
+    "reason": "override:cake"
+  },
+  {
+    "id": "tango_n4_312",
+    "word": "メニュー",
+    "meaning": "menu",
+    "example": "What's on the menu for dinner tonight?",
+    "icon": "ellipsis-vertical",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_313",
+    "word": "食べ放題",
+    "meaning": "all-you-can-eat",
+    "example": "That restaurant has an all-you-can-eat menu for 2,000 yen.",
+    "icon": "cooking-pot",
+    "reason": "score:3.1"
+  },
+  {
+    "id": "tango_n4_314",
+    "word": "注文〈する〉",
+    "meaning": "order",
+    "example": "I ordered a lot of food with meat.",
+    "icon": "list-ordered",
+    "reason": "score:3.4"
+  },
+  {
+    "id": "tango_n4_315",
+    "word": "ごちそう〈する〉",
+    "meaning": "treating to a meal",
+    "example": "On my birthday, my friend treated me to a meal.",
+    "icon": "beef",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_316",
+    "word": "アルコール",
+    "meaning": "alcohol",
+    "example": "I can't drink alcohol, so I ordered some oolong tea.",
+    "icon": "beer",
+    "reason": "score:4.6"
+  },
+  {
+    "id": "tango_n4_317",
+    "word": "かんぱい〈する〉",
+    "meaning": "toast",
+    "example": "Let's have a toast with beer.",
+    "icon": "avocado",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_319",
+    "word": "しょうゆ",
+    "meaning": "soy sauce",
+    "example": "Soy sauce is used in this dish.",
+    "icon": "flask-round",
+    "reason": "override:soy sauce"
+  },
+  {
+    "id": "tango_n4_320",
+    "word": "ソース",
+    "meaning": "sauce",
+    "example": "This dish goes well with sauce.",
+    "icon": "flask-round",
+    "reason": "override:sauce"
+  },
+  {
+    "id": "tango_n4_321",
+    "word": "(しょうゆを) つける",
+    "meaning": "to put in soy sauce",
+    "example": "This is good if you put it in soy sauce.",
+    "icon": "flask-round",
+    "reason": "override:soy sauce"
+  },
+  {
+    "id": "tango_n4_322",
+    "word": "味",
+    "meaning": "taste, flavor",
+    "example": "I love the way the food at this restaurant tastes.",
+    "icon": "mouth",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_323",
+    "word": "(味が) うすい",
+    "meaning": "thin (flavor)",
+    "example": "The miso soup is a little thin today.",
+    "icon": "minus",
+    "reason": "override:thin"
+  },
+  {
+    "id": "tango_n4_324",
+    "word": "(味が) こい",
+    "meaning": "rich, thick (flavor)",
+    "example": "I like thick tea.",
+    "icon": "rectangle-horizontal",
+    "reason": "override:thick"
+  },
+  {
+    "id": "tango_n4_325",
+    "word": "にがい",
+    "meaning": "bitter",
+    "example": "Beer is bitter, so I don't drink it much.",
+    "icon": "coffee",
+    "reason": "override:bitter"
+  },
+  {
+    "id": "tango_n4_326",
+    "word": "におい",
+    "meaning": "smell",
+    "example": "There is a nice smell coming from the kitchen.",
+    "icon": "perfume-bottle",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_327",
+    "word": "かむ",
+    "meaning": "to chew, to bite",
+    "example": "Make sure to chew your food thoroughly when eating.",
+    "icon": "apple",
+    "reason": "score:3.6"
+  },
+  {
+    "id": "tango_n4_328",
+    "word": "量",
+    "meaning": "amount, portion",
+    "example": "This restaurant's spaghetti's portions are big.",
+    "icon": "scale",
+    "reason": "override:amount"
+  },
+  {
+    "id": "tango_n4_329",
+    "word": "残す",
+    "meaning": "to leave",
+    "example": "I left a little rice.",
+    "icon": "log-out",
+    "reason": "override:leave"
+  },
+  {
+    "id": "tango_n4_330",
+    "word": "残る",
+    "meaning": "to remain, to be left over",
+    "example": "If there is any left over food, let's eat it tomorrow.",
+    "icon": "archive",
+    "reason": "override:remain"
+  },
+  {
+    "id": "tango_n4_331",
+    "word": "チャレンジ〈する〉",
+    "meaning": "challenge",
+    "example": "I want to try Thai food.",
+    "icon": "sword",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_332",
+    "word": "材料",
+    "meaning": "ingredient",
+    "example": "I'm going to make a dish with the ingredients in the refrigerator.",
+    "icon": "avocado",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_333",
+    "word": "半分",
+    "meaning": "half",
+    "example": "Please cut the tomato in half.",
+    "icon": "pie-chart",
+    "reason": "override:half"
+  },
+  {
+    "id": "tango_n4_334",
+    "word": "はかる",
+    "meaning": "to measure",
+    "example": "I measure the salt and sugar with a spoon.",
+    "icon": "weight-tilde",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_335",
+    "word": "まぜる",
+    "meaning": "to mix",
+    "example": "Please mix the meat and onions well.",
+    "icon": "blender",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_336",
+    "word": "道具",
+    "meaning": "tool",
+    "example": "I bought some convenient tools for the kitchen.",
+    "icon": "frame",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_337",
+    "word": "なべ",
+    "meaning": "pot",
+    "example": "Please put water in the pot.",
+    "icon": "plant-pot",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_338",
+    "word": "ふた",
+    "meaning": "lid",
+    "example": "Where is the lid for this bottle?",
+    "icon": "circle",
+    "reason": "override:lid"
+  },
+  {
+    "id": "tango_n4_339",
+    "word": "[お]皿",
+    "meaning": "plate",
+    "example": "Let's use a white plate for this dish.",
+    "icon": "circle",
+    "reason": "override:plate"
+  },
+  {
+    "id": "tango_n4_340",
+    "word": "ちゃわん",
+    "meaning": "bowl",
+    "example": "Whose large bowl is this?",
+    "icon": "soup",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_341",
+    "word": "用意〈する〉",
+    "meaning": "preparations",
+    "example": "Please prepare a large bowl.",
+    "icon": "list-checks",
+    "reason": "override:preparations"
+  },
+  {
+    "id": "tango_n4_342",
+    "word": "並ぶ",
+    "meaning": "to line up",
+    "example": "There are a lot of people lined up outside of the ramen shop.",
+    "icon": "x-line-top",
+    "reason": "score:8.0"
+  },
+  {
+    "id": "tango_n4_343",
+    "word": "並べる",
+    "meaning": "to put in a line, to line up",
+    "example": "There are dishes lined up on the table.",
+    "icon": "x-line-top",
+    "reason": "score:8.0"
+  },
+  {
+    "id": "tango_n4_344",
+    "word": "火",
+    "meaning": "heat, fire",
+    "example": "The heat is a little high, so please lower it.",
+    "icon": "flame",
+    "reason": "override:fire"
+  },
+  {
+    "id": "tango_n4_345",
+    "word": "焼く",
+    "meaning": "to cook, to bake",
+    "example": "I will cook the fish for about 10 minutes.",
+    "icon": "cooking-pot",
+    "reason": "override:cook"
+  },
+  {
+    "id": "tango_n4_346",
+    "word": "焼ける",
+    "meaning": "to be cooked, to be baked",
+    "example": "The bread will soon be baked.",
+    "icon": "flame",
+    "reason": "override:cooked"
+  },
+  {
+    "id": "tango_n4_347",
+    "word": "やかん",
+    "meaning": "kettle",
+    "example": "Is there water in the kettle?",
+    "icon": "coffee",
+    "reason": "override:kettle"
+  },
+  {
+    "id": "tango_n4_349",
+    "word": "温める",
+    "meaning": "to heat up",
+    "example": "Please heat up this soup.",
+    "icon": "circle-fading-arrow-up",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_350",
+    "word": "冷やす",
+    "meaning": "to chill, to cool",
+    "example": "I'm going to cool this off in the refrigerator for 30 minutes.",
+    "icon": "snowflake",
+    "reason": "override:chill"
+  },
+  {
+    "id": "tango_n4_351",
+    "word": "(お茶を) 入れる",
+    "meaning": "to make tea",
+    "example": "Shall I make some tea?",
+    "icon": "coffee",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_352",
+    "word": "くさる",
+    "meaning": "to go bad",
+    "example": "The meat in the refrigerator has gone bad.",
+    "icon": "thumbs-down",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_353",
+    "word": "すてる",
+    "meaning": "to throw away",
+    "example": "Please don't throw these vegetables away.",
+    "icon": "trash",
+    "reason": "override:throw away"
+  },
+  {
+    "id": "tango_n4_354",
+    "word": "[お]米",
+    "meaning": "rice",
+    "example": "I like rice more than bread.",
+    "icon": "wheat",
+    "reason": "override:rice"
+  },
+  {
+    "id": "tango_n4_355",
+    "word": "[お]べんとう",
+    "meaning": "boxed lunch",
+    "example": "I make my own boxed lunch every day.",
+    "icon": "paper-bag",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_356",
+    "word": "おかず",
+    "meaning": "side dish",
+    "example": "Today's side dish is tempura.",
+    "icon": "salad",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_357",
+    "word": "インスタント食品",
+    "meaning": "instant food",
+    "example": "I often eat instant food.",
+    "icon": "beef",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_358",
+    "word": "かんづめ",
+    "meaning": "canned food",
+    "example": "Canned food is convenient for cooking.",
+    "icon": "croissant",
+    "reason": "score:4.1"
+  },
+  {
+    "id": "tango_n4_359",
+    "word": "家事",
+    "meaning": "house chore",
+    "example": "Cooking is my favorite house chore.",
+    "icon": "house",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_360",
+    "word": "ねだん",
+    "meaning": "price",
+    "example": "I buy shoes after looking at the price.",
+    "icon": "tag",
+    "reason": "override:price"
+  },
+  {
+    "id": "tango_n4_361",
+    "word": "上がる",
+    "meaning": "to increase",
+    "example": "The price of food has increased.",
+    "icon": "trending-up",
+    "reason": "override:increase"
+  },
+  {
+    "id": "tango_n4_362",
+    "word": "バーゲン",
+    "meaning": "bargain",
+    "example": "Summer bargains start tomorrow.",
+    "icon": "tag",
+    "reason": "override:bargain"
+  },
+  {
+    "id": "tango_n4_363",
+    "word": "割引",
+    "meaning": "discount",
+    "example": "This restaurant offers a student discount.",
+    "icon": "badge-cent",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_364",
+    "word": "無料",
+    "meaning": "free",
+    "example": "This magazine is free.",
+    "icon": "gift",
+    "reason": "override:free"
+  },
+  {
+    "id": "tango_n4_365",
+    "word": "有料",
+    "meaning": "having a fee/charge",
+    "example": "You have to pay a fee to use this toilet.",
+    "icon": "battery",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_366",
+    "word": "さいふ",
+    "meaning": "wallet",
+    "example": "I left my wallet at home.",
+    "icon": "wallet",
+    "reason": "override:wallet"
+  },
+  {
+    "id": "tango_n4_367",
+    "word": "レジ",
+    "meaning": "(cash) register",
+    "example": "There are about 10 lined up in front of the register.",
+    "icon": "calculator",
+    "reason": "override:register"
+  },
+  {
+    "id": "tango_n4_368",
+    "word": "計算〈する〉",
+    "meaning": "calculation",
+    "example": "It will take some time to calculate.",
+    "icon": "calculator",
+    "reason": "override:calculation"
+  },
+  {
+    "id": "tango_n4_369",
+    "word": "店員",
+    "meaning": "store employee",
+    "example": "The store employees at this supermarket are kind.",
+    "icon": "shirt",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_370",
+    "word": "数える",
+    "meaning": "to count",
+    "example": "Please count the bananas.",
+    "icon": "calculator",
+    "reason": "override:count"
+  },
+  {
+    "id": "tango_n4_371",
+    "word": "払う",
+    "meaning": "to pay",
+    "example": "Where should I pay the money?",
+    "icon": "credit-card",
+    "reason": "override:pay"
+  },
+  {
+    "id": "tango_n4_372",
+    "word": "サイン〈する〉",
+    "meaning": "signature",
+    "example": "Please sign here.",
+    "icon": "pen-line",
+    "reason": "override:signature"
+  },
+  {
+    "id": "tango_n4_373",
+    "word": "足りる",
+    "meaning": "to be enough, to be sufficient",
+    "example": "There's not quite enough money.",
+    "icon": "check-check",
+    "reason": "override:enough"
+  },
+  {
+    "id": "tango_n4_374",
+    "word": "[お]つり",
+    "meaning": "change",
+    "example": "I forgot to get my change.",
+    "icon": "refresh-cw",
+    "reason": "override:change"
+  },
+  {
+    "id": "tango_n4_375",
+    "word": "レシート",
+    "meaning": "receipt",
+    "example": "I get receipts when I go shopping.",
+    "icon": "receipt",
+    "reason": "override:receipt"
+  },
+  {
+    "id": "tango_n4_376",
+    "word": "りょうしゅう書",
+    "meaning": "formal receipt",
+    "example": "I got a formal receipt at the restaurant.",
+    "icon": "receipt",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_377",
+    "word": "ふくろ",
+    "meaning": "bag",
+    "example": "I always take a bag when I go shopping.",
+    "icon": "briefcase",
+    "reason": "override:bag"
+  },
+  {
+    "id": "tango_n4_378",
+    "word": "取りかえる",
+    "meaning": "to exchange, to replace",
+    "example": "I had them exchange the shoes.",
+    "icon": "badge-cent",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_379",
+    "word": "さがす",
+    "meaning": "to look for",
+    "example": "I've been looking for a pink sweater for a while.",
+    "icon": "search",
+    "reason": "override:look for"
+  },
+  {
+    "id": "tango_n4_380",
+    "word": "えらぶ",
+    "meaning": "to choose, to pick",
+    "example": "I'm glad that I can pick the present.",
+    "icon": "circle-dot",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_381",
+    "word": "包む",
+    "meaning": "to wrap",
+    "example": "Please wrap this shirt.",
+    "icon": "shell",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_382",
+    "word": "(お金を) 下ろす",
+    "meaning": "to withdraw (money)",
+    "example": "I withdraw money at the bank.",
+    "icon": "banknote-arrow-down",
+    "reason": "score:3.1"
+  },
+  {
+    "id": "tango_n4_383",
+    "word": "売れる",
+    "meaning": "to sell well, to be selling",
+    "example": "The bread here is selling really well.",
+    "icon": "shopping-bag",
+    "reason": "override:sell well"
+  },
+  {
+    "id": "tango_n4_384",
+    "word": "食料品",
+    "meaning": "food product",
+    "example": "This store's food products are inexpensive.",
+    "icon": "beef",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_385",
+    "word": "おもちゃ",
+    "meaning": "toy",
+    "example": "The toy sales department is on the fifth floor.",
+    "icon": "shapes",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_386",
+    "word": "パンフレット",
+    "meaning": "pamphlet",
+    "example": "I'm going to buy a computer after I read the pamphlet.",
+    "icon": "book-check",
+    "reason": "score:3.1"
+  },
+  {
+    "id": "tango_n4_387",
+    "word": "日本製",
+    "meaning": "Japanese-made",
+    "example": "This is a Japanese-made TV.",
+    "icon": "badge-check",
+    "reason": "override:japanese-made"
+  },
+  {
+    "id": "tango_n4_388",
+    "word": "本物",
+    "meaning": "real, authentic",
+    "example": "If this is real, I'd buy it even if it were expensive.",
+    "icon": "signature",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_389",
+    "word": "場所",
+    "meaning": "place, location",
+    "example": "There are places I want to go.",
+    "icon": "map-pin",
+    "reason": "override:place"
+  },
+  {
+    "id": "tango_n4_390",
+    "word": "駅前",
+    "meaning": "in front of the station",
+    "example": "A new store opened in front of the station.",
+    "icon": "bring-to-front",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_391",
+    "word": "交番",
+    "meaning": "police box",
+    "example": "I asked for directions at the police box in front of the station.",
+    "icon": "file-box",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_392",
+    "word": "市役所",
+    "meaning": "city hall, city office",
+    "example": "There is a bus that goes from the station to the city office.",
+    "icon": "landmark",
+    "reason": "override:city hall"
+  },
+  {
+    "id": "tango_n4_393",
+    "word": "バス停",
+    "meaning": "bus stop",
+    "example": "There is a bus stop right by my house.",
+    "icon": "bus-front",
+    "reason": "override:bus stop"
+  },
+  {
+    "id": "tango_n4_394",
+    "word": "広場",
+    "meaning": "wide open area, field",
+    "example": "Let's play with the children in the field.",
+    "icon": "chart-area",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_395",
+    "word": "城",
+    "meaning": "castle",
+    "example": "This castle was built 450 years ago.",
+    "icon": "chess-rook",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_397",
+    "word": "教会",
+    "meaning": "church",
+    "example": "There is an old church in my neighborhood.",
+    "icon": "dome",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_398",
+    "word": "港",
+    "meaning": "harbor",
+    "example": "Sometimes I walk to the harbor.",
+    "icon": "sailboat",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_399",
+    "word": "動物園",
+    "meaning": "zoo",
+    "example": "I'm going to the zoo to see the pandas.",
+    "icon": "panda",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_400",
+    "word": "美術館",
+    "meaning": "art museum",
+    "example": "On my days off, I often go to the art museum.",
+    "icon": "vector-square",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_401",
+    "word": "遊園地",
+    "meaning": "amusement park",
+    "example": "My family is going to the amusement park on Sunday.",
+    "icon": "trees",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_402",
+    "word": "スキー場",
+    "meaning": "ski resort, snow resort",
+    "example": "We will arrive at the snow resort in one hour.",
+    "icon": "mountain-snow",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_403",
+    "word": "温泉",
+    "meaning": "hot springs",
+    "example": "There are many hot springs in Japan.",
+    "icon": "coffee",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_404",
+    "word": "駐車場",
+    "meaning": "parking lot",
+    "example": "There is a big parking lot by the condominium building.",
+    "icon": "square-parking",
+    "reason": "override:parking lot"
+  },
+  {
+    "id": "tango_n4_405",
+    "word": "屋上",
+    "meaning": "roof",
+    "example": "You can't go out on the roof of this building.",
+    "icon": "dome",
+    "reason": "score:4.1"
+  },
+  {
+    "id": "tango_n4_406",
+    "word": "地下",
+    "meaning": "basement",
+    "example": "I'm going to buy a cake in the basement of this department store.",
+    "icon": "arrow-down-to-line",
+    "reason": "override:basement"
+  },
+  {
+    "id": "tango_n4_407",
+    "word": "いなか",
+    "meaning": "countryside",
+    "example": "I want to live in the countryside.",
+    "icon": "trees",
+    "reason": "override:countryside"
+  },
+  {
+    "id": "tango_n4_408",
+    "word": "郊外",
+    "meaning": "suburbs",
+    "example": "I moved to the suburbs of Tokyo last year.",
+    "icon": "house",
+    "reason": "override:suburbs"
+  },
+  {
+    "id": "tango_n4_409",
+    "word": "方言",
+    "meaning": "dialect",
+    "example": "In the countryside where I'm from, we have our own dialect.",
+    "icon": "languages",
+    "reason": "override:dialect"
+  },
+  {
+    "id": "tango_n4_410",
+    "word": "禁煙〈する〉",
+    "meaning": "no smoking",
+    "example": "There is no smoking here, but please help yourself over there.",
+    "icon": "cigarette",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_411",
+    "word": "立入禁止",
+    "meaning": "no entrance, entrance prohibited",
+    "example": "Entrance is prohibited in this area.",
+    "icon": "door-open",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_412",
+    "word": "通り",
+    "meaning": "street",
+    "example": "This is the widest street in the city.",
+    "icon": "route",
+    "reason": "override:street"
+  },
+  {
+    "id": "tango_n4_413",
+    "word": "右側",
+    "meaning": "right-side",
+    "example": "There is a bank on the right side of this street.",
+    "icon": "rotate-cw",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_414",
+    "word": "間",
+    "meaning": "in between, between",
+    "example": "There is a café between the flower shop and the bookstore.",
+    "icon": "align-horizontal-space-between",
+    "reason": "override:between"
+  },
+  {
+    "id": "tango_n4_415",
+    "word": "真ん中",
+    "meaning": "in the middle",
+    "example": "The is a large park in the middle of the city.",
+    "icon": "rows-2",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_416",
+    "word": "向こう",
+    "meaning": "on the other side",
+    "example": "A hotel opened on the other side of the mountain.",
+    "icon": "salad",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_417",
+    "word": "たずねる",
+    "meaning": "to ask",
+    "example": "A old woman asked me for directions.",
+    "icon": "message-circle-question-mark",
+    "reason": "override:ask"
+  },
+  {
+    "id": "tango_n4_418",
+    "word": "寄る",
+    "meaning": "to stop by, to drop by",
+    "example": "I'm going to stop by the bank before going to school.",
+    "icon": "monitor-stop",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_419",
+    "word": "(ビルが) できる",
+    "meaning": "(a building) to be opened",
+    "example": "A large building opened up in front of the station.",
+    "icon": "notepad-text",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_420",
+    "word": "天気予報",
+    "meaning": "weather forecast",
+    "example": "I check the weather report every day.",
+    "icon": "sunrise",
+    "reason": "score:4.6"
+  },
+  {
+    "id": "tango_n4_421",
+    "word": "青空",
+    "meaning": "blue sky",
+    "example": "Today, there are very beautiful blue skies.",
+    "icon": "cloud-sun",
+    "reason": "override:blue sky"
+  },
+  {
+    "id": "tango_n4_422",
+    "word": "晴れる",
+    "meaning": "to be clear",
+    "example": "The weather is probably going to be clear tomorrow.",
+    "icon": "x",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_423",
+    "word": "くもり",
+    "meaning": "cloudy weather",
+    "example": "It's going to be cloudy every day this week.",
+    "icon": "cloudy",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_424",
+    "word": "風",
+    "meaning": "wind",
+    "example": "The trains were stopped due to strong winds.",
+    "icon": "wind",
+    "reason": "override:wind"
+  },
+  {
+    "id": "tango_n4_425",
+    "word": "吹く",
+    "meaning": "to blow",
+    "example": "Today, there are very strong winds blowing.",
+    "icon": "wind",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_426",
+    "word": "やむ",
+    "meaning": "to stop",
+    "example": "The rain is probably going to stop soon.",
+    "icon": "square",
+    "reason": "override:stop"
+  },
+  {
+    "id": "tango_n4_427",
+    "word": "台風",
+    "meaning": "typhoon",
+    "example": "A large typhoon might come.",
+    "icon": "tornado",
+    "reason": "override:typhoon"
+  },
+  {
+    "id": "tango_n4_428",
+    "word": "かみなり",
+    "meaning": "thunder",
+    "example": "I really hate thunder.",
+    "icon": "cloud-lightning",
+    "reason": "override:thunder"
+  },
+  {
+    "id": "tango_n4_429",
+    "word": "レインコート",
+    "meaning": "raincoat",
+    "example": "I'm going to wear a raincoat when I go out tomorrow.",
+    "icon": "umbrella",
+    "reason": "override:raincoat"
+  },
+  {
+    "id": "tango_n4_430",
+    "word": "(かさを) さす",
+    "meaning": "to hold (an umbrella)",
+    "example": "There are many people holding umbrellas.",
+    "icon": "hand",
+    "reason": "override:hold"
+  },
+  {
+    "id": "tango_n4_431",
+    "word": "ぬれる",
+    "meaning": "to get wet",
+    "example": "I didn't have an umbrella, so my clothes got wet.",
+    "icon": "droplet",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_432",
+    "word": "波",
+    "meaning": "wave",
+    "example": "The waves are high today.",
+    "icon": "hand",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_433",
+    "word": "気温",
+    "meaning": "(atmospheric) temperature",
+    "example": "The temperature seems like it's going to rise today.",
+    "icon": "thermometer",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_434",
+    "word": "冷える",
+    "meaning": "to be chilled, to be cold",
+    "example": "I was outside for a while, so my body got cold.",
+    "icon": "snowflake",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_435",
+    "word": "比べる",
+    "meaning": "to compare",
+    "example": "Compared to Japan, my country is very cold.",
+    "icon": "diff",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_436",
+    "word": "地震",
+    "meaning": "earthquake",
+    "example": "There was a small earthquake last night.",
+    "icon": "activity",
+    "reason": "override:earthquake"
+  },
+  {
+    "id": "tango_n4_437",
+    "word": "津波",
+    "meaning": "tsunami",
+    "example": "Tsunamis are a concern when there are earthquakes.",
+    "icon": "waves-horizontal",
+    "reason": "override:tsunami"
+  },
+  {
+    "id": "tango_n4_438",
+    "word": "太陽",
+    "meaning": "sun",
+    "example": "In the summer, the sun gets very high in the sky.",
+    "icon": "sun-moon",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_439",
+    "word": "空",
+    "meaning": "sky",
+    "example": "It's a beautiful cloudless sky.",
+    "icon": "cloud",
+    "reason": "override:sky"
+  },
+  {
+    "id": "tango_n4_440",
+    "word": "月",
+    "meaning": "moon",
+    "example": "The moon looks so bright tonight.",
+    "icon": "sun-moon",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_441",
+    "word": "星",
+    "meaning": "star",
+    "example": "There are a lot of visible stars tonight.",
+    "icon": "moon-star",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_442",
+    "word": "光る",
+    "meaning": "to light up, to shine",
+    "example": "The stars are shining beautifully.",
+    "icon": "lighthouse",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_443",
+    "word": "宇宙",
+    "meaning": "space, universe",
+    "example": "Some day, I want to go into space.",
+    "icon": "galaxy",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_444",
+    "word": "空気",
+    "meaning": "atmosphere",
+    "example": "The air is very clear in the countryside.",
+    "icon": "wind",
+    "reason": "override:atmosphere"
+  },
+  {
+    "id": "tango_n4_445",
+    "word": "島",
+    "meaning": "island",
+    "example": "I hear there are 6,800 islands in Japan.",
+    "icon": "tree-palm",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_446",
+    "word": "海岸",
+    "meaning": "beach, coast",
+    "example": "There is a clean beach in this town.",
+    "icon": "waves",
+    "reason": "override:beach"
+  },
+  {
+    "id": "tango_n4_447",
+    "word": "林",
+    "meaning": "woods",
+    "example": "There are many different animals in the woods.",
+    "icon": "trees",
+    "reason": "override:woods"
+  },
+  {
+    "id": "tango_n4_448",
+    "word": "湖",
+    "meaning": "lake",
+    "example": "There is a large lake in the park.",
+    "icon": "kayak",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_449",
+    "word": "池",
+    "meaning": "pond",
+    "example": "In the past, I often swam in this pond.",
+    "icon": "waves-horizontal",
+    "reason": "override:pond"
+  },
+  {
+    "id": "tango_n4_450",
+    "word": "虫",
+    "meaning": "insect",
+    "example": "I often went to catch bugs with my older brother.",
+    "icon": "bug",
+    "reason": "override:insect"
+  },
+  {
+    "id": "tango_n4_451",
+    "word": "鳥",
+    "meaning": "bird",
+    "example": "I was awoken by the cute sound of birds chirping.",
+    "icon": "bird",
+    "reason": "override:bird"
+  },
+  {
+    "id": "tango_n4_452",
+    "word": "季節",
+    "meaning": "season",
+    "example": "My favorite season is fall.",
+    "icon": "calendar-range",
+    "reason": "override:season"
+  },
+  {
+    "id": "tango_n4_453",
+    "word": "紅葉",
+    "meaning": "autumn foliage, leaves turning color in the fall",
+    "example": "It is almost the season for the leaves to change color.",
+    "icon": "baseline",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_454",
+    "word": "[お]花見",
+    "meaning": "flower viewing",
+    "example": "I intent to go flower viewing this weekend.",
+    "icon": "flower-2",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_455",
+    "word": "咲く",
+    "meaning": "to bloom",
+    "example": "The flowers are in bloom in the park.",
+    "icon": "rose",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_456",
+    "word": "葉",
+    "meaning": "leaf",
+    "example": "The leaves of this flower are beautiful.",
+    "icon": "clover",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_457",
+    "word": "枝",
+    "meaning": "branch",
+    "example": "There is a bird perched on the branch of a tree.",
+    "icon": "split",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_458",
+    "word": "折れる",
+    "meaning": "to be broken, to be cracked",
+    "example": "The tree cracked due to the typhoon.",
+    "icon": "bone-fracture",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_459",
+    "word": "折る",
+    "meaning": "to break to crack",
+    "example": "You mustn't break the branches of cherry blossom trees.",
+    "icon": "bone-fracture",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_460",
+    "word": "植える",
+    "meaning": "to grow, to plant",
+    "example": "I planted a cherry blossom tree in the garden.",
+    "icon": "sprout",
+    "reason": "override:grow"
+  },
+  {
+    "id": "tango_n4_461",
+    "word": "新幹線",
+    "meaning": "Shinkansen, bullet train",
+    "example": "It takes about 2.5 hours to Osaka by Shinkansen.",
+    "icon": "train-front",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_462",
+    "word": "急行",
+    "meaning": "express (train)",
+    "example": "It's about 15 minutes to Tokyo Station on the express.",
+    "icon": "train-front",
+    "reason": "override:express"
+  },
+  {
+    "id": "tango_n4_463",
+    "word": "夜行バス",
+    "meaning": "night bus, overnight bus",
+    "example": "The night bus arrived in Kyoto around 8:00 in the morning.",
+    "icon": "bus",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_464",
+    "word": "自動車",
+    "meaning": "car, automobile",
+    "example": "Small cars are popular.",
+    "icon": "car-front",
+    "reason": "override:car"
+  },
+  {
+    "id": "tango_n4_465",
+    "word": "オートバイ",
+    "meaning": "motorcycle",
+    "example": "On the weekends, I go out with my friend on a motorcycle.",
+    "icon": "bike",
+    "reason": "override:motorcycle"
+  },
+  {
+    "id": "tango_n4_466",
+    "word": "船",
+    "meaning": "boat, ship",
+    "example": "Someday, I want to travel the world on a boat.",
+    "icon": "ship",
+    "reason": "override:boat"
+  },
+  {
+    "id": "tango_n4_467",
+    "word": "交通",
+    "meaning": "traffic, transportation",
+    "example": "Transportation is very convenient in Tokyo.",
+    "icon": "traffic-cone",
+    "reason": "override:traffic"
+  },
+  {
+    "id": "tango_n4_468",
+    "word": "利用〈する〉",
+    "meaning": "use, usage",
+    "example": "I always use the subway.",
+    "icon": "mouse-pointer-click",
+    "reason": "override:usage"
+  },
+  {
+    "id": "tango_n4_469",
+    "word": "降りる",
+    "meaning": "to get off (of ~)",
+    "example": "I'm getting off the bus here.",
+    "icon": "power-off",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_470",
+    "word": "乗りかえる",
+    "meaning": "to transfer",
+    "example": "Please transfer here to the metro.",
+    "icon": "cloud-sync",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_471",
+    "word": "ラッシュ",
+    "meaning": "rush hour",
+    "example": "You can find a seat on this train even during rush hour.",
+    "icon": "calendar-clock",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_472",
+    "word": "こむ",
+    "meaning": "to be crowded",
+    "example": "The morning trains are really crowded.",
+    "icon": "users",
+    "reason": "override:crowded"
+  },
+  {
+    "id": "tango_n4_473",
+    "word": "すく",
+    "meaning": "to become empty",
+    "example": "This bus is always empty.",
+    "icon": "trash",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_474",
+    "word": "通る",
+    "meaning": "to pass through",
+    "example": "Many different trains pass through this station.",
+    "icon": "ticket",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_475",
+    "word": "すぎる",
+    "meaning": "to pass",
+    "example": "Once it passed A Station, the train emptied.",
+    "icon": "ticket",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_476",
+    "word": "開く",
+    "meaning": "to open",
+    "example": "Doors on the right side will open at the next stop.",
+    "icon": "lock-open",
+    "reason": "override:open"
+  },
+  {
+    "id": "tango_n4_477",
+    "word": "開ける",
+    "meaning": "to open, to make open",
+    "example": "It's hot, so let's open a window.",
+    "icon": "lock-open",
+    "reason": "override:open"
+  },
+  {
+    "id": "tango_n4_478",
+    "word": "閉まる",
+    "meaning": "to close",
+    "example": "Doors on the right side will close.",
+    "icon": "lock",
+    "reason": "override:close"
+  },
+  {
+    "id": "tango_n4_479",
+    "word": "閉める",
+    "meaning": "to close, to make close, to shut",
+    "example": "It's cold, so please shut the window.",
+    "icon": "lock",
+    "reason": "override:close"
+  },
+  {
+    "id": "tango_n4_480",
+    "word": "運転手",
+    "meaning": "driver",
+    "example": "When I was a child, I wanted to be a bus driver.",
+    "icon": "car-front",
+    "reason": "override:driver"
+  },
+  {
+    "id": "tango_n4_481",
+    "word": "お客さん",
+    "meaning": "passenger, customer",
+    "example": "There are many foreign passengers on this bus.",
+    "icon": "users",
+    "reason": "override:customer"
+  },
+  {
+    "id": "tango_n4_482",
+    "word": "席",
+    "meaning": "seat",
+    "example": "Are there still seats on this plane.",
+    "icon": "rocking-chair",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_483",
+    "word": "おとな",
+    "meaning": "adult",
+    "example": "Please give me two adult tickets and two children's tickets.",
+    "icon": "user-round",
+    "reason": "override:adult"
+  },
+  {
+    "id": "tango_n4_484",
+    "word": "お年より",
+    "meaning": "senior citizen, elderly person",
+    "example": "These seats are for elderly people.",
+    "icon": "book-user",
+    "reason": "score:4.1"
+  },
+  {
+    "id": "tango_n4_485",
+    "word": "進む",
+    "meaning": "to proceed, to move forward",
+    "example": "The road is congested, so the cars can't move forward.",
+    "icon": "bring-to-front",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_486",
+    "word": "向かう",
+    "meaning": "to head to",
+    "example": "I'm heading to the airport in a car now.",
+    "icon": "drill",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_487",
+    "word": "止める",
+    "meaning": "to stop, to make stop",
+    "example": "You mustn't park your car near a bus stop.",
+    "icon": "square",
+    "reason": "override:stop"
+  },
+  {
+    "id": "tango_n4_488",
+    "word": "止まる",
+    "meaning": "to stop, to come to a stop",
+    "example": "There is a big bus parked in the street.",
+    "icon": "square",
+    "reason": "override:stop"
+  },
+  {
+    "id": "tango_n4_489",
+    "word": "運ぶ",
+    "meaning": "to carry",
+    "example": "Please carry this luggage along, too.",
+    "icon": "package",
+    "reason": "override:carry"
+  },
+  {
+    "id": "tango_n4_490",
+    "word": "そうさ〈する〉",
+    "meaning": "operation",
+    "example": "The car doors are operated by a remote control.",
+    "icon": "settings",
+    "reason": "override:operation"
+  },
+  {
+    "id": "tango_n4_491",
+    "word": "回す",
+    "meaning": "to turn",
+    "example": "I turn the wheel of the car.",
+    "icon": "rotate-cw",
+    "reason": "override:turn"
+  },
+  {
+    "id": "tango_n4_492",
+    "word": "事故",
+    "meaning": "accident",
+    "example": "Yesterday, I saw an accident on the street.",
+    "icon": "triangle-alert",
+    "reason": "override:accident"
+  },
+  {
+    "id": "tango_n4_493",
+    "word": "(事故に) あう",
+    "meaning": "to get into an accident",
+    "example": "I got into an accident at an intersection.",
+    "icon": "triangle-alert",
+    "reason": "override:get into an accident"
+  },
+  {
+    "id": "tango_n4_494",
+    "word": "ぶつかる",
+    "meaning": "to bump into something, to hit",
+    "example": "Two taxis hit each other at the traffic light.",
+    "icon": "shield-x",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_495",
+    "word": "すべる",
+    "meaning": "to slip",
+    "example": "It's easy to slip on snowy days.",
+    "icon": "receipt",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_496",
+    "word": "安全〈な〉",
+    "meaning": "safety/safe",
+    "example": "When it comes to driving, safety comes first.\nLet's take a safe street.",
+    "icon": "shield-check",
+    "reason": "override:safe"
+  },
+  {
+    "id": "tango_n4_497",
+    "word": "危険〈な〉",
+    "meaning": "danger/dangerous",
+    "example": "Here, there is a danger of getting into an accident.\nThis road is dangerous because there are many cars.",
+    "icon": "triangle-alert",
+    "reason": "override:dangerous"
+  },
+  {
+    "id": "tango_n4_498",
+    "word": "注意〈する〉",
+    "meaning": "caution",
+    "example": "① Let's be careful of both cars and bikes.\n② I got a warning from the teacher for being late.",
+    "icon": "square-exclamation-point",
+    "reason": "score:3.1"
+  },
+  {
+    "id": "tango_n4_499",
+    "word": "赤ちゃん",
+    "meaning": "baby",
+    "example": "My older sister had a baby.",
+    "icon": "baby",
+    "reason": "override:baby"
+  },
+  {
+    "id": "tango_n4_500",
+    "word": "故障〈する〉",
+    "meaning": "break down, disrepair",
+    "example": "My car broke down again.",
+    "icon": "waves-arrow-down",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_501",
+    "word": "とちゅう",
+    "meaning": "in the middle of, on the way",
+    "example": "I saw an accident on the way to the airport.",
+    "icon": "rows-2",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_502",
+    "word": "行き",
+    "meaning": "~bound, bound for ~, on the way to",
+    "example": "The streets were empty going there.",
+    "icon": "arrow-right",
+    "reason": "override:bound"
+  },
+  {
+    "id": "tango_n4_503",
+    "word": "帰り",
+    "meaning": "on the way back",
+    "example": "On the way home, it was very crowded.",
+    "icon": "send-to-back",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_504",
+    "word": "ガソリン",
+    "meaning": "gasoline",
+    "example": "The price of gas has risen again.",
+    "icon": "fuel",
+    "reason": "override:gasoline"
+  },
+  {
+    "id": "tango_n4_505",
+    "word": "エンジン",
+    "meaning": "engine",
+    "example": "The engine in that car is loud.",
+    "icon": "engine",
+    "reason": "score:2.6"
+  },
+  {
+    "id": "tango_n4_506",
+    "word": "信号",
+    "meaning": "traffic light",
+    "example": "The traffic light is still red.",
+    "icon": "sun",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_507",
+    "word": "やじるし",
+    "meaning": "arrow",
+    "example": "In the art museum, please proceed by looking at (and following) the arrows.",
+    "icon": "move-left",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_508",
+    "word": "キロ",
+    "meaning": "kilometer",
+    "example": "There are two kilometers from here to her house.",
+    "icon": "route",
+    "reason": "override:kilometer"
+  },
+  {
+    "id": "tango_n4_509",
+    "word": "人口",
+    "meaning": "population",
+    "example": "Japan's population is getting smaller.",
+    "icon": "users",
+    "reason": "override:population"
+  },
+  {
+    "id": "tango_n4_510",
+    "word": "億",
+    "meaning": "hundred million, 100,000,000",
+    "example": "There are 7,000,000,000 people in the world.",
+    "icon": "hash",
+    "reason": "override:hundred million"
+  },
+  {
+    "id": "tango_n4_511",
+    "word": "経済",
+    "meaning": "economy",
+    "example": "What do you think will happen to Asia's economy from now?",
+    "icon": "circle-euro",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_512",
+    "word": "貿易〈する〉",
+    "meaning": "trade",
+    "example": "I want to graduate from university and work in trade.",
+    "icon": "ship",
+    "reason": "override:trade"
+  },
+  {
+    "id": "tango_n4_513",
+    "word": "ゆしゅつ〈する〉",
+    "meaning": "exporting",
+    "example": "Japan exports a lot of cars.",
+    "icon": "package",
+    "reason": "override:exporting"
+  },
+  {
+    "id": "tango_n4_514",
+    "word": "ゆにゅう〈する〉",
+    "meaning": "importing",
+    "example": "Japan imports things like oil and raw materials.",
+    "icon": "truck",
+    "reason": "override:importing"
+  },
+  {
+    "id": "tango_n4_515",
+    "word": "原料",
+    "meaning": "raw materials",
+    "example": "A Company imports its raw materials for beer.",
+    "icon": "apple",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_516",
+    "word": "石油",
+    "meaning": "oil, petroleum",
+    "example": "The price of oil has gone up again.",
+    "icon": "amphora",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_517",
+    "word": "物価",
+    "meaning": "price of commodities, cost of living",
+    "example": "The cost of living in this country is high.",
+    "icon": "house",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_518",
+    "word": "政治",
+    "meaning": "politics",
+    "example": "I'm studying Japanese politics.",
+    "icon": "landmark",
+    "reason": "override:politics"
+  },
+  {
+    "id": "tango_n4_519",
+    "word": "首相",
+    "meaning": "prime minister",
+    "example": "The prime ministers of Japan and England greeted each other.",
+    "icon": "user-round",
+    "reason": "override:prime minister"
+  },
+  {
+    "id": "tango_n4_520",
+    "word": "大統領",
+    "meaning": "president",
+    "example": "The president of A Country came to Japan.",
+    "icon": "user-round",
+    "reason": "override:president"
+  },
+  {
+    "id": "tango_n4_521",
+    "word": "平和〈な〉",
+    "meaning": "peace/peaceful",
+    "example": "What can we do for peace?\nI want to live in a peaceful country.",
+    "icon": "bird",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_522",
+    "word": "戦争",
+    "meaning": "war",
+    "example": "I'd like to see a world without war.",
+    "icon": "sword",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_523",
+    "word": "文化",
+    "meaning": "culture",
+    "example": "I want to know about foreign cultures.",
+    "icon": "landmark",
+    "reason": "override:culture"
+  },
+  {
+    "id": "tango_n4_524",
+    "word": "世界遺産",
+    "meaning": "World Heritage Site",
+    "example": "How many World Heritage Sites are there in Japan?",
+    "icon": "globe",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_525",
+    "word": "世紀",
+    "meaning": "century",
+    "example": "The 21st century started in 2001.",
+    "icon": "calendar",
+    "reason": "override:century"
+  },
+  {
+    "id": "tango_n4_526",
+    "word": "時代",
+    "meaning": "period, age",
+    "example": "This is the age of working robots.",
+    "icon": "dot",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_527",
+    "word": "国際",
+    "meaning": "international",
+    "example": "I want to go on an exchange and find an international job.",
+    "icon": "globe",
+    "reason": "override:international"
+  },
+  {
+    "id": "tango_n4_528",
+    "word": "世界中",
+    "meaning": "around the world",
+    "example": "Let's make friends around the world.",
+    "icon": "globe",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_529",
+    "word": "メールアドレス",
+    "meaning": "mail address",
+    "example": "Do you know Tanaka-san's mail address?",
+    "icon": "mail-dot",
+    "reason": "score:8.0"
+  },
+  {
+    "id": "tango_n4_530",
+    "word": "返事〈する〉",
+    "meaning": "reply",
+    "example": "My friend won't respond to my mail.",
+    "icon": "message-circle-reply",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_531",
+    "word": "知り合う",
+    "meaning": "to get to know",
+    "example": "I was introduced to her by a friend.",
+    "icon": "handshake",
+    "reason": "override:get to know"
+  },
+  {
+    "id": "tango_n4_532",
+    "word": "紹介〈する〉",
+    "meaning": "introduction",
+    "example": "A friend introduced her to me.",
+    "icon": "user-plus",
+    "reason": "override:introduction"
+  },
+  {
+    "id": "tango_n4_533",
+    "word": "合う",
+    "meaning": "to go well with",
+    "example": "Those shoes go well with the clothes you're wearing today.",
+    "icon": "puzzle",
+    "reason": "override:go well with"
+  },
+  {
+    "id": "tango_n4_534",
+    "word": "相談〈する〉",
+    "meaning": "consultation",
+    "example": "I consult with my mother about everything.",
+    "icon": "messages-square",
+    "reason": "override:consultation"
+  },
+  {
+    "id": "tango_n4_535",
+    "word": "さんせい〈する〉",
+    "meaning": "agreement",
+    "example": "Everyone is in agreement with his marriage.",
+    "icon": "handshake",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_536",
+    "word": "反対〈する〉",
+    "meaning": "opposition",
+    "example": "My parents were against my going on an exchange.",
+    "icon": "thumbs-down",
+    "reason": "override:opposition"
+  },
+  {
+    "id": "tango_n4_537",
+    "word": "訪ねる",
+    "meaning": "to visit",
+    "example": "I want to visit my Chinese friend's house.",
+    "icon": "map-pin",
+    "reason": "override:visit"
+  },
+  {
+    "id": "tango_n4_538",
+    "word": "案内〈する〉",
+    "meaning": "guidance",
+    "example": "Next month, I'm going to show my friend from my country around Tokyo.",
+    "icon": "lighthouse",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_539",
+    "word": "あげる",
+    "meaning": "to give",
+    "example": "I gave my dad a necktie for Father's Day.",
+    "icon": "hand-heart",
+    "reason": "override:give"
+  },
+  {
+    "id": "tango_n4_540",
+    "word": "くれる",
+    "meaning": "to give, to be given",
+    "example": "My older sister didn't give me anything for my birthday.",
+    "icon": "hand-heart",
+    "reason": "override:give"
+  },
+  {
+    "id": "tango_n4_541",
+    "word": "もらう",
+    "meaning": "to receive",
+    "example": "I got this pen from my friend.",
+    "icon": "inbox",
+    "reason": "override:receive"
+  },
+  {
+    "id": "tango_n4_542",
+    "word": "贈る",
+    "meaning": "to present, to give (as a gift)",
+    "example": "What should I give my friend who is going back to her home country?",
+    "icon": "gift",
+    "reason": "override:present"
+  },
+  {
+    "id": "tango_n4_543",
+    "word": "贈り物",
+    "meaning": "gift, present",
+    "example": "This necklace is a gift from him.",
+    "icon": "gift",
+    "reason": "override:gift"
+  },
+  {
+    "id": "tango_n4_544",
+    "word": "[お]祝い",
+    "meaning": "celebration",
+    "example": "I gave a present to my friend to celebrate her/his acceptance to a new school.",
+    "icon": "cake-slice",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_545",
+    "word": "わたす",
+    "meaning": "to give, to pass, to hand",
+    "example": "I gave the teacher flowers.",
+    "icon": "hand-heart",
+    "reason": "override:give"
+  },
+  {
+    "id": "tango_n4_546",
+    "word": "よろこぶ",
+    "meaning": "to be happy, to be glad",
+    "example": "My mother was very happy at the gift I gave her.",
+    "icon": "smile",
+    "reason": "override:happy"
+  },
+  {
+    "id": "tango_n4_547",
+    "word": "おかげ",
+    "meaning": "thanks to ~",
+    "example": "Every day is fun thanks to my friends.",
+    "icon": "hand-heart",
+    "reason": "override:thanks to"
+  },
+  {
+    "id": "tango_n4_548",
+    "word": "かんしゃ〈する〉",
+    "meaning": "appreciation, thanks",
+    "example": "I always give thanks for my friends.",
+    "icon": "heart",
+    "reason": "override:appreciation"
+  },
+  {
+    "id": "tango_n4_549",
+    "word": "お礼〈する〉",
+    "meaning": "gratitude",
+    "example": "I wrote a letter of gratitude to my teacher.",
+    "icon": "heart-handshake",
+    "reason": "override:gratitude"
+  },
+  {
+    "id": "tango_n4_550",
+    "word": "あやまる",
+    "meaning": "to apologize",
+    "example": "Be sure to apologize when you've done something wrong.",
+    "icon": "hand-heart",
+    "reason": "override:apologize"
+  },
+  {
+    "id": "tango_n4_551",
+    "word": "えんりょ〈する〉",
+    "meaning": "restraint, declining",
+    "example": "Please don't hesitate to tell me anything.",
+    "icon": "hand",
+    "reason": "override:restraint"
+  },
+  {
+    "id": "tango_n4_552",
+    "word": "気づく",
+    "meaning": "to realize, to notice",
+    "example": "I cut my hair, but my husband didn't even notice.",
+    "icon": "flag",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_553",
+    "word": "親友",
+    "meaning": "good friend, close friend",
+    "example": "I have three close friends.",
+    "icon": "x",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_554",
+    "word": "せんぱい",
+    "meaning": "senior",
+    "example": "My senior at my part-time job always looks after me.",
+    "icon": "user-round",
+    "reason": "override:senior"
+  },
+  {
+    "id": "tango_n4_555",
+    "word": "彼ら",
+    "meaning": "they",
+    "example": "A: Who is that person?\nB: Oh, they're a high school classmates of mine.",
+    "icon": "users",
+    "reason": "override:they"
+  },
+  {
+    "id": "tango_n4_556",
+    "word": "みんな",
+    "meaning": "everyone",
+    "example": "Everyone in my family doing all right.",
+    "icon": "users",
+    "reason": "override:everyone"
+  },
+  {
+    "id": "tango_n4_557",
+    "word": "人気",
+    "meaning": "popular",
+    "example": "Maria-san is popular with everyone.",
+    "icon": "star",
+    "reason": "override:popular"
+  },
+  {
+    "id": "tango_n4_558",
+    "word": "デート〈する〉",
+    "meaning": "date",
+    "example": "I'm so busy I don't even have time to date.",
+    "icon": "calendar-days",
+    "reason": "override:date"
+  },
+  {
+    "id": "tango_n4_559",
+    "word": "付き合う",
+    "meaning": "to date, to be in a relationship with; to spend time with",
+    "example": "① Since when have those two been dating?\n② Please come shopping with me tomorrow.",
+    "icon": "calendar-days",
+    "reason": "override:date"
+  },
+  {
+    "id": "tango_n4_560",
+    "word": "連れて行く",
+    "meaning": "to take (a person) with",
+    "example": "I want to take my partner to the beach.",
+    "icon": "users",
+    "reason": "override:take with"
+  },
+  {
+    "id": "tango_n4_561",
+    "word": "連れて来る",
+    "meaning": "to bring (a person) along",
+    "example": "My younger brother brought a girl home.",
+    "icon": "bring-to-front",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_562",
+    "word": "[お]見合い〈する〉",
+    "meaning": "arranged meeting to find a marriage partner",
+    "example": "Next week, I'm going to an arrange meeting to find a marriage partner at a restaurant.",
+    "icon": "search",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_563",
+    "word": "婚約〈する〉",
+    "meaning": "engagement",
+    "example": "My older sister got engaged to my friend.",
+    "icon": "heart",
+    "reason": "override:engagement"
+  },
+  {
+    "id": "tango_n4_564",
+    "word": "結婚〈する〉",
+    "meaning": "marriage",
+    "example": "My older sister is getting married next month.",
+    "icon": "gem",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_565",
+    "word": "知らせる",
+    "meaning": "to inform, to let (someone) know",
+    "example": "I told my friends I got engaged.",
+    "icon": "book-plus",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_566",
+    "word": "合図〈する〉",
+    "meaning": "sign, signal",
+    "example": "The two people signaled to each other with their eyes.",
+    "icon": "mic-signal",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_567",
+    "word": "けんか〈する〉",
+    "meaning": "fight",
+    "example": "Those two are always fighting.",
+    "icon": "hand-fist",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_568",
+    "word": "うそ",
+    "meaning": "lie",
+    "example": "You mustn't lie to your friend.",
+    "icon": "message-square-warning",
+    "reason": "override:lie"
+  },
+  {
+    "id": "tango_n4_569",
+    "word": "別れる",
+    "meaning": "to separate, to break up",
+    "example": "The two of them broke up.",
+    "icon": "split",
+    "reason": "score:6.0"
+  },
+  {
+    "id": "tango_n4_570",
+    "word": "じゃま〈な/する〉",
+    "meaning": "obstacle, hindrance",
+    "example": "Something got in the way of our date.\nThis big luggage is a big hindrance.",
+    "icon": "construction",
+    "reason": "override:obstacle"
+  },
+  {
+    "id": "tango_n4_571",
+    "word": "彼",
+    "meaning": "he, him; boyfriend",
+    "example": "① My boyfriend is very gentle.\n② Is he Tanaka-san's husband?",
+    "icon": "user-round",
+    "reason": "override:he"
+  },
+  {
+    "id": "tango_n4_572",
+    "word": "彼女",
+    "meaning": "her, she; girlfriend",
+    "example": "① After I came to Japan, I got a girlfriend.\n② Do you know her name?",
+    "icon": "user-round",
+    "reason": "override:her"
+  },
+  {
+    "id": "tango_n4_573",
+    "word": "きみ",
+    "meaning": "you",
+    "example": "He calls me kimi.",
+    "icon": "user-round",
+    "reason": "override:you"
+  },
+  {
+    "id": "tango_n4_574",
+    "word": "ぼく",
+    "meaning": "me",
+    "example": "I love you.",
+    "icon": "user-round",
+    "reason": "override:me"
+  },
+  {
+    "id": "tango_n4_575",
+    "word": "独身",
+    "meaning": "single",
+    "example": "All of my college friends are still single.",
+    "icon": "calendar-1",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_576",
+    "word": "関係",
+    "meaning": "relationship",
+    "example": "What is the relationship between those two?",
+    "icon": "heart-handshake",
+    "reason": "override:relationship"
+  },
+  {
+    "id": "tango_n4_577",
+    "word": "大事な",
+    "meaning": "important",
+    "example": "She is an important person to me.",
+    "icon": "star",
+    "reason": "override:important"
+  },
+  {
+    "id": "tango_n4_578",
+    "word": "特別な",
+    "meaning": "special",
+    "example": "She is a special person to me.",
+    "icon": "gem",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_579",
+    "word": "困る",
+    "meaning": "to be in trouble, to have trouble with",
+    "example": "Are you having any problems with life in Japan?",
+    "icon": "circle-alert",
+    "reason": "override:in trouble"
+  },
+  {
+    "id": "tango_n4_580",
+    "word": "わすれ物",
+    "meaning": "forgotten item",
+    "example": "I forgot something on the overhead rack on the train.",
+    "icon": "package",
+    "reason": "override:forgotten item"
+  },
+  {
+    "id": "tango_n4_581",
+    "word": "なくなる",
+    "meaning": "to go missing, to be gone",
+    "example": "My electronic dictionary is missing.",
+    "icon": "search-x",
+    "reason": "override:go missing"
+  },
+  {
+    "id": "tango_n4_582",
+    "word": "なくす",
+    "meaning": "to lose",
+    "example": "I lost my wallet somewhere yesterday.",
+    "icon": "trending-down",
+    "reason": "override:lose"
+  },
+  {
+    "id": "tango_n4_583",
+    "word": "落とす",
+    "meaning": "to drop",
+    "example": "I dropped my smartphone on the street.",
+    "icon": "droplets",
+    "reason": "override:drop"
+  },
+  {
+    "id": "tango_n4_584",
+    "word": "落ちる",
+    "meaning": "to fall",
+    "example": "My bag fell down there.",
+    "icon": "trending-down",
+    "reason": "override:fall"
+  },
+  {
+    "id": "tango_n4_585",
+    "word": "こわれる",
+    "meaning": "to break, to fall apart",
+    "example": "The TV remote broke.",
+    "icon": "triangle-alert",
+    "reason": "override:break"
+  },
+  {
+    "id": "tango_n4_586",
+    "word": "直す",
+    "meaning": "to fix",
+    "example": "Please fix the broken air conditioner.",
+    "icon": "wrench",
+    "reason": "override:fix"
+  },
+  {
+    "id": "tango_n4_587",
+    "word": "やぶれる",
+    "meaning": "to be torn",
+    "example": "The book I borrowed from the library was torn.",
+    "icon": "scissors",
+    "reason": "override:torn"
+  },
+  {
+    "id": "tango_n4_588",
+    "word": "やぶる",
+    "meaning": "to tear",
+    "example": "I tore up the letter I got from him.",
+    "icon": "shredder",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_589",
+    "word": "汚す",
+    "meaning": "to get dirty, to make dirty",
+    "example": "I got the shirt I just bought dirty.",
+    "icon": "trash",
+    "reason": "override:get dirty"
+  },
+  {
+    "id": "tango_n4_590",
+    "word": "汚れる",
+    "meaning": "to be dirty",
+    "example": "The table is a little dirty.",
+    "icon": "trash-2",
+    "reason": "override:dirty"
+  },
+  {
+    "id": "tango_n4_591",
+    "word": "わる",
+    "meaning": "to crack, to break, to smash",
+    "example": "I broke the department chief's cup.",
+    "icon": "bone-fracture",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_592",
+    "word": "われる",
+    "meaning": "to be cracked, to be broken, to be smashed",
+    "example": "The windows in the house were shattered by the typhoon.",
+    "icon": "bone-fracture",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_593",
+    "word": "音",
+    "meaning": "sound",
+    "example": "There is a loud noise coming from outside.",
+    "icon": "audio-lines-x",
+    "reason": "score:4.1"
+  },
+  {
+    "id": "tango_n4_594",
+    "word": "さわぐ",
+    "meaning": "to make noise, to be noisy",
+    "example": "The people in the room above me are noisy late at night.",
+    "icon": "ear",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_595",
+    "word": "うるさい",
+    "meaning": "loud, noisy",
+    "example": "The sound of cars is very loud in this apartment.",
+    "icon": "drum",
+    "reason": "score:3.1"
+  },
+  {
+    "id": "tango_n4_596",
+    "word": "どろぼう",
+    "meaning": "thief, burglar",
+    "example": "A thief got into my home yesterday.",
+    "icon": "user-x",
+    "reason": "override:thief"
+  },
+  {
+    "id": "tango_n4_597",
+    "word": "ぬすむ",
+    "meaning": "to steal, to take",
+    "example": "A diamond was stolen.",
+    "icon": "hand-coins",
+    "reason": "override:steal"
+  },
+  {
+    "id": "tango_n4_598",
+    "word": "つかまえる",
+    "meaning": "to catch, to grab",
+    "example": "My mother caught the thief.",
+    "icon": "grip",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_599",
+    "word": "いじめる",
+    "meaning": "to bully, to abuse",
+    "example": "Please don't abuse animals.",
+    "icon": "message-circle-warning",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_600",
+    "word": "さわる",
+    "meaning": "to touch",
+    "example": "If you press this button, it will make a sound.",
+    "icon": "hand",
+    "reason": "override:touch"
+  },
+  {
+    "id": "tango_n4_601",
+    "word": "ふむ",
+    "meaning": "to step on, to stomp",
+    "example": "The person next to me on the train stepped on my foot.",
+    "icon": "redo-dot",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_602",
+    "word": "理由",
+    "meaning": "reason",
+    "example": "The reason I was late is that I overslept.",
+    "icon": "circle-question-mark",
+    "reason": "override:reason"
+  },
+  {
+    "id": "tango_n4_603",
+    "word": "原因",
+    "meaning": "cause, origin",
+    "example": "What is the cause of yesterday's fight?",
+    "icon": "git-branch",
+    "reason": "override:cause"
+  },
+  {
+    "id": "tango_n4_604",
+    "word": "１１０番",
+    "meaning": "110 (the number to call the police in Japan)",
+    "example": "If I see a burglar, I will call 110.",
+    "icon": "phone-call",
+    "reason": "override:110"
+  },
+  {
+    "id": "tango_n4_605",
+    "word": "非常口",
+    "meaning": "emergency exit",
+    "example": "Let's confirm the emergency exits of the hotel.",
+    "icon": "door-open",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_606",
+    "word": "にげる",
+    "meaning": "to run away, to escape",
+    "example": "The thief escaped from this window.",
+    "icon": "play",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_607",
+    "word": "いやな",
+    "meaning": "dislikable",
+    "example": "There is a dislikable senior at my company.",
+    "icon": "thumbs-down",
+    "reason": "override:dislikable"
+  },
+  {
+    "id": "tango_n4_608",
+    "word": "だめな",
+    "meaning": "no good, useless",
+    "example": "My father said no to having a pet.",
+    "icon": "thumbs-up",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_609",
+    "word": "いけない",
+    "meaning": "not good, wrong, of no use",
+    "example": "A: This won't do.\nB: What's wrong?\nA: I left my wallet at home.",
+    "icon": "x",
+    "reason": "override:wrong"
+  },
+  {
+    "id": "tango_n4_610",
+    "word": "つり",
+    "meaning": "fishing",
+    "example": "I often go fishing on my days off.",
+    "icon": "fishing-rod",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_611",
+    "word": "山登り",
+    "meaning": "mountain hiking, mountain climbing",
+    "example": "I sometime go mountain hiking with my father.",
+    "icon": "hiking-stick",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_612",
+    "word": "キャンプ〈する〉",
+    "meaning": "camping",
+    "example": "Let's go camping once it's spring.",
+    "icon": "tent-tree",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_613",
+    "word": "まんが",
+    "meaning": "manga, Japanese comic",
+    "example": "Japanese manga are read abroad, too.",
+    "icon": "image",
+    "reason": "override:manga"
+  },
+  {
+    "id": "tango_n4_614",
+    "word": "アニメ",
+    "meaning": "anime, Japanese animation",
+    "example": "I came to like Japan from watching anime.",
+    "icon": "image",
+    "reason": "override:anime"
+  },
+  {
+    "id": "tango_n4_615",
+    "word": "イラスト",
+    "meaning": "illustration",
+    "example": "In the future, I want to have a job that has to do with illustrations.",
+    "icon": "image",
+    "reason": "override:illustration"
+  },
+  {
+    "id": "tango_n4_616",
+    "word": "ゲーム",
+    "meaning": "game",
+    "example": "I played video games late into the night and overslept.",
+    "icon": "gamepad-2",
+    "reason": "override:game"
+  },
+  {
+    "id": "tango_n4_617",
+    "word": "茶道",
+    "meaning": "tea ceremony",
+    "example": "I had my friend teach me tea ceremony.",
+    "icon": "coffee",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_618",
+    "word": "かぶき",
+    "meaning": "kabuki, a form of Japanese theater",
+    "example": "I want to go to see kabuki at least one time.",
+    "icon": "theater",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_619",
+    "word": "おどり",
+    "meaning": "dance",
+    "example": "I want to learn dances from all around the world.",
+    "icon": "music",
+    "reason": "override:dance"
+  },
+  {
+    "id": "tango_n4_620",
+    "word": "ドラマ",
+    "meaning": "drama, TV show",
+    "example": "I don't watch the news, but I often watch TV shows.",
+    "icon": "drama",
+    "reason": "score:8.0"
+  },
+  {
+    "id": "tango_n4_621",
+    "word": "俳優",
+    "meaning": "actor",
+    "example": "I'm going to see a movie that features one of my favorite actors.",
+    "icon": "spotlight",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_622",
+    "word": "曲",
+    "meaning": "song",
+    "example": "I'm always listening to Japanese songs.",
+    "icon": "list-plus",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_623",
+    "word": "クラシック",
+    "meaning": "classical music",
+    "example": "I like classical music.",
+    "icon": "keyboard-music",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_624",
+    "word": "コンサート",
+    "meaning": "concert",
+    "example": "I'm going to a concert tomorrow.",
+    "icon": "ticket",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_625",
+    "word": "小説",
+    "meaning": "novel",
+    "example": "I want to read a Japanese novel.",
+    "icon": "book",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_626",
+    "word": "料理教室",
+    "meaning": "cooking class",
+    "example": "I've been going to a cooking class since last month.",
+    "icon": "cooking-pot",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_627",
+    "word": "コンテスト",
+    "meaning": "contest",
+    "example": "I'm going to try entering an essay writing contest.",
+    "icon": "trophy",
+    "reason": "override:contest"
+  },
+  {
+    "id": "tango_n4_628",
+    "word": "楽しむ",
+    "meaning": "to enjoy, to have fun",
+    "example": "I'm enjoying life in Japan.",
+    "icon": "balloon",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_629",
+    "word": "楽しみ〈な〉",
+    "meaning": "something looked forward to/to look forward to",
+    "example": "I have many things to look forward to.\nI'm looking forward to going back to my country on New Year's.",
+    "icon": "arrow-up",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_630",
+    "word": "きょうみ",
+    "meaning": "interest",
+    "example": "I've always been interested in flower arrangement.",
+    "icon": "message-circle-heart",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_631",
+    "word": "録画〈する〉",
+    "meaning": "recording",
+    "example": "I forgot to record the movie on TV.",
+    "icon": "video",
+    "reason": "score:3.1"
+  },
+  {
+    "id": "tango_n4_632",
+    "word": "集める",
+    "meaning": "to gather, to collect",
+    "example": "I collected stamps when I was a child.",
+    "icon": "group",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_633",
+    "word": "運動〈する〉",
+    "meaning": "exercise",
+    "example": "It's best to exercise for your health.",
+    "icon": "activity",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_634",
+    "word": "走る",
+    "meaning": "to run",
+    "example": "I run three kilometers every morning.",
+    "icon": "person-standing",
+    "reason": "override:run"
+  },
+  {
+    "id": "tango_n4_635",
+    "word": "歩く",
+    "meaning": "to walk",
+    "example": "I walk for an hour or more every day.",
+    "icon": "footprints",
+    "reason": "override:walk"
+  },
+  {
+    "id": "tango_n4_636",
+    "word": "ジョギング〈する〉",
+    "meaning": "jogging",
+    "example": "I jog for 30 minutes every morning.",
+    "icon": "footprints",
+    "reason": "override:jogging"
+  },
+  {
+    "id": "tango_n4_637",
+    "word": "伸ばす",
+    "meaning": "to stretch, to reach",
+    "example": "Let's stretch before we start jogging.",
+    "icon": "move",
+    "reason": "override:stretch"
+  },
+  {
+    "id": "tango_n4_638",
+    "word": "試合",
+    "meaning": "match, game",
+    "example": "We have a match even if it rains.",
+    "icon": "gamepad-2",
+    "reason": "override:game"
+  },
+  {
+    "id": "tango_n4_639",
+    "word": "大会",
+    "meaning": "tournament, competition, convention",
+    "example": "Soon there will be a judo tournament.",
+    "icon": "trophy",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_640",
+    "word": "ワールドカップ",
+    "meaning": "World Cup",
+    "example": "I want to win the World Cup.",
+    "icon": "cup-soda",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_641",
+    "word": "行う",
+    "meaning": "to hold, to execute",
+    "example": "The Winter Olympics were held in Japan in 1998.",
+    "icon": "hand",
+    "reason": "override:hold"
+  },
+  {
+    "id": "tango_n4_642",
+    "word": "中止〈する〉",
+    "meaning": "suspension, temporary stoppage",
+    "example": "I heard that they are going to suspend the match if a typhoon comes.",
+    "icon": "bridge",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_643",
+    "word": "選手",
+    "meaning": "athlete, player",
+    "example": "In the future, I want to be an Olympic athlete.",
+    "icon": "circle-chevrons-left",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_644",
+    "word": "チーム",
+    "meaning": "team",
+    "example": "My favorite team lost.",
+    "icon": "user-group",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_645",
+    "word": "勝つ",
+    "meaning": "to win",
+    "example": "Japan won yesterday's game.",
+    "icon": "trophy",
+    "reason": "override:win"
+  },
+  {
+    "id": "tango_n4_646",
+    "word": "優勝〈する〉",
+    "meaning": "winning a championship",
+    "example": "I won the tennis tournament.",
+    "icon": "podium",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_647",
+    "word": "負ける",
+    "meaning": "to lose",
+    "example": "Even if you lose, there's always next time.",
+    "icon": "trending-down",
+    "reason": "override:lose"
+  },
+  {
+    "id": "tango_n4_648",
+    "word": "おうえん〈する〉",
+    "meaning": "cheering",
+    "example": "I'm going to cheer for my favorite team.",
+    "icon": "megaphone",
+    "reason": "override:cheering"
+  },
+  {
+    "id": "tango_n4_649",
+    "word": "コース",
+    "meaning": "course",
+    "example": "My jogging course is five kilometers.",
+    "icon": "fish",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_650",
+    "word": "会場",
+    "meaning": "venue, meeting place",
+    "example": "The kendo venue is over here.",
+    "icon": "podium",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_651",
+    "word": "スタート〈する〉",
+    "meaning": "start",
+    "example": "The athletes started together.",
+    "icon": "play",
+    "reason": "override:start"
+  },
+  {
+    "id": "tango_n4_652",
+    "word": "失敗〈する〉",
+    "meaning": "failure, mistake",
+    "example": "If you make a mistake, just try again.",
+    "icon": "ban",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_653",
+    "word": "柔道",
+    "meaning": "judo",
+    "example": "Judo is a sport that was born in Japan.",
+    "icon": "medal",
+    "reason": "override:judo"
+  },
+  {
+    "id": "tango_n4_654",
+    "word": "水泳",
+    "meaning": "swimming",
+    "example": "I hated swimming when I was a child.",
+    "icon": "waves-ladder",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_655",
+    "word": "野球",
+    "meaning": "baseball",
+    "example": "Baseball is a popular sport in Japan.",
+    "icon": "medal",
+    "reason": "override:baseball"
+  },
+  {
+    "id": "tango_n4_656",
+    "word": "投げる",
+    "meaning": "to throw",
+    "example": "The balls he throws are really fast.",
+    "icon": "trash-2",
+    "reason": "override:throw"
+  },
+  {
+    "id": "tango_n4_657",
+    "word": "スポーツクラブ",
+    "meaning": "sports club",
+    "example": "The sports club near my house is inexpensive and convenient.",
+    "icon": "trophy",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_658",
+    "word": "髪",
+    "meaning": "hair (on one's head)",
+    "example": "Yamada-san's hair is long.",
+    "icon": "scissors",
+    "reason": "override:hair"
+  },
+  {
+    "id": "tango_n4_659",
+    "word": "おでこ",
+    "meaning": "forehead",
+    "example": "When you have a fever, you should cool your forehead.",
+    "icon": "scan-face",
+    "reason": "override:forehead"
+  },
+  {
+    "id": "tango_n4_660",
+    "word": "あご",
+    "meaning": "chin, jaw",
+    "example": "I hear that chewing gum is good for your jaw.",
+    "icon": "scan-face",
+    "reason": "override:chin"
+  },
+  {
+    "id": "tango_n4_661",
+    "word": "ひげ",
+    "meaning": "facial hair",
+    "example": "My father had facial hair when he was young.",
+    "icon": "scan-face",
+    "reason": "override:facial hair"
+  },
+  {
+    "id": "tango_n4_662",
+    "word": "くちびる",
+    "meaning": "lip",
+    "example": "Her lips are really cute.",
+    "icon": "scan-face",
+    "reason": "override:lip"
+  },
+  {
+    "id": "tango_n4_663",
+    "word": "首",
+    "meaning": "neck",
+    "example": "When I woke up, my neck hurt.",
+    "icon": "person-standing",
+    "reason": "override:neck"
+  },
+  {
+    "id": "tango_n4_664",
+    "word": "のど",
+    "meaning": "throat",
+    "example": "Do you have any good medicine for the throat?",
+    "icon": "activity",
+    "reason": "override:throat"
+  },
+  {
+    "id": "tango_n4_665",
+    "word": "肩",
+    "meaning": "shoulder",
+    "example": "My shoulder hurts.",
+    "icon": "person-standing",
+    "reason": "override:shoulder"
+  },
+  {
+    "id": "tango_n4_666",
+    "word": "うで",
+    "meaning": "arm",
+    "example": "Please rotate your arms.",
+    "icon": "biceps-flexed",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_667",
+    "word": "ひじ",
+    "meaning": "elbow",
+    "example": "My right elbow is red.",
+    "icon": "person-standing",
+    "reason": "override:elbow"
+  },
+  {
+    "id": "tango_n4_668",
+    "word": "背中",
+    "meaning": "back",
+    "example": "Please straighten your back.",
+    "icon": "arrow-down",
+    "reason": "override:back"
+  },
+  {
+    "id": "tango_n4_669",
+    "word": "胃",
+    "meaning": "stomach",
+    "example": "I ate too much, and now my stomach hurts.",
+    "icon": "activity",
+    "reason": "override:stomach"
+  },
+  {
+    "id": "tango_n4_670",
+    "word": "こし",
+    "meaning": "waist, hip, lower back",
+    "example": "My lower back hurts so much I can't walk.",
+    "icon": "layers-arrow-down",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_671",
+    "word": "ひざ",
+    "meaning": "knee",
+    "example": "After running, my knees got sore.",
+    "icon": "person-standing",
+    "reason": "override:knee"
+  },
+  {
+    "id": "tango_n4_672",
+    "word": "［お］しり",
+    "meaning": "butt",
+    "example": "I was sitting for a while, so my butt hurts.",
+    "icon": "person-standing",
+    "reason": "override:butt"
+  },
+  {
+    "id": "tango_n4_673",
+    "word": "指",
+    "meaning": "finger",
+    "example": "I broke a bone in my finger playing volleyball.",
+    "icon": "hand",
+    "reason": "override:finger"
+  },
+  {
+    "id": "tango_n4_674",
+    "word": "つめ",
+    "meaning": "nail",
+    "example": "I neatly polish my nails every day.",
+    "icon": "hand",
+    "reason": "override:nail"
+  },
+  {
+    "id": "tango_n4_675",
+    "word": "骨",
+    "meaning": "bone",
+    "example": "I hear calcium is good for the bones.",
+    "icon": "bone-fracture",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_676",
+    "word": "血",
+    "meaning": "blood",
+    "example": "I slipped and my foot started bleeding.",
+    "icon": "iv-bag",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_677",
+    "word": "力",
+    "meaning": "strength, power",
+    "example": "My younger sister has more strength than I do.",
+    "icon": "hand-fist",
+    "reason": "score:6.0"
+  },
+  {
+    "id": "tango_n4_678",
+    "word": "身長",
+    "meaning": "height",
+    "example": "My height increased by 10 centimeters in one year.",
+    "icon": "ruler",
+    "reason": "override:height"
+  },
+  {
+    "id": "tango_n4_679",
+    "word": "体重",
+    "meaning": "weight",
+    "example": "I check my weight every day.",
+    "icon": "scale",
+    "reason": "override:weight"
+  },
+  {
+    "id": "tango_n4_680",
+    "word": "女性",
+    "meaning": "woman",
+    "example": "The doctor at the hospital I go to is a woman.",
+    "icon": "user-round",
+    "reason": "override:woman"
+  },
+  {
+    "id": "tango_n4_681",
+    "word": "男性",
+    "meaning": "man",
+    "example": "The men's bathroom is on the second floor.",
+    "icon": "user-round",
+    "reason": "override:man"
+  },
+  {
+    "id": "tango_n4_682",
+    "word": "けんこう〈な〉",
+    "meaning": "health; healthy",
+    "example": "I'm eating vegetables for my health.\nLet's build a healthy body.",
+    "icon": "groceries",
+    "reason": "score:3.6"
+  },
+  {
+    "id": "tango_n4_683",
+    "word": "じょうぶな",
+    "meaning": "healthy",
+    "example": "Once I started exercising, my body got more healthy.",
+    "icon": "apple",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_684",
+    "word": "ビタミン",
+    "meaning": "vitamin",
+    "example": "There aren't enough vitamins in this meal.",
+    "icon": "apple",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_685",
+    "word": "太る",
+    "meaning": "to gain weight",
+    "example": "I ate before I went to sleep, so I gained weight.",
+    "icon": "scale",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_686",
+    "word": "やせる",
+    "meaning": "to lose weight",
+    "example": "I can't lose weight even if I exercise.",
+    "icon": "scale",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_687",
+    "word": "ダイエット〈する〉",
+    "meaning": "diet",
+    "example": "Let's not go on any impossible diets.",
+    "icon": "milk",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_688",
+    "word": "やめる",
+    "meaning": "to stop, to quit",
+    "example": "My father quit smoking last month.",
+    "icon": "square",
+    "reason": "override:stop"
+  },
+  {
+    "id": "tango_n4_689",
+    "word": "気をつける",
+    "meaning": "to be careful",
+    "example": "Be care of your health.",
+    "icon": "shield-check",
+    "reason": "override:careful"
+  },
+  {
+    "id": "tango_n4_690",
+    "word": "（のどが）かわく",
+    "meaning": "to get thirsty",
+    "example": "I'm really thirsty.",
+    "icon": "cup-soda",
+    "reason": "override:get thirsty"
+  },
+  {
+    "id": "tango_n4_691",
+    "word": "（おなかが）すく",
+    "meaning": "to get empty (stomach), to get hungry",
+    "example": "After playing sports, I've gotten hungry.",
+    "icon": "trash",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_692",
+    "word": "インフルエンザ",
+    "meaning": "influenza, the flu",
+    "example": "I've been absent from school for five days due to the flu.",
+    "icon": "germ",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_693",
+    "word": "かぜをひく",
+    "meaning": "to catch a cold",
+    "example": "I often caught colds when I was a child.",
+    "icon": "snowflake",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_694",
+    "word": "熱",
+    "meaning": "fever",
+    "example": "I have a fever of 39 degrees, so I can't go to school.",
+    "icon": "thermometer",
+    "reason": "override:fever"
+  },
+  {
+    "id": "tango_n4_695",
+    "word": "体温計",
+    "meaning": "thermometer",
+    "example": "I'm going to take my temperature with a thermometer.",
+    "icon": "thermometer",
+    "reason": "score:3.1"
+  },
+  {
+    "id": "tango_n4_696",
+    "word": "やけど〈する〉",
+    "meaning": "burn",
+    "example": "I burned myself with the hot water in the kettle.",
+    "icon": "waves-vertical",
+    "reason": "score:3.1"
+  },
+  {
+    "id": "tango_n4_697",
+    "word": "けが〈する〉",
+    "meaning": "injury",
+    "example": "I injured my knee playing soccer.",
+    "icon": "bandage",
+    "reason": "override:injury"
+  },
+  {
+    "id": "tango_n4_698",
+    "word": "きず",
+    "meaning": "wound, cut",
+    "example": "I'm sure this wound will get better right away.",
+    "icon": "scissors",
+    "reason": "override:cut"
+  },
+  {
+    "id": "tango_n4_699",
+    "word": "調子",
+    "meaning": "condition",
+    "example": "My stomach's condition is a little strange, so I took some medicine.",
+    "icon": "activity",
+    "reason": "override:condition"
+  },
+  {
+    "id": "tango_n4_700",
+    "word": "おかしい",
+    "meaning": "strange, funny",
+    "example": "My stomach's feeling funny, so I'm going to take time off from school.",
+    "icon": "circle-question-mark",
+    "reason": "override:strange"
+  },
+  {
+    "id": "tango_n4_701",
+    "word": "具合",
+    "meaning": "condition, status",
+    "example": "My body's been in bad condition since yesterday.",
+    "icon": "activity",
+    "reason": "override:condition"
+  },
+  {
+    "id": "tango_n4_702",
+    "word": "気持ちが悪い",
+    "meaning": "feeling sick, feeling ill",
+    "example": "I drank too much alcohol, and now I feel sick.",
+    "icon": "thermometer",
+    "reason": "override:feeling sick"
+  },
+  {
+    "id": "tango_n4_703",
+    "word": "倒れる",
+    "meaning": "to collapse; to fall down",
+    "example": "① The house collapsed from the earthquake.\n② My grandmother collapsed last night.",
+    "icon": "chevrons-down-up",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_704",
+    "word": "診る",
+    "meaning": "to examine",
+    "example": "I always get examined by the doctor in my neighborhood.",
+    "icon": "stethoscope",
+    "reason": "override:examine"
+  },
+  {
+    "id": "tango_n4_705",
+    "word": "（よこに）なる",
+    "meaning": "to lie down",
+    "example": "Doctor: Please lie down over there.",
+    "icon": "waves-arrow-down",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_706",
+    "word": "ぬる",
+    "meaning": "to sleep, to rest",
+    "example": "Apply this medicine to your wound three times a day.",
+    "icon": "moon",
+    "reason": "override:sleep"
+  },
+  {
+    "id": "tango_n4_707",
+    "word": "治す",
+    "meaning": "to fix, to heal",
+    "example": "Please go to sleep early so your cold can heal.",
+    "icon": "wrench",
+    "reason": "override:fix"
+  },
+  {
+    "id": "tango_n4_708",
+    "word": "治る",
+    "meaning": "to heal, to recover",
+    "example": "After taking some medicine, I recovered from my cold.",
+    "icon": "heart-pulse",
+    "reason": "override:heal"
+  },
+  {
+    "id": "tango_n4_709",
+    "word": "入院〈する〉",
+    "meaning": "hospitalization",
+    "example": "I was hospitalized due to an injury to my foot.",
+    "icon": "hospital",
+    "reason": "override:hospitalization"
+  },
+  {
+    "id": "tango_n4_710",
+    "word": "退院〈する〉",
+    "meaning": "leaving a hospital",
+    "example": "I've recovered from my illness, so I'm going to leave the hospital tomorrow.",
+    "icon": "activity",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_711",
+    "word": "［お］見まい",
+    "meaning": "sick visit, visit someone in the hospital",
+    "example": "I went to visit my friend in the hospital.",
+    "icon": "activity",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_712",
+    "word": "生きる",
+    "meaning": "to live",
+    "example": "I want to live to 100.",
+    "icon": "tv",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_713",
+    "word": "亡くなる",
+    "meaning": "to die, to pass away",
+    "example": "The elderly woman in the house next door passed away.",
+    "icon": "ticket",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_714",
+    "word": "救急車",
+    "meaning": "ambulance",
+    "example": "I'll call 119 and request an ambulance.",
+    "icon": "ambulance",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_715",
+    "word": "歯医者",
+    "meaning": "dentist",
+    "example": "The child is crying at the dentist's.",
+    "icon": "toothbrush",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_716",
+    "word": "看護師",
+    "meaning": "nurse",
+    "example": "My older sister works as a nurse.",
+    "icon": "stethoscope",
+    "reason": "override:nurse"
+  },
+  {
+    "id": "tango_n4_717",
+    "word": "スーツ",
+    "meaning": "suit",
+    "example": "I wear a suit to work every day.",
+    "icon": "club",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_718",
+    "word": "着物",
+    "meaning": "kimono",
+    "example": "Many people wear kimono to the Coming-of-age Ceremony.",
+    "icon": "shirt",
+    "reason": "override:kimono"
+  },
+  {
+    "id": "tango_n4_719",
+    "word": "くつ下",
+    "meaning": "sock",
+    "example": "I sleep with my socks on in the winter.",
+    "icon": "footprints",
+    "reason": "override:sock"
+  },
+  {
+    "id": "tango_n4_720",
+    "word": "下着",
+    "meaning": "underwear",
+    "example": "I put underwear in my bag for my trip.",
+    "icon": "shirt",
+    "reason": "override:underwear"
+  },
+  {
+    "id": "tango_n4_721",
+    "word": "手ぶくろ",
+    "meaning": "glove",
+    "example": "In the winter, I wear gloves when I go out.",
+    "icon": "hand",
+    "reason": "override:glove"
+  },
+  {
+    "id": "tango_n4_722",
+    "word": "指輪",
+    "meaning": "ring",
+    "example": "This is a ring I got from my mother.",
+    "icon": "phone-call",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_723",
+    "word": "サンダル",
+    "meaning": "sandals",
+    "example": "I'm looking for some sandals that are easy to walk in.",
+    "icon": "footprints",
+    "reason": "override:sandals"
+  },
+  {
+    "id": "tango_n4_724",
+    "word": "リュック",
+    "meaning": "backpack",
+    "example": "There are a lot of textbooks in this backpack.",
+    "icon": "luggage",
+    "reason": "override:backpack"
+  },
+  {
+    "id": "tango_n4_725",
+    "word": "アクセサリー",
+    "meaning": "accessory",
+    "example": "I don't wear any accessories at work.",
+    "icon": "parasol",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_726",
+    "word": "ポケット",
+    "meaning": "pocket",
+    "example": "This bag has a lot of pockets.",
+    "icon": "wallet",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_727",
+    "word": "ひも",
+    "meaning": "string, lace",
+    "example": "These shoelaces are pretty.",
+    "icon": "shell",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_728",
+    "word": "髪型",
+    "meaning": "hairstyle",
+    "example": "What kind of hairstyle do you like?",
+    "icon": "scissors",
+    "reason": "override:hairstyle"
+  },
+  {
+    "id": "tango_n4_729",
+    "word": "美容院",
+    "meaning": "hair salon",
+    "example": "That hair salon is very expensive.",
+    "icon": "scissors",
+    "reason": "override:hair salon"
+  },
+  {
+    "id": "tango_n4_730",
+    "word": "カット〈する〉",
+    "meaning": "cut",
+    "example": "I always get my hair cut at that hair salon.",
+    "icon": "scissors",
+    "reason": "override:cut"
+  },
+  {
+    "id": "tango_n4_731",
+    "word": "かがみ",
+    "meaning": "mirror",
+    "example": "I check myself in the mirror before I go out.",
+    "icon": "square-centerline-dashed-vertical",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_732",
+    "word": "かっこいい",
+    "meaning": "cool",
+    "example": "I want to have a cool hairstyle.",
+    "icon": "snowflake",
+    "reason": "override:cool"
+  },
+  {
+    "id": "tango_n4_733",
+    "word": "かわいい",
+    "meaning": "cute",
+    "example": "My younger sister loves cute clothes.",
+    "icon": "heart",
+    "reason": "override:cute"
+  },
+  {
+    "id": "tango_n4_734",
+    "word": "ちょうどいい",
+    "meaning": "just right, just enough",
+    "example": "This bag is just the right size.",
+    "icon": "rotate-cw",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_735",
+    "word": "ようす",
+    "meaning": "appearance, situation, condition",
+    "example": "It so dark I can't see the conditions outside.",
+    "icon": "activity",
+    "reason": "override:condition"
+  },
+  {
+    "id": "tango_n4_736",
+    "word": "形",
+    "meaning": "shape",
+    "example": "This cookie is in the shape of a star.",
+    "icon": "star-x",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_737",
+    "word": "倍",
+    "meaning": "~ times, double, twice as ~",
+    "example": "This is twice the cost of that cake.",
+    "icon": "move-diagonal",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_738",
+    "word": "以上",
+    "meaning": "~ or more",
+    "example": "There were several days in the summer that were 30 degrees Celsius or more.",
+    "icon": "plus",
+    "reason": "override:more"
+  },
+  {
+    "id": "tango_n4_739",
+    "word": "以下",
+    "meaning": "~ or less",
+    "example": "I always get 50 points or less on kanji tests.",
+    "icon": "minus",
+    "reason": "override:less"
+  },
+  {
+    "id": "tango_n4_740",
+    "word": "以内",
+    "meaning": "within, under",
+    "example": "I want to buy a watch for under 20,000 yen.",
+    "icon": "arrow-down-to-line",
+    "reason": "override:within"
+  },
+  {
+    "id": "tango_n4_741",
+    "word": "以外",
+    "meaning": "outside of, except for",
+    "example": "Everyone is going on the trip next week except for my older brother.",
+    "icon": "square-arrow-right-exit",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_742",
+    "word": "両方",
+    "meaning": "both",
+    "example": "I'll both this red shirt and this blue shirt.",
+    "icon": "git-compare",
+    "reason": "override:both"
+  },
+  {
+    "id": "tango_n4_743",
+    "word": "ひま〈な〉",
+    "meaning": "leisure, free time/free, available",
+    "example": "I'm so busy, I don't have any free time to play.\nIn my free time, I read books.",
+    "icon": "gift",
+    "reason": "override:free"
+  },
+  {
+    "id": "tango_n4_744",
+    "word": "ふつう〈な〉",
+    "meaning": "normality, regular/ normal, regular, average",
+    "example": "I enjoy every normal day.\nThe food and the service at that restaurant is average.",
+    "icon": "circle-slash-2",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_745",
+    "word": "自由〈な〉",
+    "meaning": "freedom/free",
+    "example": "When I become an adult, I want freedom.\nLive in Japan is very free.",
+    "icon": "gift",
+    "reason": "override:free"
+  },
+  {
+    "id": "tango_n4_746",
+    "word": "ていねいな",
+    "meaning": "polite, courteous",
+    "example": "I got a courteous letter from my teacher.",
+    "icon": "hand-heart",
+    "reason": "override:polite"
+  },
+  {
+    "id": "tango_n4_747",
+    "word": "大きな",
+    "meaning": "big, large",
+    "example": "There is a large tree in front of the house.",
+    "icon": "maximize",
+    "reason": "override:big"
+  },
+  {
+    "id": "tango_n4_748",
+    "word": "小さな",
+    "meaning": "small, little",
+    "example": "The small flowers in the garden are in bloom.",
+    "icon": "minimize",
+    "reason": "override:small"
+  },
+  {
+    "id": "tango_n4_749",
+    "word": "へんな",
+    "meaning": "strange",
+    "example": "My younger sister likes strange fashion.",
+    "icon": "circle-question-mark",
+    "reason": "override:strange"
+  },
+  {
+    "id": "tango_n4_750",
+    "word": "じゅうぶんな",
+    "meaning": "sufficient, satisfactory",
+    "example": "If I can do this, my studying for the N4 will be sufficient.",
+    "icon": "check-check",
+    "reason": "override:sufficient"
+  },
+  {
+    "id": "tango_n4_751",
+    "word": "美しい",
+    "meaning": "beautiful",
+    "example": "I've never seen such beautiful scenery.",
+    "icon": "sparkles",
+    "reason": "override:beautiful"
+  },
+  {
+    "id": "tango_n4_752",
+    "word": "きたない",
+    "meaning": "dirty, messy",
+    "example": "My older brother's room is really messy.",
+    "icon": "trash-2",
+    "reason": "override:dirty"
+  },
+  {
+    "id": "tango_n4_753",
+    "word": "うまい",
+    "meaning": "skillful",
+    "example": "He's good at soccer and baseball.",
+    "icon": "star",
+    "reason": "override:skillful"
+  },
+  {
+    "id": "tango_n4_754",
+    "word": "やわらかい",
+    "meaning": "soft, flexible",
+    "example": "The new sofa is really soft.",
+    "icon": "feather",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_755",
+    "word": "かたい",
+    "meaning": "hard, stiff",
+    "example": "This bread is hard, but delicious.",
+    "icon": "egg",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_756",
+    "word": "くわしい",
+    "meaning": "detailed, well-informed",
+    "example": "The explanations in this dictionary are detailed.",
+    "icon": "book-copy",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_757",
+    "word": "細かい",
+    "meaning": "fine, minute",
+    "example": "Please cut the onions finely.",
+    "icon": "clipboard-clock",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_758",
+    "word": "怖い",
+    "meaning": "scary, fearful",
+    "example": "This road gets dark and scary at night.",
+    "icon": "ghost",
+    "reason": "override:scary"
+  },
+  {
+    "id": "tango_n4_759",
+    "word": "すごい",
+    "meaning": "amazing, dreadful",
+    "example": "The rain last night was dreadful.",
+    "icon": "sparkles",
+    "reason": "override:amazing"
+  },
+  {
+    "id": "tango_n4_760",
+    "word": "すばらしい",
+    "meaning": "magnificent",
+    "example": "I was able to have some amazing experiences on my exchange.",
+    "icon": "star",
+    "reason": "override:magnificent"
+  },
+  {
+    "id": "tango_n4_761",
+    "word": "正しい",
+    "meaning": "correct",
+    "example": "I don't know if this answer is correct or not.",
+    "icon": "check",
+    "reason": "override:correct"
+  },
+  {
+    "id": "tango_n4_762",
+    "word": "ひどい",
+    "meaning": "terrible",
+    "example": "I got a terrible score on yesterday's test.",
+    "icon": "triangle-alert",
+    "reason": "override:terrible"
+  },
+  {
+    "id": "tango_n4_763",
+    "word": "太い",
+    "meaning": "fat, thick",
+    "example": "This Japanese radish is really thick.",
+    "icon": "rectangle-horizontal",
+    "reason": "override:thick"
+  },
+  {
+    "id": "tango_n4_764",
+    "word": "細い",
+    "meaning": "thin, slender",
+    "example": "Her legs are really slender.",
+    "icon": "minus",
+    "reason": "override:thin"
+  },
+  {
+    "id": "tango_n4_765",
+    "word": "厚い",
+    "meaning": "thick",
+    "example": "It's cold, so I want a thick coat.",
+    "icon": "rectangle-horizontal",
+    "reason": "override:thick"
+  },
+  {
+    "id": "tango_n4_766",
+    "word": "あさい",
+    "meaning": "shallow",
+    "example": "This river is shallow, so children can play in it.",
+    "icon": "move-down",
+    "reason": "override:shallow"
+  },
+  {
+    "id": "tango_n4_767",
+    "word": "ふかい",
+    "meaning": "deep",
+    "example": "The middle of this pool is very deep.",
+    "icon": "move-up",
+    "reason": "override:deep"
+  },
+  {
+    "id": "tango_n4_768",
+    "word": "眠い",
+    "meaning": "sleepy",
+    "example": "My stomach is full, so I'm a little sleepy.",
+    "icon": "moon",
+    "reason": "override:sleepy"
+  },
+  {
+    "id": "tango_n4_769",
+    "word": "めずらしい",
+    "meaning": "rare, uncommon",
+    "example": "A diamond this bog is rare.",
+    "icon": "gem",
+    "reason": "override:rare"
+  },
+  {
+    "id": "tango_n4_770",
+    "word": "ふえる",
+    "meaning": "to increase",
+    "example": "The foreign customers in this restaurant are increasing.",
+    "icon": "trending-up",
+    "reason": "override:increase"
+  },
+  {
+    "id": "tango_n4_771",
+    "word": "ふやす",
+    "meaning": "to increase (something)",
+    "example": "I want to get a part-time job and increase my savings.",
+    "icon": "trending-up",
+    "reason": "override:increase"
+  },
+  {
+    "id": "tango_n4_772",
+    "word": "へる",
+    "meaning": "to decrease",
+    "example": "In Japan, the population is decreasing.",
+    "icon": "trending-down",
+    "reason": "override:decrease"
+  },
+  {
+    "id": "tango_n4_773",
+    "word": "へらす",
+    "meaning": "to decrease (something)",
+    "example": "I exercised and decreased my weight.",
+    "icon": "trending-down",
+    "reason": "override:decrease"
+  },
+  {
+    "id": "tango_n4_774",
+    "word": "ちがう",
+    "meaning": "to be different, to be wrong",
+    "example": "My older sister and I go to different colleges.",
+    "icon": "git-compare",
+    "reason": "override:different"
+  },
+  {
+    "id": "tango_n4_775",
+    "word": "変える",
+    "meaning": "to change",
+    "example": "I'm going to change my hairstyle when spring comes.",
+    "icon": "refresh-cw",
+    "reason": "override:change"
+  },
+  {
+    "id": "tango_n4_776",
+    "word": "変わる",
+    "meaning": "to be changed",
+    "example": "After getting my hair cut, my mood changed.",
+    "icon": "refresh-cw",
+    "reason": "override:changed"
+  },
+  {
+    "id": "tango_n4_777",
+    "word": "見える",
+    "meaning": "to be visible",
+    "example": "Mt. Fuji is clearly visible from the window.",
+    "icon": "eye",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_778",
+    "word": "聞こえる",
+    "meaning": "to be audible, to be able to hear",
+    "example": "I can hear children's voices from the neighborhood.",
+    "icon": "ear",
+    "reason": "override:audible"
+  },
+  {
+    "id": "tango_n4_779",
+    "word": "空く",
+    "meaning": "to be vacant",
+    "example": "This hotel is really popular, so it has no vacancies.",
+    "icon": "door-open",
+    "reason": "override:vacant"
+  },
+  {
+    "id": "tango_n4_780",
+    "word": "はずれる",
+    "meaning": "to come undone",
+    "example": "My shirt button came undone.",
+    "icon": "unlink",
+    "reason": "override:come undone"
+  },
+  {
+    "id": "tango_n4_781",
+    "word": "切れる",
+    "meaning": "to tear, to rip",
+    "example": "My little brother's shoelace ripped.",
+    "icon": "shredder",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_782",
+    "word": "新聞社",
+    "meaning": "newspaper company",
+    "example": "Starting next month, I'll be working at a newspaper company in Tokyo.",
+    "icon": "building-complex",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_783",
+    "word": "テレビ局",
+    "meaning": "TV station",
+    "example": "I want to take a test for a TV station.",
+    "icon": "hd",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_784",
+    "word": "番組",
+    "meaning": "(TV, radio) program, show",
+    "example": "What kind of shows are you watching?",
+    "icon": "ticket",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_785",
+    "word": "ネットニュース",
+    "meaning": "online news",
+    "example": "I read online news every day.",
+    "icon": "newspaper",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_786",
+    "word": "情報",
+    "meaning": "information",
+    "example": "On the Internet, you can find out world news right away.",
+    "icon": "book",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_787",
+    "word": "データ",
+    "meaning": "data",
+    "example": "I gathered data from around the world.",
+    "icon": "file-text",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_788",
+    "word": "キーワード",
+    "meaning": "keyword",
+    "example": "Let's write down keywords from the news.",
+    "icon": "key",
+    "reason": "override:keyword"
+  },
+  {
+    "id": "tango_n4_789",
+    "word": "放送〈する〉",
+    "meaning": "broadcast",
+    "example": "This program is being broadcast overseas, too.",
+    "icon": "tv",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_790",
+    "word": "伝える",
+    "meaning": "to convey, to report",
+    "example": "They report difficult news in a simple manner.",
+    "icon": "flag",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_791",
+    "word": "火事",
+    "meaning": "fire",
+    "example": "There was a fire near the station.",
+    "icon": "flame",
+    "reason": "override:fire"
+  },
+  {
+    "id": "tango_n4_792",
+    "word": "（事故が）起こる",
+    "meaning": "to break out (fire)",
+    "example": "There are many accidents on this road.",
+    "icon": "split",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_793",
+    "word": "発見〈する〉",
+    "meaning": "discovery",
+    "example": "An elementary school student discovered a new star.",
+    "icon": "telescope",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_794",
+    "word": "見つかる",
+    "meaning": "to be found",
+    "example": "I found the documents I left on the train.",
+    "icon": "shield-x",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_795",
+    "word": "見つける",
+    "meaning": "to find",
+    "example": "I found the dog that went missing in the park.",
+    "icon": "search-check",
+    "reason": "score:4.1"
+  },
+  {
+    "id": "tango_n4_796",
+    "word": "発表〈する〉",
+    "meaning": "announcement",
+    "example": "My favorite author announced the release of a new novel.",
+    "icon": "megaphone",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_797",
+    "word": "スピーチ〈する〉",
+    "meaning": "speech",
+    "example": "The president's speech was magnificent.",
+    "icon": "mouth",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_798",
+    "word": "つづく",
+    "meaning": "to be continued",
+    "example": "Rainy days have continued for two weeks.",
+    "icon": "arrow-right",
+    "reason": "override:continued"
+  },
+  {
+    "id": "tango_n4_799",
+    "word": "つづける",
+    "meaning": "to continue",
+    "example": "I intend to keep studying Japanese from now on.",
+    "icon": "redo",
+    "reason": "override:continue"
+  },
+  {
+    "id": "tango_n4_800",
+    "word": "約束〈する〉",
+    "meaning": "promise",
+    "example": "I promised to go play with my friend.",
+    "icon": "handshake",
+    "reason": "override:promise"
+  },
+  {
+    "id": "tango_n4_801",
+    "word": "（約束を）守る",
+    "meaning": "to keep (a promise)",
+    "example": "You must keep your promises.",
+    "icon": "handshake",
+    "reason": "override:keep"
+  },
+  {
+    "id": "tango_n4_802",
+    "word": "（約束を）やぶる",
+    "meaning": "to break (a promise)",
+    "example": "It's not good to break your promises.",
+    "icon": "triangle-alert",
+    "reason": "override:break"
+  },
+  {
+    "id": "tango_n4_803",
+    "word": "間に合う",
+    "meaning": "to make it in time",
+    "example": "I won't make it to the concert in time, even if I take a taxi.",
+    "icon": "clock",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_804",
+    "word": "おくれる",
+    "meaning": "to be late",
+    "example": "I was an hour late to my date.",
+    "icon": "alarm-clock",
+    "reason": "override:late"
+  },
+  {
+    "id": "tango_n4_805",
+    "word": "キャンセル〈する〉",
+    "meaning": "cancellation",
+    "example": "I cancelled my trip due to the typhoon.",
+    "icon": "ticket-x",
+    "reason": "score:3.1"
+  },
+  {
+    "id": "tango_n4_806",
+    "word": "わけ",
+    "meaning": "reason, explanation",
+    "example": "I don't know why my little sister is crying.",
+    "icon": "circle-question-mark",
+    "reason": "override:reason"
+  },
+  {
+    "id": "tango_n4_807",
+    "word": "さそう",
+    "meaning": "to invite",
+    "example": "Let's invite Maria-san to the party, too.",
+    "icon": "mail-plus",
+    "reason": "override:invite"
+  },
+  {
+    "id": "tango_n4_808",
+    "word": "れんらく〈する〉",
+    "meaning": "notice, communication",
+    "example": "I'm going to communicate the time of the party to everyone.",
+    "icon": "flag",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_809",
+    "word": "（電話が）ある",
+    "meaning": "to have a call",
+    "example": "There was a call from my friend from my home country.",
+    "icon": "phone",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_810",
+    "word": "食事〈する〉",
+    "meaning": "meal, dining",
+    "example": "Let's have a meal with everyone next week.",
+    "icon": "utensils",
+    "reason": "override:meal"
+  },
+  {
+    "id": "tango_n4_811",
+    "word": "参加〈する〉",
+    "meaning": "participation",
+    "example": "I'm going to participate in the employee trip next week.",
+    "icon": "users",
+    "reason": "override:participation"
+  },
+  {
+    "id": "tango_n4_812",
+    "word": "都合",
+    "meaning": "convenience, schedule",
+    "example": "Everyone, please tell me your schedules for next week.",
+    "icon": "calendar-clock",
+    "reason": "override:schedule"
+  },
+  {
+    "id": "tango_n4_813",
+    "word": "予定",
+    "meaning": "plan",
+    "example": "I plan to take a trip to Hokkaido during the extended weekend.",
+    "icon": "clipboard-list",
+    "reason": "override:plan"
+  },
+  {
+    "id": "tango_n4_814",
+    "word": "相手",
+    "meaning": "partner, opponent, person",
+    "example": "The person who called just now was my mother.",
+    "icon": "user-round",
+    "reason": "override:person"
+  },
+  {
+    "id": "tango_n4_815",
+    "word": "機会",
+    "meaning": "chance, opportunity",
+    "example": "Nowadays, I have more opportunities to drink alcohol.",
+    "icon": "playing-card",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_816",
+    "word": "うれしい",
+    "meaning": "happy, glad",
+    "example": "I was really happy to get a ring from him.",
+    "icon": "smile",
+    "reason": "override:happy"
+  },
+  {
+    "id": "tango_n4_817",
+    "word": "笑う",
+    "meaning": "to laugh, to smile",
+    "example": "Something good is bound to happen if you're always smiling.",
+    "icon": "face-slightly-smiling",
+    "reason": "score:4.5"
+  },
+  {
+    "id": "tango_n4_818",
+    "word": "しあわせ〈な〉",
+    "meaning": "happiness, fortune/fortunate, happy",
+    "example": "What color do you think happiness is?\nEveryone in my family is in good health and happy.",
+    "icon": "smile",
+    "reason": "override:happy"
+  },
+  {
+    "id": "tango_n4_819",
+    "word": "楽な",
+    "meaning": "easy, comfortable",
+    "example": "I want a comfortable chair to rest in at home.",
+    "icon": "smile",
+    "reason": "override:easy"
+  },
+  {
+    "id": "tango_n4_820",
+    "word": "安心〈な／する〉",
+    "meaning": "relief/secure, stable",
+    "example": "I was relieved to find the wallet I had lost.\nIt would be a relief if I had a friend that lived nearby.",
+    "icon": "shield",
+    "reason": "score:3.6"
+  },
+  {
+    "id": "tango_n4_821",
+    "word": "信じる",
+    "meaning": "to believe, to trust",
+    "example": "I believe his words.",
+    "icon": "certificate",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_822",
+    "word": "祈る",
+    "meaning": "to pray",
+    "example": "I pray for world peace.",
+    "icon": "sparkles",
+    "reason": "override:pray"
+  },
+  {
+    "id": "tango_n4_823",
+    "word": "かなしい",
+    "meaning": "sad",
+    "example": "My friend went back to her home country, so I'm very sad.",
+    "icon": "frown",
+    "reason": "override:sad"
+  },
+  {
+    "id": "tango_n4_824",
+    "word": "さびしい",
+    "meaning": "lonely",
+    "example": "I was so lonely for about a month after I came to Japan.",
+    "icon": "user-round",
+    "reason": "override:lonely"
+  },
+  {
+    "id": "tango_n4_825",
+    "word": "泣く",
+    "meaning": "to cry, to weep",
+    "example": "A baby was crying on the train.",
+    "icon": "face-slightly-frowning",
+    "reason": "override:cry"
+  },
+  {
+    "id": "tango_n4_826",
+    "word": "なみだ",
+    "meaning": "tear",
+    "example": "I saw a movie about animals and cried.",
+    "icon": "shredder",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_827",
+    "word": "心配〈な／する〉",
+    "meaning": "worry, unease/worrisome, uneasy",
+    "example": "You don't have to worry about anything.\nI'm worried about whether I'll be able to pass the test.",
+    "icon": "circle-alert",
+    "reason": "override:worry"
+  },
+  {
+    "id": "tango_n4_828",
+    "word": "つまらない",
+    "meaning": "boring, not interesting",
+    "example": "That movie was boring.",
+    "icon": "face-neutral",
+    "reason": "override:boring"
+  },
+  {
+    "id": "tango_n4_829",
+    "word": "がっかり〈する〉",
+    "meaning": "disappointment",
+    "example": "I was disappointed to hear that an actor that I liked got married.",
+    "icon": "face-slightly-frowning",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_830",
+    "word": "あきらめる",
+    "meaning": "to give up",
+    "example": "You mustn't give up on everything so easily.",
+    "icon": "circle-fading-arrow-up",
+    "reason": "score:5.0"
+  },
+  {
+    "id": "tango_n4_831",
+    "word": "きんちょう〈する〉",
+    "meaning": "nervousness",
+    "example": "I was really nervous during my speech yesterday.",
+    "icon": "activity",
+    "reason": "override:nervousness"
+  },
+  {
+    "id": "tango_n4_832",
+    "word": "はずかしい",
+    "meaning": "embarrassing, shameful",
+    "example": "I'm embarrassed that I can't read simple kanji.",
+    "icon": "smile",
+    "reason": "override:embarrassing"
+  },
+  {
+    "id": "tango_n4_833",
+    "word": "びっくり〈する〉",
+    "meaning": "surprise",
+    "example": "A: I hear there is a 10,000,000-yen plate at Tanaka-san's house.\nB: What? That's a surprise!",
+    "icon": "cake-slice",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_834",
+    "word": "おどろく",
+    "meaning": "to be surprised, to be astonished",
+    "example": "I was surprised by a loud voice on the street in the middle of the night.",
+    "icon": "smile-plus",
+    "reason": "override:surprised"
+  },
+  {
+    "id": "tango_n4_835",
+    "word": "怒る",
+    "meaning": "to get angry",
+    "example": "When my father gets angry, his face turns red.",
+    "icon": "face-angry",
+    "reason": "override:get angry"
+  },
+  {
+    "id": "tango_n4_836",
+    "word": "気分",
+    "meaning": "mood, feeling",
+    "example": "On day when I wake up early, my mood is good.",
+    "icon": "smile",
+    "reason": "override:mood"
+  },
+  {
+    "id": "tango_n4_837",
+    "word": "気分が悪い",
+    "meaning": "bad mood",
+    "example": "I've been feeling bad since this morning.",
+    "icon": "thumbs-down",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_838",
+    "word": "心",
+    "meaning": "heart, mind, spirit",
+    "example": "My body and my mind are healthy.",
+    "icon": "file-heart",
+    "reason": "score:5.5"
+  },
+  {
+    "id": "tango_n4_839",
+    "word": "ストレス",
+    "meaning": "stress",
+    "example": "There is no one who is without stress.",
+    "icon": "zap",
+    "reason": "override:stress"
+  },
+  {
+    "id": "tango_n4_840",
+    "word": "ホームシック",
+    "meaning": "homesick",
+    "example": "Sometimes I get homesick and cry.",
+    "icon": "house",
+    "reason": "override:homesick"
+  },
+  {
+    "id": "tango_n4_841",
+    "word": "かならず",
+    "meaning": "absolutely, be sure to ~",
+    "example": "Please be sure to bring your homework tomorrow.",
+    "icon": "check-check",
+    "reason": "override:absolutely"
+  },
+  {
+    "id": "tango_n4_842",
+    "word": "きっと",
+    "meaning": "surely",
+    "example": "If you do your best, I'm sure you'll pass.",
+    "icon": "check-check",
+    "reason": "override:surely"
+  },
+  {
+    "id": "tango_n4_843",
+    "word": "しっかり［と］〈する〉",
+    "meaning": "tightly, firmly, strongly",
+    "example": "Please hang the poster securely.",
+    "icon": "grip",
+    "reason": "override:tightly"
+  },
+  {
+    "id": "tango_n4_844",
+    "word": "きちんと〈する〉",
+    "meaning": "neatly, accurately",
+    "example": "Please put the books back neatly on the bookshelf.",
+    "icon": "list-checks",
+    "reason": "override:neatly"
+  },
+  {
+    "id": "tango_n4_845",
+    "word": "ちゃんと〈する〉",
+    "meaning": "properly",
+    "example": "Be sure to turn off the light when you leave the bathroom.",
+    "icon": "list-checks",
+    "reason": "override:properly"
+  },
+  {
+    "id": "tango_n4_846",
+    "word": "ぜったい［に］",
+    "meaning": "absolutely",
+    "example": "I absolutely want to win the match tomorrow.",
+    "icon": "check-check",
+    "reason": "override:absolutely"
+  },
+  {
+    "id": "tango_n4_847",
+    "word": "ぜひ",
+    "meaning": "certainly, without fail",
+    "example": "Please be certain to contact me when you come to Japan.",
+    "icon": "check-check",
+    "reason": "override:certainly"
+  },
+  {
+    "id": "tango_n4_848",
+    "word": "できるだけ",
+    "meaning": "as much as possible",
+    "example": "A typhoon is coming, so please try to go home as soon as possible.",
+    "icon": "maximize",
+    "reason": "override:as much as possible"
+  },
+  {
+    "id": "tango_n4_849",
+    "word": "はっきり［と］〈する〉",
+    "meaning": "clearly",
+    "example": "On clear days, Mt. Fuji can be seen clearly.",
+    "icon": "eye",
+    "reason": "override:clearly"
+  },
+  {
+    "id": "tango_n4_850",
+    "word": "ずいぶん［と］",
+    "meaning": "fairly, quite",
+    "example": "You've gotten quite good at Japanese.",
+    "icon": "equal",
+    "reason": "override:fairly"
+  },
+  {
+    "id": "tango_n4_851",
+    "word": "かなり",
+    "meaning": "pretty, quite",
+    "example": "That French restaurant looks pretty expensive.",
+    "icon": "equal",
+    "reason": "override:quite"
+  },
+  {
+    "id": "tango_n4_852",
+    "word": "だいぶ",
+    "meaning": "largely",
+    "example": "I've come to largely understand the Japanese people's way of thinking.",
+    "icon": "trending-up",
+    "reason": "override:largely"
+  },
+  {
+    "id": "tango_n4_853",
+    "word": "もっと",
+    "meaning": "more, ~er",
+    "example": "You won't be able to pass if you don't try harder.",
+    "icon": "plus",
+    "reason": "override:more"
+  },
+  {
+    "id": "tango_n4_854",
+    "word": "だいたい",
+    "meaning": "mostly",
+    "example": "The report is mostly finished.",
+    "icon": "chart-no-axes-combined",
+    "reason": "override:mostly"
+  },
+  {
+    "id": "tango_n4_855",
+    "word": "たいてい",
+    "meaning": "usually",
+    "example": "On my days off, I usually stay at home.",
+    "icon": "repeat",
+    "reason": "override:usually"
+  },
+  {
+    "id": "tango_n4_856",
+    "word": "たまに",
+    "meaning": "occasionally",
+    "example": "Occasionally, I go to restaurants in the neighborhood.",
+    "icon": "shuffle",
+    "reason": "override:occasionally"
+  },
+  {
+    "id": "tango_n4_857",
+    "word": "ぜんぜん",
+    "meaning": "(not) at all, completely",
+    "example": "I don't understand Japanese news at all.",
+    "icon": "ban",
+    "reason": "override:at all"
+  },
+  {
+    "id": "tango_n4_858",
+    "word": "けっして",
+    "meaning": "never, absolutely (not)",
+    "example": "Please don't ever touch this painting.",
+    "icon": "ban",
+    "reason": "override:never"
+  },
+  {
+    "id": "tango_n4_859",
+    "word": "ちっとも",
+    "meaning": "not even a little",
+    "example": "I don't understand Japanese news even a little bit.",
+    "icon": "minus",
+    "reason": "override:not even a little"
+  },
+  {
+    "id": "tango_n4_860",
+    "word": "まだ",
+    "meaning": "still, (not) yet",
+    "example": "① I'm still using this dictionary.\n② I haven't eaten lunch yet.",
+    "icon": "hourglass",
+    "reason": "override:still"
+  },
+  {
+    "id": "tango_n4_861",
+    "word": "ほとんど",
+    "meaning": "mostly",
+    "example": "Even though I studied kanji, I've mostly forgotten it.",
+    "icon": "chart-no-axes-combined",
+    "reason": "override:mostly"
+  },
+  {
+    "id": "tango_n4_862",
+    "word": "なかなか",
+    "meaning": "considerably, rather, (not) really",
+    "example": "Buses aren't really running due to the snow.",
+    "icon": "equal",
+    "reason": "override:rather"
+  },
+  {
+    "id": "tango_n4_863",
+    "word": "急に",
+    "meaning": "suddenly",
+    "example": "The sky suddenly got dark in the afternoon.",
+    "icon": "zap",
+    "reason": "override:suddenly"
+  },
+  {
+    "id": "tango_n4_864",
+    "word": "しばらく",
+    "meaning": "for a while, for a bit",
+    "example": "Please wait for a bit.",
+    "icon": "drill",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_865",
+    "word": "ずっと",
+    "meaning": "continuously, for a long time",
+    "example": "① I had always wanted to go on an exchange to Japan.\n② My younger sister is much smarter than I am.",
+    "icon": "clock",
+    "reason": "score:4.0"
+  },
+  {
+    "id": "tango_n4_866",
+    "word": "そのまま",
+    "meaning": "as is, just like that",
+    "example": "The coat I took off is still lying just as I left it.",
+    "icon": "copy",
+    "reason": "override:as is"
+  },
+  {
+    "id": "tango_n4_867",
+    "word": "そろそろ",
+    "meaning": "soon",
+    "example": "It's already 9:00, so I'm going home soon.",
+    "icon": "timer",
+    "reason": "override:soon"
+  },
+  {
+    "id": "tango_n4_868",
+    "word": "とうとう",
+    "meaning": "finally, ultimately",
+    "example": "Those two fight often, and they've finally broken up.",
+    "icon": "flag",
+    "reason": "override:finally"
+  },
+  {
+    "id": "tango_n4_869",
+    "word": "やっと",
+    "meaning": "at last, finally",
+    "example": "I finally met someone I want to marry.",
+    "icon": "flag",
+    "reason": "override:finally"
+  },
+  {
+    "id": "tango_n4_870",
+    "word": "たしか",
+    "meaning": "certainly, surely",
+    "example": "I'm sure the meeting tomorrow starts at 3:00.",
+    "icon": "check-check",
+    "reason": "override:certainly"
+  },
+  {
+    "id": "tango_n4_871",
+    "word": "どうも",
+    "meaning": "somehow, seemingly",
+    "example": "It would seem that something good has happened to my brother.",
+    "icon": "circle-question-mark",
+    "reason": "override:somehow"
+  },
+  {
+    "id": "tango_n4_872",
+    "word": "たとえば",
+    "meaning": "for example",
+    "example": "During New Year's, I want to travel somewhere in Asia, like Thailand for example.",
+    "icon": "list",
+    "reason": "override:for example"
+  },
+  {
+    "id": "tango_n4_873",
+    "word": "直接",
+    "meaning": "direct",
+    "example": "Please talk to her yourself directly.",
+    "icon": "arrow-right",
+    "reason": "override:direct"
+  },
+  {
+    "id": "tango_n4_874",
+    "word": "特に",
+    "meaning": "especially",
+    "example": "Among sweet things, I especially love cakes.",
+    "icon": "star",
+    "reason": "override:especially"
+  },
+  {
+    "id": "tango_n4_875",
+    "word": "どんどん",
+    "meaning": "steadily, rapidly",
+    "example": "The number of exchange students is steadily increasing.",
+    "icon": "trending-up",
+    "reason": "override:steadily"
+  },
+  {
+    "id": "tango_n4_876",
+    "word": "なるほど",
+    "meaning": "I see",
+    "example": "A: This book is good because it also has practice questions.\nB: I see. That does look good.",
+    "icon": "lightbulb",
+    "reason": "override:i see"
+  },
+  {
+    "id": "tango_n4_877",
+    "word": "はじめて",
+    "meaning": "first, for the first time",
+    "example": "I was able to go to Hokkaido for the first time last month.",
+    "icon": "award",
+    "reason": "override:first"
+  },
+  {
+    "id": "tango_n4_878",
+    "word": "はじめに",
+    "meaning": "at first, first",
+    "example": "First, please finely chop the carrots.",
+    "icon": "award",
+    "reason": "override:first"
+  },
+  {
+    "id": "tango_n4_879",
+    "word": "もし",
+    "meaning": "if, in the event of ~",
+    "example": "If you have time, would you like to get lunch?",
+    "icon": "ticket",
+    "reason": "score:3.0"
+  },
+  {
+    "id": "tango_n4_880",
+    "word": "もちろん",
+    "meaning": "of course",
+    "example": "If I'm invited to the wedding, I would of course like to attend.",
+    "icon": "fish",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_881",
+    "word": "やはり",
+    "meaning": "as expected",
+    "example": "As expected, Team A won the match yesterday.",
+    "icon": "check",
+    "reason": "override:as expected"
+  },
+  {
+    "id": "tango_n4_882",
+    "word": "実は",
+    "meaning": "actually, the truth is ~",
+    "example": "Actually, I'll be going back to my country next month.",
+    "icon": "book-check",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_883",
+    "word": "いかが",
+    "meaning": "how",
+    "example": "How would you like some coffee?",
+    "icon": "circle-question-mark",
+    "reason": "override:how"
+  },
+  {
+    "id": "tango_n4_884",
+    "word": "いっしょうけんめい〈な〉",
+    "meaning": "to one's best ability/ with all one's might",
+    "example": "I study as best as I can everyday.",
+    "icon": "spotlight",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_885",
+    "word": "おおぜい",
+    "meaning": "a great number of (something)",
+    "example": "This beach is famous, so many people come here.",
+    "icon": "hash",
+    "reason": "score:3.5"
+  },
+  {
+    "id": "tango_n4_886",
+    "word": "だから",
+    "meaning": "therefore",
+    "example": "I love children. Therefore, I want to be a kindergarten teacher.",
+    "icon": "arrow-right",
+    "reason": "override:therefore"
+  },
+  {
+    "id": "tango_n4_887",
+    "word": "それで",
+    "meaning": "then, so",
+    "example": "I had a fever yesterday. So, I took the day off from school.",
+    "icon": "arrow-right",
+    "reason": "override:then"
+  },
+  {
+    "id": "tango_n4_888",
+    "word": "または",
+    "meaning": "also, or",
+    "example": "Please contact me by phone or e-mail.",
+    "icon": "plus",
+    "reason": "override:also"
+  },
+  {
+    "id": "tango_n4_889",
+    "word": "それに",
+    "meaning": "besides",
+    "example": "Hotel fairs are expensive during extended weekends. Besides, it's crowded no matter where you go.",
+    "icon": "plus",
+    "reason": "override:besides"
+  },
+  {
+    "id": "tango_n4_890",
+    "word": "そのうえ",
+    "meaning": "furthermore, in addition",
+    "example": "He's handsome. Furthermore, he's very rich.",
+    "icon": "house-plus",
+    "reason": "score:2.5"
+  },
+  {
+    "id": "tango_n4_891",
+    "word": "すると",
+    "meaning": "in such case, then",
+    "example": "The sky suddenly got dark. Then, it started raining heavily.",
+    "icon": "git-branch",
+    "reason": "override:in such case"
+  },
+  {
+    "id": "tango_n4_892",
+    "word": "けれども",
+    "meaning": "however, but",
+    "example": "Japan is an easy place to live. But the cost of living is high.",
+    "icon": "git-branch",
+    "reason": "override:however"
+  },
+  {
+    "id": "tango_n4_893",
+    "word": "それなら",
+    "meaning": "then, if so, then ~",
+    "example": "A: This is my first time coming to Japan.\nB: Then let me show you around Tokyo.",
+    "icon": "arrow-right",
+    "reason": "override:then"
+  },
+  {
+    "id": "tango_n4_894",
+    "word": "ところで",
+    "meaning": "by the way",
+    "example": "A: The rain yesterday was terrible.\nB: Yeah. By the way, are you free tomorrow night?",
+    "icon": "message-circle",
+    "reason": "override:by the way"
+  }
+]
