@@ -1,20 +1,21 @@
 {
-  "generatedAt": "2026-10-25T13:45:00+07:00",
-  "note": "Ngung pump cuoi ngay 25-10: HET HAN MUC TAO ANH cua tai khoan Flow (user xac nhan). Toan bo 5 tab Flow cu + tab moi da dong. Viec dfeengine v5 da cai tren tab moi nhung chi kiem 3-lan submit cua so 315 truoc khi het han muc - khong tile nao bind duoc (pending=0), khong capture them nao.",
-  "lastSubmittedUncaptured": [315],
-  "submittedNote": "So 315 da submit x3 (commit thanh cong x3 - do bug 'submitting' chua release) nhung tile chua kip xuat hien; neu hot dem nay hoan thanh thi mai harvest mien phi trong project cu (so 315 van nam trong danh sách can tao).",
-  "tabs": {
-    "cca3-fresh-project": {
-      "projectTitle": "Tháng 10 25 - 13:31",
-      "submitted": ["315", "315", "315"],
-      "captured": [],
-      "state": "tab closed by user"
-    }
+  "generatedAt": "2026-10-26T21:20:00+07:00",
+  "state": "COMPLETE",
+  "note": "Da tao + harvest + import du 111 so con thieu trong phien 26-10. Tong 666/666 anh that cho dai 229-894; index 894/894.",
+  "method": {
+    "project": "bdfe81d4-eceb-425b-98aa-ddecd00fa1e0 (Thang 10 25 - 13:31)",
+    "settings": "Nano Banana 2.1, 1:1, x1",
+    "throughput": "6 prompt song song moi lo (pending cap 6)",
+    "mapping": "Bam 'Su dung lai cau lenh' tren tile -> doc prompt trong editor -> so khop normalized text voi prompts.jsonl",
+    "submit": "execCommand insertText vao ProseMirror + focus editor + caret cuoi + Enter that (trusted)"
   },
-  "engineState": {
-    "dead": [],
-    "pending": [],
-    "note": "Tab dong -> trang thai engine mat; khong mat du lieu vi prompts.jsonl + todo.json tren dia la nguon that duy nhat."
-  },
-  "quotaNote": "Han muc tao anh Flow het ngay 25-10 chieu. Mai kiem tra tai khoan da reset han muc roi chay tiep."
+  "quota": "Flow bao '0 tin dung' cho moi lan tao trong phien nay",
+  "lastSubmittedUncaptured": [],
+  "result": {
+    "requested": 111,
+    "captured": 111,
+    "unmatched": 0,
+    "failedTiles": 0,
+    "missingAfterImport": 0
+  }
 }
