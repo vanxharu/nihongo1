@@ -15,6 +15,21 @@ function getVocabularyIllustration(item: VocabularyItem) {
   return byWord.get(`${normalize(item.kanji)}|${normalize(item.hiragana)}`);
 }
 
+const preloadedSrcs = new Set<string>();
+
+// Warm the HTTP cache for the whole deck up front so flashcards never render an
+// empty illustration frame while the browser fetches the file on first card view.
+export function preloadVocabularyIllustrations(items: Array<Pick<VocabularyItem, 'id' | 'level' | 'kanji' | 'hiragana'>>) {
+  for (const item of items) {
+    const image = getVocabularyIllustration(item as VocabularyItem);
+    if (!image || preloadedSrcs.has(image.src)) continue;
+    preloadedSrcs.add(image.src);
+    // Fire-and-forget: browser caches the response for later <img> mounts.
+    const img = new Image();
+    img.src = image.src;
+  }
+}
+
 export default function VocabularyIllustration({ item }: { item: VocabularyItem }) {
   const [failed, setFailed] = useState(false);
   const image = getVocabularyIllustration(item);

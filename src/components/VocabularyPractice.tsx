@@ -1,4 +1,4 @@
-import VocabularyIllustration from './VocabularyIllustration';
+import VocabularyIllustration, { preloadVocabularyIllustrations } from './VocabularyIllustration';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -1068,6 +1068,12 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const lessonItems = useMemo(
     () => kanjiMode && selectedMode !== 'flashcard' ? expandKanjiWords(baseLessonItems) : baseLessonItems,
     [kanjiMode, selectedMode, baseLessonItems]);
+
+  // Preload every illustration of the active deck so card flips never flash an
+  // empty frame while the file is fetched on first access.
+  useEffect(() => {
+    preloadVocabularyIllustrations(baseLessonItems as VocabularyItem[]);
+  }, [baseLessonItems]);
 
   useEffect(() => {
     if (isSrsReviewActive) {

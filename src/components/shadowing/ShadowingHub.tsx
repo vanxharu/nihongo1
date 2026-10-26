@@ -13,7 +13,7 @@ import SubtitleEditor from './SubtitleEditor';
 import VideoLearningPanel from './VideoLearningPanel';
 import { parseShadowingAnalysisFile, type ShadowingAnalysisFile } from '../../utils/shadowingAnalysisFile';
 import { auth } from '../../lib/firebase';
-import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings, visibleShadowingCue, parsePreparedShadowingCaptions } from '../../utils/shadowing';
+import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings, visibleShadowingCue, parsePreparedShadowingCaptions, prepareShadowingSentenceCues } from '../../utils/shadowing';
 import './shadowing.css';
 import ShadowingLibrary from './ShadowingLibrary';
 
@@ -165,7 +165,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
           if (response.ok) {
             const stored = await response.json();
             if (!alignmentController.signal.aborted) {
-              applyCues(stored.cues, true); setCustomTitle(stored.title);
+              applyCues(prepareShadowingSentenceCues(stored.cues), true); setCustomTitle(stored.title);
               // Built-in videos are copied into the user's own library when edited.
               setRevision(stored.personal ? stored.revision : null);
               try {
@@ -227,7 +227,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
       if (!res.ok) throw new Error(data.error || 'Không lấy được phụ đề.');
       if (!Array.isArray(data.cues) || !data.cues.length) throw new Error('Video không có phụ đề tiếng Nhật.');
       if (controller.signal.aborted) return;
-      applyCues(data.cues);
+      applyCues(prepareShadowingSentenceCues(data.cues));
     } catch (error) {
       if (!controller.signal.aborted) setNotice(error instanceof Error ? error.message : 'Không lấy được phụ đề.');
       else if (controller.signal.reason === 'timeout') setNotice('Tải phụ đề quá lâu. Hãy tải lại trang để thử lại.');

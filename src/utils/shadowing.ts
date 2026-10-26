@@ -244,3 +244,53 @@ export function mergeSentenceCues(cues: ShadowingCue[]): ShadowingCue[] {
   }
   return out;
 }
+
+/** Split caption blocks that contain more than one sentence at 。！？ boundaries so every cue is a single sentence.
+ *  Per-part start/end interpolate the cue window by character share (same fallback the karaoke view already uses;
+ *  word timings of the source block are dropped because exact per-sentence boundaries cannot be measured). */
+export function splitSentenceCues(cues: ShadowingCue[]): ShadowingCue[] {
+  const out: ShadowingCue[] = [];
+  for (const cue of cues) {
+    const text = cue.text;
+    const boundaries: number[] = [];
+    const boundaryPattern = /[。！？!?]+[」』）)]*/g;
+    let match: RegExpExecArray | null;
+    while ((match = boundaryPattern.exec(text))) {
+      const end = match.index + match[0].length;
+      if (end >= text.length) continue;
+      const rest = text.slice(end);
+      // 「…。」と言った。 / 「…。」って言う — the quote is part of the same sentence.
+      if (!/\S/.test(rest) || /^[とっ]/.test(rest.trimStart())) continue;
+      boundaries.push(end);
+    }
+    if (!boundaries.length) { out.push(cue); continue; }
+    const segments: { text: string; offset: number }[] = [];
+    let cursor = 0;
+    for (const boundary of [...boundaries, text.length]) {
+      const piece = text.slice(cursor, boundary);
+      if (piece.trim()) {
+        const leading = piece.match(/^\s*/)?.[0]?.length ?? 0;
+        segments.push({ text: piece.slice(leading), offset: cursor + leading });
+      }
+      cursor = boundary;
+    }
+    if (segments.length <= 1) { out.push(cue); continue; }
+    const timed = cue.start !== null && cue.end !== null && cue.end > cue.start;
+    const span = timed ? cue.end! - cue.start! : 0;
+    let partStart = cue.start;
+    segments.forEach((part, index) => {
+      const partEnd = !timed ? cue.end
+        : index === segments.length - 1 ? cue.end!
+        : Math.round((cue.start! + ((part.offset + part.text.length) / text.length) * span) * 1000) / 1000;
+      const sub: ShadowingCue = { id: `${cue.id}s${index}`, text: part.text, start: timed ? partStart : cue.start, end: partEnd };
+      out.push(sub);
+      partStart = partEnd;
+    });
+  }
+  return out;
+}
+
+/** One sentence per cue: join mid-sentence fragments first, then split multi-sentence blocks. */
+export function prepareShadowingSentenceCues(cues: ShadowingCue[]): ShadowingCue[] {
+  return splitSentenceCues(mergeSentenceCues(cues));
+}
