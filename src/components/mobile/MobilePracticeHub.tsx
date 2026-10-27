@@ -12,7 +12,8 @@ import {
   Trophy,
   Bookmark,
   ChevronRight,
-  Dice5
+  Dice5,
+  Briefcase
 } from 'lucide-react';
 import { UserProfile, ExamHistoryRecord } from '../../types';
 import { ExamHistoryModal } from '../ExamHistoryModal';
@@ -58,6 +59,7 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
   // Shadowing / Lộ trình / Tiến độ already live in the bottom nav, so they are not repeated here.
   const tiles: Tile[] = [
     { id: 'vocab', label: 'Từ vựng', to: 'vocabulary', sub: `${masteredVocab} từ đã thuộc`, icon: <span className="text-base font-bold">文A</span>, tone: 'text-[#38bdf8] bg-[#14283d] border-[#38bdf8]/40', bar: 'bg-[#38bdf8]' },
+    { id: 'business', label: 'Công sở', to: 'business', sub: 'Từ vựng dùng ở công ty', icon: <Briefcase className="w-5 h-5" />, tone: 'text-[#60a5fa] bg-[#14283d] border-[#60a5fa]/40', bar: 'bg-[#60a5fa]' },
     { id: 'grammar', label: 'Ngữ pháp', to: 'grammar', sub: `${savedGrammarCount}/${GRAMMAR_DATA.length} mẫu`, pct: pct(savedGrammarCount, GRAMMAR_DATA.length), icon: <span className="text-lg font-bold">品</span>, tone: 'text-[#c084fc] bg-[#241738] border-[#c084fc]/40', bar: 'bg-[#c084fc]' },
     { id: 'kanji', label: 'Kanji', to: 'kanji', sub: `${savedKanjiCount}/${KANJI_DATA.length} chữ`, pct: pct(savedKanjiCount, KANJI_DATA.length), icon: <PenTool className="w-5 h-5" />, tone: 'text-[#2dd4bf] bg-[#132828] border-[#2dd4bf]/40', bar: 'bg-[#2dd4bf]' },
     { id: 'reading', label: 'Đọc hiểu', to: 'reading', sub: 'Bài đọc & tin tức', icon: <BookOpen className="w-5 h-5" />, tone: 'text-[#fbbf24] bg-[#2f2014] border-[#fbbf24]/40', bar: 'bg-[#fbbf24]' },

@@ -24,3 +24,10 @@ test('today lessons render three timed tasks for a fresh profile', () => {
   assert.equal((html.match(/phút/g) || []).length, 3);
   assert.match(html, /Ngày 1\//);
 });
+
+test('business deck has unique ids, 8 topics and full examples', async () => {
+  const { BUSINESS_VOCABULARY } = await import('../src/data/businessVocab');
+  assert.equal(new Set(BUSINESS_VOCABULARY.map(v => v.id)).size, BUSINESS_VOCABULARY.length);
+  assert.equal(new Set(BUSINESS_VOCABULARY.map(v => v.lessonId)).size, 8);
+  for (const v of BUSINESS_VOCABULARY) assert.ok(v.kanji && v.hiragana && v.meaning && v.exampleSentence && v.exampleTranslation, v.id);
+});

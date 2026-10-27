@@ -239,6 +239,8 @@ interface VocabularyPracticeProps {
   kanjiMode?: boolean;
   /** Tab Từ vựng của tôi: dữ liệu là các từ đã lưu trong Sổ tay. */
   myMode?: boolean;
+  /** Từ vựng công sở: bộ từ riêng, không lọc theo cấp JLPT. */
+  businessMode?: boolean;
 }
 
 const KANJI_COMMON_READINGS: Record<string, string[]> = {
@@ -694,7 +696,7 @@ const URL_VOCAB_MODE = () => {
   return (['flashcard', 'quiz', 'cram', 'conjugate', 'sentence', 'write', 'dokkai', 'shadowing'] as const).find(x => x === m);
 };
 
-export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel, kanjiMode, myMode }: VocabularyPracticeProps) {
+export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel, kanjiMode, myMode, businessMode }: VocabularyPracticeProps) {
   const [vocabData, setVocabData] = useState<VocabularyItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -718,6 +720,11 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
         load();
         window.addEventListener('saved_words_updated', load);
         cleanup = () => window.removeEventListener('saved_words_updated', load);
+        return;
+      }
+      if (businessMode) {
+        const { BUSINESS_VOCABULARY } = await import('../data/businessVocab');
+        if (isMounted) { setVocabData(BUSINESS_VOCABULARY.map(v => sanitizeVocabItem({ ...v, hanViet: getHanViet(v.kanji) }))); setLoading(false); }
         return;
       }
       if (kanjiMode) {
@@ -752,7 +759,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       isMounted = false;
       cleanup();
     };
-  }, [kanjiMode, myMode]);
+  }, [kanjiMode, myMode, businessMode]);
 
 
   const { user } = useAuth();
@@ -785,7 +792,7 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   // Filter vocab by selected level & selected curriculum
   const filteredVocab = useMemo(() => {
     const list = vocabData.filter(v => {
-      const matchLevel = myMode || levelFilter === 'ALL' ? true : v.level === levelFilter;
+      const matchLevel = myMode || businessMode || levelFilter === 'ALL' ? true : v.level === levelFilter;
       const matchCurriculum = v.curriculum 
         ? v.curriculum === selectedCurriculum 
         : (selectedCurriculum === 'tango' ? v.id.startsWith('v_tango') : !v.id.startsWith('v_tango'));
@@ -1036,7 +1043,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
 
   // Save the last selected lesson ID and sync learning position (for authenticated users)
   useEffect(() => {
-    if (!user || !isRestoredRef.current) return;
+    // The business deck is not a JLPT level, so it must not overwrite the saved Tango position.
+    if (!user || !isRestoredRef.current || businessMode) return;
     // Right after a target-level change the lesson is still from the old level; don't save it.
     if (skipPositionSaveRef.current) { skipPositionSaveRef.current = false; return; }
     if (currentLesson && currentLesson.id && currentLesson.id !== 'SRS_REVIEW' && currentLesson.id !== 'default') {
@@ -4247,12 +4255,12 @@ if (loading) {
               <div className="p-3.5 sm:p-4 border-b border-[#343d5f] flex items-center justify-between gap-2 shrink-0">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-xl bg-sky-500/20 border border-sky-500/30 flex items-center justify-center text-sky-400 font-black text-xs">
-                    {levelFilter || userProfile.targetLevel}
+                    {businessMode ? '社' : levelFilter || userProfile.targetLevel}
                   </div>
                   <div>
                     <h3 className="text-sm sm:text-base font-extrabold text-white tracking-tight">Chọn bài học nhanh</h3>
                     <p className="text-[11px] text-slate-400">
-                      📗 Tango {levelFilter || userProfile.targetLevel} • {lessons.length} bài
+                      📗 {businessMode ? 'Từ vựng công sở' : `Tango ${levelFilter || userProfile.targetLevel}`} • {lessons.length} bài
                     </p>
                   </div>
                 </div>

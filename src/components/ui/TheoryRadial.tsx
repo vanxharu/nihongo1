@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Languages, PenLine, Bookmark } from 'lucide-react';
+import { BookOpen, Languages, PenLine, Bookmark, Briefcase } from 'lucide-react';
 import './theoryRadial.css';
 
 // Radial menu ported from Lucian UX/UI spec 011 (MIT).
@@ -10,10 +10,11 @@ export const THEORY_ITEMS = [
   { id: 'vocabulary', path: '/tango', label: 'Từ vựng', icon: Languages, c: 'linear-gradient(135deg,#fbbf24,#f97316)' },
   { id: 'kanji', path: '/kanji', label: 'Kanji', icon: PenLine, c: 'linear-gradient(135deg,#f472b6,#a855f7)' },
   { id: 'myvocab', path: '/tu-cua-toi', label: 'Của tôi', icon: Bookmark, c: 'linear-gradient(135deg,#34d399,#16a34a)' },
+  { id: 'business', path: '/cong-so', label: 'Công sở', icon: Briefcase, c: 'linear-gradient(135deg,#60a5fa,#6366f1)' },
 ];
 const FAN = {
-  up: [[-108, -40], [-38, -96], [38, -96], [108, -40]],
-  right: [[56, -84], [84, -28], [84, 28], [56, 84]],
+  up: [[-124, -30], [-72, -92], [0, -116], [72, -92], [124, -30]],
+  right: [[44, -104], [82, -54], [96, 0], [82, 54], [44, 104]],
 };
 
 export default function TheoryRadial({ rect, dir, onPick, onClose }: {
@@ -38,7 +39,8 @@ export default function TheoryRadial({ rect, dir, onPick, onClose }: {
 
   const cx = dir === 'up' ? rect.left + rect.width / 2 : rect.right - 56;
   const cy = dir === 'up' ? rect.top : rect.top + rect.height / 2;
-  const clampedX = Math.min(Math.max(cx, 100), window.innerWidth - 100);
+  const edge = dir === 'up' ? 156 : 100; // widest fan item (124px) + half its size + margin stays on screen
+  const clampedX = Math.min(Math.max(cx, edge), window.innerWidth - edge);
   return createPortal(
     <div ref={root} data-dir={dir} className="u011" role="menu" aria-label="Lý thuyết" style={{ left: clampedX, top: cy }}>
       <div className="u011-halo" />
