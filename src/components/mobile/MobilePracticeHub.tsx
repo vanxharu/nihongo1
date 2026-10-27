@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSrsAuto } from '../../utils/srsMode';
-import '../ui/todayGoals.css';
 import { localDateStr } from '../../utils/localDate';
-import { readAccuracy } from '../../utils/dailyAccuracy';
 import {
   BookOpen,
   MessagesSquare,
@@ -78,9 +76,6 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
   const dayNumber = Math.floor(Date.UTC(year, month - 1, day) / 86400000);
   const dailyRotation = ((dayNumber % 7) + 7) % 7;
   const srsDue = Object.values(userProfile.vocabStatus || {}).filter((v: any) => v && typeof v === 'object' && v.nextReviewDate && new Date(v.nextReviewDate) <= new Date()).length;
-  const acc = readAccuracy();
-  const todayExams = examHistory.filter(r => localDateStr(new Date(r.date)) === todayStr);
-  const bestExam = todayExams.reduce((m, r) => Math.max(m, Math.round(r.percentage || 0)), 0);
   type DailySkill = 'vocab' | 'grammar' | 'kanji';
   const skillNames: Record<DailySkill, string> = { vocab: 'Từ vựng', grammar: 'Ngữ pháp', kanji: 'Kanji' };
   const skillRoutes: Record<DailySkill, string> = { vocab: 'vocabulary', grammar: 'grammar', kanji: 'kanji' };
@@ -94,30 +89,6 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
     { skills: ['vocab', 'grammar'], questions: 12, pass: 75, exam: true },
   ];
   const challenge = challenges[dailyRotation];
-  const skillGoal = (id: DailySkill) => {
-    const [correct, total] = acc[id];
-    const rate = total ? Math.round((correct / total) * 100) : 0;
-    const done = total >= challenge.questions && rate >= challenge.pass;
-    const fail = total >= challenge.questions && !done;
-    return {
-      id, title: `${skillNames[id]}: đúng ≥ ${challenge.pass}% (${challenge.questions} câu)`,
-      done, to: skillRoutes[id],
-      tag: total < challenge.questions ? `${total}/${challenge.questions} câu` : `${rate}%${fail ? ' · làm thêm' : ''}`,
-      k: fail ? 'var(--ui-danger, #f43f5e)' : done ? 'var(--ui-success)' : 'var(--ui-info)'
-    };
-  };
-  const goals = [
-    ...challenge.skills.map(skillGoal),
-    ...(challenge.exam ? [{
-      id: 'exam', title: `Một đề luyện thi đúng ≥ ${challenge.pass}%`,
-      done: bestExam >= challenge.pass,
-      tag: todayExams.length ? `${bestExam}%` : 'Chưa làm',
-      k: bestExam >= challenge.pass ? 'var(--ui-success)' : todayExams.length ? 'var(--ui-danger, #f43f5e)' : 'var(--ui-info)',
-      to: 'exam'
-    }] : [])
-  ];
-  const goalsDone = goals.filter(g => g.done).length;
-  const dateLabel = new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'numeric' });
 
   return (
     <div className="w-full max-w-lg md:max-w-4xl mx-auto px-4 py-2 space-y-2 text-white pb-6 select-none">
@@ -135,32 +106,6 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
       <div className="lg:grid lg:grid-cols-2 lg:gap-3 lg:items-start space-y-2 lg:space-y-0">
       <div className="space-y-2 min-w-0">
       <TodayLessons userProfile={userProfile} />
-      {/* 014 — Mục tiêu hôm nay */}
-      <div className={`ux u014${goalsDone === goals.length ? ' is-all' : ''}`} style={{ ['--p' as any]: (goalsDone / goals.length).toFixed(3) }}>
-        <div className="u014-head">
-          <div>
-            <b>Mục tiêu hôm nay</b>
-            <span className="u014-sub" aria-live="polite"><span>{dateLabel}</span><span>Đạt cả 3 mục tiêu 🎉</span></span>
-          </div>
-          <div className="u014-ring" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><circle className="bg" cx="24" cy="24" r="20" /><circle className="fg" cx="24" cy="24" r="20" /></svg>
-            <span className="u014-num">{goalsDone}/{goals.length}</span>
-            <span className="u014-done"><svg viewBox="0 0 16 16"><path d="M3.5 8.4l3 3 6-6.4" /></svg></span>
-          </div>
-        </div>
-        <ul className="u014-list">
-          {goals.map(g => (
-            <li key={g.id}>
-              <button type="button" role="checkbox" aria-checked={g.done} className="u014-row" onClick={() => onNavigate(g.to)}>
-                <span className="u014-box" aria-hidden="true"><svg viewBox="0 0 26 26"><path d="M7.5 13.5l3.8 3.8 7.4-8" /></svg></span>
-                <span className="u014-t">{g.title}</span>
-                <span className="u014-tag" style={{ ['--k' as any]: g.k }}>{g.tag}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-bold text-white whitespace-nowrap">Luyện theo kỹ năng</h2>
         <button
