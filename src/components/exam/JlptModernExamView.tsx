@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { DailyExam, ExamQuestion, UserProfile } from '../../types';
 import { JLPT_SECTION_METAS, ExamSectionMode, renderFormattedQuestion } from '../DailyExamQuiz';
+import { TappableJa, ReadingHelper, vocabIn } from './TappableJa';
 import ShibaMascot from '../mascot/ShibaMascot';
 import LiquidGlassButton from '../ui/LiquidGlassButton';
 
@@ -95,6 +96,8 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
   // Chế độ luyện: chọn xong hiện đúng/sai + giải thích ngay (như openjlpt).
   const [instant, setInstant] = useState<boolean>(() => { try { return localStorage.getItem('exam-instant') === '1'; } catch { return false; } });
   const toggleInstant = () => setInstant(v => { const n = !v; try { localStorage.setItem('exam-instant', n ? '1' : '0'); } catch {} return n; });
+  const [tapOn, setTapOn] = useState(true);
+  const [keywords, setKeywords] = useState(false);
   const [isCardsOpen, setIsCardsOpen] = useState(false);
   const [cardIdx, setCardIdx] = useState(0);
   const [cardFlip, setCardFlip] = useState(false);
@@ -236,6 +239,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
           {/* Right: Controls (Font Size, Focus Mode, Palette, Submit) */}
           <div className="flex items-center gap-1 sm:gap-2">
             <button onClick={toggleInstant} aria-pressed={instant} title="Chọn xong hiện đúng/sai và giải thích ngay" className={`h-8 px-2 rounded-lg border text-[11px] font-bold whitespace-nowrap cursor-pointer ${instant ? 'bg-[#10B981] text-white border-[#10B981]' : 'bg-white text-[#786D5E] border-[#EADFCF]'}`}>Hiện đáp án</button>
+            <button onClick={() => setKeywords(k => !k)} aria-pressed={keywords} title="Tô nền các từ có trong từ điển (chạm từ để xem nghĩa)" className={`h-8 px-2 rounded-lg border text-[11px] font-bold whitespace-nowrap cursor-pointer ${keywords ? 'bg-[#FEF3C7] border-[#F59E0B]' : 'bg-white text-[#786D5E] border-[#EADFCF]'}`}>Từ khóa</button>
             <button onClick={() => { setCardIdx(0); setCardFlip(false); setIsCardsOpen(true); }} title="Thẻ ghi nhớ từ đề này" className="h-8 px-2 rounded-lg border border-[#EADFCF] bg-white text-[11px] font-bold whitespace-nowrap text-[#786D5E] cursor-pointer">Thẻ nhớ</button>
             <button onClick={printExam} title="In đề + phiếu đáp án" className="h-8 px-2 rounded-lg border border-[#EADFCF] bg-white text-[11px] font-bold whitespace-nowrap text-[#786D5E] cursor-pointer">In đề</button>
             <span className="px-1 font-mono text-xs font-bold whitespace-nowrap text-[#1F2639]" aria-label="Số câu đã làm">
@@ -255,6 +259,21 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
         </div>
       </header>
 
+      <div className="flex-1 flex">
+      {/* Mục lục bên cạnh (màn rộng) */}
+      <aside className="hidden xl:block sticky top-20 self-start shrink-0 w-56 ml-3 mt-6 max-h-[75vh] overflow-y-auto rounded-2xl border border-[#EADFCF] bg-white/95 p-3 shadow-xs" aria-label="Mục lục">
+        <p className="mb-2 text-xs font-black">Mục lục · {answeredCount}/{activeQuestions.length}</p>
+        <div className="grid grid-cols-5 gap-1.5">
+          {activeQuestions.map((q, idx) => {
+            const a = userAnswers[q.id]; const done = a !== undefined; const show = done && (instant || isSubmitted);
+            const cls = idx === currentQuestionIndex ? 'bg-[#F4A643] text-slate-950 border-[#F4A643]'
+              : show ? (q.correctIndex === a ? 'bg-[#10B981] text-white border-[#10B981]' : 'bg-[#D82B3A] text-white border-[#D82B3A]')
+              : flaggedQuestions[q.id] ? 'bg-[#FEF3C7] border-[#F59E0B]' : done ? 'bg-[#1F2639] text-[#FDF1E2] border-[#1F2639]' : 'bg-[#FDFBF7] border-[#EADFCF]';
+            return <button key={q.id} onClick={() => onJumpQuestion(idx)} className={`h-8 rounded-lg border text-[11px] font-mono cursor-pointer ${cls}`}>{idx + 1}</button>;
+          })}
+        </div>
+      </aside>
+
       {/* ================= MAIN EXAM CONTENT BODY ================= */}
       <main className="flex-1 max-w-5xl w-full mx-auto p-3 sm:p-6 pb-28">
         
@@ -269,8 +288,9 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
                 {/* Left: Reading Passage Card */}
                 <div className="lg:col-span-6 bg-white rounded-2xl p-5 border border-[#EADFCF] shadow-xs space-y-3 sticky top-20 max-h-[75vh] overflow-y-auto">
                   <div className="text-[#1F2639] font-medium text-base sm:text-lg leading-relaxed whitespace-pre-line tracking-wide font-sans">
-                    {renderFormattedQuestion(readingPassage)}
+                    {tapOn ? <TappableJa text={readingPassage} highlight={keywords} /> : renderFormattedQuestion(readingPassage)}
                   </div>
+                  <ReadingHelper qid={currentQuestion.id} passage={readingPassage} question={currentQuestion.question} />
                 </div>
 
                 {/* Right: Question & Multiple Choices */}
@@ -293,6 +313,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
         )}
 
       </main>
+      </div>
 
       {/* ================= BOTTOM THUMB-FRIENDLY ACTION BAR ================= */}
       <footer 
@@ -679,7 +700,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
             </div>
           ) : (
           <p className={`exam-prompt font-bold text-[#1F2639] whitespace-pre-line tracking-wide font-sans ${questionFontClass}`}>
-            {renderFormattedQuestion(currentQuestion.question)}
+            {tapOn && currentQuestion.section === 'dokkai' ? <TappableJa text={currentQuestion.question} highlight={keywords} /> : renderFormattedQuestion(currentQuestion.question)}
           </p>
           )}
 
@@ -759,6 +780,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
                 {currentQuestion.optionExplanations.map((t, k) => t ? <li key={k}><b>{k + 1}.</b> {t}</li> : null)}
               </ul>
             )}
+            {currentQuestion.section !== 'choukai' && (() => { const w = vocabIn(`${currentQuestion.question} ${currentQuestion.options.join(' ')}`).slice(0, 8); return w.length ? <p className="text-[13px]"><b>Từ trong câu:</b> {w.map(x => `${x.word} (${x.reading}) = ${x.meaning}`).join(' · ')}</p> : null; })()}
             {currentQuestion.audioScript && <p className="text-[13px] text-[#786D5E] whitespace-pre-line">🎧 {currentQuestion.audioScript}</p>}
           </div>
         )}
