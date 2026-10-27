@@ -12264,6 +12264,27 @@
     "alt": "Minh họa ngữ cảnh của おすすめ"
   },
   {
+    "id": "tango_n3_861",
+    "word": "ストーリー",
+    "reading": "ストーリー",
+    "src": "/vocabulary-illustrations/n3/tango_n3_861.webp",
+    "alt": "Minh họa ngữ cảnh của ストーリー"
+  },
+  {
+    "id": "tango_n3_862",
+    "word": "シリーズ",
+    "reading": "シリーズ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_862.webp",
+    "alt": "Minh họa ngữ cảnh của シリーズ"
+  },
+  {
+    "id": "tango_n3_863",
+    "word": "名作",
+    "reading": "めいさく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_863.webp",
+    "alt": "Minh họa ngữ cảnh của 名作"
+  },
+  {
     "id": "tango_n3_1033",
     "word": "夏日",
     "reading": "なつび",
@@ -12369,6 +12390,27 @@
     "alt": "Minh họa ngữ cảnh của だんだん[と]"
   },
   {
+    "id": "tango_n3_1048",
+    "word": "ますます",
+    "reading": "ますます",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1048.webp",
+    "alt": "Minh họa ngữ cảnh của ますます"
+  },
+  {
+    "id": "tango_n3_1049",
+    "word": "すっかり",
+    "reading": "すっかり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1049.webp",
+    "alt": "Minh họa ngữ cảnh của すっかり"
+  },
+  {
+    "id": "tango_n3_1050",
+    "word": "一気に",
+    "reading": "いっきに",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1050.webp",
+    "alt": "Minh họa ngữ cảnh của 一気に"
+  },
+  {
     "id": "tango_n3_1213",
     "word": "感激(する)",
     "reading": "かんげき",
@@ -12458,5 +12500,19 @@
     "reading": "ほっと",
     "src": "/vocabulary-illustrations/n3/tango_n3_1227.webp",
     "alt": "Minh họa ngữ cảnh của ほっと(する)"
+  },
+  {
+    "id": "tango_n3_1229",
+    "word": "ほほえむ",
+    "reading": "ほほえむ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1229.webp",
+    "alt": "Minh họa ngữ cảnh của ほほえむ"
+  },
+  {
+    "id": "tango_n3_1230",
+    "word": "夢中(な)",
+    "reading": "むちゅう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1230.webp",
+    "alt": "Minh họa ngữ cảnh của 夢中(な)"
   }
 ]
