@@ -19,10 +19,10 @@ test('week strip marks today as studied and counts it', () => {
   assert.match(html, /1\/7 ngày · chuỗi 3 ngày/);
 });
 
-test('business deck has unique ids, 8 topics and full examples', async () => {
+test('business deck has unique ids, 14 topics and full examples', async () => {
   const { BUSINESS_VOCABULARY } = await import('../src/data/businessVocab');
   assert.equal(new Set(BUSINESS_VOCABULARY.map(v => v.id)).size, BUSINESS_VOCABULARY.length);
-  assert.equal(new Set(BUSINESS_VOCABULARY.map(v => v.lessonId)).size, 8);
+  assert.equal(new Set(BUSINESS_VOCABULARY.map(v => v.lessonId)).size, 14);
   for (const v of BUSINESS_VOCABULARY) assert.ok(v.kanji && v.hiragana && v.meaning && v.exampleSentence && v.exampleTranslation, v.id);
 });
 
