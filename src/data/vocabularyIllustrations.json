@@ -8188,5 +8188,1881 @@
     "reading": "おこづかい",
     "src": "/vocabulary-illustrations/n3/tango_n3_277.webp",
     "alt": "Minh họa ngữ cảnh của [お]こづかい"
+  },
+  {
+    "id": "tango_n3_278",
+    "word": "節約(する)",
+    "reading": "せつやく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_278.webp",
+    "alt": "Minh họa ngữ cảnh của 節約(する)"
+  },
+  {
+    "id": "tango_n3_279",
+    "word": "ぜいたく(な/する)",
+    "reading": "ぜいたく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_279.webp",
+    "alt": "Minh họa ngữ cảnh của ぜいたく(な/する)"
+  },
+  {
+    "id": "tango_n3_280",
+    "word": "割り勘",
+    "reading": "わりかん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_280.webp",
+    "alt": "Minh họa ngữ cảnh của 割り勘"
+  },
+  {
+    "id": "tango_n3_281",
+    "word": "レンタル(する)",
+    "reading": "レンタル",
+    "src": "/vocabulary-illustrations/n3/tango_n3_281.webp",
+    "alt": "Minh họa ngữ cảnh của レンタル(する)"
+  },
+  {
+    "id": "tango_n3_282",
+    "word": "支払う",
+    "reading": "しはらう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_282.webp",
+    "alt": "Minh họa ngữ cảnh của 支払う"
+  },
+  {
+    "id": "tango_n3_283",
+    "word": "支払い",
+    "reading": "しはらい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_283.webp",
+    "alt": "Minh họa ngữ cảnh của 支払い"
+  },
+  {
+    "id": "tango_n3_284",
+    "word": "勘定(する)",
+    "reading": "かんじょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_284.webp",
+    "alt": "Minh họa ngữ cảnh của 勘定(する)"
+  },
+  {
+    "id": "tango_n3_285",
+    "word": "口座",
+    "reading": "こうざ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_285.webp",
+    "alt": "Minh họa ngữ cảnh của 口座"
+  },
+  {
+    "id": "tango_n3_286",
+    "word": "キャッシュカード",
+    "reading": "キャッシュカード",
+    "src": "/vocabulary-illustrations/n3/tango_n3_286.webp",
+    "alt": "Minh họa ngữ cảnh của キャッシュカード"
+  },
+  {
+    "id": "tango_n3_287",
+    "word": "暗証番号",
+    "reading": "あんしょうばんごう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_287.webp",
+    "alt": "Minh họa ngữ cảnh của 暗証番号"
+  },
+  {
+    "id": "tango_n3_288",
+    "word": "預金(する)",
+    "reading": "よきん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_288.webp",
+    "alt": "Minh họa ngữ cảnh của 預金(する)"
+  },
+  {
+    "id": "tango_n3_289",
+    "word": "ためる",
+    "reading": "ためる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_289.webp",
+    "alt": "Minh họa ngữ cảnh của ためる"
+  },
+  {
+    "id": "tango_n3_290",
+    "word": "たまる",
+    "reading": "たまる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_290.webp",
+    "alt": "Minh họa ngữ cảnh của たまる"
+  },
+  {
+    "id": "tango_n3_291",
+    "word": "引き出す",
+    "reading": "ひきだす",
+    "src": "/vocabulary-illustrations/n3/tango_n3_291.webp",
+    "alt": "Minh họa ngữ cảnh của 引き出す"
+  },
+  {
+    "id": "tango_n3_292",
+    "word": "振り込む",
+    "reading": "ふりこむ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_292.webp",
+    "alt": "Minh họa ngữ cảnh của 振り込む"
+  },
+  {
+    "id": "tango_n3_293",
+    "word": "送金(する)",
+    "reading": "そうきん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_293.webp",
+    "alt": "Minh họa ngữ cảnh của 送金(する)"
+  },
+  {
+    "id": "tango_n3_294",
+    "word": "通帳記入",
+    "reading": "つうちょうきにゅう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_294.webp",
+    "alt": "Minh họa ngữ cảnh của 通帳記入"
+  },
+  {
+    "id": "tango_n3_295",
+    "word": "品物",
+    "reading": "しなもの",
+    "src": "/vocabulary-illustrations/n3/tango_n3_295.webp",
+    "alt": "Minh họa ngữ cảnh của 品物"
+  },
+  {
+    "id": "tango_n3_296",
+    "word": "現金",
+    "reading": "げんきん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_296.webp",
+    "alt": "Minh họa ngữ cảnh của 現金"
+  },
+  {
+    "id": "tango_n3_297",
+    "word": "クレジットカード",
+    "reading": "クレジットカード",
+    "src": "/vocabulary-illustrations/n3/tango_n3_297.webp",
+    "alt": "Minh họa ngữ cảnh của クレジットカード"
+  },
+  {
+    "id": "tango_n3_298",
+    "word": "1回払い",
+    "reading": "いっかいばらい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_298.webp",
+    "alt": "Minh họa ngữ cảnh của 1回払い"
+  },
+  {
+    "id": "tango_n3_299",
+    "word": "合計(する)",
+    "reading": "ごうけい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_299.webp",
+    "alt": "Minh họa ngữ cảnh của 合計(する)"
+  },
+  {
+    "id": "tango_n3_300",
+    "word": "代金",
+    "reading": "だいきん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_300.webp",
+    "alt": "Minh họa ngữ cảnh của 代金"
+  },
+  {
+    "id": "tango_n3_301",
+    "word": "税込",
+    "reading": "ぜいこみ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_301.webp",
+    "alt": "Minh họa ngữ cảnh của 税込"
+  },
+  {
+    "id": "tango_n3_302",
+    "word": "請求書",
+    "reading": "せいきゅうしょ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_302.webp",
+    "alt": "Minh họa ngữ cảnh của 請求書"
+  },
+  {
+    "id": "tango_n3_303",
+    "word": "領収書",
+    "reading": "りょうしゅうしょ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_303.webp",
+    "alt": "Minh họa ngữ cảnh của 領収書"
+  },
+  {
+    "id": "tango_n3_304",
+    "word": "売り切れ",
+    "reading": "うりきれ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_304.webp",
+    "alt": "Minh họa ngữ cảnh của 売り切れ"
+  },
+  {
+    "id": "tango_n3_305",
+    "word": "品切れ",
+    "reading": "しなぎれ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_305.webp",
+    "alt": "Minh họa ngữ cảnh của 品切れ"
+  },
+  {
+    "id": "tango_n3_306",
+    "word": "日替わり",
+    "reading": "ひがわり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_306.webp",
+    "alt": "Minh họa ngữ cảnh của 日替わり"
+  },
+  {
+    "id": "tango_n3_307",
+    "word": "割引",
+    "reading": "わりびき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_307.webp",
+    "alt": "Minh họa ngữ cảnh của 割引"
+  },
+  {
+    "id": "tango_n3_308",
+    "word": "半額",
+    "reading": "はんがく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_308.webp",
+    "alt": "Minh họa ngữ cảnh của 半額"
+  },
+  {
+    "id": "tango_n3_309",
+    "word": "特売日",
+    "reading": "とくばいび",
+    "src": "/vocabulary-illustrations/n3/tango_n3_309.webp",
+    "alt": "Minh họa ngữ cảnh của 特売日"
+  },
+  {
+    "id": "tango_n3_310",
+    "word": "たった",
+    "reading": "たった",
+    "src": "/vocabulary-illustrations/n3/tango_n3_310.webp",
+    "alt": "Minh họa ngữ cảnh của たった"
+  },
+  {
+    "id": "tango_n3_311",
+    "word": "得(な)",
+    "reading": "とく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_311.webp",
+    "alt": "Minh họa ngữ cảnh của 得(な)"
+  },
+  {
+    "id": "tango_n3_312",
+    "word": "損(な)",
+    "reading": "そん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_312.webp",
+    "alt": "Minh họa ngữ cảnh của 損(な)"
+  },
+  {
+    "id": "tango_n3_313",
+    "word": "おまけ(する)",
+    "reading": "おまけ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_313.webp",
+    "alt": "Minh họa ngữ cảnh của おまけ(する)"
+  },
+  {
+    "id": "tango_n3_314",
+    "word": "むだ(な)",
+    "reading": "むだ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_314.webp",
+    "alt": "Minh họa ngữ cảnh của むだ(な)"
+  },
+  {
+    "id": "tango_n3_315",
+    "word": "むだづかい(する)",
+    "reading": "むだづかい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_315.webp",
+    "alt": "Minh họa ngữ cảnh của むだづかい(する)"
+  },
+  {
+    "id": "tango_n3_316",
+    "word": "寄る",
+    "reading": "よる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_316.webp",
+    "alt": "Minh họa ngữ cảnh của 寄る"
+  },
+  {
+    "id": "tango_n3_317",
+    "word": "ついでに",
+    "reading": "ついでに",
+    "src": "/vocabulary-illustrations/n3/tango_n3_317.webp",
+    "alt": "Minh họa ngữ cảnh của ついでに"
+  },
+  {
+    "id": "tango_n3_318",
+    "word": "レジ袋",
+    "reading": "レジぶくろ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_318.webp",
+    "alt": "Minh họa ngữ cảnh của レジ袋"
+  },
+  {
+    "id": "tango_n3_319",
+    "word": "定休日",
+    "reading": "ていきゅうび",
+    "src": "/vocabulary-illustrations/n3/tango_n3_319.webp",
+    "alt": "Minh họa ngữ cảnh của 定休日"
+  },
+  {
+    "id": "tango_n3_320",
+    "word": "覚ます",
+    "reading": "さます",
+    "src": "/vocabulary-illustrations/n3/tango_n3_320.webp",
+    "alt": "Minh họa ngữ cảnh của 覚ます"
+  },
+  {
+    "id": "tango_n3_321",
+    "word": "覚める",
+    "reading": "さめる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_321.webp",
+    "alt": "Minh họa ngữ cảnh của 覚める"
+  },
+  {
+    "id": "tango_n3_322",
+    "word": "(夜が)明ける",
+    "reading": "あける",
+    "src": "/vocabulary-illustrations/n3/tango_n3_322.webp",
+    "alt": "Minh họa ngữ cảnh của (夜が)明ける"
+  },
+  {
+    "id": "tango_n3_323",
+    "word": "支度(する)",
+    "reading": "したく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_323.webp",
+    "alt": "Minh họa ngữ cảnh của 支度(する)"
+  },
+  {
+    "id": "tango_n3_324",
+    "word": "合わせる",
+    "reading": "あわせる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_324.webp",
+    "alt": "Minh họa ngữ cảnh của 合わせる"
+  },
+  {
+    "id": "tango_n3_325",
+    "word": "しまう",
+    "reading": "しまう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_325.webp",
+    "alt": "Minh họa ngữ cảnh của しまう"
+  },
+  {
+    "id": "tango_n3_326",
+    "word": "(ひげを)そる",
+    "reading": "そる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_326.webp",
+    "alt": "Minh họa ngữ cảnh của (ひげを)そる"
+  },
+  {
+    "id": "tango_n3_327",
+    "word": "(髪を)とかす",
+    "reading": "とかす",
+    "src": "/vocabulary-illustrations/n3/tango_n3_327.webp",
+    "alt": "Minh họa ngữ cảnh của (髪を)とかす"
+  },
+  {
+    "id": "tango_n3_328",
+    "word": "そろえる",
+    "reading": "そろえる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_328.webp",
+    "alt": "Minh họa ngữ cảnh của そろえる"
+  },
+  {
+    "id": "tango_n3_329",
+    "word": "昼寝(する)",
+    "reading": "ひるね",
+    "src": "/vocabulary-illustrations/n3/tango_n3_329.webp",
+    "alt": "Minh họa ngữ cảnh của 昼寝(する)"
+  },
+  {
+    "id": "tango_n3_330",
+    "word": "腰かける",
+    "reading": "こしかける",
+    "src": "/vocabulary-illustrations/n3/tango_n3_330.webp",
+    "alt": "Minh họa ngữ cảnh của 腰かける"
+  },
+  {
+    "id": "tango_n3_331",
+    "word": "暮れる",
+    "reading": "くれる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_331.webp",
+    "alt": "Minh họa ngữ cảnh của 暮れる"
+  },
+  {
+    "id": "tango_n3_332",
+    "word": "おしゃべり(する)",
+    "reading": "おしゃべり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_332.webp",
+    "alt": "Minh họa ngữ cảnh của おしゃべり(する)"
+  },
+  {
+    "id": "tango_n3_333",
+    "word": "リラックス(する)",
+    "reading": "リラックス",
+    "src": "/vocabulary-illustrations/n3/tango_n3_333.webp",
+    "alt": "Minh họa ngữ cảnh của リラックス(する)"
+  },
+  {
+    "id": "tango_n3_334",
+    "word": "ふだん",
+    "reading": "ふだん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_334.webp",
+    "alt": "Minh họa ngữ cảnh của ふだん"
+  },
+  {
+    "id": "tango_n3_335",
+    "word": "ふだん着",
+    "reading": "ふだんぎ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_335.webp",
+    "alt": "Minh họa ngữ cảnh của ふだん着"
+  },
+  {
+    "id": "tango_n3_336",
+    "word": "相変わらず",
+    "reading": "あいかわらず",
+    "src": "/vocabulary-illustrations/n3/tango_n3_336.webp",
+    "alt": "Minh họa ngữ cảnh của 相変わらず"
+  },
+  {
+    "id": "tango_n3_337",
+    "word": "たいてい",
+    "reading": "たいてい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_337.webp",
+    "alt": "Minh họa ngữ cảnh của たいてい"
+  },
+  {
+    "id": "tango_n3_338",
+    "word": "夜ふかし(する)",
+    "reading": "よふかし",
+    "src": "/vocabulary-illustrations/n3/tango_n3_338.webp",
+    "alt": "Minh họa ngữ cảnh của 夜ふかし(する)"
+  },
+  {
+    "id": "tango_n3_339",
+    "word": "電源",
+    "reading": "でんげん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_339.webp",
+    "alt": "Minh họa ngữ cảnh của 電源"
+  },
+  {
+    "id": "tango_n3_340",
+    "word": "充電(する)",
+    "reading": "じゅうでん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_340.webp",
+    "alt": "Minh họa ngữ cảnh của 充電(する)"
+  },
+  {
+    "id": "tango_n3_341",
+    "word": "セット(する)",
+    "reading": "セット",
+    "src": "/vocabulary-illustrations/n3/tango_n3_341.webp",
+    "alt": "Minh họa ngữ cảnh của セット(する)"
+  },
+  {
+    "id": "tango_n3_342",
+    "word": "なでる",
+    "reading": "なでる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_342.webp",
+    "alt": "Minh họa ngữ cảnh của なでる"
+  },
+  {
+    "id": "tango_n3_343",
+    "word": "ぐっすり[と]",
+    "reading": "ぐっすり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_343.webp",
+    "alt": "Minh họa ngữ cảnh của ぐっすり[と]"
+  },
+  {
+    "id": "tango_n3_344",
+    "word": "運",
+    "reading": "うん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_344.webp",
+    "alt": "Minh họa ngữ cảnh của 運"
+  },
+  {
+    "id": "tango_n3_345",
+    "word": "日常",
+    "reading": "にちじょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_345.webp",
+    "alt": "Minh họa ngữ cảnh của 日常"
+  },
+  {
+    "id": "tango_n3_346",
+    "word": "常に",
+    "reading": "つねに",
+    "src": "/vocabulary-illustrations/n3/tango_n3_346.webp",
+    "alt": "Minh họa ngữ cảnh của 常に"
+  },
+  {
+    "id": "tango_n3_347",
+    "word": "出迎え",
+    "reading": "でむかえ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_347.webp",
+    "alt": "Minh họa ngữ cảnh của 出迎え"
+  },
+  {
+    "id": "tango_n3_348",
+    "word": "出迎える",
+    "reading": "でむかえる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_348.webp",
+    "alt": "Minh họa ngữ cảnh của 出迎える"
+  },
+  {
+    "id": "tango_n3_349",
+    "word": "見送り",
+    "reading": "みおくり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_349.webp",
+    "alt": "Minh họa ngữ cảnh của 見送り"
+  },
+  {
+    "id": "tango_n3_350",
+    "word": "見送る",
+    "reading": "みおくる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_350.webp",
+    "alt": "Minh họa ngữ cảnh của 見送る"
+  },
+  {
+    "id": "tango_n3_351",
+    "word": "郵送(する)",
+    "reading": "ゆうそう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_351.webp",
+    "alt": "Minh họa ngữ cảnh của 郵送(する)"
+  },
+  {
+    "id": "tango_n3_352",
+    "word": "小包",
+    "reading": "こづつみ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_352.webp",
+    "alt": "Minh họa ngữ cảnh của 小包"
+  },
+  {
+    "id": "tango_n3_353",
+    "word": "送料",
+    "reading": "そうりょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_353.webp",
+    "alt": "Minh họa ngữ cảnh của 送料"
+  },
+  {
+    "id": "tango_n3_354",
+    "word": "あて先",
+    "reading": "あてさき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_354.webp",
+    "alt": "Minh họa ngữ cảnh của あて先"
+  },
+  {
+    "id": "tango_n3_355",
+    "word": "あて名",
+    "reading": "あてな",
+    "src": "/vocabulary-illustrations/n3/tango_n3_355.webp",
+    "alt": "Minh họa ngữ cảnh của あて名"
+  },
+  {
+    "id": "tango_n3_356",
+    "word": "差出人",
+    "reading": "さしだしにん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_356.webp",
+    "alt": "Minh họa ngữ cảnh của 差出人"
+  },
+  {
+    "id": "tango_n3_357",
+    "word": "とりあえず",
+    "reading": "とりあえず",
+    "src": "/vocabulary-illustrations/n3/tango_n3_357.webp",
+    "alt": "Minh họa ngữ cảnh của とりあえず"
+  },
+  {
+    "id": "tango_n3_358",
+    "word": "出前",
+    "reading": "でまえ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_358.webp",
+    "alt": "Minh họa ngữ cảnh của 出前"
+  },
+  {
+    "id": "tango_n3_359",
+    "word": "ほどく",
+    "reading": "ほどく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_359.webp",
+    "alt": "Minh họa ngữ cảnh của ほどく"
+  },
+  {
+    "id": "tango_n3_360",
+    "word": "留守番電話",
+    "reading": "るすばんでんわ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_360.webp",
+    "alt": "Minh họa ngữ cảnh của 留守番電話"
+  },
+  {
+    "id": "tango_n3_361",
+    "word": "よく",
+    "reading": "よく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_361.webp",
+    "alt": "Minh họa ngữ cảnh của よく"
+  },
+  {
+    "id": "tango_n3_362",
+    "word": "早め(な)",
+    "reading": "はやめ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_362.webp",
+    "alt": "Minh họa ngữ cảnh của 早め(な)"
+  },
+  {
+    "id": "tango_n3_363",
+    "word": "リサイクル(する)",
+    "reading": "リサイクル",
+    "src": "/vocabulary-illustrations/n3/tango_n3_363.webp",
+    "alt": "Minh họa ngữ cảnh của リサイクル(する)"
+  },
+  {
+    "id": "tango_n3_364",
+    "word": "どける",
+    "reading": "どける",
+    "src": "/vocabulary-illustrations/n3/tango_n3_364.webp",
+    "alt": "Minh họa ngữ cảnh của どける"
+  },
+  {
+    "id": "tango_n3_365",
+    "word": "商店街",
+    "reading": "しょうてんがい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_365.webp",
+    "alt": "Minh họa ngữ cảnh của 商店街"
+  },
+  {
+    "id": "tango_n3_366",
+    "word": "にぎやかな",
+    "reading": "にぎやかな",
+    "src": "/vocabulary-illustrations/n3/tango_n3_366.webp",
+    "alt": "Minh họa ngữ cảnh của にぎやかな"
+  },
+  {
+    "id": "tango_n3_367",
+    "word": "高層ビル",
+    "reading": "こうそうビル",
+    "src": "/vocabulary-illustrations/n3/tango_n3_367.webp",
+    "alt": "Minh họa ngữ cảnh của 高層ビル"
+  },
+  {
+    "id": "tango_n3_368",
+    "word": "建つ",
+    "reading": "たつ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_368.webp",
+    "alt": "Minh họa ngữ cảnh của 建つ"
+  },
+  {
+    "id": "tango_n3_369",
+    "word": "水族館",
+    "reading": "すいぞくかん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_369.webp",
+    "alt": "Minh họa ngữ cảnh của 水族館"
+  },
+  {
+    "id": "tango_n3_370",
+    "word": "博物館",
+    "reading": "はくぶつかん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_370.webp",
+    "alt": "Minh họa ngữ cảnh của 博物館"
+  },
+  {
+    "id": "tango_n3_371",
+    "word": "出入り口(出入口)",
+    "reading": "でいりぐち",
+    "src": "/vocabulary-illustrations/n3/tango_n3_371.webp",
+    "alt": "Minh họa ngữ cảnh của 出入り口(出入口)"
+  },
+  {
+    "id": "tango_n3_372",
+    "word": "自動ドア",
+    "reading": "じどうドア",
+    "src": "/vocabulary-illustrations/n3/tango_n3_372.webp",
+    "alt": "Minh họa ngữ cảnh của 自動ドア"
+  },
+  {
+    "id": "tango_n3_373",
+    "word": "入館料",
+    "reading": "にゅうかんりょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_373.webp",
+    "alt": "Minh họa ngữ cảnh của 入館料"
+  },
+  {
+    "id": "tango_n3_374",
+    "word": "混雑(する)",
+    "reading": "こんざつ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_374.webp",
+    "alt": "Minh họa ngữ cảnh của 混雑(する)"
+  },
+  {
+    "id": "tango_n3_375",
+    "word": "行列",
+    "reading": "ぎょうれつ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_375.webp",
+    "alt": "Minh họa ngữ cảnh của 行列"
+  },
+  {
+    "id": "tango_n3_376",
+    "word": "休館日",
+    "reading": "きゅうかんび",
+    "src": "/vocabulary-illustrations/n3/tango_n3_376.webp",
+    "alt": "Minh họa ngữ cảnh của 休館日"
+  },
+  {
+    "id": "tango_n3_377",
+    "word": "ホール",
+    "reading": "ホール",
+    "src": "/vocabulary-illustrations/n3/tango_n3_377.webp",
+    "alt": "Minh họa ngữ cảnh của ホール"
+  },
+  {
+    "id": "tango_n3_378",
+    "word": "使用料",
+    "reading": "しようりょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_378.webp",
+    "alt": "Minh họa ngữ cảnh của 使用料"
+  },
+  {
+    "id": "tango_n3_379",
+    "word": "無料",
+    "reading": "むりょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_379.webp",
+    "alt": "Minh họa ngữ cảnh của 無料"
+  },
+  {
+    "id": "tango_n3_380",
+    "word": "老人ホーム",
+    "reading": "ろうじんホーム",
+    "src": "/vocabulary-illustrations/n3/tango_n3_380.webp",
+    "alt": "Minh họa ngữ cảnh của 老人ホーム"
+  },
+  {
+    "id": "tango_n3_381",
+    "word": "目印",
+    "reading": "めじるし",
+    "src": "/vocabulary-illustrations/n3/tango_n3_381.webp",
+    "alt": "Minh họa ngữ cảnh của 目印"
+  },
+  {
+    "id": "tango_n3_382",
+    "word": "歩道橋",
+    "reading": "ほどうきょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_382.webp",
+    "alt": "Minh họa ngữ cảnh của 歩道橋"
+  },
+  {
+    "id": "tango_n3_383",
+    "word": "タワー",
+    "reading": "タワー",
+    "src": "/vocabulary-illustrations/n3/tango_n3_383.webp",
+    "alt": "Minh họa ngữ cảnh của タワー"
+  },
+  {
+    "id": "tango_n3_384",
+    "word": "ライト",
+    "reading": "ライト",
+    "src": "/vocabulary-illustrations/n3/tango_n3_384.webp",
+    "alt": "Minh họa ngữ cảnh của ライト"
+  },
+  {
+    "id": "tango_n3_385",
+    "word": "居酒屋",
+    "reading": "いざかや",
+    "src": "/vocabulary-illustrations/n3/tango_n3_385.webp",
+    "alt": "Minh họa ngữ cảnh của 居酒屋"
+  },
+  {
+    "id": "tango_n3_386",
+    "word": "八百屋",
+    "reading": "やおや",
+    "src": "/vocabulary-illustrations/n3/tango_n3_386.webp",
+    "alt": "Minh họa ngữ cảnh của 八百屋"
+  },
+  {
+    "id": "tango_n3_387",
+    "word": "正面",
+    "reading": "しょうめん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_387.webp",
+    "alt": "Minh họa ngữ cảnh của 正面"
+  },
+  {
+    "id": "tango_n3_388",
+    "word": "そば",
+    "reading": "そば",
+    "src": "/vocabulary-illustrations/n3/tango_n3_388.webp",
+    "alt": "Minh họa ngữ cảnh của そば"
+  },
+  {
+    "id": "tango_n3_389",
+    "word": "コンクリート",
+    "reading": "コンクリート",
+    "src": "/vocabulary-illustrations/n3/tango_n3_389.webp",
+    "alt": "Minh họa ngữ cảnh của コンクリート"
+  },
+  {
+    "id": "tango_n3_390",
+    "word": "地方",
+    "reading": "ちほう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_390.webp",
+    "alt": "Minh họa ngữ cảnh của 地方"
+  },
+  {
+    "id": "tango_n3_391",
+    "word": "地域",
+    "reading": "ちいき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_391.webp",
+    "alt": "Minh họa ngữ cảnh của 地域"
+  },
+  {
+    "id": "tango_n3_392",
+    "word": "郊外",
+    "reading": "こうがい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_392.webp",
+    "alt": "Minh họa ngữ cảnh của 郊外"
+  },
+  {
+    "id": "tango_n3_393",
+    "word": "中心",
+    "reading": "ちゅうしん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_393.webp",
+    "alt": "Minh họa ngữ cảnh của 中心"
+  },
+  {
+    "id": "tango_n3_394",
+    "word": "移転(する)",
+    "reading": "いてん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_394.webp",
+    "alt": "Minh họa ngữ cảnh của 移転(する)"
+  },
+  {
+    "id": "tango_n3_395",
+    "word": "工事(する)",
+    "reading": "こうじ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_395.webp",
+    "alt": "Minh họa ngữ cảnh của 工事(する)"
+  },
+  {
+    "id": "tango_n3_396",
+    "word": "空き地",
+    "reading": "あきち",
+    "src": "/vocabulary-illustrations/n3/tango_n3_396.webp",
+    "alt": "Minh họa ngữ cảnh của 空き地"
+  },
+  {
+    "id": "tango_n3_397",
+    "word": "人ごみ",
+    "reading": "ひとごみ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_397.webp",
+    "alt": "Minh họa ngữ cảnh của 人ごみ"
+  },
+  {
+    "id": "tango_n3_398",
+    "word": "都会",
+    "reading": "とかい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_398.webp",
+    "alt": "Minh họa ngữ cảnh của 都会"
+  },
+  {
+    "id": "tango_n3_399",
+    "word": "ぶらぶら(する)",
+    "reading": "ぶらぶら",
+    "src": "/vocabulary-illustrations/n3/tango_n3_399.webp",
+    "alt": "Minh họa ngữ cảnh của ぶらぶら(する)"
+  },
+  {
+    "id": "tango_n3_400",
+    "word": "うろうろ(する)",
+    "reading": "うろうろ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_400.webp",
+    "alt": "Minh họa ngữ cảnh của うろうろ(する)"
+  },
+  {
+    "id": "tango_n3_401",
+    "word": "通りかかる",
+    "reading": "とおりかかる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_401.webp",
+    "alt": "Minh họa ngữ cảnh của 通りかかる"
+  },
+  {
+    "id": "tango_n3_402",
+    "word": "通り過ぎる",
+    "reading": "とおりすぎる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_402.webp",
+    "alt": "Minh họa ngữ cảnh của 通り過ぎる"
+  },
+  {
+    "id": "tango_n3_403",
+    "word": "徒歩",
+    "reading": "とほ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_403.webp",
+    "alt": "Minh họa ngữ cảnh của 徒歩"
+  },
+  {
+    "id": "tango_n3_404",
+    "word": "方向",
+    "reading": "ほうこう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_404.webp",
+    "alt": "Minh họa ngữ cảnh của 方向"
+  },
+  {
+    "id": "tango_n3_405",
+    "word": "遠回り(する)",
+    "reading": "とおまわり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_405.webp",
+    "alt": "Minh họa ngữ cảnh của 遠回り(する)"
+  },
+  {
+    "id": "tango_n3_406",
+    "word": "近道(する)",
+    "reading": "ちかみち",
+    "src": "/vocabulary-illustrations/n3/tango_n3_406.webp",
+    "alt": "Minh họa ngữ cảnh của 近道(する)"
+  },
+  {
+    "id": "tango_n3_407",
+    "word": "距離",
+    "reading": "きょり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_407.webp",
+    "alt": "Minh họa ngữ cảnh của 距離"
+  },
+  {
+    "id": "tango_n3_408",
+    "word": "追いかける",
+    "reading": "おいかける",
+    "src": "/vocabulary-illustrations/n3/tango_n3_408.webp",
+    "alt": "Minh họa ngữ cảnh của 追いかける"
+  },
+  {
+    "id": "tango_n3_409",
+    "word": "追いつく",
+    "reading": "おいつく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_409.webp",
+    "alt": "Minh họa ngữ cảnh của 追いつく"
+  },
+  {
+    "id": "tango_n3_410",
+    "word": "追い越す",
+    "reading": "おいこす",
+    "src": "/vocabulary-illustrations/n3/tango_n3_410.webp",
+    "alt": "Minh họa ngữ cảnh của 追い越す"
+  },
+  {
+    "id": "tango_n3_411",
+    "word": "突き当たり",
+    "reading": "つきあたり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_411.webp",
+    "alt": "Minh họa ngữ cảnh của 突き当たり"
+  },
+  {
+    "id": "tango_n3_412",
+    "word": "立ち止まる",
+    "reading": "たちどまる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_412.webp",
+    "alt": "Minh họa ngữ cảnh của 立ち止まる"
+  },
+  {
+    "id": "tango_n3_413",
+    "word": "横切る",
+    "reading": "よこぎる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_413.webp",
+    "alt": "Minh họa ngữ cảnh của 横切る"
+  },
+  {
+    "id": "tango_n3_414",
+    "word": "見かける",
+    "reading": "みかける",
+    "src": "/vocabulary-illustrations/n3/tango_n3_414.webp",
+    "alt": "Minh họa ngữ cảnh của 見かける"
+  },
+  {
+    "id": "tango_n3_415",
+    "word": "行き先",
+    "reading": "いきさき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_415.webp",
+    "alt": "Minh họa ngữ cảnh của 行き先"
+  },
+  {
+    "id": "tango_n3_416",
+    "word": "往復(する)",
+    "reading": "おうふく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_416.webp",
+    "alt": "Minh họa ngữ cảnh của 往復(する)"
+  },
+  {
+    "id": "tango_n3_417",
+    "word": "片道",
+    "reading": "かたみち",
+    "src": "/vocabulary-illustrations/n3/tango_n3_417.webp",
+    "alt": "Minh họa ngữ cảnh của 片道"
+  },
+  {
+    "id": "tango_n3_418",
+    "word": "各駅停車",
+    "reading": "かくえきていしゃ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_418.webp",
+    "alt": "Minh họa ngữ cảnh của 各駅停車"
+  },
+  {
+    "id": "tango_n3_419",
+    "word": "急行",
+    "reading": "きゅうこう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_419.webp",
+    "alt": "Minh họa ngữ cảnh của 急行"
+  },
+  {
+    "id": "tango_n3_420",
+    "word": "始発",
+    "reading": "しはつ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_420.webp",
+    "alt": "Minh họa ngữ cảnh của 始発"
+  },
+  {
+    "id": "tango_n3_421",
+    "word": "終電",
+    "reading": "しゅうでん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_421.webp",
+    "alt": "Minh họa ngữ cảnh của 終電"
+  },
+  {
+    "id": "tango_n3_422",
+    "word": "終点",
+    "reading": "しゅうてん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_422.webp",
+    "alt": "Minh họa ngữ cảnh của 終点"
+  },
+  {
+    "id": "tango_n3_423",
+    "word": "上り",
+    "reading": "のぼり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_423.webp",
+    "alt": "Minh họa ngữ cảnh của 上り"
+  },
+  {
+    "id": "tango_n3_424",
+    "word": "下り",
+    "reading": "くだり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_424.webp",
+    "alt": "Minh họa ngữ cảnh của 下り"
+  },
+  {
+    "id": "tango_n3_425",
+    "word": "JR",
+    "reading": "ジェイアール",
+    "src": "/vocabulary-illustrations/n3/tango_n3_425.webp",
+    "alt": "Minh họa ngữ cảnh của JR"
+  },
+  {
+    "id": "tango_n3_426",
+    "word": "私鉄",
+    "reading": "してつ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_426.webp",
+    "alt": "Minh họa ngữ cảnh của 私鉄"
+  },
+  {
+    "id": "tango_n3_427",
+    "word": "経由(する)",
+    "reading": "けいゆ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_427.webp",
+    "alt": "Minh họa ngữ cảnh của 経由(する)"
+  },
+  {
+    "id": "tango_n3_428",
+    "word": "定期券",
+    "reading": "ていきけん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_428.webp",
+    "alt": "Minh họa ngữ cảnh của 定期券"
+  },
+  {
+    "id": "tango_n3_429",
+    "word": "有効期限",
+    "reading": "ゆうこうきげん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_429.webp",
+    "alt": "Minh họa ngữ cảnh của 有効期限"
+  },
+  {
+    "id": "tango_n3_430",
+    "word": "窓口",
+    "reading": "まどぐち",
+    "src": "/vocabulary-illustrations/n3/tango_n3_430.webp",
+    "alt": "Minh họa ngữ cảnh của 窓口"
+  },
+  {
+    "id": "tango_n3_431",
+    "word": "販売(する)",
+    "reading": "はんばい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_431.webp",
+    "alt": "Minh họa ngữ cảnh của 販売(する)"
+  },
+  {
+    "id": "tango_n3_432",
+    "word": "通路側",
+    "reading": "つうろがわ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_432.webp",
+    "alt": "Minh họa ngữ cảnh của 通路側"
+  },
+  {
+    "id": "tango_n3_433",
+    "word": "改札",
+    "reading": "かいさつ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_433.webp",
+    "alt": "Minh họa ngữ cảnh của 改札"
+  },
+  {
+    "id": "tango_n3_434",
+    "word": "指定席",
+    "reading": "していせき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_434.webp",
+    "alt": "Minh họa ngữ cảnh của 指定席"
+  },
+  {
+    "id": "tango_n3_435",
+    "word": "車内アナウンス",
+    "reading": "しゃないアナウンス",
+    "src": "/vocabulary-illustrations/n3/tango_n3_435.webp",
+    "alt": "Minh họa ngữ cảnh của 車内アナウンス"
+  },
+  {
+    "id": "tango_n3_436",
+    "word": "車掌",
+    "reading": "しゃしょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_436.webp",
+    "alt": "Minh họa ngữ cảnh của 車掌"
+  },
+  {
+    "id": "tango_n3_437",
+    "word": "ホーム",
+    "reading": "ホーム",
+    "src": "/vocabulary-illustrations/n3/tango_n3_437.webp",
+    "alt": "Minh họa ngữ cảnh của ホーム"
+  },
+  {
+    "id": "tango_n3_438",
+    "word": "線路",
+    "reading": "せんろ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_438.webp",
+    "alt": "Minh họa ngữ cảnh của 線路"
+  },
+  {
+    "id": "tango_n3_439",
+    "word": "踏切",
+    "reading": "ふみきり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_439.webp",
+    "alt": "Minh họa ngữ cảnh của 踏切"
+  },
+  {
+    "id": "tango_n3_440",
+    "word": "乗り遅れる",
+    "reading": "のりおくれる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_440.webp",
+    "alt": "Minh họa ngữ cảnh của 乗り遅れる"
+  },
+  {
+    "id": "tango_n3_441",
+    "word": "乗り換える",
+    "reading": "のりかえる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_441.webp",
+    "alt": "Minh họa ngữ cảnh của 乗り換える"
+  },
+  {
+    "id": "tango_n3_442",
+    "word": "乗り越す",
+    "reading": "のりこす",
+    "src": "/vocabulary-illustrations/n3/tango_n3_442.webp",
+    "alt": "Minh họa ngữ cảnh của 乗り越す"
+  },
+  {
+    "id": "tango_n3_443",
+    "word": "乗り過ごす",
+    "reading": "のりすごす",
+    "src": "/vocabulary-illustrations/n3/tango_n3_443.webp",
+    "alt": "Minh họa ngữ cảnh của 乗り過ごす"
+  },
+  {
+    "id": "tango_n3_444",
+    "word": "踏む",
+    "reading": "ふむ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_444.webp",
+    "alt": "Minh họa ngữ cảnh của 踏む"
+  },
+  {
+    "id": "tango_n3_445",
+    "word": "バス停",
+    "reading": "バスてい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_445.webp",
+    "alt": "Minh họa ngữ cảnh của バス停"
+  },
+  {
+    "id": "tango_n3_446",
+    "word": "乗車口",
+    "reading": "じょうしゃぐち",
+    "src": "/vocabulary-illustrations/n3/tango_n3_446.webp",
+    "alt": "Minh họa ngữ cảnh của 乗車口"
+  },
+  {
+    "id": "tango_n3_447",
+    "word": "乗客",
+    "reading": "じょうきゃく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_447.webp",
+    "alt": "Minh họa ngữ cảnh của 乗客"
+  },
+  {
+    "id": "tango_n3_448",
+    "word": "乗車(する)",
+    "reading": "じょうしゃ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_448.webp",
+    "alt": "Minh họa ngữ cảnh của 乗車(する)"
+  },
+  {
+    "id": "tango_n3_449",
+    "word": "発車(する)",
+    "reading": "はっしゃ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_449.webp",
+    "alt": "Minh họa ngữ cảnh của 発車(する)"
+  },
+  {
+    "id": "tango_n3_450",
+    "word": "通過(する)",
+    "reading": "つうか",
+    "src": "/vocabulary-illustrations/n3/tango_n3_450.webp",
+    "alt": "Minh họa ngữ cảnh của 通過(する)"
+  },
+  {
+    "id": "tango_n3_451",
+    "word": "停車(する)",
+    "reading": "ていしゃ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_451.webp",
+    "alt": "Minh họa ngữ cảnh của 停車(する)"
+  },
+  {
+    "id": "tango_n3_452",
+    "word": "下車(する)",
+    "reading": "げしゃ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_452.webp",
+    "alt": "Minh họa ngữ cảnh của 下車(する)"
+  },
+  {
+    "id": "tango_n3_453",
+    "word": "交通費",
+    "reading": "こうつうひ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_453.webp",
+    "alt": "Minh họa ngữ cảnh của 交通費"
+  },
+  {
+    "id": "tango_n3_454",
+    "word": "バス代",
+    "reading": "バスだい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_454.webp",
+    "alt": "Minh họa ngữ cảnh của バス代"
+  },
+  {
+    "id": "tango_n3_455",
+    "word": "払い戻す",
+    "reading": "はらいもどす",
+    "src": "/vocabulary-illustrations/n3/tango_n3_455.webp",
+    "alt": "Minh họa ngữ cảnh của 払い戻す"
+  },
+  {
+    "id": "tango_n3_456",
+    "word": "定員",
+    "reading": "ていいん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_456.webp",
+    "alt": "Minh họa ngữ cảnh của 定員"
+  },
+  {
+    "id": "tango_n3_457",
+    "word": "つめる",
+    "reading": "つめる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_457.webp",
+    "alt": "Minh họa ngữ cảnh của つめる"
+  },
+  {
+    "id": "tango_n3_458",
+    "word": "がらがらな",
+    "reading": "がらがらな",
+    "src": "/vocabulary-illustrations/n3/tango_n3_458.webp",
+    "alt": "Minh họa ngữ cảnh của がらがらな"
+  },
+  {
+    "id": "tango_n3_459",
+    "word": "すく",
+    "reading": "すく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_459.webp",
+    "alt": "Minh họa ngữ cảnh của すく"
+  },
+  {
+    "id": "tango_n3_460",
+    "word": "満員",
+    "reading": "まんいん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_460.webp",
+    "alt": "Minh họa ngữ cảnh của 満員"
+  },
+  {
+    "id": "tango_n3_461",
+    "word": "ぎっしり[と]",
+    "reading": "ぎっしり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_461.webp",
+    "alt": "Minh họa ngữ cảnh của ぎっしり[と]"
+  },
+  {
+    "id": "tango_n3_462",
+    "word": "時刻",
+    "reading": "じこく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_462.webp",
+    "alt": "Minh họa ngữ cảnh của 時刻"
+  },
+  {
+    "id": "tango_n3_463",
+    "word": "優先席",
+    "reading": "ゆうせんせき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_463.webp",
+    "alt": "Minh họa ngữ cảnh của 優先席"
+  },
+  {
+    "id": "tango_n3_464",
+    "word": "立ち上がる",
+    "reading": "たちあがる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_464.webp",
+    "alt": "Minh họa ngữ cảnh của 立ち上がる"
+  },
+  {
+    "id": "tango_n3_465",
+    "word": "ゆずる",
+    "reading": "ゆずる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_465.webp",
+    "alt": "Minh họa ngữ cảnh của ゆずる"
+  },
+  {
+    "id": "tango_n3_466",
+    "word": "かかる",
+    "reading": "かかる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_466.webp",
+    "alt": "Minh họa ngữ cảnh của かかる"
+  },
+  {
+    "id": "tango_n3_467",
+    "word": "ブレーキ",
+    "reading": "ブレーキ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_467.webp",
+    "alt": "Minh họa ngữ cảnh của ブレーキ"
+  },
+  {
+    "id": "tango_n3_468",
+    "word": "ドライブ(する)",
+    "reading": "ドライブ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_468.webp",
+    "alt": "Minh họa ngữ cảnh của ドライブ(する)"
+  },
+  {
+    "id": "tango_n3_469",
+    "word": "乗せる",
+    "reading": "のせる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_469.webp",
+    "alt": "Minh họa ngữ cảnh của 乗せる"
+  },
+  {
+    "id": "tango_n3_470",
+    "word": "助手席",
+    "reading": "じょしゅせき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_470.webp",
+    "alt": "Minh họa ngữ cảnh của 助手席"
+  },
+  {
+    "id": "tango_n3_471",
+    "word": "シートベルト",
+    "reading": "シートベルト",
+    "src": "/vocabulary-illustrations/n3/tango_n3_471.webp",
+    "alt": "Minh họa ngữ cảnh của シートベルト"
+  },
+  {
+    "id": "tango_n3_472",
+    "word": "カーナビ",
+    "reading": "カーナビ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_472.webp",
+    "alt": "Minh họa ngữ cảnh của カーナビ"
+  },
+  {
+    "id": "tango_n3_473",
+    "word": "道路",
+    "reading": "どうろ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_473.webp",
+    "alt": "Minh họa ngữ cảnh của 道路"
+  },
+  {
+    "id": "tango_n3_475",
+    "word": "速度",
+    "reading": "そくど",
+    "src": "/vocabulary-illustrations/n3/tango_n3_475.webp",
+    "alt": "Minh họa ngữ cảnh của 速度"
+  },
+  {
+    "id": "tango_n3_476",
+    "word": "高速道路",
+    "reading": "こうそくどうろ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_476.webp",
+    "alt": "Minh họa ngữ cảnh của 高速道路"
+  },
+  {
+    "id": "tango_n3_480",
+    "word": "駐車違反",
+    "reading": "ちゅうしゃいはん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_480.webp",
+    "alt": "Minh họa ngữ cảnh của 駐車違反"
+  },
+  {
+    "id": "tango_n3_481",
+    "word": "スピード違反",
+    "reading": "スピードいはん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_481.webp",
+    "alt": "Minh họa ngữ cảnh của スピード違反"
+  },
+  {
+    "id": "tango_n3_482",
+    "word": "飲酒運転",
+    "reading": "いんしゅうんてん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_482.webp",
+    "alt": "Minh họa ngữ cảnh của 飲酒運転"
+  },
+  {
+    "id": "tango_n3_483",
+    "word": "アクセル",
+    "reading": "アクセル",
+    "src": "/vocabulary-illustrations/n3/tango_n3_483.webp",
+    "alt": "Minh họa ngữ cảnh của アクセル"
+  },
+  {
+    "id": "tango_n3_484",
+    "word": "カーブ",
+    "reading": "カーブ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_484.webp",
+    "alt": "Minh họa ngữ cảnh của カーブ"
+  },
+  {
+    "id": "tango_n3_485",
+    "word": "ゆるい",
+    "reading": "ゆるい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_485.webp",
+    "alt": "Minh họa ngữ cảnh của ゆるい"
+  },
+  {
+    "id": "tango_n3_486",
+    "word": "パンク(する)",
+    "reading": "パンク",
+    "src": "/vocabulary-illustrations/n3/tango_n3_486.webp",
+    "alt": "Minh họa ngữ cảnh của パンク(する)"
+  },
+  {
+    "id": "tango_n3_487",
+    "word": "一方通行",
+    "reading": "いっぽうつうこう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_487.webp",
+    "alt": "Minh họa ngữ cảnh của 一方通行"
+  },
+  {
+    "id": "tango_n3_488",
+    "word": "通行止め",
+    "reading": "つうこうどめ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_488.webp",
+    "alt": "Minh họa ngữ cảnh của 通行止め"
+  },
+  {
+    "id": "tango_n3_489",
+    "word": "運転免許証",
+    "reading": "うんてんめんきょしょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_489.webp",
+    "alt": "Minh họa ngữ cảnh của 運転免許証"
+  },
+  {
+    "id": "tango_n3_490",
+    "word": "ぶつかる",
+    "reading": "ぶつかる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_490.webp",
+    "alt": "Minh họa ngữ cảnh của ぶつかる"
+  },
+  {
+    "id": "tango_n3_491",
+    "word": "ひく",
+    "reading": "ひく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_491.webp",
+    "alt": "Minh họa ngữ cảnh của ひく"
+  },
+  {
+    "id": "tango_n3_492",
+    "word": "ハンドル",
+    "reading": "ハンドル",
+    "src": "/vocabulary-illustrations/n3/tango_n3_492.webp",
+    "alt": "Minh họa ngữ cảnh của ハンドル"
+  },
+  {
+    "id": "tango_n3_493",
+    "word": "トランク",
+    "reading": "トランク",
+    "src": "/vocabulary-illustrations/n3/tango_n3_493.webp",
+    "alt": "Minh họa ngữ cảnh của トランク"
+  },
+  {
+    "id": "tango_n3_494",
+    "word": "エンジン",
+    "reading": "エンジン",
+    "src": "/vocabulary-illustrations/n3/tango_n3_494.webp",
+    "alt": "Minh họa ngữ cảnh của エンジン"
+  },
+  {
+    "id": "tango_n3_495",
+    "word": "中古車",
+    "reading": "ちゅうこしゃ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_495.webp",
+    "alt": "Minh họa ngữ cảnh của 中古車"
+  },
+  {
+    "id": "tango_n3_496",
+    "word": "トラック",
+    "reading": "トラック",
+    "src": "/vocabulary-illustrations/n3/tango_n3_496.webp",
+    "alt": "Minh họa ngữ cảnh của トラック"
+  },
+  {
+    "id": "tango_n3_497",
+    "word": "入学式",
+    "reading": "にゅうがくしき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_497.webp",
+    "alt": "Minh họa ngữ cảnh của 入学式"
+  },
+  {
+    "id": "tango_n3_498",
+    "word": "卒業式",
+    "reading": "そつぎょうしき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_498.webp",
+    "alt": "Minh họa ngữ cảnh của 卒業式"
+  },
+  {
+    "id": "tango_n3_499",
+    "word": "通学(する)",
+    "reading": "つうがく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_499.webp",
+    "alt": "Minh họa ngữ cảnh của 通学(する)"
+  },
+  {
+    "id": "tango_n3_500",
+    "word": "学年",
+    "reading": "がくねん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_500.webp",
+    "alt": "Minh họa ngữ cảnh của 学年"
+  },
+  {
+    "id": "tango_n3_501",
+    "word": "学期",
+    "reading": "がっき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_501.webp",
+    "alt": "Minh họa ngữ cảnh của 学期"
+  },
+  {
+    "id": "tango_n3_502",
+    "word": "欠席(する)",
+    "reading": "けっせき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_502.webp",
+    "alt": "Minh họa ngữ cảnh của 欠席(する)"
+  },
+  {
+    "id": "tango_n3_503",
+    "word": "遅れる",
+    "reading": "おくれる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_503.webp",
+    "alt": "Minh họa ngữ cảnh của 遅れる"
+  },
+  {
+    "id": "tango_n3_504",
+    "word": "遅刻(する)",
+    "reading": "ちこく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_504.webp",
+    "alt": "Minh họa ngữ cảnh của 遅刻(する)"
+  },
+  {
+    "id": "tango_n3_505",
+    "word": "サボる",
+    "reading": "サボる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_505.webp",
+    "alt": "Minh họa ngữ cảnh của サボる"
+  },
+  {
+    "id": "tango_n3_506",
+    "word": "集中(する)",
+    "reading": "しゅうちゅう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_506.webp",
+    "alt": "Minh họa ngữ cảnh của 集中(する)"
+  },
+  {
+    "id": "tango_n3_507",
+    "word": "うとうと[と](する)",
+    "reading": "うとうと",
+    "src": "/vocabulary-illustrations/n3/tango_n3_507.webp",
+    "alt": "Minh họa ngữ cảnh của うとうと[と](する)"
+  },
+  {
+    "id": "tango_n3_508",
+    "word": "居眠り(する)",
+    "reading": "いねむり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_508.webp",
+    "alt": "Minh họa ngữ cảnh của 居眠り(する)"
+  },
+  {
+    "id": "tango_n3_509",
+    "word": "寝不足(な)",
+    "reading": "ねぶそく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_509.webp",
+    "alt": "Minh họa ngữ cảnh của 寝不足(な)"
+  },
+  {
+    "id": "tango_n3_510",
+    "word": "期間",
+    "reading": "きかん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_510.webp",
+    "alt": "Minh họa ngữ cảnh của 期間"
+  },
+  {
+    "id": "tango_n3_511",
+    "word": "期限",
+    "reading": "きげん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_511.webp",
+    "alt": "Minh họa ngữ cảnh của 期限"
+  },
+  {
+    "id": "tango_n3_512",
+    "word": "時間割",
+    "reading": "じかんわり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_512.webp",
+    "alt": "Minh họa ngữ cảnh của 時間割"
+  },
+  {
+    "id": "tango_n3_513",
+    "word": "項目",
+    "reading": "こうもく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_513.webp",
+    "alt": "Minh họa ngữ cảnh của 項目"
+  },
+  {
+    "id": "tango_n3_517",
+    "word": "一応",
+    "reading": "いちおう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_517.webp",
+    "alt": "Minh họa ngữ cảnh của 一応"
+  },
+  {
+    "id": "tango_n3_518",
+    "word": "きちんと(する)",
+    "reading": "きちんと",
+    "src": "/vocabulary-illustrations/n3/tango_n3_518.webp",
+    "alt": "Minh họa ngữ cảnh của きちんと(する)"
+  },
+  {
+    "id": "tango_n3_519",
+    "word": "きっかけ",
+    "reading": "きっかけ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_519.webp",
+    "alt": "Minh họa ngữ cảnh của きっかけ"
+  },
+  {
+    "id": "tango_n3_520",
+    "word": "かしこい",
+    "reading": "かしこい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_520.webp",
+    "alt": "Minh họa ngữ cảnh của かしこい"
+  },
+  {
+    "id": "tango_n3_522",
+    "word": "返却(する)",
+    "reading": "へんきゃく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_522.webp",
+    "alt": "Minh họa ngữ cảnh của 返却(する)"
+  },
+  {
+    "id": "tango_n3_529",
+    "word": "記憶(する)",
+    "reading": "きおく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_529.webp",
+    "alt": "Minh họa ngữ cảnh của 記憶(する)"
+  },
+  {
+    "id": "tango_n3_530",
+    "word": "くり返す",
+    "reading": "くりかえす",
+    "src": "/vocabulary-illustrations/n3/tango_n3_530.webp",
+    "alt": "Minh họa ngữ cảnh của くり返す"
+  },
+  {
+    "id": "tango_n3_531",
+    "word": "聞き取る",
+    "reading": "ききとる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_531.webp",
+    "alt": "Minh họa ngữ cảnh của 聞き取る"
+  },
+  {
+    "id": "tango_n3_532",
+    "word": "聞き返す",
+    "reading": "ききかえす",
+    "src": "/vocabulary-illustrations/n3/tango_n3_532.webp",
+    "alt": "Minh họa ngữ cảnh của 聞き返す"
+  },
+  {
+    "id": "tango_n3_533",
+    "word": "聞き直す",
+    "reading": "ききなおす",
+    "src": "/vocabulary-illustrations/n3/tango_n3_533.webp",
+    "alt": "Minh họa ngữ cảnh của 聞き直す"
+  },
+  {
+    "id": "tango_n3_536",
+    "word": "入門",
+    "reading": "にゅうもん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_536.webp",
+    "alt": "Minh họa ngữ cảnh của 入門"
+  },
+  {
+    "id": "tango_n3_539",
+    "word": "表れる",
+    "reading": "あらわれる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_539.webp",
+    "alt": "Minh họa ngữ cảnh của 表れる"
+  },
+  {
+    "id": "tango_n3_540",
+    "word": "物語",
+    "reading": "ものがたり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_540.webp",
+    "alt": "Minh họa ngữ cảnh của 物語"
+  },
+  {
+    "id": "tango_n3_542",
+    "word": "科目",
+    "reading": "かもく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_542.webp",
+    "alt": "Minh họa ngữ cảnh của 科目"
+  },
+  {
+    "id": "tango_n3_543",
+    "word": "足し算",
+    "reading": "たしざん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_543.webp",
+    "alt": "Minh họa ngữ cảnh của 足し算"
+  },
+  {
+    "id": "tango_n3_544",
+    "word": "イコール",
+    "reading": "イコール",
+    "src": "/vocabulary-illustrations/n3/tango_n3_544.webp",
+    "alt": "Minh họa ngữ cảnh của イコール"
+  },
+  {
+    "id": "tango_n3_545",
+    "word": "グラフ",
+    "reading": "グラフ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_545.webp",
+    "alt": "Minh họa ngữ cảnh của グラフ"
+  },
+  {
+    "id": "tango_n3_546",
+    "word": "三角形",
+    "reading": "さんかくけい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_546.webp",
+    "alt": "Minh họa ngữ cảnh của 三角形"
+  },
+  {
+    "id": "tango_n3_547",
+    "word": "定規",
+    "reading": "じょうぎ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_547.webp",
+    "alt": "Minh họa ngữ cảnh của 定規"
+  },
+  {
+    "id": "tango_n3_548",
+    "word": "センチ",
+    "reading": "センチ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_548.webp",
+    "alt": "Minh họa ngữ cảnh của センチ"
+  },
+  {
+    "id": "tango_n3_549",
+    "word": "自習(する)",
+    "reading": "じしゅう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_549.webp",
+    "alt": "Minh họa ngữ cảnh của 自習(する)"
+  },
+  {
+    "id": "tango_n3_550",
+    "word": "ローマ字",
+    "reading": "ローマじ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_550.webp",
+    "alt": "Minh họa ngữ cảnh của ローマ字"
+  },
+  {
+    "id": "tango_n3_551",
+    "word": "補講(する)",
+    "reading": "ほこう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_551.webp",
+    "alt": "Minh họa ngữ cảnh của 補講(する)"
+  },
+  {
+    "id": "tango_n3_552",
+    "word": "(えんぴつを)けずる",
+    "reading": "けずる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_552.webp",
+    "alt": "Minh họa ngữ cảnh của (えんぴつを)けずる"
+  },
+  {
+    "id": "tango_n3_554",
+    "word": "文系",
+    "reading": "ぶんけい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_554.webp",
+    "alt": "Minh họa ngữ cảnh của 文系"
+  },
+  {
+    "id": "tango_n3_555",
+    "word": "理系",
+    "reading": "りけい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_555.webp",
+    "alt": "Minh họa ngữ cảnh của 理系"
+  },
+  {
+    "id": "tango_n3_556",
+    "word": "学科",
+    "reading": "がっか",
+    "src": "/vocabulary-illustrations/n3/tango_n3_556.webp",
+    "alt": "Minh họa ngữ cảnh của 学科"
+  },
+  {
+    "id": "tango_n3_557",
+    "word": "専攻(する)",
+    "reading": "せんこう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_557.webp",
+    "alt": "Minh họa ngữ cảnh của 専攻(する)"
+  },
+  {
+    "id": "tango_n3_558",
+    "word": "前期",
+    "reading": "ぜんき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_558.webp",
+    "alt": "Minh họa ngữ cảnh của 前期"
+  },
+  {
+    "id": "tango_n3_559",
+    "word": "学費",
+    "reading": "がくひ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_559.webp",
+    "alt": "Minh họa ngữ cảnh của 学費"
+  },
+  {
+    "id": "tango_n3_560",
+    "word": "奨学金",
+    "reading": "しょうがくきん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_560.webp",
+    "alt": "Minh họa ngữ cảnh của 奨学金"
+  },
+  {
+    "id": "tango_n3_561",
+    "word": "公立",
+    "reading": "こうりつ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_561.webp",
+    "alt": "Minh họa ngữ cảnh của 公立"
+  },
+  {
+    "id": "tango_n3_562",
+    "word": "私立",
+    "reading": "しりつ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_562.webp",
+    "alt": "Minh họa ngữ cảnh của 私立"
+  },
+  {
+    "id": "tango_n3_563",
+    "word": "教授",
+    "reading": "きょうじゅ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_563.webp",
+    "alt": "Minh họa ngữ cảnh của 教授"
+  },
+  {
+    "id": "tango_n3_565",
+    "word": "えらい",
+    "reading": "えらい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_565.webp",
+    "alt": "Minh họa ngữ cảnh của えらい"
+  },
+  {
+    "id": "tango_n3_569",
+    "word": "日付",
+    "reading": "ひづけ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_569.webp",
+    "alt": "Minh họa ngữ cảnh của 日付"
   }
 ]
