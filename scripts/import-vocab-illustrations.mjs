@@ -7,10 +7,11 @@ import { renameVocabularyAsset } from './rename-vocab-asset.mjs';
 const require = createRequire(import.meta.url);
 const sharp = require('sharp');
 
+const level = (process.argv[process.argv.indexOf('--level') + 1] || '').match(/^n[345]$/) ? process.argv[process.argv.indexOf('--level') + 1] : 'n4';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const vocabularyPath = path.join(root, 'src/data/tangoN4Vocab.ts');
-const outputDirectory = path.join(root, 'public/vocabulary-illustrations/n4');
-const defaultSource = path.join(root, 'imports/vocab-n4');
+const vocabularyPath = path.join(root, `src/data/tango${level.toUpperCase()}Vocab.ts`);
+const outputDirectory = path.join(root, `public/vocabulary-illustrations/${level}`);
+const defaultSource = path.join(root, `imports/vocab-${level}`);
 const manifestPath = path.join(defaultSource, 'manifest.csv');
 
 const args = process.argv.slice(2);
@@ -99,7 +100,7 @@ if (!sourceExists) {
 const files = (await listImages(source)).sort((left, right) => {
   const leftBase = path.basename(left);
   const rightBase = path.basename(right);
-  const canonical = /^tango_n4_\d+\./i;
+  const canonical = new RegExp(`^tango_${level}_\\d+\\.`, 'i');
   if (canonical.test(leftBase) !== canonical.test(rightBase)) return canonical.test(leftBase) ? -1 : 1;
   return leftBase.localeCompare(rightBase, undefined, { numeric: true });
 });
@@ -111,8 +112,8 @@ if (!files.length) {
 
 const resolveWord = file => {
   const base = path.basename(file, path.extname(file));
-  const numeric = base.match(/^(?:tango[_-]?n4[_-]?)?(\d+)$/i);
-  if (numeric) return wordsById.get(`tango_n4_${Number(numeric[1])}`) || null;
+  const numeric = base.match(new RegExp(`^(?:tango[_-]?${level}[_-]?)?(\\d+)$`, 'i'));
+  if (numeric) return wordsById.get(`tango_${level}_${Number(numeric[1])}`) || null;
   return wordsByText.get(stripDecorations(base)) || null;
 };
 
@@ -179,7 +180,7 @@ for (const { word, file } of resolved) {
 }
 
 if (unknown.length) {
-  console.log('\nUnrecognised filenames (rename them to tango_n4_<number>.<ext> or <number>.<ext>):');
+  console.log('\nUnrecognised filenames (rename them to tango_${level}_<number>.<ext> or <number>.<ext>):');
   for (const file of unknown.slice(0, 20)) console.log(`  ${path.relative(source, file)}`);
   if (unknown.length > 20) console.log(`  ... and ${unknown.length - 20} more`);
 }

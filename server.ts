@@ -3228,7 +3228,8 @@ app.get('/api/vocab-prompts', async (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(204).end();
   try {
-    const file = path.join(process.cwd(), 'imports/vocab-n4/prompts.jsonl');
+    const level = req.query.level === 'n3' ? 'n3' : 'n4';
+    const file = path.join(process.cwd(), `imports/vocab-${level}/prompts.jsonl`);
     const raw = await fs.promises.readFile(file, 'utf8');
     const items = raw.trim().split(/\r?\n/).filter(Boolean).map(line => {
       const { id, prompt } = JSON.parse(line);
@@ -3253,6 +3254,7 @@ app.post('/api/vocab-flow-done', async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  const level = req.body?.level === 'n3' ? 'n3' : 'n4';
   const items = Array.isArray(req.body?.items) ? req.body.items.slice(0, 40) : [];
   const saved = [];
   const failed = [];
@@ -3263,7 +3265,8 @@ app.post('/api/vocab-flow-done', async (req, res) => {
       failed.push({ number: item?.number || null, reason: 'bad payload' });
       continue;
     }
-    const target = path.join(process.cwd(), 'imports/vocab-n4', `tango_n4_${number}.png`);
+    const target = path.join(process.cwd(), `imports/vocab-${level}`, `tango_${level}_${number}.png`);
+    await fs.promises.mkdir(path.dirname(target), { recursive: true });
     try {
       const response = await fetch(src, { signal: AbortSignal.timeout(60_000) });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);

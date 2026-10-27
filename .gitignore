@@ -18,3 +18,5 @@ public/audio/tango_n4.mp3
 # Raw generated PNG archives (kept locally, already imported to webp)
 imports/vocab-n4/done/
 imports/vocab-n4/*.png
+imports/vocab-n3/done/
+imports/vocab-n3/*.png

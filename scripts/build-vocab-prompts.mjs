@@ -2,9 +2,10 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+const level = (process.argv[process.argv.indexOf('--level') + 1] || '').match(/^n[345]$/) ? process.argv[process.argv.indexOf('--level') + 1] : 'n4';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const vocabularyPath = path.join(root, 'src/data/tangoN4Vocab.ts');
-const outputDirectory = path.join(root, 'imports/vocab-n4');
+const vocabularyPath = path.join(root, `src/data/tango${level.toUpperCase()}Vocab.ts`);
+const outputDirectory = path.join(root, `imports/vocab-${level}`);
 const promptDirectory = path.join(outputDirectory, 'prompts');
 
 const args = process.argv.slice(2);
@@ -12,8 +13,8 @@ const optionValue = name => {
   const index = args.indexOf(name);
   return index === -1 ? null : args[index + 1];
 };
-const fromNumber = Number(optionValue('--from') || 229);
-const toNumber = Number(optionValue('--to') || 894);
+const fromNumber = Number(optionValue('--from') || (level === 'n4' ? 229 : 1));
+const toNumber = Number(optionValue('--to') || (level === 'n4' ? 894 : 99999));
 
 const style = [
   'Square 1:1 black-and-white Japanese textbook illustration in a consistent series style:',
@@ -131,7 +132,7 @@ const studioHtml = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>N4 Studio Prompts — ${studioItems.length} từ</title>
+<title>${level.toUpperCase()} Studio Prompts — ${studioItems.length} từ</title>
 <style>
   :root { color-scheme: dark; }
   * { box-sizing: border-box; }
@@ -169,7 +170,7 @@ const studioHtml = `<!doctype html>
 </head>
 <body>
 <header>
-  <h1>N4 — ${studioItems.length} prompt minh họa</h1>
+  <h1>${level.toUpperCase()} — ${studioItems.length} prompt minh họa</h1>
   <div class="bar"><div id="fill"></div></div>
   <div id="progress"></div>
   <div class="tools">
@@ -188,7 +189,7 @@ const studioHtml = `<!doctype html>
 <script>
 const ITEMS = ${JSON.stringify(studioItems)};
 const INBOX_PATH = ${JSON.stringify(studioInboxPath)};
-const STORE = 'vocab-n4-studio-done-v1';
+const STORE = 'vocab-${level}-studio-done-v1';
 const done = new Set(JSON.parse(localStorage.getItem(STORE) || '[]'));
 let filter = 'todo';
 let query = '';
