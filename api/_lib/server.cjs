@@ -86559,7 +86559,6 @@ var import_openai = __toESM(require("openai"), 1);
 var import_node_async_hooks2 = require("node:async_hooks");
 var import_genai = require("@google/genai");
 var DEFAULT_GEMINI_MODEL = "gemini-3.8-flash";
-var FALLBACK_MODELS = ["gemini-3.1-pro-preview", "gemini-3.1-flash-lite", "gemini-flash-latest"];
 var perRequest = new import_node_async_hooks2.AsyncLocalStorage();
 function userLlmMiddleware(req, _res, next) {
   const apiKey = String(req.headers["x-llm-key"] || "").trim();
@@ -86580,68 +86579,127 @@ function getGeminiClient(apiKey = getLlmConfig().apiKey) {
   }
   return c;
 }
+var GROQ_PRIMARY_MODEL = "openai/gpt-oss-120b";
+var GROQ_BACKUP_MODEL = "openai/gpt-oss-20b";
+var GROQ_TIMEOUT_MS = 9e3;
+var GEMINI_TIMEOUT_MS = 9e3;
+async function withLlmTimeout(promise, ms) {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error("AI_PROVIDER_TIMEOUT")), ms);
+      })
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
 async function generateGemini(options) {
+  const userKey = options.apiKey || perRequest.getStore()?.apiKey;
   const groqKey = process.env.GROQ_API_KEY;
-  if (groqKey && !options.apiKey && !perRequest.getStore()?.apiKey) {
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { Authorization: "Bearer " + groqKey, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile",
-        temperature: 0.1,
-        max_completion_tokens: Math.min(options.config?.maxOutputTokens || 4096, 8192),
-        ...options.config?.responseMimeType === "application/json" ? { response_format: { type: "json_object" } } : {},
-        messages: [
-          ...options.config?.systemInstruction ? [{ role: "system", content: String(options.config.systemInstruction) }] : [],
-          { role: "user", content: typeof options.contents === "string" ? options.contents : JSON.stringify(options.contents) }
-        ]
-      }),
-      signal: AbortSignal.timeout(85e3)
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error("Groq API (" + response.status + "): " + (data.error?.message || "Request failed"));
-    return { text: data.choices?.[0]?.message?.content || "" };
+  if (groqKey && !userKey) {
+    const candidates2 = [.../* @__PURE__ */ new Set([
+      process.env.GROQ_MODEL || GROQ_PRIMARY_MODEL,
+      GROQ_PRIMARY_MODEL,
+      GROQ_BACKUP_MODEL
+    ])];
+    let groqError;
+    for (const model of candidates2) {
+      try {
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: "Bearer " + groqKey, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model,
+            temperature: 0.1,
+            max_completion_tokens: Math.min(options.config?.maxOutputTokens || 2800, 4e3),
+            // GPT-OSS rejects reasoning_format (Groq 400); include_reasoning is supported.
+            ...model.startsWith("openai/gpt-oss-") ? { reasoning_effort: "low", include_reasoning: false } : {},
+            ...options.config?.responseMimeType === "application/json" ? { response_format: { type: "json_object" } } : {},
+            messages: [
+              ...options.config?.systemInstruction ? [{ role: "system", content: String(options.config.systemInstruction) }] : [],
+              { role: "user", content: typeof options.contents === "string" ? options.contents : JSON.stringify(options.contents) }
+            ]
+          }),
+          signal: AbortSignal.timeout(GROQ_TIMEOUT_MS)
+        });
+        const data = await response.json();
+        if (!response.ok) {
+          const reason = String(data?.error?.message || response.statusText || "Request failed");
+          const err = new Error(`Groq ${response.status}: ${reason.slice(0, 180)}`);
+          err.status = response.status;
+          throw err;
+        }
+        const content = data.choices?.[0]?.message?.content;
+        if (typeof content !== "string" || !content.trim()) throw new Error("Groq returned empty content");
+        return { text: content, provider: "groq", modelUsed: data.model || model };
+      } catch (err) {
+        groqError = err;
+        const status = err?.status || (err?.name === "TimeoutError" ? "timeout" : "connection");
+        console.warn("[LLM] Groq model failed:", model, status);
+        if (status === 401 || status === 429) break;
+      }
+    }
+    if (!process.env.ANTHROPIC_API_KEY && !process.env.GEMINI_API_KEY) {
+      throw groqError || new Error("GROQ_UNAVAILABLE");
+    }
   }
   const claudeKey = process.env.ANTHROPIC_API_KEY || "";
-  if (claudeKey) {
-    const system = String(options.config?.systemInstruction || "");
-    const contents = typeof options.contents === "string" ? options.contents : JSON.stringify(options.contents);
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-key": claudeKey, "anthropic-version": "2023-06-01" },
-      body: JSON.stringify({
-        model: process.env.CLAUDE_MODEL || "claude-sonnet-4-5",
-        max_tokens: options.config?.maxOutputTokens || 4096,
-        ...system ? { system: system + (options.config?.responseMimeType === "application/json" ? "\\nReturn ONLY valid JSON." : "") } : {},
-        messages: [{ role: "user", content: contents }]
-      }),
-      signal: AbortSignal.timeout(9e4)
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error("Claude API: " + (data.error?.message || response.status));
-    return { text: (data.content || []).filter((c) => c.type === "text").map((c) => c.text).join("") };
+  if (claudeKey && !userKey) {
+    try {
+      const model = process.env.CLAUDE_MODEL || "claude-sonnet-4-5";
+      const system = String(options.config?.systemInstruction || "");
+      const contents = typeof options.contents === "string" ? options.contents : JSON.stringify(options.contents);
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-api-key": claudeKey, "anthropic-version": "2023-06-01" },
+        body: JSON.stringify({
+          model,
+          max_tokens: Math.min(options.config?.maxOutputTokens || 2800, 4e3),
+          ...system ? { system: system + (options.config?.responseMimeType === "application/json" ? "\\nReturn ONLY valid JSON." : "") } : {},
+          messages: [{ role: "user", content: contents }]
+        }),
+        signal: AbortSignal.timeout(12e3)
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error("Claude API: " + response.status);
+      const content = (data.content || []).filter((c) => c.type === "text").map((c) => c.text).join("");
+      if (!content.trim()) throw new Error("Claude returned empty content");
+      return { text: content, provider: "anthropic", modelUsed: data.model || model };
+    } catch (err) {
+      console.warn("[LLM] Anthropic fallback failed:", err?.name || "error");
+      if (!process.env.GEMINI_API_KEY) throw err;
+    }
   }
   const client = getGeminiClient(options.apiKey);
   const primary = getLlmConfig().model || options.model || DEFAULT_GEMINI_MODEL;
-  let lastError = null;
-  for (const model of [primary, ...FALLBACK_MODELS.filter((m) => m !== primary)]) {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      try {
-        return await client.models.generateContent({ contents: options.contents, config: options.config, model });
-      } catch (err) {
-        lastError = err;
-        const status = err?.status || err?.code || "";
-        const msg = (err?.message || "").toLowerCase();
-        const isNotFound = status === 404 || status === "NOT_FOUND" || msg.includes("not found") || msg.includes("no longer available");
-        const transient = status === 503 || status === 429 || status === "UNAVAILABLE" || status === "RESOURCE_EXHAUSTED" || msg.includes("high demand") || msg.includes("quota") || msg.includes("rate") || isNotFound;
-        if (!transient) throw err;
-        if (attempt === 0) await new Promise((r) => setTimeout(r, 350));
-      }
+  const candidates = [.../* @__PURE__ */ new Set([primary, "gemini-3.6-flash"])].slice(0, 2);
+  let lastError;
+  for (const model of candidates) {
+    try {
+      const response = await withLlmTimeout(
+        client.models.generateContent({
+          contents: options.contents,
+          config: {
+            ...options.config,
+            httpOptions: { ...options.config?.httpOptions || {}, timeout: GEMINI_TIMEOUT_MS }
+          },
+          model
+        }),
+        GEMINI_TIMEOUT_MS
+      );
+      if (!response?.text) throw new Error("Gemini returned empty content");
+      return { text: response.text, provider: "gemini", modelUsed: response.modelVersion || model };
+    } catch (err) {
+      lastError = err;
+      console.warn("[LLM] Gemini candidate failed:", model, err?.status || err?.name || "error");
     }
   }
-  throw lastError;
+  throw lastError || new Error("ALL_AI_PROVIDERS_FAILED");
 }
-async function callLLM(options) {
+async function callLLMWithInfo(options) {
   const res = await generateGemini({
     contents: options.prompt,
     apiKey: options.override?.apiKey,
@@ -86650,7 +86708,14 @@ async function callLLM(options) {
   });
   const text = (res.text || "").trim();
   if (!text) throw new Error("AI tr\u1EA3 v\u1EC1 n\u1ED9i dung r\u1ED7ng");
-  return text;
+  return {
+    text,
+    provider: res.provider || "gemini",
+    modelUsed: res.modelUsed || res.modelVersion || getLlmConfig().model || DEFAULT_GEMINI_MODEL
+  };
+}
+async function callLLM(options) {
+  return (await callLLMWithInfo(options)).text;
 }
 
 // server.ts
@@ -90160,6 +90225,7 @@ var jsonFields = ["studyDays", "completedLessons", "vocabStatus", "grammarStatus
 function profilePatch(fields, allowRoleChange = false) {
   const out = {};
   for (const key of ["name", "avatar", "targetLevel", "lastActiveDate"]) if (typeof fields[key] === "string") out[key] = fields[key];
+  if (fields.studyTrack === "business" || fields.studyTrack === "jlpt") out.studyTrack = fields.studyTrack;
   if (typeof fields.username === "string") out.username = fields.username.toLowerCase().trim().replace(/[^a-z0-9_]/g, "");
   for (const key of ["xp", "streak", "coins"]) if (Number.isFinite(fields[key])) out[key] = Math.min(1e7, Math.max(0, fields[key]));
   for (const key of jsonFields) if (fields[key] !== void 0) {
@@ -92778,26 +92844,24 @@ ${conversationHistory}
 
 \u4E0A\u8A18\u306E\u4F1A\u8A71\u3092\u8E0F\u307E\u3048\u3066\u3001\u5B66\u7FD2\u8005\u306E\u6700\u5F8C\u306E\u767A\u8A00\u306B\u3010100%\u65E5\u672C\u8A9E\u3011\u3067\u81EA\u7136\u306B\u8FD4\u7B54\u3057\u3066\u304F\u3060\u3055\u3044\u3002
 \u5FC5\u305A\u5358\u306A\u308B1\u6587\u3067\u306F\u306A\u304F\u3001\u30EA\u30A2\u30AF\u30B7\u30E7\u30F3\uFF0B\u8A71\u984C\u306E\u5C55\u958B\uFF0B\u554F\u3044\u304B\u3051\u3092\u542B\u30802\u301C4\u6587\u306E\u8C4A\u304B\u306A\u5BFE\u8A71\u3092\u884C\u3063\u3066\u304F\u3060\u3055\u3044\u3002`;
-    let chatData = null;
+    let chatData;
     try {
-      chatData = JSON.parse(await callLLM({ prompt, systemInstruction, json: true }));
+      const result = await callLLMWithInfo({ prompt, systemInstruction, json: true });
+      chatData = JSON.parse(result.text);
+      if (!chatData || typeof chatData !== "object" || typeof chatData.japaneseResponse !== "string" || !chatData.japaneseResponse.trim()) {
+        throw new Error("INVALID_AI_RESPONSE");
+      }
+      chatData.provider = result.modelUsed;
     } catch (aiErr) {
-      console.warn("[Japanese Chat] model mi\u1EC5n ph\xED l\u1ED7i:", aiErr?.message || aiErr);
-    }
-    const usedProviderName = getLlmConfig().model || DEFAULT_GEMINI_MODEL;
-    if (chatData) {
-      chatData.provider = usedProviderName;
-    }
-    if (!chatData) {
-      chatData = {
-        japaneseResponse: "\u7D20\u6674\u3089\u3057\u3044\u3067\u3059\u306D\uFF01\u305D\u306E\u304A\u8A71\u3001\u3068\u3066\u3082\u8208\u5473\u6DF1\u3044\u3067\u3059\u3002\u3082\u3063\u3068\u8A73\u3057\u304F\u805E\u304B\u305B\u3066\u3044\u305F\u3060\u3051\u307E\u3059\u304B\uFF1F",
-        furiganaText: "\u3059\u3070\u3089\u3057\u3044\u3067\u3059\u306D\uFF01\u305D\u306E\u304A\u306F\u306A\u3057\u3001\u3068\u3066\u3082 \u304D\u3087\u3046\u307F\u3076\u304B\u3044\u3067\u3059\u3002\u3082\u3063\u3068 \u304F\u308F\u3057\u304F \u304D\u304B\u305B\u3066\u3044\u305F\u3060\u3051\u307E\u3059\u304B\uFF1F",
-        romajiText: "Subarashii desu ne! Sono ohanashi, totemo kyoumibukai desu. Motto kuwashiku kikasete itadakemasu ka?",
-        japaneseExplanation: "\u300C\u8208\u5473\u6DF1\u3044\uFF08\u304D\u3087\u3046\u307F\u3076\u304B\u3044\uFF09\u300D\u306F\u300C\u3068\u3066\u3082\u9762\u767D\u3044\u30FB\u95A2\u5FC3\u304C\u3042\u308B\u300D\u3068\u3044\u3046\u610F\u5473\u306E\u4E0A\u54C1\u306A\u8868\u73FE\u3067\u3059\u3002",
-        correctionAdvice: "",
-        vietnameseTranslation: "Tuy\u1EC7t v\u1EDDi qu\xE1! C\xE2u chuy\u1EC7n c\u1EE7a b\u1EA1n r\u1EA5t th\xFA v\u1ECB. B\u1EA1n c\xF3 th\u1EC3 k\u1EC3 cho t\xF4i nghe chi ti\u1EBFt h\u01A1n \u0111\u01B0\u1EE3c kh\xF4ng?",
-        hints: ["\u306F\u3044\u3001\u559C\u3093\u3067\u304A\u8A71\u3057\u3057\u307E\u3059\uFF01", "\u4F8B\u3048\u3070\u3001\u3053\u3093\u306A\u3053\u3068\u304C\u3042\u308A\u307E\u3057\u305F\u3002", "\u5148\u751F\u306F\u3069\u3046\u601D\u3044\u307E\u3059\u304B\uFF1F"]
-      };
+      const detail = String(aiErr?.message || aiErr);
+      console.error("[Japanese Chat] Live model request failed:", detail.slice(0, 400));
+      const rateLimited = /(?:429|rate.limit|resource.exhausted|quota)/i.test(detail);
+      const notConfigured = /(?:api.key|chưa có.*key|missing.*key|no api key)/i.test(detail);
+      return res.status(rateLimited ? 429 : notConfigured ? 503 : 502).json({
+        error: rateLimited ? "AI \u0111ang b\u1ECB gi\u1EDBi h\u1EA1n l\u01B0\u1EE3t g\u1ECDi. Vui l\xF2ng th\u1EED l\u1EA1i sau." : notConfigured ? "Ch\u01B0a c\u1EA5u h\xECnh \u0111\u01B0\u1EE3c d\u1ECBch v\u1EE5 AI. Vui l\xF2ng li\xEAn h\u1EC7 qu\u1EA3n tr\u1ECB vi\xEAn." : "Kh\xF4ng th\u1EC3 nh\u1EADn ph\u1EA3n h\u1ED3i t\u1EEB m\xF4 h\xECnh AI. Vui l\xF2ng th\u1EED l\u1EA1i.",
+        code: rateLimited ? "AI_RATE_LIMITED" : notConfigured ? "AI_NOT_CONFIGURED" : "AI_UNAVAILABLE",
+        provider: null
+      });
     }
     try {
       const k = await getKuroshiro();
@@ -92809,14 +92873,40 @@ ${conversationHistory}
     }
     res.json(chatData);
   } catch (error) {
-    res.json({
-      japaneseResponse: "\u306F\u3044\u3001\u3088\u304F\u308F\u304B\u308A\u307E\u3057\u305F\uFF01\u3068\u3066\u3082\u826F\u3044\u8A71\u984C\u3067\u3059\u306D\u3002\u4ED6\u306B\u3082\u4F55\u304B\u8A71\u3057\u305F\u3044\u3053\u3068\u306F\u3042\u308A\u307E\u3059\u304B\uFF1F",
-      furiganaText: "\u306F\u3044\u3001\u3088\u304F\u308F\u304B\u308A\u307E\u3057\u305F\uFF01\u3068\u3066\u3082 \u3088\u3044 \u308F\u3060\u3044\u3067\u3059\u306D\u3002\u307B\u304B\u306B\u3082 \u306A\u306B\u304B \u306F\u306A\u3057\u305F\u3044\u3053\u3068\u306F \u3042\u308A\u307E\u3059\u304B\uFF1F",
-      romajiText: "Hai, yoku wakarimashita! Totemo yoi wadai desu ne. Hoka ni mo nanika hanashitai koto wa arimasu ka?",
-      japaneseExplanation: "\u300C\u826F\u3044\u8A71\u984C\uFF08\u3088\u3044\u308F\u3060\u3044\uFF09\u300D\u306F\u4F1A\u8A71\u306E\u30C6\u30FC\u30DE\u3092\u8912\u3081\u308B\u81EA\u7136\u306A\u8868\u73FE\u3067\u3059\u3002",
-      correctionAdvice: "",
-      vietnameseTranslation: "V\xE2ng, t\xF4i hi\u1EC3u r\xF5 r\u1ED3i! \u0110\xE2y l\xE0 m\u1ED9t ch\u1EE7 \u0111\u1EC1 r\u1EA5t hay. B\u1EA1n c\xF2n mu\u1ED1n n\xF3i v\u1EC1 \u0111i\u1EC1u g\xEC kh\xE1c n\u1EEFa kh\xF4ng?",
-      hints: ["\u65E5\u672C\u306E\u98DF\u3079\u7269\u306B\u3064\u3044\u3066\u8A71\u3057\u305F\u3044\u3067\u3059\u3002", "\u6700\u8FD1\u89B3\u305F\u30A2\u30CB\u30E1\u306B\u3064\u3044\u3066\u8A71\u3057\u307E\u3057\u3087\u3046\u3002", "\u3042\u308A\u304C\u3068\u3046\u3054\u3056\u3044\u307E\u3059\u3002"]
+    console.error("[Japanese Chat] Unexpected endpoint failure:", String(error?.message || error).slice(0, 400));
+    return res.status(500).json({
+      error: "D\u1ECBch v\u1EE5 AI \u0111ang g\u1EB7p s\u1EF1 c\u1ED1. Vui l\xF2ng th\u1EED l\u1EA1i.",
+      code: "AI_SERVER_ERROR",
+      provider: null
+    });
+  }
+});
+app.post("/api/japanese-chat/assist", async (req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  const action = req.body?.action;
+  const text = typeof req.body?.text === "string" ? req.body.text.trim() : "";
+  if (action !== "translation" && action !== "grammar" || !text || text.length > 2e3) {
+    return res.status(400).json({ error: "N\u1ED9i dung ho\u1EB7c t\xE1c v\u1EE5 kh\xF4ng h\u1EE3p l\u1EC7." });
+  }
+  const systemInstruction = action === "translation" ? "B\u1EA1n l\xE0 bi\xEAn d\u1ECBch vi\xEAn ti\u1EBFng Nh\u1EADt-Vi\u1EC7t. D\u1ECBch ch\xEDnh x\xE1c \u0111o\u1EA1n ti\u1EBFng Nh\u1EADt sang ti\u1EBFng Vi\u1EC7t t\u1EF1 nhi\xEAn; gi\u1EEF ngh\u0129a v\xE0 s\u1EAFc th\xE1i. Ch\u1EC9 tr\u1EA3 v\u1EC1 b\u1EA3n d\u1ECBch ti\u1EBFng Vi\u1EC7t, kh\xF4ng gi\u1EA3i th\xEDch ho\u1EB7c th\xEAm l\u1EDDi ch\xE0o." : "B\u1EA1n l\xE0 gi\xE1o vi\xEAn ti\u1EBFng Nh\u1EADt d\u1EA1y ng\u01B0\u1EDDi Vi\u1EC7t. H\xE3y gi\u1EA3i th\xEDch b\u1EB1ng ti\u1EBFng Vi\u1EC7t t\u1ED1i \u0111a 3 \u0111i\u1EC3m ng\u1EEF ph\xE1p ho\u1EB7c c\xE1ch di\u1EC5n \u0111\u1EA1t \u0111\xE1ng ch\xFA \xFD TRONG \u0111o\u1EA1n \u0111\u01B0\u1EE3c cung c\u1EA5p, ng\u1EAFn g\u1ECDn, d\u1EC5 hi\u1EC3u, ph\xF9 h\u1EE3p c\u1EA5p JLPT. N\u1EBFu kh\xF4ng c\xF3 c\u1EA5u tr\xFAc \u0111\u1EB7c bi\u1EC7t, gi\u1EA3i th\xEDch c\xE1ch d\xF9ng c\u1EE7a m\u1ED9t m\u1EABu c\xE2u xu\u1EA5t hi\u1EC7n th\u1EADt trong \u0111o\u1EA1n. Ch\u1EC9 tr\u1EA3 v\u1EC1 ph\u1EA7n gi\u1EA3i th\xEDch, kh\xF4ng t\u1EA1o n\u1ED9i dung ngo\xE0i \u0111o\u1EA1n v\u0103n.";
+  try {
+    const result = await callLLMWithInfo({
+      systemInstruction,
+      prompt: action === "translation" ? `D\u1ECBch sang ti\u1EBFng Vi\u1EC7t:
+${text}` : `Ph\xE2n t\xEDch \u0111i\u1EC3m ng\u1EEF ph\xE1p v\xE0 c\xE1ch di\u1EC5n \u0111\u1EA1t trong \u0111o\u1EA1n ti\u1EBFng Nh\u1EADt sau:
+${text}`,
+      maxTokens: 720
+    });
+    const value = result.text.trim();
+    if (!value) throw new Error("EMPTY_ASSIST_RESPONSE");
+    return res.json({ value, provider: result.modelUsed });
+  } catch (error) {
+    const detail = String(error?.message || error);
+    console.error("[Japanese Chat] Assist request failed:", detail.slice(0, 240));
+    const limited = /(?:429|rate.limit|resource.exhausted|quota)/i.test(detail);
+    return res.status(limited ? 429 : 502).json({
+      error: limited ? "AI \u0111ang gi\u1EDBi h\u1EA1n l\u01B0\u1EE3t g\u1ECDi. Vui l\xF2ng th\u1EED l\u1EA1i sau." : "Ch\u01B0a th\u1EC3 l\u1EA5y b\u1EA3n d\u1ECBch ho\u1EB7c gi\u1EA3i th\xEDch. Vui l\xF2ng th\u1EED l\u1EA1i.",
+      code: limited ? "AI_RATE_LIMITED" : "AI_ASSIST_UNAVAILABLE"
     });
   }
 });
@@ -93046,7 +93136,8 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
       kanjiStatus,
       dailyTestResults,
       lastPosition,
-      myWords
+      myWords,
+      studyTrack
     } = req.body;
     const badNum = (v) => v !== void 0 && v !== null && (typeof v !== "number" || !Number.isFinite(v) || v < 0 || v > 1e7);
     const tooBig = (v) => v !== void 0 && JSON.stringify(v).length > 1e6;
@@ -93067,7 +93158,8 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
         kanjiStatus,
         dailyTestResults,
         lastPosition,
-        myWords
+        myWords,
+        studyTrack
       });
       res.json({ success: true, user: { ...updatedUser || dbUser, ...learning } });
     } catch (dbErr) {
@@ -93330,13 +93422,75 @@ app.get("/api/lessons", async (req, res) => {
   res.json(fallbackLessons);
 });
 var cachedMappedVocabularies = null;
+var contentStoreUnavailable = false;
+app.get("/api/vocab-prompts", async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") return res.status(204).end();
+  try {
+    const level = req.query.level === "n3" ? "n3" : "n4";
+    const file = import_path.default.join(process.cwd(), `imports/vocab-${level}/prompts.jsonl`);
+    const raw = await import_fs.default.promises.readFile(file, "utf8");
+    const items = raw.trim().split(/\r?\n/).filter(Boolean).map((line) => {
+      const { id, prompt } = JSON.parse(line);
+      return { id, number: Number(String(id).split("_").pop()), prompt };
+    });
+    return res.json({ count: items.length, items });
+  } catch (error) {
+    console.error("Error in /api/vocab-prompts route:", error);
+    return res.status(500).json({ error: String(error) });
+  }
+});
+app.options(["/api/vocab-prompts", "/api/vocab-flow-done"], (_req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  return res.status(204).end();
+});
+app.post("/api/vocab-flow-done", async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  const level = req.body?.level === "n3" ? "n3" : "n4";
+  const items = Array.isArray(req.body?.items) ? req.body.items.slice(0, 40) : [];
+  const saved = [];
+  const failed = [];
+  for (const item of items) {
+    const number = Number(item?.number);
+    const src = String(item?.src || "");
+    if (!Number.isFinite(number) || number < 1 || number > 1e4 || !/^https:\/\/flow-content\.google\//.test(src)) {
+      failed.push({ number: item?.number || null, reason: "bad payload" });
+      continue;
+    }
+    const target = import_path.default.join(process.cwd(), `imports/vocab-${level}`, `tango_${level}_${number}.png`);
+    await import_fs.default.promises.mkdir(import_path.default.dirname(target), { recursive: true });
+    try {
+      const response = await fetch(src, { signal: AbortSignal.timeout(6e4) });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const buffer = Buffer.from(await response.arrayBuffer());
+      if (buffer.length < 1024) throw new Error(`too small: ${buffer.length} bytes`);
+      await import_fs.default.promises.writeFile(target, buffer);
+      saved.push(number);
+    } catch (error) {
+      failed.push({ number, reason: String(error?.message || error).slice(0, 200) });
+    }
+  }
+  return res.json({ saved, failed });
+});
 app.get("/api/vocabularies", async (req, res) => {
+  if (contentStoreUnavailable) return res.json(VOCABULARY_DATA);
   try {
     const enrichedStatic = (await listContent("vocabularies")).map((v) => sanitizeVocabItem({ ...v, hanViet: v.hanViet || getHanVietWord(v.kanji || "") }));
     res.setHeader("X-Data-Store", "firestore");
     return res.json(enrichedStatic);
   } catch (error) {
-    console.error("Error in /api/vocabularies route, falling back to static data:", error);
+    if (error?.message === "DATABASE_NOT_CONFIGURED") {
+      contentStoreUnavailable = true;
+      console.warn("[api/vocabularies] Content database not configured \u2014 serving static vocabulary data.");
+    } else {
+      console.error("Error in /api/vocabularies route, falling back to static data:", error);
+    }
     return res.json(VOCABULARY_DATA);
   }
 });
