@@ -3642,7 +3642,7 @@ if (loading) {
             </div>
           )}
 
-          {selectedMode === 'conjugate' && <VocabConjugateMode />}
+          {selectedMode === 'conjugate' && <VocabConjugateMode items={lessonItems} />}
 
           {selectedMode === 'sentence' && currentItem && <VocabSentenceMode item={currentItem} onNext={handleNext} />}
           {selectedMode === 'write' && currentItem && <KanjiWriteMode item={currentItem} onNext={handleNext} />}
