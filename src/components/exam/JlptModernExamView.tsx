@@ -92,6 +92,13 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
   const [isReadingDrawerOpen, setIsReadingDrawerOpen] = useState<boolean>(false);
   const [isExitConfirmOpen, setIsExitConfirmOpen] = useState<boolean>(false);
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving'>('saved');
+  // Chế độ luyện: chọn xong hiện đúng/sai + giải thích ngay (như openjlpt).
+  const [instant, setInstant] = useState<boolean>(() => { try { return localStorage.getItem('exam-instant') === '1'; } catch { return false; } });
+  const toggleInstant = () => setInstant(v => { const n = !v; try { localStorage.setItem('exam-instant', n ? '1' : '0'); } catch {} return n; });
+  const [isCardsOpen, setIsCardsOpen] = useState(false);
+  const [cardIdx, setCardIdx] = useState(0);
+  const [cardFlip, setCardFlip] = useState(false);
+  const [known, setKnown] = useState<Record<string, boolean>>({});
   const examContainerRef = useRef<HTMLDivElement>(null);
 
   // Filter questions according to active filter
@@ -146,6 +153,26 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
 
   const progressPercent = Math.round((answeredCount / (activeQuestions.length || 1)) * 100);
 
+  // Thẻ ghi nhớ lấy từ chính đề vừa làm (từ vựng/ngữ pháp, không gồm nghe/đọc).
+  const cards = useMemo(() => exam.questions.filter(q => q.section !== 'choukai' && q.section !== 'dokkai' && q.options[q.correctIndex]).map(q => {
+    const br = (q.question || '').match(/【([^】]+)】/);
+    const ans = q.options[q.correctIndex];
+    return { id: q.id, front: br ? br[1] : q.question, back: ans, note: /^Đáp án theo bảng/.test(q.explanation || '') ? '' : (q.explanation || '') };
+  }), [exam.questions]);
+
+  // In đề: mở trang in gồm đề + phiếu tô đáp án + đáp án.
+  const printExam = () => {
+    const esc = (t: string) => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
+    const qs = exam.questions;
+    const body = qs.map((q, i) => `<div class="q">${q.paperHeading ? `<p class="h">${esc(q.paperHeading)}</p>` : ''}<p><b class="n">${q.paperNo ?? i + 1}</b> ${q.readingPassage ? `<span class="o">${esc(q.readingPassage).replace(/\n/g, '<br>')}</span><br>` : ''}${esc(q.question).replace(/\n/g, '<br>')}</p>${q.imageUrl ? `<img src="${esc(new URL(q.imageUrl, location.origin).href)}">` : ''}<p class="o">${q.options.map((o, k) => `${k + 1}. ${esc(o)}`).join('　　')}</p></div>`).join('');
+    const sheet = qs.map((q, i) => `<div class="r"><span>${q.paperNo ?? i + 1}</span>${[1, 2, 3, 4].map(k => `<i>${k}</i>`).join('')}</div>`).join('');
+    const key = qs.map((q, i) => `${q.paperNo ?? i + 1}:${q.correctIndex + 1}`).join('　');
+    const w = window.open('', '_blank');
+    if (!w) return;
+    w.document.write(`<html><head><meta charset="utf-8"><title>${esc(exam.title)}</title><style>body{font:14px/1.9 "Noto Serif JP","Yu Mincho",serif;margin:24px;color:#000}.q{break-inside:avoid;margin:10px 0}.h{font-weight:700;border-bottom:1px solid #000}.n{border:1px solid #000;padding:0 4px}.o{margin-left:2em}img{max-width:100%;max-height:300px}.r{display:flex;gap:10px;align-items:center;margin:3px 0}.r span{width:30px}.r i{width:22px;height:22px;border:1px solid #000;border-radius:50%;text-align:center;font-style:normal;font-size:11px;line-height:22px}.pg{page-break-before:always}</style></head><body><h2>${esc(exam.title)}</h2>${body}<div class="pg"><h3>Phiếu tô đáp án</h3>${sheet}</div><div class="pg"><h3>Đáp án</h3><p>${key}</p></div><script>setTimeout(()=>print(),400)</script></body></html>`);
+    w.document.close();
+  };
+
   // Timer warning style calculation
   const isTimerCritical = timeRemainingSeconds > 0 && timeRemainingSeconds <= 300; // < 5 mins
   const isTimerWarning = timeRemainingSeconds > 300 && timeRemainingSeconds <= 600; // < 10 mins
@@ -191,7 +218,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
           </div>
 
           {/* Center: Sticky Countdown Timer with calm alerts */}
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center whitespace-nowrap">
             <div className={`flex items-center gap-2 px-3 py-1 rounded-xl border transition-all ${
               isTimerCritical 
                 ? 'bg-[#FEF2F2] text-[#D82B3A] border-[#FCA5A5] ring-2 ring-[#D82B3A]/20 animate-pulse font-black' 
@@ -207,9 +234,11 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
           </div>
 
           {/* Right: Controls (Font Size, Focus Mode, Palette, Submit) */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            
-            <span className="px-2 font-mono text-xs font-bold text-[#1F2639]" aria-label="Số câu đã làm">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <button onClick={toggleInstant} aria-pressed={instant} title="Chọn xong hiện đúng/sai và giải thích ngay" className={`h-8 px-2 rounded-lg border text-[11px] font-bold whitespace-nowrap cursor-pointer ${instant ? 'bg-[#10B981] text-white border-[#10B981]' : 'bg-white text-[#786D5E] border-[#EADFCF]'}`}>Hiện đáp án</button>
+            <button onClick={() => { setCardIdx(0); setCardFlip(false); setIsCardsOpen(true); }} title="Thẻ ghi nhớ từ đề này" className="h-8 px-2 rounded-lg border border-[#EADFCF] bg-white text-[11px] font-bold whitespace-nowrap text-[#786D5E] cursor-pointer">Thẻ nhớ</button>
+            <button onClick={printExam} title="In đề + phiếu đáp án" className="h-8 px-2 rounded-lg border border-[#EADFCF] bg-white text-[11px] font-bold whitespace-nowrap text-[#786D5E] cursor-pointer">In đề</button>
+            <span className="px-1 font-mono text-xs font-bold whitespace-nowrap text-[#1F2639]" aria-label="Số câu đã làm">
               {answeredCount}/{activeQuestions.length}
             </span>
           </div>
@@ -391,6 +420,8 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
                     btnStyle = 'bg-[#F4A643] text-slate-950 font-black border-[#F4A643] ring-2 ring-[#F4A643]/40 shadow-sm';
                   } else if (isFlagged) {
                     btnStyle = 'bg-[#FEF3C7] text-[#92400E] border-[#F59E0B] font-bold';
+                  } else if (isAnswered && (instant || isSubmitted)) {
+                    btnStyle = q.correctIndex === userAnswers[q.id] ? 'bg-[#10B981] text-white border-[#10B981] font-bold' : 'bg-[#D82B3A] text-white border-[#D82B3A] font-bold';
                   } else if (isAnswered) {
                     btnStyle = 'bg-[#1F2639] text-[#FDF1E2] border-[#1F2639] font-bold';
                   }
@@ -433,6 +464,29 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
               </button>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {isCardsOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 flex items-center justify-center p-4" role="dialog" aria-modal="true">
+          <div className="bg-white rounded-2xl max-w-md w-full p-5 border border-[#EADFCF] shadow-2xl space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-black text-sm">Thẻ ghi nhớ · {cards.length ? cardIdx + 1 : 0}/{cards.length} · đã nhớ {cards.filter(c => known[c.id]).length}</h3>
+              <button onClick={() => setIsCardsOpen(false)} aria-label="Đóng" className="p-1.5 rounded-lg hover:bg-[#F4EDE2] cursor-pointer"><X className="w-4 h-4" /></button>
+            </div>
+            {cards[cardIdx] ? (
+              <button onClick={() => setCardFlip(f => !f)} className="w-full min-h-[200px] rounded-2xl border border-[#EADFCF] bg-[#FDFBF7] p-5 text-center cursor-pointer flex flex-col items-center justify-center gap-3">
+                <span className="text-xl font-bold whitespace-pre-line leading-relaxed">{cardFlip ? cards[cardIdx].back : cards[cardIdx].front}</span>
+                {cardFlip && cards[cardIdx].note && <span className="text-xs text-[#786D5E] whitespace-pre-line">{cards[cardIdx].note}</span>}
+                {!cardFlip && <span className="text-[11px] text-[#786D5E]">Chạm để xem đáp án</span>}
+              </button>
+            ) : <p className="text-sm text-[#786D5E]">Đề này chưa có thẻ.</p>}
+            <div className="flex gap-2">
+              <button disabled={cardIdx === 0} onClick={() => { setCardIdx(i => i - 1); setCardFlip(false); }} className="h-11 px-4 rounded-xl border border-[#EADFCF] font-bold text-sm disabled:opacity-30 cursor-pointer">‹</button>
+              <button onClick={() => { const c = cards[cardIdx]; if (c) setKnown(k => ({ ...k, [c.id]: !k[c.id] })); }} className={`flex-1 h-11 rounded-xl font-bold text-sm cursor-pointer ${cards[cardIdx] && known[cards[cardIdx].id] ? 'bg-[#10B981] text-white' : 'border border-[#EADFCF]'}`}>{cards[cardIdx] && known[cards[cardIdx].id] ? 'Đã nhớ ✓' : 'Đã nhớ'}</button>
+              <button disabled={cardIdx >= cards.length - 1} onClick={() => { setCardIdx(i => i + 1); setCardFlip(false); }} className="h-11 px-4 rounded-xl border border-[#EADFCF] font-bold text-sm disabled:opacity-30 cursor-pointer">›</button>
+            </div>
           </div>
         </div>
       )}
@@ -645,9 +699,10 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
           {currentQuestion.options.map((option, optIdx) => {
             const isSelected = userAnswers[currentQuestion.id] === optIdx;
             const isCorrect = currentQuestion.correctIndex === optIdx;
+            const reveal = isSubmitted || (instant && userAnswers[currentQuestion.id] !== undefined);
 
             let cardStyle = 'exam-answer';
-            if (isSubmitted) {
+            if (reveal) {
               if (isCorrect) {
                 cardStyle = 'exam-answer exam-answer-correct';
               } else if (isSelected) {
@@ -662,12 +717,12 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
             return (
               <button
                 key={optIdx}
-                disabled={isSubmitted}
+                disabled={reveal}
                 aria-pressed={isSelected}
                 onClick={() => onSelectOption(currentQuestion.id, optIdx)}
                 className={`w-full min-h-[56px] p-3.5 sm:p-4 rounded-xl border text-left transition-all flex items-center justify-between cursor-pointer disabled:cursor-default ${cardStyle}`}
               >
-                <div className="flex items-center gap-3.5 flex-1">
+                <div className="flex items-center gap-3.5 flex-1 min-w-0">
                   <span className={`w-7 h-7 rounded-lg font-mono text-xs font-black flex items-center justify-center shrink-0 border transition-all ${
                     isSelected 
                       ? 'bg-[#1F2639] text-[#F4A643] border-[#1F2639]' 
@@ -675,25 +730,38 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
                   }`}>
                     {optIdx + 1}
                   </span>
-                  <span className={`${optionFontClass} leading-relaxed`}>{option}</span>
+                  <span className={`${optionFontClass} leading-relaxed break-keep`}>{option}</span>
                 </div>
 
-                {!isSubmitted && isSelected && <Check className="w-4 h-4 stroke-[3] shrink-0 ml-2 text-[#F4A643]" aria-hidden />}
-                {isSubmitted && isCorrect && (
+                {!reveal && isSelected && <Check className="w-4 h-4 stroke-[3] shrink-0 ml-2 text-[#F4A643]" aria-hidden />}
+                {reveal && isCorrect && (
                   <span className="text-[#10B981] font-bold text-xs flex items-center gap-1 shrink-0 ml-2">
                     <CheckCircle2 className="w-4 h-4" />
-                    Đúng
+                    <span className="hidden sm:inline">Đúng</span>
                   </span>
                 )}
-                {isSubmitted && isSelected && !isCorrect && (
+                {reveal && isSelected && !isCorrect && (
                   <span className="text-[#D82B3A] font-bold text-xs shrink-0 ml-2">
-                    ✗ Bạn chọn
+                    ✗<span className="hidden sm:inline"> Bạn chọn</span>
                   </span>
                 )}
               </button>
             );
           })}
         </div>
+
+        {(isSubmitted || (instant && userAnswers[currentQuestion.id] !== undefined)) && (
+          <div className="rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-4 text-sm leading-relaxed space-y-2 text-[#1F2639]">
+            <p className="font-bold text-[#047857]">Đáp án đúng: {currentQuestion.correctIndex + 1}. {currentQuestion.options[currentQuestion.correctIndex]}</p>
+            {currentQuestion.explanation && <p className="whitespace-pre-line">{currentQuestion.explanation}</p>}
+            {Array.isArray(currentQuestion.optionExplanations) && (
+              <ul className="space-y-1 text-[13px]">
+                {currentQuestion.optionExplanations.map((t, k) => t ? <li key={k}><b>{k + 1}.</b> {t}</li> : null)}
+              </ul>
+            )}
+            {currentQuestion.audioScript && <p className="text-[13px] text-[#786D5E] whitespace-pre-line">🎧 {currentQuestion.audioScript}</p>}
+          </div>
+        )}
 
       </div>
     );
