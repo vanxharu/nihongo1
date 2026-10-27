@@ -12089,6 +12089,13 @@
     "alt": "Minh họa ngữ cảnh của イヤリング"
   },
   {
+    "id": "tango_n3_836",
+    "word": "ネックレス",
+    "reading": "ネックレス",
+    "src": "/vocabulary-illustrations/n3/tango_n3_836.webp",
+    "alt": "Minh họa ngữ cảnh của ネックレス"
+  },
+  {
     "id": "tango_n3_837",
     "word": "宝石",
     "reading": "ほうせき",
@@ -12164,6 +12171,13 @@
     "reading": "ふるぎ",
     "src": "/vocabulary-illustrations/n3/tango_n3_847.webp",
     "alt": "Minh họa ngữ cảnh của 古着"
+  },
+  {
+    "id": "tango_n3_848",
+    "word": "革",
+    "reading": "かわ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_848.webp",
+    "alt": "Minh họa ngữ cảnh của 革"
   },
   {
     "id": "tango_n3_849",
@@ -12334,6 +12348,27 @@
     "alt": "Minh họa ngữ cảnh của 観察(する)"
   },
   {
+    "id": "tango_n3_1045",
+    "word": "次第に",
+    "reading": "しだいに",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1045.webp",
+    "alt": "Minh họa ngữ cảnh của 次第に"
+  },
+  {
+    "id": "tango_n3_1046",
+    "word": "じょじょに",
+    "reading": "じょじょに",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1046.webp",
+    "alt": "Minh họa ngữ cảnh của じょじょに"
+  },
+  {
+    "id": "tango_n3_1047",
+    "word": "だんだん[と]",
+    "reading": "だんだん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1047.webp",
+    "alt": "Minh họa ngữ cảnh của だんだん[と]"
+  },
+  {
     "id": "tango_n3_1213",
     "word": "感激(する)",
     "reading": "かんげき",
@@ -12402,5 +12437,26 @@
     "reading": "しんけんな",
     "src": "/vocabulary-illustrations/n3/tango_n3_1224.webp",
     "alt": "Minh họa ngữ cảnh của 真剣な"
+  },
+  {
+    "id": "tango_n3_1225",
+    "word": "どきどき(する)",
+    "reading": "どきどき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1225.webp",
+    "alt": "Minh họa ngữ cảnh của どきどき(する)"
+  },
+  {
+    "id": "tango_n3_1226",
+    "word": "わくわく(する)",
+    "reading": "わくわく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1226.webp",
+    "alt": "Minh họa ngữ cảnh của わくわく(する)"
+  },
+  {
+    "id": "tango_n3_1227",
+    "word": "ほっと(する)",
+    "reading": "ほっと",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1227.webp",
+    "alt": "Minh họa ngữ cảnh của ほっと(する)"
   }
 ]
