@@ -509,6 +509,8 @@ export interface UserProfile {
     history: ShadowingHistoryRecord[];
   };
   studyRoadmap?: StudyRoadmapConfig;
+  /** Mục tiêu học: 'business' = Từ vựng công sở thay cho bộ từ JLPT; không có = theo cấp JLPT. */
+  studyTrack?: 'business';
   unlockedBadges?: string[];
   role?: UserRole;
   isVip?: boolean;

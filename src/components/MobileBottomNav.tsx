@@ -1,4 +1,5 @@
 import TheoryRadial from './ui/TheoryRadial';
+import { TARGET_CHOICES, targetChoice, targetLabel, targetPatch, type TargetChoice } from '../utils/studyTarget';
 import './ui/bottomNotch.css';
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -101,7 +102,7 @@ export default function MobileBottomNav({
       path: '/bunpo',
       label: 'Lý thuyết',
       icon: BookOpen,
-      checkActive: (tab: string, pathname: string) => ['grammar', 'vocabulary', 'kanji', 'myvocab', 'business'].includes(tab) || ['/bunpo', '/tango', '/kanji', '/tu-cua-toi', '/cong-so'].some((p) => pathname.startsWith(p)),
+      checkActive: (tab: string, pathname: string) => ['grammar', 'vocabulary', 'kanji', 'myvocab'].includes(tab) || ['/bunpo', '/tango', '/kanji', '/tu-cua-toi'].some((p) => pathname.startsWith(p)),
     },
     {
       id: 'roadmap',
@@ -325,20 +326,20 @@ export default function MobileBottomNav({
 
               {/* JLPT Level Selector */}
               <div className="p-3.5 rounded-2xl bg-[#12172A] border border-[#1B223C] space-y-2">
-                <span className="text-xs font-bold text-amber-300">Trình độ JLPT mục tiêu:</span>
-                <div className="grid grid-cols-5 gap-1.5">
-                  {(['N5', 'N4', 'N3', 'N2', 'N1'] as const).map(lvl => (
+                <span className="text-xs font-bold text-amber-300">Mục tiêu:</span>
+                <div className="grid grid-cols-6 gap-1.5">
+                  {TARGET_CHOICES.map(lvl => (
                     <button
                       key={lvl}
                       type="button"
-                      onClick={() => updateProfile({ targetLevel: lvl })}
+                      onClick={() => updateProfile(targetPatch(lvl))}
                       className={`py-1 rounded-xl text-xs font-black border transition-all ${
-                        userProfile.targetLevel === lvl
+                        targetChoice(userProfile) === lvl
                           ? 'bg-[#E89A3C] text-slate-950 border-[#E89A3C] shadow-md shadow-amber-950/40'
                           : 'bg-[#1B223C] text-slate-300 border-slate-700/50 hover:border-slate-600'
                       }`}
                     >
-                      {lvl}
+                      {targetLabel(lvl)}
                     </button>
                   ))}
                 </div>

@@ -98,8 +98,9 @@ export function TodayLessons({ userProfile }: { userProfile: UserProfile }) {
 }
 
 // Vocabulary files are ~1 MB each, so the card loads only the deck it needs, after first paint.
-const loadDeck = (level: JLPTLevel): Promise<VocabularyItem[]> =>
-  level === 'N5' ? import('../../data/tangoN5Vocab').then(m => m.TANGO_N5_VOCABULARY)
+const loadDeck = (level: JLPTLevel | 'BIZ'): Promise<VocabularyItem[]> =>
+  level === 'BIZ' ? import('../../data/businessVocab').then(m => m.BUSINESS_VOCABULARY)
+  : level === 'N5' ? import('../../data/tangoN5Vocab').then(m => m.TANGO_N5_VOCABULARY)
   : level === 'N4' ? import('../../data/tangoN4Vocab').then(m => m.TANGO_N4_VOCABULARY)
   : import('../../data/tangoN3Vocab').then(m => m.TANGO_N3_VOCABULARY); // shortcut: N2/N1 reuse N3 until those decks exist
 
@@ -111,7 +112,7 @@ export function pickWordOfDay(deck: VocabularyItem[], ymd: string): VocabularyIt
   return pool.length ? pool[((dayNumber(ymd) % pool.length) + pool.length) % pool.length] : undefined;
 }
 
-export function WordOfDay({ level }: { level: JLPTLevel }) {
+export function WordOfDay({ level }: { level: JLPTLevel | 'BIZ' }) {
   const [word, setWord] = useState<VocabularyItem>();
   useEffect(() => {
     let live = true;
@@ -124,7 +125,7 @@ export function WordOfDay({ level }: { level: JLPTLevel }) {
     <div className={card} id="home-word-of-day">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-sm font-bold text-white">Từ vựng mỗi ngày</h2>
-        <span className="text-[11px] text-slate-400">{word.level}</span>
+        <span className="text-[11px] text-slate-400">{level === 'BIZ' ? 'Công sở' : word.level}</span>
       </div>
       <div className="flex items-center gap-3">
         <div className="shrink-0 [&_.vocab-word-illustration]:m-0 [&_img]:w-20 [&_img]:h-20 [&_img]:rounded-xl [&_img]:bg-white">

@@ -2964,7 +2964,7 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
     const dbUser = { ...req.dbUser, ...learning };
     const { 
       name, avatar, targetLevel, xp, coins, studyDays, 
-      completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords 
+      completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords, studyTrack 
     } = req.body;
     // Game counters come from the client: reject non-numeric/absurd values and oversized blobs.
     const badNum = (v: unknown) => v !== undefined && v !== null && (typeof v !== 'number' || !Number.isFinite(v) || v < 0 || v > 10_000_000);
@@ -2976,7 +2976,7 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
     try {
       const updatedUser = await updateUserProfile(dbUser.uid, {
         name, avatar, targetLevel, xp, coins, studyDays, 
-        completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords
+        completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords, studyTrack
       });
       res.json({ success: true, user: { ...(updatedUser || dbUser), ...learning } });
     } catch (dbErr) {

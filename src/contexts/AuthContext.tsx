@@ -147,6 +147,7 @@ const parseDbUser = (dbData: any): UserProfile => {
       kanjiStatus: safeJson(dbData.kanjiStatus, {}),
       dailyTestResults: safeJson(dbData.dailyTestResults, []),
       studyRoadmap: dbData.studyRoadmap,
+      studyTrack: dbData.studyTrack === 'business' ? 'business' : undefined,
       shadowingStats: dbData.shadowingStats,
       unlockedBadges: dbData.unlockedBadges,
       savedWords: dbData.savedWords,

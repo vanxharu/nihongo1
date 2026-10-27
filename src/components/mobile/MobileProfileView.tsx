@@ -1,4 +1,5 @@
 import { SlidingNumber } from '@animate-ui/react/primitives/texts/sliding-number';
+import { TARGET_CHOICES, targetChoice, targetLabel, targetPatch, type TargetChoice } from '../../utils/studyTarget';
 import { ExpressiveReveal } from '../ui/ExpressiveReveal';
 import { Button as AnimatedButton } from '@animate-ui/react/primitives/buttons/button';
 import React, { useState } from 'react';
@@ -60,7 +61,7 @@ export default function MobileProfileView({
   const [tempName, setTempName] = useState(userProfile.name || (user?.displayName || ''));
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [tempAvatar, setTempAvatar] = useState(userProfile.avatar || '🦊');
-  const [tempLevel, setTempLevel] = useState<JLPTLevel>(userProfile.targetLevel || 'N4');
+  const [tempLevel, setTempLevel] = useState<TargetChoice>(targetChoice({ ...userProfile, targetLevel: userProfile.targetLevel || 'N4' }));
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [saveSuccessMsg, setSaveSuccessMsg] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
@@ -85,8 +86,8 @@ export default function MobileProfileView({
       <header className="profile-heading"><span>GÓC HỌC TẬP CỦA BẠN</span><h1>Cá nhân</h1><p>Nhìn lại hành trình, giữ nhịp học theo cách của bạn.</p></header>
       <section className="profile-identity">
         <UserAvatar avatar={userProfile.avatar} className="profile-avatar" />
-        <div className="profile-identity-copy"><span className="profile-label">{user ? 'HỒ SƠ HỌC VIÊN' : 'HỒ SƠ TRÊN THIẾT BỊ'}</span><h2>{userProfile.name || user?.displayName || 'Bạn học tiếng Nhật'}</h2><p>Mục tiêu JLPT {targetLevel} <span>·</span> Cấp {levelInfo.level}</p></div>
-        <AnimatedButton type="button" className="profile-edit" onClick={() => { setTempName(userProfile.name); setTempAvatar(userProfile.avatar || '🦊'); setTempLevel(targetLevel); setIsProfileModalOpen(true); }}>Sửa hồ sơ <ChevronRight size={16} /></AnimatedButton>
+        <div className="profile-identity-copy"><span className="profile-label">{user ? 'HỒ SƠ HỌC VIÊN' : 'HỒ SƠ TRÊN THIẾT BỊ'}</span><h2>{userProfile.name || user?.displayName || 'Bạn học tiếng Nhật'}</h2><p>Mục tiêu {userProfile.studyTrack === 'business' ? 'Công sở' : `JLPT ${targetLevel}`} <span>·</span> Cấp {levelInfo.level}</p></div>
+        <AnimatedButton type="button" className="profile-edit" onClick={() => { setTempName(userProfile.name); setTempAvatar(userProfile.avatar || '🦊'); setTempLevel(targetChoice({ ...userProfile, targetLevel })); setIsProfileModalOpen(true); }}>Sửa hồ sơ <ChevronRight size={16} /></AnimatedButton>
       </section>
       <div className="profile-grid">
         <section className="profile-xp"><div className="profile-section-heading"><h2>Hành trình XP</h2><Award size={20} /></div><strong><SlidingNumber number={userProfile.xp || 0} initiallyStable thousandSeparator="." className="tabular-nums" /><small>XP</small></strong><p>{levelInfo.title}</p><div className="profile-meter" role="progressbar" aria-label="Tiến độ lên cấp" aria-valuenow={levelInfo.progressPercent} aria-valuemin={0} aria-valuemax={100}><span style={{width:`${levelInfo.progressPercent}%`}} /></div><div className="profile-xp-caption"><span>Cấp {levelInfo.level}</span><span>Còn {Math.max(0,levelInfo.nextLevelXp - userProfile.xp).toLocaleString()} XP đến cấp {levelInfo.level + 1}</span></div><AnimatedButton type="button" className="profile-text-action" onClick={() => onNavigate('progress')}>Xem tiến độ học <ChevronRight size={16} /></AnimatedButton></section>
@@ -261,10 +262,10 @@ export default function MobileProfileView({
               {/* JLPT Target Level Selector */}
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-300">
-                  Mục tiêu JLPT
+                  Mục tiêu
                 </label>
-                <div className="grid grid-cols-5 gap-2">
-                  {(['N5', 'N4', 'N3', 'N2', 'N1'] as JLPTLevel[]).map((lvl) => (
+                <div className="grid grid-cols-6 gap-2">
+                  {TARGET_CHOICES.map((lvl) => (
                     <AnimatedButton
                       key={lvl}
                       type="button"
@@ -275,7 +276,7 @@ export default function MobileProfileView({
                           : 'bg-[#12172A] border border-slate-700 text-slate-400 hover:text-slate-200'
                       }`}
                     >
-                      {lvl}
+                      {targetLabel(lvl)}
                     </AnimatedButton>
                   ))}
                 </div>
@@ -314,7 +315,7 @@ export default function MobileProfileView({
                     await updateProfile({
                       name: tempName.trim() || userProfile.name,
                       avatar: tempAvatar,
-                      targetLevel: tempLevel
+                      ...targetPatch(tempLevel)
                     });
                     setIsSavingProfile(false);
                     setSaveSuccessMsg(true);

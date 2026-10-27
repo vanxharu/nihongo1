@@ -671,7 +671,7 @@ export default function App() {
         } 
       />
 
-      <Route path="/cong-so" element={<VocabularyPractice userProfile={activeProfile} updateProfile={updateProfile} onEarnXp={handleEarnXp} businessMode />} />
+      <Route path="/cong-so" element={<Navigate to="/tango" replace />} />
       <Route path="/tu-cua-toi" element={<MyVocabulary userProfile={activeProfile} updateProfile={updateProfile} onEarnXp={handleEarnXp} />} />
 
       {/* 4. Từ vựng (Tango) & Deep link */}

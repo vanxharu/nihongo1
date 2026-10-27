@@ -31,3 +31,11 @@ test('business deck has unique ids, 8 topics and full examples', async () => {
   assert.equal(new Set(BUSINESS_VOCABULARY.map(v => v.lessonId)).size, 8);
   for (const v of BUSINESS_VOCABULARY) assert.ok(v.kanji && v.hiragana && v.meaning && v.exampleSentence && v.exampleTranslation, v.id);
 });
+
+test('business target only switches the vocabulary track', async () => {
+  const { targetChoice, targetPatch } = await import('../src/utils/studyTarget');
+  assert.deepEqual(targetPatch('BIZ'), { studyTrack: 'business' });
+  assert.deepEqual(targetPatch('N3'), { targetLevel: 'N3', studyTrack: 'jlpt' });
+  assert.equal(targetChoice({ targetLevel: 'N4', studyTrack: 'business' }), 'BIZ');
+  assert.equal(targetChoice({ targetLevel: 'N4' }), 'N4');
+});

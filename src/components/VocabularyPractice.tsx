@@ -239,8 +239,6 @@ interface VocabularyPracticeProps {
   kanjiMode?: boolean;
   /** Tab Từ vựng của tôi: dữ liệu là các từ đã lưu trong Sổ tay. */
   myMode?: boolean;
-  /** Từ vựng công sở: bộ từ riêng, không lọc theo cấp JLPT. */
-  businessMode?: boolean;
 }
 
 const KANJI_COMMON_READINGS: Record<string, string[]> = {
@@ -696,7 +694,9 @@ const URL_VOCAB_MODE = () => {
   return (['flashcard', 'quiz', 'cram', 'conjugate', 'sentence', 'write', 'dokkai', 'shadowing'] as const).find(x => x === m);
 };
 
-export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel, kanjiMode, myMode, businessMode }: VocabularyPracticeProps) {
+export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel, kanjiMode, myMode }: VocabularyPracticeProps) {
+  // Mục tiêu "Công sở": tab Từ vựng mở bộ từ công sở thay cho bộ từ JLPT (link theo cấp /jlpt/:level vẫn mở JLPT).
+  const businessMode = !kanjiMode && !myMode && !initialLevel && userProfile.studyTrack === 'business';
   const [vocabData, setVocabData] = useState<VocabularyItem[]>([]);
   const [loading, setLoading] = useState(true);
 

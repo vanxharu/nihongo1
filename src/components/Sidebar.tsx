@@ -222,7 +222,7 @@ export default function Sidebar({ currentTab, setCurrentTab, isOpen, onClose, us
               {/* Level */}
               <div className="px-2 py-0.5 rounded-full text-[11px] font-bold text-violet-300"
                 style={{ background: 'rgba(139,92,246,0.15)', border: '1px solid rgba(139,92,246,0.25)' }}>
-                {userProfile?.targetLevel || 'N4'}
+                {userProfile?.studyTrack === 'business' ? 'Công sở' : userProfile?.targetLevel || 'N4'}
               </div>
             </div>
           </div>

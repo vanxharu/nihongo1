@@ -7,6 +7,7 @@ const jsonFields=['studyDays','completedLessons','vocabStatus','grammarStatus','
 export function profilePatch(fields:any,allowRoleChange=false) {
   const out:any={};
   for(const key of ['name','avatar','targetLevel','lastActiveDate'])if(typeof fields[key]==='string')out[key]=fields[key];
+  if(fields.studyTrack==='business'||fields.studyTrack==='jlpt')out.studyTrack=fields.studyTrack;
   if(typeof fields.username==='string')out.username=fields.username.toLowerCase().trim().replace(/[^a-z0-9_]/g,'');
   for(const key of ['xp','streak','coins'])if(Number.isFinite(fields[key]))out[key]=Math.min(10000000,Math.max(0,fields[key]));
   for(const key of jsonFields)if(fields[key]!==undefined){const value=typeof fields[key]==='string'?JSON.parse(fields[key]):fields[key];out[key]=JSON.stringify(value);}

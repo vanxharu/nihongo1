@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { TARGET_CHOICES, targetChoice, targetLabel, targetPatch, type TargetChoice } from '../utils/studyTarget';
 import { createPortal } from 'react-dom';
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -53,7 +54,7 @@ export default function Header({
   const [isAiConfigModalOpen, setIsAiConfigModalOpen] = useState(false);
   const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
   const [tempName, setTempName] = useState(userProfile.name);
-  const [tempTarget, setTempTarget] = useState(userProfile.targetLevel);
+  const [tempTarget, setTempTarget] = useState<TargetChoice>(targetChoice(userProfile));
 
   const getDisplayUserName = (name?: string, email?: string | null) => {
     if (userProfile.username) {
@@ -160,7 +161,7 @@ export default function Header({
     e.preventDefault();
     updateProfile({
       name: tempName || 'Học viên JLPT',
-      targetLevel: tempTarget
+      ...targetPatch(tempTarget)
     });
     setIsProfileOpen(false);
   };
@@ -251,7 +252,7 @@ export default function Header({
             id="header-profile-toggle"
             onClick={() => {
               setTempName(userProfile.name);
-              setTempTarget(userProfile.targetLevel);
+              setTempTarget(targetChoice(userProfile));
               setIsProfileOpen(!isProfileOpen);
             }}
             className="flex items-center gap-1.5 pl-1 pr-2 py-0.5 text-xs rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer shrink-0"
@@ -383,9 +384,9 @@ export default function Header({
                 </div>
 
                 <div>
-                  <label className="text-xs text-slate-400 uppercase tracking-wider block mb-2 font-bold">Mục tiêu JLPT hiện tại</label>
-                  <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
-                    {(['N5', 'N4', 'N3', 'N2', 'N1'] as const).map((lvl) => (
+                  <label className="text-xs text-slate-400 uppercase tracking-wider block mb-2 font-bold">Mục tiêu hiện tại</label>
+                  <div className="grid grid-cols-6 gap-1.5 sm:gap-2">
+                    {TARGET_CHOICES.map((lvl) => (
                       <button
                         key={lvl}
                         id={`target-level-choice-${lvl}`}
@@ -397,7 +398,7 @@ export default function Header({
                             : 'bg-white border-slate-100 text-slate-500 hover:border-slate-400 hover:text-slate-950'
                         }`}
                       >
-                        {lvl}
+                        {targetLabel(lvl)}
                       </button>
                     ))}
                   </div>
