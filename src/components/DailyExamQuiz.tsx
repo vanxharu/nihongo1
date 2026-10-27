@@ -40,8 +40,10 @@ import {
 } from 'lucide-react';
 import './learning/studyExperience.css';
 import { DailyExam, ExamQuestion, UserProfile, ExamHistoryRecord } from '../types';
-import { DAILY_EXAMS } from '../data';
-import { JLPT_PAST_EXAMS } from '../data/jlptExams';
+import { REAL_EXAMS_N4_OFFICIAL } from '../data/realExamsN4_Official';
+
+// Chỉ giữ đề chính thức mới thêm; các đề cũ đã xoá.
+const JLPT_PAST_EXAMS: DailyExam[] = [REAL_EXAMS_N4_OFFICIAL];
 import { ensureFullExamQuestions, JLPT_LEVEL_TARGETS } from '../data/jlptExamGenerator';
 import SrsSwitch from './ui/SrsSwitch';
 import { calculateSRS } from '../utils/srs';
@@ -513,7 +515,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     }
   });
 
-  const rawAllExams: DailyExam[] = [...JLPT_PAST_EXAMS, ...DAILY_EXAMS, ...aiGeneratedExams];
+  const rawAllExams: DailyExam[] = [...JLPT_PAST_EXAMS, ...aiGeneratedExams];
   // Đề do AI soạn giữ nguyên; đề có sẵn dưới 10 câu thì ẩn khỏi thư viện.
   const allExams: DailyExam[] = rawAllExams.map(ensureFullExamQuestions).filter(e => e.category === 'ai_generated' || e.category === 'mock_daily' || e.questions.length >= 10);
 
@@ -1047,8 +1049,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     {srsOn && srsDue.length > 0 && <button type="button" className="study-srs-bar" onClick={() => handleStartExam({ id: 'srs-review', title: 'Ôn SRS · câu đã sai', level: userProfile.targetLevel || 'N4', category: 'mock_daily', durationMinutes: 30, questions: srsDue }, 'ALL', 'interactive')}><b>{srsDue.length} câu đến hạn ôn hôm nay</b><span>Ôn SRS ngay</span></button>}
     <nav className="study-nav" aria-label="Cách luyện thi">
       {[
-        { id: 'library', title: 'Kho đề luyện', note: 'Chọn đề có sẵn và bắt đầu', icon: BookOpen },
-        { id: 'pdf_practice', title: 'Đề PDF của bạn', note: 'Tải đề và luyện trên trang giấy', icon: FileText }
+        { id: 'library', title: 'Kho đề luyện', note: 'Chọn đề có sẵn và bắt đầu', icon: BookOpen }
       ].map(item => <button key={item.id} type="button" aria-pressed={mainTab === item.id} onClick={() => { setMainTab(item.id as typeof mainTab); setShowPdfPractice(item.id === 'pdf_practice'); setSelectedCategory(item.id === 'ai_builder' ? 'ai_generated' : 'ALL'); }}><item.icon size={16} /><strong>{item.title}</strong></button>)}
     </nav>
     {!showPdfPractice && <div className="study-skill-strip" aria-label="Kỹ năng muốn luyện"><span>Luyện theo:</span>{(['ALL', 'moji-goi', 'bunpou', 'dokkai', 'choukai'] as ExamSectionMode[]).map(mode => <button key={mode} aria-pressed={lobbyPracticeMode === mode} onClick={() => setLobbyPracticeMode(mode)}>{mode === 'ALL' ? 'Toàn bộ đề' : JLPT_SECTION_METAS[mode].shortName}</button>)}</div>}
