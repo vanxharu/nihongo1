@@ -6256,5 +6256,341 @@
     "reading": "ところで",
     "src": "/vocabulary-illustrations/n4/tango_n4_894-v1.webp",
     "alt": "Minh họa ngữ cảnh của ところで"
+  },
+  {
+    "id": "tango_n3_1",
+    "word": "父親",
+    "reading": "ちちおや",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1.webp",
+    "alt": "Minh họa ngữ cảnh của 父親"
+  },
+  {
+    "id": "tango_n3_2",
+    "word": "母親",
+    "reading": "ははおや",
+    "src": "/vocabulary-illustrations/n3/tango_n3_2.webp",
+    "alt": "Minh họa ngữ cảnh của 母親"
+  },
+  {
+    "id": "tango_n3_3",
+    "word": "長女",
+    "reading": "ちょうじょ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_3.webp",
+    "alt": "Minh họa ngữ cảnh của 長女"
+  },
+  {
+    "id": "tango_n3_4",
+    "word": "長男",
+    "reading": "ちょうなん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_4.webp",
+    "alt": "Minh họa ngữ cảnh của 長男"
+  },
+  {
+    "id": "tango_n3_5",
+    "word": "次女",
+    "reading": "じじょ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_5.webp",
+    "alt": "Minh họa ngữ cảnh của 次女"
+  },
+  {
+    "id": "tango_n3_6",
+    "word": "次男",
+    "reading": "じなん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_6.webp",
+    "alt": "Minh họa ngữ cảnh của 次男"
+  },
+  {
+    "id": "tango_n3_7",
+    "word": "三女",
+    "reading": "さんじょ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_7.webp",
+    "alt": "Minh họa ngữ cảnh của 三女"
+  },
+  {
+    "id": "tango_n3_8",
+    "word": "三男",
+    "reading": "さんなん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_8.webp",
+    "alt": "Minh họa ngữ cảnh của 三男"
+  },
+  {
+    "id": "tango_n3_9",
+    "word": "末っ子",
+    "reading": "すえっこ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_9.webp",
+    "alt": "Minh họa ngữ cảnh của 末っ子"
+  },
+  {
+    "id": "tango_n3_10",
+    "word": "一人っ子",
+    "reading": "ひとりっこ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_10.webp",
+    "alt": "Minh họa ngữ cảnh của 一人っ子"
+  },
+  {
+    "id": "tango_n3_11",
+    "word": "姉妹",
+    "reading": "しまい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_11.webp",
+    "alt": "Minh họa ngữ cảnh của 姉妹"
+  },
+  {
+    "id": "tango_n3_12",
+    "word": "一人娘",
+    "reading": "ひとりむすめ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_12.webp",
+    "alt": "Minh họa ngữ cảnh của 一人娘"
+  },
+  {
+    "id": "tango_n3_13",
+    "word": "親子",
+    "reading": "おやこ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_13.webp",
+    "alt": "Minh họa ngữ cảnh của 親子"
+  },
+  {
+    "id": "tango_n3_14",
+    "word": "夫婦",
+    "reading": "ふうふ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_14.webp",
+    "alt": "Minh họa ngữ cảnh của 夫婦"
+  },
+  {
+    "id": "tango_n3_16",
+    "word": "親類",
+    "reading": "しんるい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_16.webp",
+    "alt": "Minh họa ngữ cảnh của 親類"
+  },
+  {
+    "id": "tango_n3_17",
+    "word": "先祖",
+    "reading": "せんぞ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_17.webp",
+    "alt": "Minh họa ngữ cảnh của 先祖"
+  },
+  {
+    "id": "tango_n3_18",
+    "word": "尊敬(する)",
+    "reading": "そんけい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_18.webp",
+    "alt": "Minh họa ngữ cảnh của 尊敬(する)"
+  },
+  {
+    "id": "tango_n3_19",
+    "word": "おじ",
+    "reading": "おじ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_19.webp",
+    "alt": "Minh họa ngữ cảnh của おじ"
+  },
+  {
+    "id": "tango_n3_20",
+    "word": "おば",
+    "reading": "おば",
+    "src": "/vocabulary-illustrations/n3/tango_n3_20.webp",
+    "alt": "Minh họa ngữ cảnh của おば"
+  },
+  {
+    "id": "tango_n3_21",
+    "word": "いとこ",
+    "reading": "いとこ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_21.webp",
+    "alt": "Minh họa ngữ cảnh của いとこ"
+  },
+  {
+    "id": "tango_n3_22",
+    "word": "おい",
+    "reading": "おい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_22.webp",
+    "alt": "Minh họa ngữ cảnh của おい"
+  },
+  {
+    "id": "tango_n3_23",
+    "word": "めい",
+    "reading": "めい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_23.webp",
+    "alt": "Minh họa ngữ cảnh của めい"
+  },
+  {
+    "id": "tango_n3_24",
+    "word": "連れる",
+    "reading": "つれる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_24.webp",
+    "alt": "Minh họa ngữ cảnh của 連れる"
+  },
+  {
+    "id": "tango_n3_25",
+    "word": "似る",
+    "reading": "にる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_25.webp",
+    "alt": "Minh họa ngữ cảnh của 似る"
+  },
+  {
+    "id": "tango_n3_26",
+    "word": "そっくりな",
+    "reading": "そっくりな",
+    "src": "/vocabulary-illustrations/n3/tango_n3_26.webp",
+    "alt": "Minh họa ngữ cảnh của そっくりな"
+  },
+  {
+    "id": "tango_n3_27",
+    "word": "親友",
+    "reading": "しんゆう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_27.webp",
+    "alt": "Minh họa ngữ cảnh của 親友"
+  },
+  {
+    "id": "tango_n3_28",
+    "word": "仲間",
+    "reading": "なかま",
+    "src": "/vocabulary-illustrations/n3/tango_n3_28.webp",
+    "alt": "Minh họa ngữ cảnh của 仲間"
+  },
+  {
+    "id": "tango_n3_29",
+    "word": "仲良し",
+    "reading": "なかよし",
+    "src": "/vocabulary-illustrations/n3/tango_n3_29.webp",
+    "alt": "Minh họa ngữ cảnh của 仲良し"
+  },
+  {
+    "id": "tango_n3_30",
+    "word": "幼なじみ",
+    "reading": "おさなじみ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_30.webp",
+    "alt": "Minh họa ngữ cảnh của 幼なじみ"
+  },
+  {
+    "id": "tango_n3_31",
+    "word": "友情",
+    "reading": "ゆうじょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_31.webp",
+    "alt": "Minh họa ngữ cảnh của 友情"
+  },
+  {
+    "id": "tango_n3_32",
+    "word": "親しい",
+    "reading": "したしい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_32.webp",
+    "alt": "Minh họa ngữ cảnh của 親しい"
+  },
+  {
+    "id": "tango_n3_33",
+    "word": "知人",
+    "reading": "ちじん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_33.webp",
+    "alt": "Minh họa ngữ cảnh của 知人"
+  },
+  {
+    "id": "tango_n3_34",
+    "word": "メンバー",
+    "reading": "メンバー",
+    "src": "/vocabulary-illustrations/n3/tango_n3_34.webp",
+    "alt": "Minh họa ngữ cảnh của メンバー"
+  },
+  {
+    "id": "tango_n3_35",
+    "word": "つなぐ",
+    "reading": "つなぐ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_35.webp",
+    "alt": "Minh họa ngữ cảnh của つなぐ"
+  },
+  {
+    "id": "tango_n3_36",
+    "word": "つながる",
+    "reading": "つながる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_36.webp",
+    "alt": "Minh họa ngữ cảnh của つながる"
+  },
+  {
+    "id": "tango_n3_37",
+    "word": "当時",
+    "reading": "とうじ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_37.webp",
+    "alt": "Minh họa ngữ cảnh của 当時"
+  },
+  {
+    "id": "tango_n3_38",
+    "word": "祝う",
+    "reading": "いわう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_38.webp",
+    "alt": "Minh họa ngữ cảnh của 祝う"
+  },
+  {
+    "id": "tango_n3_39",
+    "word": "遠慮(する)",
+    "reading": "えんりょ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_39.webp",
+    "alt": "Minh họa ngữ cảnh của 遠慮(する)"
+  },
+  {
+    "id": "tango_n3_40",
+    "word": "しょっちゅう",
+    "reading": "しょっちゅう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_40.webp",
+    "alt": "Minh họa ngữ cảnh của しょっちゅう"
+  },
+  {
+    "id": "tango_n3_41",
+    "word": "たびたび",
+    "reading": "たびたび",
+    "src": "/vocabulary-illustrations/n3/tango_n3_41.webp",
+    "alt": "Minh họa ngữ cảnh của たびたび"
+  },
+  {
+    "id": "tango_n3_42",
+    "word": "たまに",
+    "reading": "たまに",
+    "src": "/vocabulary-illustrations/n3/tango_n3_42.webp",
+    "alt": "Minh họa ngữ cảnh của たまに"
+  },
+  {
+    "id": "tango_n3_43",
+    "word": "たまたま",
+    "reading": "たまたま",
+    "src": "/vocabulary-illustrations/n3/tango_n3_43.webp",
+    "alt": "Minh họa ngữ cảnh của たまたま"
+  },
+  {
+    "id": "tango_n3_44",
+    "word": "めったに",
+    "reading": "めったに",
+    "src": "/vocabulary-illustrations/n3/tango_n3_44.webp",
+    "alt": "Minh họa ngữ cảnh của めったに"
+  },
+  {
+    "id": "tango_n3_45",
+    "word": "しばらく",
+    "reading": "しばらく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_45.webp",
+    "alt": "Minh họa ngữ cảnh của しばらく"
+  },
+  {
+    "id": "tango_n3_46",
+    "word": "別々(な)",
+    "reading": "べつべつ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_46.webp",
+    "alt": "Minh họa ngữ cảnh của 別々(な)"
+  },
+  {
+    "id": "tango_n3_47",
+    "word": "彼女",
+    "reading": "かのじょ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_47.webp",
+    "alt": "Minh họa ngữ cảnh của 彼女"
+  },
+  {
+    "id": "tango_n3_48",
+    "word": "彼",
+    "reading": "かれ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_48.webp",
+    "alt": "Minh họa ngữ cảnh của 彼"
+  },
+  {
+    "id": "tango_n3_49",
+    "word": "愛情",
+    "reading": "あいじょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_49.webp",
+    "alt": "Minh họa ngữ cảnh của 愛情"
   }
 ]
