@@ -319,6 +319,10 @@ app.use('/api/listening', async (req, res, next) => {
   if (auth?.startsWith('Bearer ') && adminAuth) {
     try { uid = (await adminAuth.verifyIdToken(auth.slice(7))).uid; } catch { /* invalid token: treat as guest */ }
   }
+  // Guests never share a bucket: writes are dropped (client keeps its local copy), reads see an empty bucket.
+  const isGuest = uid === 'default_user';
+  if (isGuest && req.method !== 'GET') return res.json({ success: true, guest: true });
+  if (isGuest) uid = 'guest_empty';
   if (req.query && typeof req.query === 'object') (req.query as any).userId = uid;
   if (req.body && typeof req.body === 'object') {
     req.body.userId = uid;
@@ -2877,9 +2881,7 @@ app.post('/api/auth/resolve-identifier', async (req: any, res) => {
     return res.json({
       success: true,
       isEmail: false,
-      email: foundUser.email,
-      username: foundUser.username || foundUser.name,
-      displayName: foundUser.name
+      email: foundUser.email
     });
   } catch (err: any) {
     console.error('Error in /api/auth/resolve-identifier:', err);
@@ -4984,7 +4986,7 @@ app.get('/api/grammars', async (req, res) => {
 });
 
 // ChatGPT General AI Completion Route
-app.post('/api/chat-gpt', async (req, res) => {
+app.post('/api/chat-gpt', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { prompt, systemInstruction, model, jsonMode = false } = req.body;
     if (!prompt || typeof prompt !== 'string') {
