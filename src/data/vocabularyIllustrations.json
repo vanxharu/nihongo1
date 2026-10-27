@@ -12285,6 +12285,27 @@
     "alt": "Minh họa ngữ cảnh của 名作"
   },
   {
+    "id": "tango_n3_864",
+    "word": "登場(する)",
+    "reading": "とうじょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_864.webp",
+    "alt": "Minh họa ngữ cảnh của 登場(する)"
+  },
+  {
+    "id": "tango_n3_866",
+    "word": "コンクール",
+    "reading": "コンクール",
+    "src": "/vocabulary-illustrations/n3/tango_n3_866.webp",
+    "alt": "Minh họa ngữ cảnh của コンクール"
+  },
+  {
+    "id": "tango_n3_867",
+    "word": "出品(する)",
+    "reading": "しゅっぴん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_867.webp",
+    "alt": "Minh họa ngữ cảnh của 出品(する)"
+  },
+  {
     "id": "tango_n3_1033",
     "word": "夏日",
     "reading": "なつび",
@@ -12411,6 +12432,34 @@
     "alt": "Minh họa ngữ cảnh của 一気に"
   },
   {
+    "id": "tango_n3_1051",
+    "word": "一度に",
+    "reading": "いちどに",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1051.webp",
+    "alt": "Minh họa ngữ cảnh của 一度に"
+  },
+  {
+    "id": "tango_n3_1052",
+    "word": "いっぺんに",
+    "reading": "いっぺんに",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1052.webp",
+    "alt": "Minh họa ngữ cảnh của いっぺんに"
+  },
+  {
+    "id": "tango_n3_1053",
+    "word": "いつの間にか",
+    "reading": "いつのまにか",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1053.webp",
+    "alt": "Minh họa ngữ cảnh của いつの間にか"
+  },
+  {
+    "id": "tango_n3_1054",
+    "word": "温暖化",
+    "reading": "おんだんか",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1054.webp",
+    "alt": "Minh họa ngữ cảnh của 温暖化"
+  },
+  {
     "id": "tango_n3_1213",
     "word": "感激(する)",
     "reading": "かんげき",
@@ -12502,6 +12551,13 @@
     "alt": "Minh họa ngữ cảnh của ほっと(する)"
   },
   {
+    "id": "tango_n3_1228",
+    "word": "のんびり(する)",
+    "reading": "のんびり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1228.webp",
+    "alt": "Minh họa ngữ cảnh của のんびり(する)"
+  },
+  {
     "id": "tango_n3_1229",
     "word": "ほほえむ",
     "reading": "ほほえむ",
@@ -12514,5 +12570,26 @@
     "reading": "むちゅう",
     "src": "/vocabulary-illustrations/n3/tango_n3_1230.webp",
     "alt": "Minh họa ngữ cảnh của 夢中(な)"
+  },
+  {
+    "id": "tango_n3_1231",
+    "word": "勇気",
+    "reading": "ゆうき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1231.webp",
+    "alt": "Minh họa ngữ cảnh của 勇気"
+  },
+  {
+    "id": "tango_n3_1232",
+    "word": "あきる",
+    "reading": "あきる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1232.webp",
+    "alt": "Minh họa ngữ cảnh của あきる"
+  },
+  {
+    "id": "tango_n3_1233",
+    "word": "嫌がる",
+    "reading": "いやがる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1233.webp",
+    "alt": "Minh họa ngữ cảnh của 嫌がる"
   }
 ]
