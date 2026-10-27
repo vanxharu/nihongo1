@@ -87099,6 +87099,7 @@ H\xE3y tr\u1EA3 v\u1EC1 JSON \u0111\xFAng chu\u1EA9n theo c\u1EA5u tr\xFAc:
 // src/server/azureTts.ts
 var import_edge_tts_universal = require("edge-tts-universal");
 var audioCache = /* @__PURE__ */ new Map();
+var edgeDownUntil = 0;
 var MAX_CACHE_SIZE = 1e3;
 function normalizeJapaneseVoice(voice = "ja-JP-NanamiNeural") {
   const lower = (voice || "").toLowerCase().trim();
@@ -87138,6 +87139,7 @@ async function synthesizeAzureSpeech(text, voice = "ja-JP-NanamiNeural", rateRat
   if (audioCache.has(cacheKey)) {
     return audioCache.get(cacheKey);
   }
+  if (Date.now() < edgeDownUntil) throw new Error("Edge TTS unavailable");
   const synth = async () => {
     const comm = new import_edge_tts_universal.Communicate(cleanText, {
       voice: targetVoice,
@@ -87152,14 +87154,15 @@ async function synthesizeAzureSpeech(text, voice = "ja-JP-NanamiNeural", rateRat
   };
   try {
     let chunks = [];
-    for (let attempt = 0; attempt < 2 && chunks.length === 0; attempt++) {
+    for (let attempt = 0; attempt < 1 && chunks.length === 0; attempt++) {
       try {
         chunks = await Promise.race([
           synth(),
-          new Promise((_, rej) => setTimeout(() => rej(new Error("TTS timeout")), 8e3))
+          new Promise((_, rej) => setTimeout(() => rej(new Error("TTS timeout")), 4e3))
         ]);
       } catch (e) {
-        if (attempt === 1) throw e;
+        edgeDownUntil = Date.now() + 6e4;
+        throw e;
       }
     }
     if (chunks.length === 0) {

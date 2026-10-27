@@ -420,6 +420,8 @@ export interface JapaneseSpeechStatus {
 }
 
 let activeSpeech: JapaneseSpeechHandle | null = null;
+// Khi /api/tts hỏng (treo/502) thì 5 phút tới bỏ qua nó, dùng ngay giọng thiết bị thay vì bắt người học chờ.
+let azureDownUntil = 0;
 
 let activeDialogue: JapaneseSpeechHandle | null = null;
 
@@ -643,6 +645,7 @@ function speakSingle(
       try {
         const voice = findBestJapaneseVoice(selectedVoice);
         if (!voice) {
+          if (!googleStarted && !selectedVoice.startsWith('device:')) { runGoogle(); return; }
           finish('failed', 'Không tìm thấy giọng tiếng Nhật trên thiết bị.');
           return;
         }
@@ -701,7 +704,7 @@ function speakSingle(
     }
   };
 
-  const playAudio = (url: string, next: () => void) => {
+  const playAudio = (url: string, next: () => void, stallMs = 10000) => {
     if (finished) return;
     detachAudio();
     let current: HTMLAudioElement | null = null;
@@ -713,8 +716,8 @@ function speakSingle(
     try {
       current = new Audio(url);
       audio = current;
-      // A hung /api/tts never fires error: give up after 10s without playback and fall back.
-      const stall = setTimeout(() => { if (audio === current && current!.paused) fail(); }, 10000);
+      // A hung /api/tts never fires error: give up after stallMs without playback and fall back.
+      const stall = setTimeout(() => { if (audio === current && current!.paused) fail(); }, stallMs);
       const clear = () => clearTimeout(stall);
       current.addEventListener('playing', clear, { once: true });
       current.addEventListener('error', clear, { once: true });
@@ -738,8 +741,9 @@ function speakSingle(
   if (selectedVoice.startsWith('device:')) runWebSpeech();
   else {
     const ttsUrl = `/api/tts?text=${encodedText}&voice=${encodeURIComponent(selectedVoice)}&rate=${encodeURIComponent(azureRate)}`;
-    // One retry on the same URL before the weaker fallbacks.
-    playAudio(ttsUrl, () => playAudio(ttsUrl, runGoogle));
+    // Một lần thử 5s, hỏng thì chuyển ngay sang giọng thiết bị (rồi mới tới Google); nhớ trạng thái hỏng để lần bấm sau phát tức thì.
+    if (Date.now() < azureDownUntil) runWebSpeech();
+    else playAudio(ttsUrl, () => { azureDownUntil = Date.now() + 5 * 60_000; runWebSpeech(); }, 5000);
   }
   return handle;
 }

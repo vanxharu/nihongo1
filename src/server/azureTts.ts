@@ -2,6 +2,8 @@ import { Communicate } from 'edge-tts-universal';
 
 // In-memory cache for synthesized audio to make repeated words instant (< 5ms)
 const audioCache = new Map<string, Buffer>();
+// Edge websocket treo: sau một lần hỏng, 60s tới trả lỗi ngay để client chuyển giọng dự phòng, không bắt chờ.
+let edgeDownUntil = 0;
 const MAX_CACHE_SIZE = 1000;
 
 export type AzureVoice = 
@@ -75,7 +77,8 @@ export async function synthesizeAzureSpeech(
     return audioCache.get(cacheKey)!;
   }
 
-  // The Edge websocket fails or stalls now and then: retry once, each attempt capped at 8s.
+  if (Date.now() < edgeDownUntil) throw new Error('Edge TTS unavailable');
+  // The Edge websocket fails or stalls now and then: one attempt capped at 4s (client falls back on error).
   const synth = async () => {
     const comm = new Communicate(cleanText, {
       voice: targetVoice,
@@ -90,14 +93,14 @@ export async function synthesizeAzureSpeech(
   };
   try {
     let chunks: Buffer[] = [];
-    for (let attempt = 0; attempt < 2 && chunks.length === 0; attempt++) {
+    for (let attempt = 0; attempt < 1 && chunks.length === 0; attempt++) {
       try {
         chunks = await Promise.race([
           synth(),
-          new Promise<Buffer[]>((_, rej) => setTimeout(() => rej(new Error('TTS timeout')), 8000)),
+          new Promise<Buffer[]>((_, rej) => setTimeout(() => rej(new Error('TTS timeout')), 4000)),
         ]);
       } catch (e) {
-        if (attempt === 1) throw e;
+        edgeDownUntil = Date.now() + 60_000; throw e;
       }
     }
 
