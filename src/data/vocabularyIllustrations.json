@@ -11501,6 +11501,13 @@
     "alt": "Minh họa ngữ cảnh của 宿泊(する)"
   },
   {
+    "id": "tango_n3_752",
+    "word": "滞在(する)",
+    "reading": "たいざい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_752.webp",
+    "alt": "Minh họa ngữ cảnh của 滞在(する)"
+  },
+  {
     "id": "tango_n3_753",
     "word": "団体",
     "reading": "だんたい",
@@ -11513,6 +11520,13 @@
     "reading": "ツアー",
     "src": "/vocabulary-illustrations/n3/tango_n3_754.webp",
     "alt": "Minh họa ngữ cảnh của ツアー"
+  },
+  {
+    "id": "tango_n3_755",
+    "word": "あちこち",
+    "reading": "あちこち",
+    "src": "/vocabulary-illustrations/n3/tango_n3_755.webp",
+    "alt": "Minh họa ngữ cảnh của あちこち"
   },
   {
     "id": "tango_n3_756",
@@ -11541,6 +11555,20 @@
     "reading": "しゅうごう",
     "src": "/vocabulary-illustrations/n3/tango_n3_759.webp",
     "alt": "Minh họa ngữ cảnh của 集合(する)"
+  },
+  {
+    "id": "tango_n3_760",
+    "word": "解散(する)",
+    "reading": "かいさん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_760.webp",
+    "alt": "Minh họa ngữ cảnh của 解散(する)"
+  },
+  {
+    "id": "tango_n3_761",
+    "word": "旅館",
+    "reading": "りょかん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_761.webp",
+    "alt": "Minh họa ngữ cảnh của 旅館"
   },
   {
     "id": "tango_n3_762",
@@ -12243,6 +12271,27 @@
     "alt": "Minh họa ngữ cảnh của 暖冬"
   },
   {
+    "id": "tango_n3_1039",
+    "word": "冷夏",
+    "reading": "れいか",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1039.webp",
+    "alt": "Minh họa ngữ cảnh của 冷夏"
+  },
+  {
+    "id": "tango_n3_1040",
+    "word": "せっかく",
+    "reading": "せっかく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1040.webp",
+    "alt": "Minh họa ngữ cảnh của せっかく"
+  },
+  {
+    "id": "tango_n3_1041",
+    "word": "状態",
+    "reading": "じょうたい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1041.webp",
+    "alt": "Minh họa ngữ cảnh của 状態"
+  },
+  {
     "id": "tango_n3_1213",
     "word": "感激(する)",
     "reading": "かんげき",
@@ -12276,5 +12325,19 @@
     "reading": "きらくな",
     "src": "/vocabulary-illustrations/n3/tango_n3_1218.webp",
     "alt": "Minh họa ngữ cảnh của 気楽な"
+  },
+  {
+    "id": "tango_n3_1220",
+    "word": "冗談",
+    "reading": "じょうだん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1220.webp",
+    "alt": "Minh họa ngữ cảnh của 冗談"
+  },
+  {
+    "id": "tango_n3_1221",
+    "word": "ユーモア",
+    "reading": "ユーモア",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1221.webp",
+    "alt": "Minh họa ngữ cảnh của ユーモア"
   }
 ]
