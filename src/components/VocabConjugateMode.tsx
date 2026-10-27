@@ -102,7 +102,6 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
   const [ruleForm, setRuleForm] = useState<Exclude<FormId, 'masu'>>('te');
   const pool = lessonVerbs.length >= 3 ? lessonVerbs : VERBS;
   const [mode, setMode] = useState<Mode>('choice');
-  const [picked, setPicked] = useState<FormId[]>(COMMON);
   const [run, setRun] = useState(0);
   const [retry, setRetry] = useState<Q[] | null>(null);
   const [i, setI] = useState(0);
@@ -112,10 +111,9 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
   const [hint, setHint] = useState(false);
   const [wrong, setWrong] = useState<Q[]>([]);
   const [score, setScore] = useState({ ok: 0, total: 0 });
-  const qs: Q[] = useMemo(() => retry ?? shuffle(pool.flatMap(verb => picked.map(form => ({ verb, form })))).slice(0, 20), [pool, picked, run, retry]);
+  const qs: Q[] = useMemo(() => retry ?? shuffle(pool.flatMap(verb => COMMON.map(form => ({ verb, form })))).slice(0, 20), [pool, run, retry]);
   const reset = () => { setI(0); setText(''); setChosen(null); setRes(null); setHint(false); setWrong([]); setScore({ ok: 0, total: 0 }); };
   const restart = (r: Q[] | null = null) => { setRetry(r); setRun(n => n + 1); reset(); };
-  const togglePicked = (id: FormId) => { setPicked(p => p.includes(id) ? (p.length > 1 ? p.filter(x => x !== id) : p) : [...p, id]); restart(); };
   const q = qs[i];
   const kanaAns = q ? conjugate(q.verb.kana, q.verb.g, q.form) : '';
   const kanjiAns = q ? conjugate(q.verb.kanji, q.verb.g, q.form, true) : '';
@@ -138,9 +136,6 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
             <button aria-pressed={mode === 'type'} onClick={() => setMode('type')} className={pill(mode === 'type')}>Gõ</button>
           </div>
           {lessonVerbs.length < 3 && <p className="text-xs text-slate-600">Bài này chưa có đủ động từ, đang dùng động từ cơ bản.</p>}
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Chọn thể cần luyện">
-            {FORMS.map(f => <button key={f.id} aria-pressed={picked.includes(f.id)} onClick={() => togglePicked(f.id)} className={pill(picked.includes(f.id))}>{f.jp}</button>)}
-          </div>
           {!q ? (
             <div className="text-center py-8 space-y-3">
               <div className="text-4xl font-black text-emerald-600">{score.ok}/{score.total}</div>
