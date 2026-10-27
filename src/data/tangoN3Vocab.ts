@@ -1,6 +1,7 @@
 import { VocabularyItem } from "../types";
+import { TANGO_N3_EXTRA } from "./tangoN3Extra";
 
-export const TANGO_N3_VOCABULARY: VocabularyItem[] = [
+const TANGO_N3_BASE: VocabularyItem[] = [
   {
     "id": "tango_n3_1",
     "chapter": "Phần 1: 人と人との関係 (Quan hệ giữa người với người)",
@@ -26450,3 +26451,5 @@ export const TANGO_N3_VOCABULARY: VocabularyItem[] = [
     "englishExampleTranslation": "I want to work as a volunteer and gain experience."
   }
 ];
+
+export const TANGO_N3_VOCABULARY: VocabularyItem[] = [...TANGO_N3_BASE, ...TANGO_N3_EXTRA];
