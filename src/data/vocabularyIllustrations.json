@@ -11758,5 +11758,390 @@
     "reading": "プレー",
     "src": "/vocabulary-illustrations/n3/tango_n3_801.webp",
     "alt": "Minh họa ngữ cảnh của プレー(する)"
+  },
+  {
+    "id": "tango_n3_802",
+    "word": "ファン",
+    "reading": "ファン",
+    "src": "/vocabulary-illustrations/n3/tango_n3_802.webp",
+    "alt": "Minh họa ngữ cảnh của ファン"
+  },
+  {
+    "id": "tango_n3_803",
+    "word": "引退(する)",
+    "reading": "いんたい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_803.webp",
+    "alt": "Minh họa ngữ cảnh của 引退(する)"
+  },
+  {
+    "id": "tango_n3_804",
+    "word": "水着",
+    "reading": "みずぎ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_804.webp",
+    "alt": "Minh họa ngữ cảnh của 水着"
+  },
+  {
+    "id": "tango_n3_805",
+    "word": "おしゃれ(な/する)",
+    "reading": "おしゃれ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_805.webp",
+    "alt": "Minh họa ngữ cảnh của おしゃれ(な/する)"
+  },
+  {
+    "id": "tango_n3_806",
+    "word": "好む",
+    "reading": "このむ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_806.webp",
+    "alt": "Minh họa ngữ cảnh của 好む"
+  },
+  {
+    "id": "tango_n3_807",
+    "word": "好み",
+    "reading": "このみ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_807.webp",
+    "alt": "Minh họa ngữ cảnh của 好み"
+  },
+  {
+    "id": "tango_n3_808",
+    "word": "流行(する)",
+    "reading": "りゅうこう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_808.webp",
+    "alt": "Minh họa ngữ cảnh của 流行(する)"
+  },
+  {
+    "id": "tango_n3_809",
+    "word": "はやり",
+    "reading": "はやり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_809.webp",
+    "alt": "Minh họa ngữ cảnh của はやり"
+  },
+  {
+    "id": "tango_n3_810",
+    "word": "カタログ",
+    "reading": "カタログ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_810.webp",
+    "alt": "Minh họa ngữ cảnh của カタログ"
+  },
+  {
+    "id": "tango_n3_811",
+    "word": "サンプル",
+    "reading": "サンプル",
+    "src": "/vocabulary-illustrations/n3/tango_n3_811.webp",
+    "alt": "Minh họa ngữ cảnh của サンプル"
+  },
+  {
+    "id": "tango_n3_812",
+    "word": "探す",
+    "reading": "さがす",
+    "src": "/vocabulary-illustrations/n3/tango_n3_812.webp",
+    "alt": "Minh họa ngữ cảnh của 探す"
+  },
+  {
+    "id": "tango_n3_813",
+    "word": "似合う",
+    "reading": "にあう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_813.webp",
+    "alt": "Minh họa ngữ cảnh của 似合う"
+  },
+  {
+    "id": "tango_n3_814",
+    "word": "ぴったり(する)",
+    "reading": "ぴったり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_814.webp",
+    "alt": "Minh họa ngữ cảnh của ぴったり(する)"
+  },
+  {
+    "id": "tango_n3_815",
+    "word": "高級(な)",
+    "reading": "こうきゅう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_815.webp",
+    "alt": "Minh họa ngữ cảnh của 高級(な)"
+  },
+  {
+    "id": "tango_n3_816",
+    "word": "ブランド",
+    "reading": "ブランド",
+    "src": "/vocabulary-illustrations/n3/tango_n3_816.webp",
+    "alt": "Minh họa ngữ cảnh của ブランド"
+  },
+  {
+    "id": "tango_n3_817",
+    "word": "本物",
+    "reading": "ほんもの",
+    "src": "/vocabulary-illustrations/n3/tango_n3_817.webp",
+    "alt": "Minh họa ngữ cảnh của 本物"
+  },
+  {
+    "id": "tango_n3_818",
+    "word": "にせ物",
+    "reading": "にせもの",
+    "src": "/vocabulary-illustrations/n3/tango_n3_818.webp",
+    "alt": "Minh họa ngữ cảnh của にせ物"
+  },
+  {
+    "id": "tango_n3_819",
+    "word": "保証(する)",
+    "reading": "ほしょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_819.webp",
+    "alt": "Minh họa ngữ cảnh của 保証(する)"
+  },
+  {
+    "id": "tango_n3_820",
+    "word": "バーゲンセール",
+    "reading": "バーゲンセール",
+    "src": "/vocabulary-illustrations/n3/tango_n3_820.webp",
+    "alt": "Minh họa ngữ cảnh của バーゲンセール"
+  },
+  {
+    "id": "tango_n3_821",
+    "word": "取り替える",
+    "reading": "とりかえる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_821.webp",
+    "alt": "Minh họa ngữ cảnh của 取り替える"
+  },
+  {
+    "id": "tango_n3_822",
+    "word": "はめる",
+    "reading": "はめる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_822.webp",
+    "alt": "Minh họa ngữ cảnh của はめる"
+  },
+  {
+    "id": "tango_n3_823",
+    "word": "外す",
+    "reading": "はずす",
+    "src": "/vocabulary-illustrations/n3/tango_n3_823.webp",
+    "alt": "Minh họa ngữ cảnh của 外す"
+  },
+  {
+    "id": "tango_n3_826",
+    "word": "染める",
+    "reading": "そめる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_826.webp",
+    "alt": "Minh họa ngữ cảnh của 染める"
+  },
+  {
+    "id": "tango_n3_827",
+    "word": "サイズ",
+    "reading": "サイズ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_827.webp",
+    "alt": "Minh họa ngữ cảnh của サイズ"
+  },
+  {
+    "id": "tango_n3_828",
+    "word": "夏物",
+    "reading": "なつもの",
+    "src": "/vocabulary-illustrations/n3/tango_n3_828.webp",
+    "alt": "Minh họa ngữ cảnh của 夏物"
+  },
+  {
+    "id": "tango_n3_829",
+    "word": "冬物",
+    "reading": "ふゆもの",
+    "src": "/vocabulary-illustrations/n3/tango_n3_829.webp",
+    "alt": "Minh họa ngữ cảnh của 冬物"
+  },
+  {
+    "id": "tango_n3_830",
+    "word": "上着",
+    "reading": "うわぎ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_830.webp",
+    "alt": "Minh họa ngữ cảnh của 上着"
+  },
+  {
+    "id": "tango_n3_831",
+    "word": "婦人服",
+    "reading": "ふじんふく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_831.webp",
+    "alt": "Minh họa ngữ cảnh của 婦人服"
+  },
+  {
+    "id": "tango_n3_832",
+    "word": "紳士服",
+    "reading": "しんしふく",
+    "src": "/vocabulary-illustrations/n3/tango_n3_832.webp",
+    "alt": "Minh họa ngữ cảnh của 紳士服"
+  },
+  {
+    "id": "tango_n3_833",
+    "word": "ジーンズ",
+    "reading": "ジーンズ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_833.webp",
+    "alt": "Minh họa ngữ cảnh của ジーンズ"
+  },
+  {
+    "id": "tango_n3_834",
+    "word": "パンツ",
+    "reading": "パンツ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_834.webp",
+    "alt": "Minh họa ngữ cảnh của パンツ"
+  },
+  {
+    "id": "tango_n3_835",
+    "word": "イヤリング",
+    "reading": "イヤリング",
+    "src": "/vocabulary-illustrations/n3/tango_n3_835.webp",
+    "alt": "Minh họa ngữ cảnh của イヤリング"
+  },
+  {
+    "id": "tango_n3_837",
+    "word": "宝石",
+    "reading": "ほうせき",
+    "src": "/vocabulary-illustrations/n3/tango_n3_837.webp",
+    "alt": "Minh họa ngữ cảnh của 宝石"
+  },
+  {
+    "id": "tango_n3_838",
+    "word": "スカーフ",
+    "reading": "スカーフ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_838.webp",
+    "alt": "Minh họa ngữ cảnh của スカーフ"
+  },
+  {
+    "id": "tango_n3_839",
+    "word": "手袋",
+    "reading": "てぶくろ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_839.webp",
+    "alt": "Minh họa ngữ cảnh của 手袋"
+  },
+  {
+    "id": "tango_n3_840",
+    "word": "マフラー",
+    "reading": "マフラー",
+    "src": "/vocabulary-illustrations/n3/tango_n3_840.webp",
+    "alt": "Minh họa ngữ cảnh của マフラー"
+  },
+  {
+    "id": "tango_n3_841",
+    "word": "[お]化粧(する)",
+    "reading": "おけしょう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_841.webp",
+    "alt": "Minh họa ngữ cảnh của [お]化粧(する)"
+  },
+  {
+    "id": "tango_n3_842",
+    "word": "口紅",
+    "reading": "くちべに",
+    "src": "/vocabulary-illustrations/n3/tango_n3_842.webp",
+    "alt": "Minh họa ngữ cảnh của 口紅"
+  },
+  {
+    "id": "tango_n3_843",
+    "word": "まつ毛",
+    "reading": "まつげ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_843.webp",
+    "alt": "Minh họa ngữ cảnh của まつ毛"
+  },
+  {
+    "id": "tango_n3_844",
+    "word": "ほほ",
+    "reading": "ほほ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_844.webp",
+    "alt": "Minh họa ngữ cảnh của ほほ"
+  },
+  {
+    "id": "tango_n3_845",
+    "word": "つめ",
+    "reading": "つめ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_845.webp",
+    "alt": "Minh họa ngữ cảnh của つめ"
+  },
+  {
+    "id": "tango_n3_846",
+    "word": "香水",
+    "reading": "こうすい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_846.webp",
+    "alt": "Minh họa ngữ cảnh của 香水"
+  },
+  {
+    "id": "tango_n3_847",
+    "word": "古着",
+    "reading": "ふるぎ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_847.webp",
+    "alt": "Minh họa ngữ cảnh của 古着"
+  },
+  {
+    "id": "tango_n3_849",
+    "word": "ベルト",
+    "reading": "ベルト",
+    "src": "/vocabulary-illustrations/n3/tango_n3_849.webp",
+    "alt": "Minh họa ngữ cảnh của ベルト"
+  },
+  {
+    "id": "tango_n3_850",
+    "word": "そで",
+    "reading": "そで",
+    "src": "/vocabulary-illustrations/n3/tango_n3_850.webp",
+    "alt": "Minh họa ngữ cảnh của そで"
+  },
+  {
+    "id": "tango_n3_851",
+    "word": "ショップ",
+    "reading": "ショップ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_851.webp",
+    "alt": "Minh họa ngữ cảnh của ショップ"
+  },
+  {
+    "id": "tango_n3_852",
+    "word": "気に入る",
+    "reading": "きにいる",
+    "src": "/vocabulary-illustrations/n3/tango_n3_852.webp",
+    "alt": "Minh họa ngữ cảnh của 気に入る"
+  },
+  {
+    "id": "tango_n3_853",
+    "word": "お気に入り",
+    "reading": "おきにいり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_853.webp",
+    "alt": "Minh họa ngữ cảnh của お気に入り"
+  },
+  {
+    "id": "tango_n3_854",
+    "word": "芸術",
+    "reading": "げいじゅつ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_854.webp",
+    "alt": "Minh họa ngữ cảnh của 芸術"
+  },
+  {
+    "id": "tango_n3_855",
+    "word": "絵画",
+    "reading": "かいが",
+    "src": "/vocabulary-illustrations/n3/tango_n3_855.webp",
+    "alt": "Minh họa ngữ cảnh của 絵画"
+  },
+  {
+    "id": "tango_n3_856",
+    "word": "才能",
+    "reading": "さいのう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_856.webp",
+    "alt": "Minh họa ngữ cảnh của 才能"
+  },
+  {
+    "id": "tango_n3_857",
+    "word": "けいこ(する)",
+    "reading": "けいこ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_857.webp",
+    "alt": "Minh họa ngữ cảnh của けいこ(する)"
+  },
+  {
+    "id": "tango_n3_858",
+    "word": "アニメ",
+    "reading": "アニメ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_858.webp",
+    "alt": "Minh họa ngữ cảnh của アニメ"
+  },
+  {
+    "id": "tango_n3_859",
+    "word": "読書(する)",
+    "reading": "どくしょ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_859.webp",
+    "alt": "Minh họa ngữ cảnh của 読書(する)"
+  },
+  {
+    "id": "tango_n3_860",
+    "word": "おすすめ",
+    "reading": "おすすめ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_860.webp",
+    "alt": "Minh họa ngữ cảnh của おすすめ"
   }
 ]
