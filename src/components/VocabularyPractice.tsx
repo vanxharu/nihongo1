@@ -4,7 +4,8 @@ import VocabularyIllustration, { preloadVocabularyIllustrations } from './Vocabu
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import SlidingTabs from './ui/SlidingTabs';
 import { calculateSRS } from '../utils/srs';
 import { maskVocabularyInExample } from '../utils/vocabularyCloze';
 import HeartLike from './ui/HeartLike';
@@ -1127,6 +1128,13 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const [isAutoplay, setIsAutoplay] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
   const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
+
+  // "Học" = lật thẻ; "Luyện tập" = mọi chế độ bài tập còn lại, kèm bộ chọn nguồn/cấp độ/bài riêng.
+  const navigate = useNavigate();
+  const isPractice = selectedMode !== 'flashcard';
+  const lastPracticeModeRef = useRef<typeof selectedMode>('quiz');
+  if (isPractice) lastPracticeModeRef.current = selectedMode;
+  const practiceSource = kanjiMode ? 'kanji' : businessMode ? 'business' : myMode ? 'mine' : 'vocab';
 
   // Switch mode with smart defaults
   const handleSwitchMode = useCallback((newMode: 'flashcard' | 'quiz' | 'cram' | 'conjugate' | 'sentence' | 'write' | 'dokkai' | 'shadowing') => {
@@ -2921,6 +2929,43 @@ if (loading) {
     <div className="vocabulary-practice w-full max-w-5xl mx-auto px-2 sm:px-4 pt-1 sm:pt-2 pb-6 space-y-2.5 sm:space-y-3.5 select-none flex flex-col items-center">
       <div className="w-full space-y-2.5 sm:space-y-3 animate-fade-in flex flex-col items-center">
 
+      <div className="w-full max-w-[780px] flex flex-col items-center gap-2">
+        <SlidingTabs id="vocab-section" value={isPractice ? 'practice' : 'learn'}
+          onChange={v => handleSwitchMode(v === 'learn' ? 'flashcard' : lastPracticeModeRef.current)}
+          items={[['learn', 'Học'], ['practice', 'Luyện tập']]} />
+        {isPractice && (
+          <div className="w-full grid grid-cols-3 gap-1.5" aria-label="Chọn nội dung luyện tập">
+            <label className="min-w-0 text-[11px] text-slate-400">Nguồn
+              <select value={practiceSource} className="mt-0.5 w-full rounded-lg bg-[#151a2e] border border-[#2b3353] px-2 py-1.5 text-xs font-bold text-white"
+                onChange={e => {
+                  const v = e.target.value;
+                  const mode = selectedMode === 'write' && v !== 'kanji' ? 'quiz' : selectedMode;
+                  navigate(`${{ vocab: '/tango', kanji: '/kanji', business: '/cong-so', mine: '/tu-cua-toi' }[v]}?mode=${mode}`);
+                }}>
+                <option value="vocab">Từ vựng</option>
+                <option value="kanji">Kanji</option>
+                <option value="business">Công sở</option>
+                <option value="mine">Từ của tôi</option>
+              </select>
+            </label>
+            <label className="min-w-0 text-[11px] text-slate-400">Cấp độ
+              <select value={practiceSource === 'vocab' ? levelFilter : ''} disabled={practiceSource !== 'vocab'}
+                className="mt-0.5 w-full rounded-lg bg-[#151a2e] border border-[#2b3353] px-2 py-1.5 text-xs font-bold text-white disabled:opacity-50"
+                onChange={e => { setLevelFilter(e.target.value); setIsSrsReviewActive(false); setCurrentLessonIndex(0); setCurrentIndex(0); }}>
+                {practiceSource !== 'vocab' && <option value="">—</option>}
+                {['N5', 'N4', 'N3'].map(l => <option key={l} value={l}>{l}</option>)}
+              </select>
+            </label>
+            <label className="min-w-0 text-[11px] text-slate-400">Bài
+              <select value={currentLessonIndex} className="mt-0.5 w-full rounded-lg bg-[#151a2e] border border-[#2b3353] px-2 py-1.5 text-xs font-bold text-white"
+                onChange={e => { setIsSrsReviewActive(false); setCurrentLessonIndex(Number(e.target.value)); setCurrentIndex(0); }}>
+                {lessons.map((l, i) => <option key={l.id} value={i}>{l.name}</option>)}
+              </select>
+            </label>
+          </div>
+        )}
+      </div>
+
       {/* Container Thẻ học chính */}
       <div className={`w-full mx-auto mt-0 sm:mt-1 transition-all duration-300 flex flex-col items-center ${isExpanded ? 'max-w-5xl' : 'max-w-[780px]'}`}>
         <div className="w-full">
@@ -4004,12 +4049,11 @@ if (loading) {
         ) : null}
       </div>
 
-      {/* Responsive Cohesive Mode Selectors Bar */}
-      <div className="w-full max-w-[780px] space-y-1.5 -mt-2">
+      {/* Responsive Cohesive Mode Selectors Bar: chỉ hiện ở tab Luyện tập */}
+      {isPractice && <div className="w-full max-w-[780px] space-y-1.5 -mt-2">
         {kanjiMode ? (() => {
           // Kanji: 8 chế độ gom thành 5 nhóm; nhóm có 2 chế độ thì hiện thêm hàng nút nhỏ để chọn.
           const GROUPS: { label: string; Icon: any; modes: { id: any; label: string }[] }[] = [
-            { label: 'Lật thẻ', Icon: BookOpen, modes: [{ id: 'flashcard', label: 'Lật thẻ' }] },
             { label: 'Trắc nghiệm', Icon: Layers, modes: [{ id: 'quiz', label: 'Trắc nghiệm' }, { id: 'dokkai', label: 'Đọc hiểu' }] },
             { label: 'Luyện gõ', Icon: TrendingUp, modes: [{ id: 'cram', label: 'Gõ cách đọc' }, { id: 'write', label: 'Viết Hán' }] },
             { label: 'Chia từ', Icon: Layers, modes: [{ id: 'conjugate', label: 'Chia từ' }] },
@@ -4018,7 +4062,7 @@ if (loading) {
           const cur = GROUPS.find(g => g.modes.some(m => m.id === selectedMode)) || GROUPS[0];
           return (
             <div className="space-y-1">
-              <div className="grid grid-cols-5 gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
+              <div className="grid grid-cols-4 gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
                 {GROUPS.map(g => {
                   const on = g === cur;
                   return (
@@ -4040,20 +4084,7 @@ if (loading) {
             </div>
           );
         })() : (
-        <div className="grid grid-cols-7 gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
-          <button 
-            type="button"
-            onClick={() => handleSwitchMode('flashcard')} 
-            className={`py-1.5 px-0.5 rounded-lg sm:rounded-xl flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1 transition-all text-[10.5px] sm:text-xs font-bold cursor-pointer ${
-              selectedMode === 'flashcard' 
-                ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-1 ring-blue-400/50' 
-                : 'text-slate-400 hover:text-slate-200 hover:bg-[#1f2642]'
-            }`}
-          >
-            <BookOpen className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">Lật thẻ</span>
-          </button>
-
+        <div className="grid grid-cols-6 gap-0.5 p-0.5 bg-[#151a2e] rounded-xl sm:rounded-2xl border border-[#2b3353] shadow-inner">
           <button 
             type="button"
             onClick={() => handleSwitchMode('quiz')} 
@@ -4148,7 +4179,7 @@ if (loading) {
           </button>
         </div>
         )}
-      </div>
+      </div>}
     </div>
 
       {/* Dynamic Report/Góp ý Modal overlay */}
