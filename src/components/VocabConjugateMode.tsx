@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { BookOpen, Settings2 } from 'lucide-react';
 import { FORMS, RULES, VERBS, conjugate, type FormId, type Verb, type VerbGroup } from '../data/verbConjugation';
 import type { VocabularyItem } from '../types';
 
@@ -9,13 +10,30 @@ type Mode = 'choice' | 'type';
 const COMMON: FormId[] = ['te', 'ta', 'nai', 'dict'];
 // て/た nhóm 1 có 5 luật theo âm cuối: chỉ hiện luật đúng với động từ đang hỏi.
 const TE_LINE: Record<string, number> = { う: 0, つ: 0, る: 0, ぶ: 1, む: 1, ぬ: 1, く: 2, ぐ: 3, す: 4 };
-function ruleFor(q: Q): string {
-  const lines = RULES[q.form as Exclude<FormId, 'masu'>][q.verb.g - 1].split('｜');
+/** Quy tắc chuẩn cho (thể × nhóm): mỗi dòng "đuôi → đuôi"; dòng áp dụng cho động từ đang hỏi được tô đậm. */
+function ruleRows(q: Q): { text: string; hit: boolean }[] {
+  const lines = RULES[q.form as Exclude<FormId, 'masu'>][q.verb.g - 1].split('｜').map(l => l.replace(/（.*?）/, ''));
   if (q.verb.g === 1 && (q.form === 'te' || q.form === 'ta')) {
-    if (q.verb.kana === 'いく') return `き → ${q.form === 'te' ? 'いて' : 'いた'}, riêng いきます → ${q.form === 'te' ? 'いって' : 'いった'} (ngoại lệ)`;
-    return lines[TE_LINE[q.verb.kana.slice(-1)]].replace(/（.*?）/, '');
+    const te = q.form === 'te';
+    if (q.verb.kana === 'いく') return [{ text: `き → ${te ? 'いって' : 'いった'}  (ngoại lệ của いきます)`, hit: true }, ...lines.map(text => ({ text, hit: false }))];
+    return lines.map((text, n) => ({ text, hit: n === TE_LINE[q.verb.kana.slice(-1)] }));
   }
-  return lines[0];
+  return lines.map(text => ({ text, hit: true }));
+}
+function RuleCard({ q }: { q: Q }) {
+  const rows = ruleRows(q);
+  return (
+    <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm space-y-1" lang="ja">
+      {rows.map((r, n) => {
+        const [from, to] = r.text.split(' → ');
+        return (
+          <div key={n} className={`flex flex-wrap items-center gap-1.5 ${r.hit ? 'font-bold text-amber-950' : 'text-amber-800/60'}`}>
+            {to === undefined ? <span>{from}</span> : <><span className="rounded bg-white/80 px-1.5">{from}</span><span aria-hidden>→</span><span className="rounded bg-white/80 px-1.5">{to}</span></>}
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 const GROUP_STYLE = ['', 'bg-pink-100 text-pink-800', 'bg-emerald-100 text-emerald-800', 'bg-sky-100 text-sky-800'];
 
@@ -57,7 +75,7 @@ function ConjText({ verb, form, cls, sub }: { verb: Verb; form: FormId; cls: str
   return <><div className={cls} lang="ja">{k}</div>{k !== h && <div className={sub} lang="ja">{h}</div>}</>;
 }
 
-const pill = (on: boolean) => `min-h-[44px] px-3 rounded-full text-sm font-bold border ${on ? 'bg-pink-500 text-white border-pink-500' : 'bg-white text-slate-700 border-slate-300'}`;
+const pill = (on: boolean) => `px-2.5 py-1.5 rounded-md text-xs font-bold border ${on ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-300'}`;
 
 /** Chia động từ: mỗi động từ của bài được chia lần lượt qua các thể đã chọn (cài đặt); chọn đáp án hoặc gõ. */
 export default function VocabConjugateMode({ items = [] }: { items?: VocabularyItem[] }) {
@@ -92,11 +110,16 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
   const form = q && FORMS.find(f => f.id === q.form)!;
   return (
     <div className="w-full max-w-lg mx-auto space-y-4">
-      <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Cách trả lời">
-        <button aria-pressed={mode === 'choice'} onClick={() => setMode('choice')} className={pill(mode === 'choice')}>Chọn đáp án</button>
-        <button aria-pressed={mode === 'type'} onClick={() => setMode('type')} className={pill(mode === 'type')}>Tự điền</button>
-        <button aria-pressed={showRule} onClick={() => setShowRule(v => !v)} className={pill(showRule)}>Quy tắc</button>
-        <button aria-expanded={settings} onClick={() => setSettings(v => !v)} className={`${pill(settings)} ml-auto`}>⚙ Cài đặt</button>
+      <div className="flex items-center gap-2">
+        <div className="inline-flex rounded-lg bg-slate-100 p-0.5 text-xs" role="radiogroup" aria-label="Cách trả lời">
+          {([['choice', 'Chọn đáp án'], ['type', 'Tự điền']] as const).map(([k, l]) => (
+            <button key={k} role="radio" aria-checked={mode === k} onClick={() => setMode(k)} className={`px-3 py-1.5 rounded-md font-bold ${mode === k ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600'}`}>{l}</button>
+          ))}
+        </div>
+        <div className="ml-auto flex items-center gap-1">
+          <button aria-pressed={showRule} onClick={() => setShowRule(v => !v)} className={`inline-flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-bold ${showRule ? 'bg-amber-100 text-amber-900' : 'text-slate-600 hover:bg-slate-100'}`}><BookOpen className="w-4 h-4" />Quy tắc</button>
+          <button aria-label="Cài đặt thể cần chia" aria-expanded={settings} onClick={() => setSettings(v => !v)} className={`p-1.5 rounded-md ${settings ? 'bg-slate-200 text-slate-900' : 'text-slate-600 hover:bg-slate-100'}`}><Settings2 className="w-4 h-4" /></button>
+        </div>
       </div>
       {settings && (
         <div className="rounded-xl border border-slate-200 bg-white p-3 space-y-2">
@@ -125,7 +148,7 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
             <div className="text-sm text-slate-600">{q.verb.vi}</div>
             <div className="text-base font-bold text-pink-600">→ {form!.jp} <span className="text-slate-600 font-normal">({form!.vi})</span></div>
           </div>
-          {showRule && res !== 'bad' && <p className="text-sm rounded-lg bg-amber-50 border border-amber-200 text-amber-900 px-3 py-2">{ruleFor(q)}</p>}
+          {showRule && res !== 'bad' && <RuleCard q={q} />}
           {mode === 'choice' ? (
             <div className="grid grid-cols-2 gap-2" lang="ja">
               {options.map(o => {
@@ -144,7 +167,7 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
             />
           )}
           {res === 'ok' && <p className="text-sm font-bold text-emerald-700">Chính xác!</p>}
-          {res === 'bad' && <p className="text-sm font-bold text-rose-700">Đáp án: {kanjiAns === kanaAns ? kanaAns : `${kanjiAns}（${kanaAns}）`}<br /><span className="font-normal text-slate-700">{ruleFor(q)}</span></p>}
+          {res === 'bad' && <div className="space-y-1.5"><p className="text-sm font-bold text-rose-700" lang="ja">Đáp án: {kanjiAns === kanaAns ? kanaAns : `${kanjiAns}（${kanaAns}）`}</p><RuleCard q={q} /></div>}
           <div className="flex gap-2">
             {res === null && mode === 'type' && <button onClick={() => { setText(kanaAns); grade(false); }} className="min-h-[44px] px-4 rounded-xl border border-slate-300 bg-white text-sm font-bold text-slate-700">Xem đáp án</button>}
             {res === null && mode === 'type' && <button disabled={!text.trim()} onClick={check} className="flex-1 min-h-[44px] rounded-xl bg-pink-500 disabled:opacity-40 text-white text-sm font-bold">Kiểm tra</button>}
