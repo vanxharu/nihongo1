@@ -3287,6 +3287,8 @@ app.get('/api/vocabularies', async (req, res) => {
   if (contentStoreUnavailable) return res.json(VOCABULARY_DATA);
   try {
     const enrichedStatic = (await listContent('vocabularies')).map(v=>sanitizeVocabItem({...v,hanViet:v.hanViet||getHanVietWord(v.kanji||'')}));
+    // CDN giữ 5 phút (stale-while-revalidate) để các lượt mở trang sau không phải chờ Firestore đọc ~3MB.
+    res.setHeader('Cache-Control','public, max-age=60, s-maxage=300, stale-while-revalidate=600');
     res.setHeader('X-Data-Store','firestore');return res.json(enrichedStatic);
   } catch (error) {
     if ((error as any)?.message === 'DATABASE_NOT_CONFIGURED') {

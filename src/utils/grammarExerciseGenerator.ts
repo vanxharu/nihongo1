@@ -382,7 +382,21 @@ export function generateOrderingExercises(grammar: GrammarItem, aiContent?: any)
     ];
   }
 
-  // No curated ordering set for this grammar point. The old generic filler produced nonsense sentences
-  // (e.g. 毎日練習を〜てもいいしています) whose ★ never tested the target pattern, so show none instead.
-  return [];
+  // Mẫu không có bộ sắp xếp riêng: dựng 1 câu từ các cụm tách sẵn (wordsToReorder) của chính mẫu đó.
+  const pieces = (grammar.wordsToReorder || []).filter(Boolean);
+  if (pieces.length < 3 || pieces.length > 6 || !grammar.correctSentence) return [];
+  const n = pieces.length;
+  const ids = pieces.map((_, i) => ((i + 2) % n) + 1); // id của cụm thứ i (xáo trộn bằng phép xoay)
+  const options = pieces.map((text, i) => ({ id: ids[i], text })).sort((a, b) => a.id - b.id);
+  const star = Math.min(3, n);
+  return [{
+    id: 'ord_gen_1',
+    instruction: `${n}つの言葉を並べ替えて文を完成させ、★の位置の番号を選んでください`,
+    subtext: `Mẫu: ${grammar.structure}`,
+    options,
+    correctOrder: ids,
+    starPosition: star,
+    correctSentence: grammar.correctSentence,
+    explanation: `Trật tự đúng: ${pieces.map((t, i) => `${t} (${ids[i]})`).join(' + ')}. Vị trí ★ là ${ids[star - 1]} (${pieces[star - 1]}).`,
+  }];
 }

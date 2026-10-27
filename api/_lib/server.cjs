@@ -90968,6 +90968,9 @@ app.use("/api/listening", async (req, res, next) => {
     } catch {
     }
   }
+  const isGuest = uid === "default_user";
+  if (isGuest && req.method !== "GET") return res.json({ success: true, guest: true });
+  if (isGuest) uid = "guest_empty";
   if (req.query && typeof req.query === "object") req.query.userId = uid;
   if (req.body && typeof req.body === "object") {
     req.body.userId = uid;
@@ -93267,9 +93270,7 @@ app.post("/api/auth/resolve-identifier", async (req, res) => {
     return res.json({
       success: true,
       isEmail: false,
-      email: foundUser.email,
-      username: foundUser.username || foundUser.name,
-      displayName: foundUser.name
+      email: foundUser.email
     });
   } catch (err) {
     console.error("Error in /api/auth/resolve-identifier:", err);
@@ -93753,6 +93754,7 @@ app.get("/api/vocabularies", async (req, res) => {
   if (contentStoreUnavailable) return res.json(VOCABULARY_DATA);
   try {
     const enrichedStatic = (await listContent("vocabularies")).map((v) => sanitizeVocabItem({ ...v, hanViet: v.hanViet || getHanVietWord(v.kanji || "") }));
+    res.setHeader("Cache-Control", "public, max-age=60, s-maxage=300, stale-while-revalidate=600");
     res.setHeader("X-Data-Store", "firestore");
     return res.json(enrichedStatic);
   } catch (error) {
@@ -95260,7 +95262,7 @@ app.get("/api/grammars", async (req, res) => {
   }
   res.json(deduplicateGrammars(GRAMMAR_DATA));
 });
-app.post("/api/chat-gpt", async (req, res) => {
+app.post("/api/chat-gpt", requireAuth, requireAdmin, async (req, res) => {
   try {
     const { prompt, systemInstruction, model, jsonMode = false } = req.body;
     if (!prompt || typeof prompt !== "string") {

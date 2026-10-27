@@ -28,6 +28,7 @@ export function calculateSRS(
 
   const nextReviewDate = new Date();
   nextReviewDate.setDate(nextReviewDate.getDate() + interval);
+  nextReviewDate.setHours(0, 0, 0, 0); // đến hạn từ đầu ngày, không phụ thuộc giờ học trước đó
 
   return {
     interval,
