@@ -619,7 +619,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
           )}
           {currentQuestion.imageUrl && (
             <div className="my-3 p-4 rounded-2xl border border-[#EADFCF] bg-[#FDFBF7] flex justify-center items-center overflow-hidden">
-              <img src={currentQuestion.imageUrl} alt="Hình minh họa câu hỏi" className="max-h-72 object-contain rounded-xl" />
+              <img src={currentQuestion.imageUrl} alt="Hình minh họa câu hỏi" className="max-h-[75vh] max-w-full object-contain rounded-xl" />
             </div>
           )}
         </div>

@@ -2765,7 +2765,7 @@ const BookletQuestionCard: React.FC<BookletQuestionCardProps> = ({
         <div className={`my-4 p-3 sm:p-4 rounded-xl border flex justify-center items-center overflow-hidden shadow-2xs ${
           isDark ? 'bg-[#18202c] border-slate-700' : 'bg-stone-50 border-stone-300'
         }`}>
-          <img src={question.imageUrl} alt="Hình minh họa bài thi" className="max-h-80 object-contain rounded-lg" />
+          <img src={question.imageUrl} alt="Hình minh họa bài thi" className="max-h-[75vh] max-w-full object-contain rounded-lg" />
         </div>
       )}
 
