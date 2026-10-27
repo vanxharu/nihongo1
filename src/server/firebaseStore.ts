@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { shadowingDatabase } from './shadowingStore';
 import grammarAiSeed from '../data/grammarAiContents.json';
+import { N4_GRAMMAR_ITEMS } from '../data/grammarN4Points';
 import { VOCABULARY_DATA, GRAMMAR_DATA, KANJI_DATA } from '../data';
 export const clean = <T>(value:T):T => JSON.parse(JSON.stringify(value));
 export const documentKey = (value:unknown) => Buffer.from(String(value)).toString('base64url');
@@ -11,7 +12,7 @@ export async function listRecords(collection:string):Promise<any[]> { return (aw
 export type ContentKind = 'lessons'|'vocabularies'|'grammars'|'kanjis';
 function seed(kind:ContentKind):any[] {
   if(kind==='vocabularies') return VOCABULARY_DATA.map(v=>({...v,word:v.kanji||v.hiragana,reading:v.hiragana,exampleJp:v.exampleSentence||'',exampleVi:v.exampleTranslation||''}));
-  if(kind==='grammars') return GRAMMAR_DATA.length?GRAMMAR_DATA:[...new Map(Object.entries(grammarAiSeed).map(([key,v]:[string,any])=>{const id=String(v.grammarId||key).replace(/^g_/,'');return [id,{id,structure:v.grammar||'',meaning:v.meaning||v.overview||'',explanation:v.overview||'',level:v.level||'N4',lessonId:v.lessonId||'grammar_'+(v.level||'N4'),exampleJp:v.examples?.[0]?.japanese||'',exampleVi:v.examples?.[0]?.vietnamese||''}];})).values()];
+  if(kind==='grammars') return [...(GRAMMAR_DATA.length?GRAMMAR_DATA:[...new Map(Object.entries(grammarAiSeed).filter(([,v]:[string,any])=>(v.level||'N4')!=='N4').map(([key,v]:[string,any])=>{const id=String(v.grammarId||key).replace(/^g_/,'');return [id,{id,structure:v.grammar||'',meaning:v.meaning||v.overview||'',explanation:v.overview||'',level:v.level||'N4',lessonId:v.lessonId||'grammar_'+(v.level||'N4'),exampleJp:v.examples?.[0]?.japanese||'',exampleVi:v.examples?.[0]?.vietnamese||''}];})).values()]),...N4_GRAMMAR_ITEMS.map(g=>({...g,exampleJp:g.exampleSentence,exampleVi:g.exampleTranslation,lessonId:'grammar_N4_'+g.lessonNumber}))];
   if(kind==='kanjis') return KANJI_DATA.map((v:any)=>({...v,kanji:v.kanji||v.character,meaningVi:v.meaningVi||v.meaning||'',lesson:v.lesson||v.lessonNumber||1}));
   return [...new Map(VOCABULARY_DATA.map(v=>[v.lessonId,{id:v.lessonId,lessonNumber:Number(v.lessonId.match(/(\d+)$/)?.[1]||1),titleVi:v.lessonName||'',titleJp:v.lessonTitleJp||'',level:v.level,curriculum:v.curriculum}])).values()];
 }

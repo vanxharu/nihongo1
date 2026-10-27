@@ -4952,7 +4952,7 @@ Hãy phân tích và trả về đúng JSON theo schema được chỉ định.`
 app.get('/api/grammars', async (req, res) => {
   try {
     const [grammarRows,lessonRows]=await Promise.all([listContent('grammars'),listContent('lessons')]);
-    const results=grammarRows.map(g=>({g,l:lessonRows.find(l=>String(l.id)===String(g.lessonId))||{lessonNumber:g.level==='N4'?26:g.level==='N3'?51:g.level==='N2'?52:g.level==='N1'?53:1,titleVi:g.lessonName||''}}));
+    const results=grammarRows.map(g=>({g,l:lessonRows.find(l=>String(l.id)===String(g.lessonId))||{lessonNumber:g.lessonNumber||(g.level==='N4'?26:g.level==='N3'?51:g.level==='N2'?52:g.level==='N1'?53:1),titleVi:g.lessonName||''}}));
 
     if (results && results.length > 0) {
       const mapped = results.map(row => {
