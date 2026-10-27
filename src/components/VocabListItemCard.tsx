@@ -141,11 +141,11 @@ function renderWordWithFuriganaInternal(
               <span className="text-[10px] sm:text-[12px] invisible select-none pb-0.5" style={{ minHeight: '1.2em' }}>
                 &nbsp;
               </span>
-              <span className="text-xl sm:text-2xl font-bold font-display text-white leading-none py-0.5">
+              <span className="text-xl sm:text-2xl font-bold font-display text-white leading-none py-0.5 border border-transparent">
                 {segItem.text || ''}
               </span>
               {hasAnyKanjiHanViet && (
-                <span className="text-[8px] sm:text-[9.5px] invisible select-none mt-1 py-0.5 px-1 block leading-none" aria-hidden="true">
+                <span className="text-[8px] sm:text-[9.5px] invisible select-none mt-1 py-0.5 px-1 block leading-none border border-transparent" aria-hidden="true">
                   &nbsp;
                 </span>
               )}
@@ -242,11 +242,11 @@ function renderWordWithFuriganaInternal(
                   <span className="text-[10px] sm:text-[12px] invisible select-none pb-0.5" style={{ minHeight: '1.2em' }}>
                     &nbsp;
                   </span>
-                  <span className="text-xl sm:text-2xl font-bold font-display text-white leading-none py-0.5 select-all">
+                  <span className="text-xl sm:text-2xl font-bold font-display text-white leading-none py-0.5 border border-transparent select-all">
                     {part.text || ''}
                   </span>
                   {hasAnyKanjiHanViet && (
-                    <span className="text-[8px] sm:text-[9.5px] invisible select-none mt-1 py-0.5 px-1 block leading-none" aria-hidden="true">
+                    <span className="text-[8px] sm:text-[9.5px] invisible select-none mt-1 py-0.5 px-1 block leading-none border border-transparent" aria-hidden="true">
                       &nbsp;
                     </span>
                   )}
