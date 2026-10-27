@@ -66,11 +66,8 @@ export const GrammarLessonListView: React.FC<GrammarLessonListViewProps> = ({
 
     const isCompleted = lessonGrammars.length > 0 && lessonCompletedGrammars === lessonGrammars.length;
 
-    // Lock rule: First lesson of level is ALWAYS unlocked.
-    // Subsequent lessons are unlocked if previous lesson is partially practiced, OR if user has completed it, OR user target matches.
-    // For smooth learning, we make the first 5 lessons immediately unlocked, and subsequent unlocked as progress continues.
     const isFirstLesson = lNum === startLesson;
-    const isUnlocked = isFirstLesson || lNum <= startLesson + 2 || Boolean(userProfile.completedLessons?.includes(String(lNum))) || Boolean(userProfile.completedLessons?.includes(lNum)) || (lessonCompletedGrammars > 0);
+    const isUnlocked = true; // không khóa bài
     const isCurrent = isFirstLesson && completedCount === 0;
 
     lessonItems.push({

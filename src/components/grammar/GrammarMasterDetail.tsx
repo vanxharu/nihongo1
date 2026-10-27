@@ -67,7 +67,7 @@ export const GrammarMasterDetail: React.FC<Props> = ({
             {lessons.map(({ n, items }) => {
               const done = items.filter(g => isDone(userProfile, g)).length;
               const pct = items.length ? Math.round((done / items.length) * 100) : 0;
-              const unlocked = n <= start + 2 || done > 0 || Boolean(userProfile.completedLessons?.includes(String(n)));
+              const unlocked = true; // không khóa bài
               const active = n === lessonNumber;
               return (
                 <button
