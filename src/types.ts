@@ -197,6 +197,10 @@ export interface ExamQuestion {
   optionExplanations?: string[];
   readingPassage?: string;
   contextPassage?: string;
+  /** Số câu in trong khung như đề giấy (vd [16]); có giá trị → hiển thị kiểu đề thật */
+  paperNo?: number;
+  /** Dòng hướng dẫn もんだい… in trên câu đầu của mỗi mondai */
+  paperHeading?: string;
 }
 
 export interface DailyExam {

@@ -41,9 +41,10 @@ import {
 import './learning/studyExperience.css';
 import { DailyExam, ExamQuestion, UserProfile, ExamHistoryRecord } from '../types';
 import { REAL_EXAMS_N4_OFFICIAL } from '../data/realExamsN4_Official';
+import { REAL_EXAMS_N4_OFFICIAL_2018 } from '../data/realExamsN4_Official2018';
 
 // Chỉ giữ đề chính thức mới thêm; các đề cũ đã xoá.
-const JLPT_PAST_EXAMS: DailyExam[] = [REAL_EXAMS_N4_OFFICIAL];
+const JLPT_PAST_EXAMS: DailyExam[] = [REAL_EXAMS_N4_OFFICIAL_2018, REAL_EXAMS_N4_OFFICIAL];
 import { ensureFullExamQuestions, JLPT_LEVEL_TARGETS } from '../data/jlptExamGenerator';
 import SrsSwitch from './ui/SrsSwitch';
 import { calculateSRS } from '../utils/srs';
@@ -73,8 +74,25 @@ const EXAM_ROASTS = [
   'Cú lừa ngoạn mục! Lần sau gặp dạng này nhớ tỉnh táo hơn nhé! ⚡'
 ];
 
-export const renderFormattedQuestion = (text: string) => {
+const PAPER_SLOT = 'inline-block w-14 text-center leading-none mx-1 align-baseline';
+const INK_LINE = { borderBottom: '2px solid #111' } as const;
+
+// paper=true: dựng như đề giấy JLPT (gạch chân chữ, ô trống （　　）, 4 ô ＿ với ★).
+export const renderFormattedQuestion = (text: string, paper = false) => {
   if (!text) return '';
+  if (paper) {
+    return (
+      <>
+        {text.split(/(＿★＿|＿＿＿|【[^】]+】)/g).map((part, i) => {
+          if (part === '＿★＿') return <span key={i} className={PAPER_SLOT} style={INK_LINE}>★</span>;
+          if (part === '＿＿＿') return <span key={i} className={PAPER_SLOT} style={INK_LINE}>&nbsp;</span>;
+          if (part.startsWith('【') && part.endsWith('】'))
+            return <span key={i} className="pb-px" style={INK_LINE}>{part.slice(1, -1)}</span>;
+          return <span key={i}>{part}</span>;
+        })}
+      </>
+    );
+  }
   text = text.replace(/[（(][\s\u3000]*[）)]/g, '＿＿＿＿'); // ô trống ( ) → gạch ngang
   // Split using heavy brackets 【 】 or square brackets [ ] as the target highlights
   const parts = text.split(/([【\[][^】\]]+[】\]])/g);
@@ -724,6 +742,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
   // Ngân hàng câu hỏi lớn (vd 542 câu) không thể làm trong 30 phút: mỗi lượt chỉ lấy ngẫu nhiên số câu của đề thật theo từng phần.
   const pickExamBatch = (exam: DailyExam, ids?: string[]): DailyExam => {
     if (ids) return { ...exam, questions: exam.questions.filter(q => ids.includes(q.id)) };
+    if (exam.questions.some(q => q.paperNo != null)) return exam; // đề giấy đầy đủ: giữ nguyên số câu và thứ tự
     const t = JLPT_LEVEL_TARGETS[exam.level] || JLPT_LEVEL_TARGETS.N5;
     const cap = { 'moji-goi': t.mojiGoi, bunpou: t.bunpou, dokkai: t.dokkai, choukai: t.choukai };
     const keep = new Set<string>();

@@ -67,7 +67,7 @@ export function sanitizeExam(exam: DailyExam): DailyExam {
         ? (/[\u4e00-\u9faf]/.test(br[1]) ? `${br[1]} đọc là ${ans}.` : `${br[1]} viết bằng chữ Hán là ${ans}.`)
         : `Đáp án đúng: ${ans}.`;
     }
-    if (!positionDependent(q) && q.options.length > 1) {
+    if (q.paperNo == null && !positionDependent(q) && q.options.length > 1) { // đề giấy: giữ nguyên thứ tự đáp án
       const order = seededShuffle(q.id, q.options.length);
       q.options = order.map(i => orig.options[i]).map(o => String(o).replace(/^[1-4][.．]\s*/, ''));
       if (Array.isArray(orig.optionExplanations) && orig.optionExplanations.length === order.length) q.optionExplanations = order.map(i => orig.optionExplanations![i]);

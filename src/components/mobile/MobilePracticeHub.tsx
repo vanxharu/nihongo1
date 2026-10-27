@@ -38,6 +38,14 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
   const [srsOn] = useSrsAuto();
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [examHistory, setExamHistory] = useState<ExamHistoryRecord[]>([]);
+  // Màn rộng: tiến độ chuyển sang cột trái để hết khoảng trống dưới lưới kỹ năng.
+  const [wide, setWide] = useState(() => typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches);
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const on = () => setWide(mq.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
 
   useEffect(() => {
     setExamHistory(getExamHistory());
@@ -90,6 +98,35 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
   ];
   const challenge = challenges[dailyRotation];
 
+  const historyCard = (
+      <div className="rounded-2xl bg-[#121927] border border-[#1b253b] px-4 py-3 space-y-1.5">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-white">Lịch sử</h2>
+          <button
+            type="button"
+            id="btn-view-all-history"
+            onClick={() => setIsHistoryModalOpen(true)}
+            className="inline-flex items-center text-xs font-semibold text-[#29b6f6] cursor-pointer"
+          >
+            Xem tất cả <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+        <p className="text-xs text-slate-300">
+          Đã ôn <span className="text-cyan-400 font-bold">{savedVocabCount}</span> từ ·{' '}
+          <span className="text-emerald-400 font-bold">{savedKanjiCount}</span> kanji ·{' '}
+          <span className="text-purple-400 font-bold">{savedGrammarCount}</span> mẫu ngữ pháp
+        </p>
+        {last ? (
+          <p className="text-xs text-slate-400 truncate">
+            Đề gần nhất: <span className="text-white font-semibold">{last.examTitle || 'Đề thi JLPT'}</span>{' '}
+            <span className="text-emerald-400 font-semibold">{last.score}/{last.totalQuestions}</span>
+          </p>
+        ) : (
+          <p className="text-xs text-slate-500">Chưa có đề thi nào — làm đề đầu tiên ở mục Luyện thi.</p>
+        )}
+      </div>
+  );
+
   return (
     <div className="w-full max-w-lg md:max-w-4xl mx-auto px-4 py-2 space-y-2 text-white pb-6 select-none">
       {/* SRS tự động: từ đến hạn ôn hôm nay */}
@@ -136,6 +173,7 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
         ))}
       </div>
 
+      {wide && <ProgressDashboard userProfile={userProfile} todayXp={0} embedded />}
 
       </div>
 
@@ -143,37 +181,12 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
       <div className="min-w-0 space-y-2">
         <WeekStrip userProfile={userProfile} />
         <WordOfDay level={userProfile.studyTrack === 'business' ? 'BIZ' : targetLevel} />
-        <ProgressDashboard userProfile={userProfile} todayXp={0} embedded />
+        {!wide && <ProgressDashboard userProfile={userProfile} todayXp={0} embedded />}
+        {wide && historyCard}
       </div>
       </div>
 
-      {/* Lịch sử: one compact card, no tab switcher */}
-      <div className="rounded-2xl bg-[#121927] border border-[#1b253b] px-4 py-3 space-y-1.5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-white">Lịch sử</h2>
-          <button
-            type="button"
-            id="btn-view-all-history"
-            onClick={() => setIsHistoryModalOpen(true)}
-            className="inline-flex items-center text-xs font-semibold text-[#29b6f6] cursor-pointer"
-          >
-            Xem tất cả <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-        <p className="text-xs text-slate-300">
-          Đã ôn <span className="text-cyan-400 font-bold">{savedVocabCount}</span> từ ·{' '}
-          <span className="text-emerald-400 font-bold">{savedKanjiCount}</span> kanji ·{' '}
-          <span className="text-purple-400 font-bold">{savedGrammarCount}</span> mẫu ngữ pháp
-        </p>
-        {last ? (
-          <p className="text-xs text-slate-400 truncate">
-            Đề gần nhất: <span className="text-white font-semibold">{last.examTitle || 'Đề thi JLPT'}</span>{' '}
-            <span className="text-emerald-400 font-semibold">{last.score}/{last.totalQuestions}</span>
-          </p>
-        ) : (
-          <p className="text-xs text-slate-500">Chưa có đề thi nào — làm đề đầu tiên ở mục Luyện thi.</p>
-        )}
-      </div>
+      {!wide && historyCard}
 
       <ExamHistoryModal
         isOpen={isHistoryModalOpen}

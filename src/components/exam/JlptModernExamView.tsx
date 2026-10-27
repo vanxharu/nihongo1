@@ -609,9 +609,25 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
             <span>{JLPT_SECTION_METAS[currentQuestion.section]?.name}</span>
             <span className="ml-auto font-mono">Câu {currentQuestionIndex + 1}/{activeQuestions.length}</span>
           </div>
+          {currentQuestion.paperNo != null ? (
+            <div className="rounded-xl border border-[#EADFCF] bg-white px-4 py-4 text-[#111] font-[var(--font-jp)]">
+              {currentQuestion.paperHeading && (
+                <p className="mb-4 pb-3 text-[15px] font-bold leading-8 tracking-wide" style={{ borderBottom: '1px solid #111' }}>
+                  {renderFormattedQuestion(currentQuestion.paperHeading, true)}
+                </p>
+              )}
+              <div className="flex items-start gap-3">
+                <span className="shrink-0 mt-1 min-w-[2rem] px-1 text-center text-[13px] font-black leading-6" style={{ border: '1.5px solid #111' }}>{currentQuestion.paperNo}</span>
+                <p className="flex-1 whitespace-pre-line text-[17px] leading-9 tracking-[0.12em] font-medium">
+                  {renderFormattedQuestion(currentQuestion.question, true)}
+                </p>
+              </div>
+            </div>
+          ) : (
           <p className={`exam-prompt font-bold text-[#1F2639] whitespace-pre-line tracking-wide font-sans ${questionFontClass}`}>
             {renderFormattedQuestion(currentQuestion.question)}
           </p>
+          )}
 
           {/* Visual illustration diagram SVG / Image if present */}
           {currentQuestion.imageSvg && (
@@ -625,7 +641,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
         </div>
 
         {/* Multiple Choice Option Cards */}
-        <div className="space-y-2.5 pt-2">
+        <div className={currentQuestion.paperNo != null && currentQuestion.options.every(o => o.length <= 9) ? 'grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2' : 'space-y-2.5 pt-2'}>
           {currentQuestion.options.map((option, optIdx) => {
             const isSelected = userAnswers[currentQuestion.id] === optIdx;
             const isCorrect = currentQuestion.correctIndex === optIdx;
