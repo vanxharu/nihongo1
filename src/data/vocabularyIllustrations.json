@@ -9849,6 +9849,13 @@
     "alt": "Minh họa ngữ cảnh của 座席"
   },
   {
+    "id": "tango_n3_515",
+    "word": "締め切り",
+    "reading": "しめきり",
+    "src": "/vocabulary-illustrations/n3/tango_n3_515-v1.webp",
+    "alt": "Minh họa ngữ cảnh của 締め切り"
+  },
+  {
     "id": "tango_n3_516",
     "word": "開く",
     "reading": "ひらく",
@@ -9884,11 +9891,25 @@
     "alt": "Minh họa ngữ cảnh của かしこい"
   },
   {
+    "id": "tango_n3_521",
+    "word": "貸し出し",
+    "reading": "かしだし",
+    "src": "/vocabulary-illustrations/n3/tango_n3_521-v1.webp",
+    "alt": "Minh họa ngữ cảnh của 貸し出し"
+  },
+  {
     "id": "tango_n3_522",
     "word": "返却(する)",
     "reading": "へんきゃく",
     "src": "/vocabulary-illustrations/n3/tango_n3_522.webp",
     "alt": "Minh họa ngữ cảnh của 返却(する)"
+  },
+  {
+    "id": "tango_n3_523",
+    "word": "名札",
+    "reading": "なふだ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_523-v1.webp",
+    "alt": "Minh họa ngữ cảnh của 名札"
   },
   {
     "id": "tango_n3_525",
@@ -10955,6 +10976,13 @@
     "alt": "Minh họa ngữ cảnh của 確かめる"
   },
   {
+    "id": "tango_n3_677",
+    "word": "確かに",
+    "reading": "たしかに",
+    "src": "/vocabulary-illustrations/n3/tango_n3_677.webp",
+    "alt": "Minh họa ngữ cảnh của 確かに"
+  },
+  {
     "id": "tango_n3_678",
     "word": "とっくに",
     "reading": "とっくに",
@@ -10995,6 +11023,13 @@
     "reading": "かたがき",
     "src": "/vocabulary-illustrations/n3/tango_n3_683.webp",
     "alt": "Minh họa ngữ cảnh của 肩書き"
+  },
+  {
+    "id": "tango_n3_684",
+    "word": "アドバイス(する)",
+    "reading": "アドバイス",
+    "src": "/vocabulary-illustrations/n3/tango_n3_684.webp",
+    "alt": "Minh họa ngữ cảnh của アドバイス(する)"
   },
   {
     "id": "tango_n3_685",
@@ -11914,6 +11949,13 @@
     "alt": "Minh họa ngữ cảnh của 外す"
   },
   {
+    "id": "tango_n3_825",
+    "word": "パーマ",
+    "reading": "パーマ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_825.webp",
+    "alt": "Minh họa ngữ cảnh của パーマ"
+  },
+  {
     "id": "tango_n3_826",
     "word": "染める",
     "reading": "そめる",
@@ -12143,5 +12185,40 @@
     "reading": "おすすめ",
     "src": "/vocabulary-illustrations/n3/tango_n3_860.webp",
     "alt": "Minh họa ngữ cảnh của おすすめ"
+  },
+  {
+    "id": "tango_n3_1033",
+    "word": "夏日",
+    "reading": "なつび",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1033.webp",
+    "alt": "Minh họa ngữ cảnh của 夏日"
+  },
+  {
+    "id": "tango_n3_1034",
+    "word": "真夏日",
+    "reading": "まなつび",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1034.webp",
+    "alt": "Minh họa ngữ cảnh của 真夏日"
+  },
+  {
+    "id": "tango_n3_1035",
+    "word": "猛暑日",
+    "reading": "もうしょび",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1035.webp",
+    "alt": "Minh họa ngữ cảnh của 猛暑日"
+  },
+  {
+    "id": "tango_n3_1214",
+    "word": "感動(する)",
+    "reading": "かんどう",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1214.webp",
+    "alt": "Minh họa ngữ cảnh của 感動(する)"
+  },
+  {
+    "id": "tango_n3_1215",
+    "word": "感心(する)",
+    "reading": "かんしん",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1215.webp",
+    "alt": "Minh họa ngữ cảnh của 感心(する)"
   }
 ]
