@@ -107,8 +107,12 @@ const COST_BEARING_PATHS = [
 const RATE_WINDOW_MS = 60_000;
 const RATE_MAX_REQUESTS = 40;
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
-app.use(COST_BEARING_PATHS, (req, res, next) => {
-  const key = req.ip || 'unknown';
+const GUEST_MAX_REQUESTS = 12; // khách chưa đăng nhập bị giới hạn chặt hơn người có tài khoản
+app.use(COST_BEARING_PATHS, async (req, res, next) => {
+  let signedIn = false;
+  const auth = req.headers.authorization;
+  if (auth?.startsWith('Bearer ') && adminAuth) { try { await adminAuth.verifyIdToken(auth.slice(7)); signedIn = true; } catch { /* guest */ } }
+  const key = (signedIn ? 'u:' : 'g:') + (req.ip || 'unknown');
   const now = Date.now();
   if (rateBuckets.size > 5000) {
     for (const [k, v] of rateBuckets) if (v.resetAt <= now) rateBuckets.delete(k);
@@ -119,7 +123,7 @@ app.use(COST_BEARING_PATHS, (req, res, next) => {
     return next();
   }
   bucket.count += 1;
-  if (bucket.count > RATE_MAX_REQUESTS) {
+  if (bucket.count > (signedIn ? RATE_MAX_REQUESTS : GUEST_MAX_REQUESTS)) {
     res.setHeader('Retry-After', String(Math.ceil((bucket.resetAt - now) / 1000)));
     return res.status(429).json({ success: false, error: 'Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút.' });
   }

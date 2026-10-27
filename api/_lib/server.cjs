@@ -90753,8 +90753,18 @@ var COST_BEARING_PATHS = [
 var RATE_WINDOW_MS = 6e4;
 var RATE_MAX_REQUESTS = 40;
 var rateBuckets = /* @__PURE__ */ new Map();
-app.use(COST_BEARING_PATHS, (req, res, next) => {
-  const key = req.ip || "unknown";
+var GUEST_MAX_REQUESTS = 12;
+app.use(COST_BEARING_PATHS, async (req, res, next) => {
+  let signedIn = false;
+  const auth = req.headers.authorization;
+  if (auth?.startsWith("Bearer ") && adminAuth) {
+    try {
+      await adminAuth.verifyIdToken(auth.slice(7));
+      signedIn = true;
+    } catch {
+    }
+  }
+  const key = (signedIn ? "u:" : "g:") + (req.ip || "unknown");
   const now = Date.now();
   if (rateBuckets.size > 5e3) {
     for (const [k, v] of rateBuckets) if (v.resetAt <= now) rateBuckets.delete(k);
@@ -90765,7 +90775,7 @@ app.use(COST_BEARING_PATHS, (req, res, next) => {
     return next();
   }
   bucket.count += 1;
-  if (bucket.count > RATE_MAX_REQUESTS) {
+  if (bucket.count > (signedIn ? RATE_MAX_REQUESTS : GUEST_MAX_REQUESTS)) {
     res.setHeader("Retry-After", String(Math.ceil((bucket.resetAt - now) / 1e3)));
     return res.status(429).json({ success: false, error: "B\u1EA1n thao t\xE1c qu\xE1 nhanh. Vui l\xF2ng th\u1EED l\u1EA1i sau \xEDt ph\xFAt." });
   }
