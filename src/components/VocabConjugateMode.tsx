@@ -20,14 +20,15 @@ function ruleRows(q: Q): { text: string; hit: boolean }[] {
   }
   return lines.map(text => ({ text, hit: true }));
 }
-function RuleCard({ q }: { q: Q }) {
-  const rows = ruleRows(q);
+/** mark: tô đậm dòng áp dụng cho động từ này (chỉ dùng sau khi trả lời sai, để gợi ý không lộ đáp án). */
+function RuleCard({ q, mark }: { q: Q; mark: boolean }) {
+  const rows = ruleRows(q).filter(r => mark || !r.text.includes('ngoại lệ'));
   return (
     <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm space-y-1" lang="ja">
       {rows.map((r, n) => {
         const [from, to] = r.text.split(' → ');
         return (
-          <div key={n} className={`flex flex-wrap items-center gap-1.5 ${r.hit ? 'font-bold text-amber-950' : 'text-amber-800/60'}`}>
+          <div key={n} className={`flex flex-wrap items-center gap-1.5 ${!mark || r.hit ? 'font-bold text-amber-950' : 'text-amber-800/60'}`}>
             {to === undefined ? <span>{from}</span> : <><span className="rounded bg-white/80 px-1.5">{from}</span><span aria-hidden>→</span><span className="rounded bg-white/80 px-1.5">{to}</span></>}
           </div>
         );
@@ -148,7 +149,7 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
             <div className="text-sm text-slate-600">{q.verb.vi}</div>
             <div className="text-base font-bold text-pink-600">→ {form!.jp} <span className="text-slate-600 font-normal">({form!.vi})</span></div>
           </div>
-          {showRule && res !== 'bad' && <RuleCard q={q} />}
+          {showRule && res !== 'bad' && <RuleCard q={q} mark={false} />}
           {mode === 'choice' ? (
             <div className="grid grid-cols-2 gap-2" lang="ja">
               {options.map(o => {
@@ -167,7 +168,7 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
             />
           )}
           {res === 'ok' && <p className="text-sm font-bold text-emerald-700">Chính xác!</p>}
-          {res === 'bad' && <div className="space-y-1.5"><p className="text-sm font-bold text-rose-700" lang="ja">Đáp án: {kanjiAns === kanaAns ? kanaAns : `${kanjiAns}（${kanaAns}）`}</p><RuleCard q={q} /></div>}
+          {res === 'bad' && <div className="space-y-1.5"><p className="text-sm font-bold text-rose-700" lang="ja">Đáp án: {kanjiAns === kanaAns ? kanaAns : `${kanjiAns}（${kanaAns}）`}</p><RuleCard q={q} mark /></div>}
           <div className="flex gap-2">
             {res === null && mode === 'type' && <button onClick={() => { setText(kanaAns); grade(false); }} className="min-h-[44px] px-4 rounded-xl border border-slate-300 bg-white text-sm font-bold text-slate-700">Xem đáp án</button>}
             {res === null && mode === 'type' && <button disabled={!text.trim()} onClick={check} className="flex-1 min-h-[44px] rounded-xl bg-pink-500 disabled:opacity-40 text-white text-sm font-bold">Kiểm tra</button>}
