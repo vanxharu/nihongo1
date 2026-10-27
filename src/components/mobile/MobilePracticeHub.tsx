@@ -21,7 +21,7 @@ import shibaSmileAnim from '../../assets/lottie/shiba-smile.json'; // LottieFile
 import ShibaMascot from '../mascot/ShibaMascot';
 import { GRAMMAR_DATA, KANJI_DATA } from '../../data';
 import ProgressDashboard from '../ProgressDashboard';
-import { TodayLessons, WeekStrip, WordOfDay } from '../home/HomeToday';
+import { WeekStrip, WordOfDay } from '../home/HomeToday';
 
 interface MobilePracticeHubProps {
   userProfile: UserProfile;
@@ -105,7 +105,6 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
 
       <div className="lg:grid lg:grid-cols-2 lg:gap-3 lg:items-start space-y-2 lg:space-y-0">
       <div className="space-y-2 min-w-0">
-      <TodayLessons userProfile={userProfile} />
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-bold text-white whitespace-nowrap">Luyện theo kỹ năng</h2>
         <button

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Check, Clock3, Volume2 } from 'lucide-react';
+import { Check, Volume2 } from 'lucide-react';
 import type { JLPTLevel, UserProfile, VocabularyItem } from '../../types';
 import { localDateStr } from '../../utils/localDate';
 import { speakJapanese } from '../../utils/audio';
-import { normalizedRoadmap, readGuestRoadmap, roadmapDay } from '../../data/jlptRoadmap';
 import VocabularyIllustration, { getVocabularyIllustration } from '../VocabularyIllustration';
 
 const card = 'rounded-2xl bg-[#121927] border border-[#1b253b] px-4 py-3';
@@ -52,47 +50,6 @@ export function WeekStrip({ userProfile }: { userProfile: UserProfile }) {
           </li>
         ))}
       </ol>
-    </div>
-  );
-}
-
-/** Today's roadmap day: the three core tasks with time estimates, linking to each practice screen. */
-export function TodayLessons({ userProfile }: { userProfile: UserProfile }) {
-  const level = (userProfile.studyRoadmap?.targetLevel || userProfile.targetLevel || 'N5') as JLPTLevel;
-  const plan = normalizedRoadmap(userProfile.studyRoadmap || readGuestRoadmap(), level, localDateStr());
-  const day = roadmapDay(level, plan.durationDays, plan.currentDay);
-  const done = plan.completedDays.includes(day.day)
-    ? day.tasks.map(t => t.id)
-    : plan.dailyTasks?.[String(day.day)] || [];
-  const tasks = day.tasks.filter(t => t.id !== 'review').slice(0, 3);
-  return (
-    <div className={card} id="home-today-lessons">
-      <div className="flex items-center justify-between mb-2 gap-2">
-        <div className="min-w-0">
-          <h2 className="text-sm font-bold text-white">Bài học hôm nay</h2>
-          <p className="text-[11px] text-slate-400 truncate">{level} · Ngày {day.day}/{plan.durationDays} · {day.chapter.name}</p>
-        </div>
-        <Link to="/lo-trinh" className="shrink-0 text-[11px] font-bold text-[#38bdf8]">Lộ trình →</Link>
-      </div>
-      <ul className="space-y-1.5">
-        {tasks.map(t => {
-          const isDone = done.includes(t.id);
-          return (
-            <li key={t.id} className="flex items-center gap-3 rounded-xl bg-[#131316] border border-[#1b253b] px-3 py-2">
-              <div className="flex-1 min-w-0">
-                <div className="text-[11px] text-slate-400">{t.label}</div>
-                <div className="text-sm font-bold text-white truncate">{t.text}</div>
-                <div className="text-[11px] text-slate-400 flex items-center gap-1"><Clock3 className="w-3 h-3" />{t.minutes} phút</div>
-              </div>
-              {isDone ? (
-                <span className="shrink-0 inline-flex items-center gap-1 text-xs font-bold text-[#2dd4bf]"><Check className="w-4 h-4" />Xong</span>
-              ) : (
-                <Link to={t.route} className="shrink-0 rounded-lg bg-[#2dd4bf] px-3 py-1.5 text-xs font-bold text-slate-900">Bắt đầu</Link>
-              )}
-            </li>
-          );
-        })}
-      </ul>
     </div>
   );
 }
