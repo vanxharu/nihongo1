@@ -11613,6 +11613,13 @@
     "alt": "Minh họa ngữ cảnh của 追加(する)"
   },
   {
+    "id": "tango_n3_768",
+    "word": "持ち物",
+    "reading": "もちもの",
+    "src": "/vocabulary-illustrations/n3/tango_n3_768.webp",
+    "alt": "Minh họa ngữ cảnh của 持ち物"
+  },
+  {
     "id": "tango_n3_769",
     "word": "足りる",
     "reading": "たりる",
@@ -11723,6 +11730,13 @@
     "reading": "ポイント",
     "src": "/vocabulary-illustrations/n3/tango_n3_784.webp",
     "alt": "Minh họa ngữ cảnh của ポイント"
+  },
+  {
+    "id": "tango_n3_785",
+    "word": "引き分け",
+    "reading": "ひきわけ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_785.webp",
+    "alt": "Minh họa ngữ cảnh của 引き分け"
   },
   {
     "id": "tango_n3_786",
@@ -11989,6 +12003,13 @@
     "reading": "はずす",
     "src": "/vocabulary-illustrations/n3/tango_n3_823.webp",
     "alt": "Minh họa ngữ cảnh của 外す"
+  },
+  {
+    "id": "tango_n3_824",
+    "word": "カット(する)",
+    "reading": "カット",
+    "src": "/vocabulary-illustrations/n3/tango_n3_824.webp",
+    "alt": "Minh họa ngữ cảnh của カット(する)"
   },
   {
     "id": "tango_n3_825",
@@ -12292,6 +12313,27 @@
     "alt": "Minh họa ngữ cảnh của 状態"
   },
   {
+    "id": "tango_n3_1042",
+    "word": "変化(する)",
+    "reading": "へんか",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1042.webp",
+    "alt": "Minh họa ngữ cảnh của 変化(する)"
+  },
+  {
+    "id": "tango_n3_1043",
+    "word": "一定(する)",
+    "reading": "いってい",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1043.webp",
+    "alt": "Minh họa ngữ cảnh của 一定(する)"
+  },
+  {
+    "id": "tango_n3_1044",
+    "word": "観察(する)",
+    "reading": "かんさつ",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1044.webp",
+    "alt": "Minh họa ngữ cảnh của 観察(する)"
+  },
+  {
     "id": "tango_n3_1213",
     "word": "感激(する)",
     "reading": "かんげき",
@@ -12339,5 +12381,26 @@
     "reading": "ユーモア",
     "src": "/vocabulary-illustrations/n3/tango_n3_1221.webp",
     "alt": "Minh họa ngữ cảnh của ユーモア"
+  },
+  {
+    "id": "tango_n3_1222",
+    "word": "ゆかいな",
+    "reading": "ゆかいな",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1222.webp",
+    "alt": "Minh họa ngữ cảnh của ゆかいな"
+  },
+  {
+    "id": "tango_n3_1223",
+    "word": "愛する",
+    "reading": "あいする",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1223.webp",
+    "alt": "Minh họa ngữ cảnh của 愛する"
+  },
+  {
+    "id": "tango_n3_1224",
+    "word": "真剣な",
+    "reading": "しんけんな",
+    "src": "/vocabulary-illustrations/n3/tango_n3_1224.webp",
+    "alt": "Minh họa ngữ cảnh của 真剣な"
   }
 ]
