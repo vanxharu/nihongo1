@@ -1,4 +1,5 @@
 import type { GrammarItem } from '../types';
+import { N4_EXTRA } from './grammarN4Extra';
 
 /**
  * Ngữ pháp JLPT N4 (25 bài, đánh số 26–50 theo lộ trình của app).
@@ -185,3 +186,8 @@ export const N4_GRAMMAR_BY_LESSON: Record<number, N4Point[]> = ROWS.reduce<Recor
 /** Danh sách phẳng có id ổn định (`n4_<bài>_<thứ tự>`) để server lưu và client gộp. */
 export const N4_GRAMMAR_ITEMS: GrammarItem[] = Object.entries(N4_GRAMMAR_BY_LESSON).flatMap(([lesson, list]) =>
   list.map((p, i) => ({ ...p, id: `n4_${lesson}_${i + 1}`, level: 'N4' as const, lessonNumber: Number(lesson), lessonName: `Bài ${lesson}` })));
+
+if (N4_EXTRA.length !== ROWS.length) throw new Error(`grammarN4Extra (${N4_EXTRA.length}) phải cùng số dòng với ROWS (${ROWS.length})`);
+/** Câu ví dụ bổ sung theo `structure`, để tạo bài tập Việt↔Nhật. */
+export const N4_EXTRA_BY_STRUCTURE = new Map<string, { japanese: string; vietnamese: string }[]>(
+  ROWS.map((row, i) => [row[1], [{ japanese: N4_EXTRA[i][0], vietnamese: N4_EXTRA[i][1] }, { japanese: N4_EXTRA[i][2], vietnamese: N4_EXTRA[i][3] }]]));

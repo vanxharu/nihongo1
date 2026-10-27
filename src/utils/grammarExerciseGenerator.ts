@@ -1,4 +1,5 @@
 import { GrammarItem } from '../types';
+import { N4_EXTRA_BY_STRUCTURE } from '../data/grammarN4Points';
 
 export interface TranslationExerciseItem {
   id: string;
@@ -72,6 +73,16 @@ export function generateVietToJapExercises(grammar: GrammarItem, aiContent?: any
       grammarNote: grammar.explanation || `Dùng mẫu ${structure} để hoàn thành câu.`
     });
   }
+
+  // Câu ví dụ riêng của mẫu (N4): mỗi câu là một bài tập thật, không lặp lại câu chính.
+  (N4_EXTRA_BY_STRUCTURE.get(structure) || []).forEach((ex, i) => list.push({
+    id: `v2j_extra_${i}`,
+    vietnamese: ex.vietnamese,
+    japanese: ex.japanese,
+    acceptedAnswers: [normalizeJapanese(ex.japanese)],
+    hint: `Áp dụng mẫu ${structure}`,
+    grammarNote: grammar.explanation || `Dùng mẫu ${structure} để hoàn thành câu.`
+  }));
 
   // Pre-crafted high-fidelity questions for popular patterns like んです
   if (structure.includes('んです')) {
@@ -191,19 +202,7 @@ export function generateVietToJapExercises(grammar: GrammarItem, aiContent?: any
     return ndesuItems;
   }
 
-  // Generate standard pool up to 10 questions for any other grammar pattern
-  while (list.length < 10) {
-    const idx = list.length + 1;
-    list.push({
-      id: `v2j_gen_${idx}`,
-      vietnamese: `Câu luyện tập ${idx}: Vận dụng mẫu 「${structure}」 (${grammar.meaning || 'ngữ pháp'}).`,
-      japanese: grammar.exampleSentence || `${cleanStruct}の文を作ります。`,
-      acceptedAnswers: [normalizeJapanese(grammar.exampleSentence || cleanStruct)],
-      hint: `Áp dụng dạng kết hợp của 「${structure}」`,
-      grammarNote: grammar.explanation || `Dùng đúng quy tắc kết hợp của ${structure}.`
-    });
-  }
-
+  // Không điền thêm câu giả: mẫu chưa có đủ câu ví dụ thì chỉ hiện số câu thật đang có.
   return list.slice(0, 10);
 }
 
