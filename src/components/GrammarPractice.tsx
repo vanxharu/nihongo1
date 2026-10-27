@@ -98,7 +98,9 @@ export default function GrammarPractice({
 
         if (isMounted) {
           if (dbGrammars.ok && Array.isArray(dbGrammars.data) && dbGrammars.data.length > 0) {
-            setGrammars(deduplicateGrammars(dbGrammars.data));
+            // Cấp độ nào API không có thì giữ dữ liệu local (tránh N5/N3/N2/N1 bị trống)
+            const dbLevels = new Set(dbGrammars.data.map(g => g.level));
+            setGrammars(deduplicateGrammars([...dbGrammars.data, ...LOCAL_GRAMMARS.filter(g => !dbLevels.has(g.level))]));
           }
           if (aiRes.ok && aiRes.data) {
             const dataMap = aiRes.data?.data || aiRes.data;

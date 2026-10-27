@@ -1,4 +1,4 @@
-import { test } from 'node:test';import assert from 'node:assert/strict';import { build } from 'esbuild';import fs from 'node:fs';import { createRequire } from 'node:module';
+import os from 'node:os';import path from 'node:path';import { test } from 'node:test';import assert from 'node:assert/strict';import { build } from 'esbuild';import fs from 'node:fs';import { createRequire } from 'node:module';
 const docs=new Map<string,any>();const clone=(v:any)=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
 function ref(path:string):any{return {path,collection:(name:string)=>collection(`${path}/${name}`),get:async()=>snapshot(path),set:async(v:any)=>{docs.set(path,clone(v));},update:async(v:any)=>{docs.set(path,{...docs.get(path),...clone(v)});},delete:async()=>{docs.delete(path);}};}
 function snapshot(path:string):any{return {exists:docs.has(path),ref:ref(path),data:()=>clone(docs.get(path))};}
@@ -30,14 +30,14 @@ test('large learning state chunks, deletion, stale updates and credential filter
  await api.saveLearningState('owner',[{key,value:null,updatedAt:60}]);assert.equal((await api.getLearningState('owner'))[0].value,null);assert.deepEqual(await api.getLearningState('unverified'),[]);
 });
 test('persistent JSON is chunked and imported only once',async()=>{
- const file='/workspace/scratch/afc75b3ad22b/firebase-test-seed.json';fs.writeFileSync(file,JSON.stringify({seed:true}));assert.deepEqual(await api.readPersistentJson(file),{seed:true});const v={text:'かな'.repeat(150000)};await api.writePersistentJson(file,v);fs.writeFileSync(file,'{}');assert.deepEqual(await api.readPersistentJson(file),v);fs.unlinkSync(file);
+ const file=path.join(os.tmpdir(),'firebase-test-seed.json');fs.writeFileSync(file,JSON.stringify({seed:true}));assert.deepEqual(await api.readPersistentJson(file),{seed:true});const v={text:'かな'.repeat(150000)};await api.writePersistentJson(file,v);fs.writeFileSync(file,'{}');assert.deepEqual(await api.readPersistentJson(file),v);fs.unlinkSync(file);
 });
 test('PDF parts stay private and a deletion leaves a synchronization tombstone',async()=>{
  const meta={id:'pdf_test',title:'PDF',fileName:'test.pdf'};const data='data:application/pdf;base64,JVBERi0xLjQ=';await api.writeUserFile('owner',{action:'begin',id:meta.id,generation:'g1',count:1,totalLength:data.length,metadata:meta});await api.writeUserFile('owner',{action:'part',id:meta.id,generation:'g1',index:0,data});await api.writeUserFile('owner',{action:'commit',id:meta.id,generation:'g1'});assert.equal((await api.userFilePart('owner',meta.id,0)).data,data);assert.deepEqual(await api.listUserFiles('unverified'),[]);await assert.rejects(api.userFilePart('unverified',meta.id,0));await api.writeUserFile('owner',{action:'delete',id:meta.id});assert.equal((await api.listUserFiles('owner'))[0].deleted,true);
 });
 
 test('listening JSON merges concurrent user and video updates',async()=>{
- const file='/workspace/scratch/afc75b3ad22b/listening-merge-test.json';fs.writeFileSync(file,'{}');await api.readPersistentJson(file);
+ const file=path.join(os.tmpdir(),'listening-merge-test.json');fs.writeFileSync(file,'{}');await api.readPersistentJson(file);
  let firstReady:any;const ready=new Promise(r=>firstReady=r);let secondWritten:any;const done=new Promise(r=>secondWritten=r);
  await Promise.all([
   api.persistentRequest(async()=>{const value=await api.readPersistentJson(file);firstReady();await done;value.first={video:{currentTime:5,updatedAt:100}};await api.writePersistentJson(file,value);}),
@@ -47,7 +47,7 @@ test('listening JSON merges concurrent user and video updates',async()=>{
 });
 
 test('parallel first listening writes preserve both new owners without seed files',async()=>{
- const file='/workspace/scratch/afc75b3ad22b/no-listening-seed.json';
+ const file=path.join(os.tmpdir(),'no-listening-seed.json');
  await Promise.all([api.persistentRequest(()=>api.writePersistentJson(file,{first:{video:1}})),api.persistentRequest(()=>api.writePersistentJson(file,{second:{video:2}}))]);
  assert.deepEqual(await api.readPersistentJson(file),{first:{video:1},second:{video:2}});
 });

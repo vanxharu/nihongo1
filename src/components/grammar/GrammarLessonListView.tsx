@@ -35,7 +35,7 @@ export const GrammarLessonListView: React.FC<GrammarLessonListViewProps> = ({
   const levelGrammars = useMemo(() => {
     return deduplicateGrammars(grammars.filter(g => g.level === level));
   }, [grammars, level]);
-  const totalGrammarsInLevel = levelGrammars.length || (isN4 ? 90 : (isN5 ? 120 : 100));
+  const totalGrammarsInLevel = levelGrammars.length;
 
   // Count completed grammars for this level
   const completedCount = levelGrammars.filter(g => {
@@ -45,7 +45,7 @@ export const GrammarLessonListView: React.FC<GrammarLessonListViewProps> = ({
     return Boolean(status.correctCount > 0 || status.state === 'mastered' || status.state === 'learned');
   }).length;
 
-  const progressPercent = Math.min(100, Math.round((completedCount / totalGrammarsInLevel) * 100));
+  const progressPercent = totalGrammarsInLevel ? Math.min(100, Math.round((completedCount / totalGrammarsInLevel) * 100)) : 0;
 
   // Build lesson cards array
   const lessonItems = [];

@@ -309,6 +309,11 @@ export function deduplicateGrammars(items: GrammarItem[]): GrammarItem[] {
     const clusters = new Map<string, GrammarItem[]>();
 
     for (const item of lessonItems) {
+      // Bộ N4 chuẩn (id n4_*) đã được biên soạn không trùng: không gộp theo cụm ngữ nghĩa, không cách ly
+      if (item.id.startsWith('n4_')) {
+        clusters.set('id:' + item.id, [item]);
+        continue;
+      }
       const pKey = normalizeGrammarPattern(item.structure);
 
       // Quarantine check: ~to omou / ~to iimashita belongs to Lesson 21, not Lesson 26
