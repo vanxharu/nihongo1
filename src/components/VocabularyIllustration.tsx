@@ -8,7 +8,7 @@ const records = images as Illustration[];
 const byId = new Map(records.map(image => [image.id, image]));
 const byWord = new Map(records.map(image => [`${normalize(image.word)}|${normalize(image.reading)}`, image]));
 
-function getVocabularyIllustration(item: VocabularyItem) {
+export function getVocabularyIllustration(item: VocabularyItem) {
   if (item.level !== 'N4' && item.level !== 'N3') return undefined;
   const direct = byId.get(item.id);
   if (direct && normalize(direct.reading) === normalize(item.hiragana)) return direct;

@@ -23,6 +23,7 @@ import shibaSmileAnim from '../../assets/lottie/shiba-smile.json'; // LottieFile
 import ShibaMascot from '../mascot/ShibaMascot';
 import { GRAMMAR_DATA, KANJI_DATA } from '../../data';
 import ProgressDashboard from '../ProgressDashboard';
+import { TodayLessons, WeekStrip, WordOfDay } from '../home/HomeToday';
 
 interface MobilePracticeHubProps {
   userProfile: UserProfile;
@@ -133,6 +134,7 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
 
       <div className="lg:grid lg:grid-cols-2 lg:gap-3 lg:items-start space-y-2 lg:space-y-0">
       <div className="space-y-2 min-w-0">
+      <TodayLessons userProfile={userProfile} />
       {/* 014 — Mục tiêu hôm nay */}
       <div className={`ux u014${goalsDone === goals.length ? ' is-all' : ''}`} style={{ ['--p' as any]: (goalsDone / goals.length).toFixed(3) }}>
         <div className="u014-head">
@@ -194,7 +196,9 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
       </div>
 
       {/* Tiến độ học tập chi tiết (gộp từ trang Tiến độ cũ): cột phải trên màn rộng */}
-      <div className="min-w-0">
+      <div className="min-w-0 space-y-2">
+        <WeekStrip userProfile={userProfile} />
+        <WordOfDay level={targetLevel} />
         <ProgressDashboard userProfile={userProfile} todayXp={0} embedded />
       </div>
       </div>
