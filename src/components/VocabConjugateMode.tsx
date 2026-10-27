@@ -51,14 +51,19 @@ function distractors(q: Q, correct: string): string[] {
   return uniq.slice(0, 3);
 }
 
+/** Hiện dạng chia một lần; chỉ thêm dòng kana khi khác với dạng kanji. */
+function ConjText({ verb, form, cls, sub }: { verb: Verb; form: FormId; cls: string; sub: string }) {
+  const k = conjugate(verb.kanji, verb.g, form, true), h = conjugate(verb.kana, verb.g, form);
+  return <><div className={cls} lang="ja">{k}</div>{k !== h && <div className={sub} lang="ja">{h}</div>}</>;
+}
+
 function FormGrid({ verb, hi }: { verb: Verb; hi?: FormId }) {
   return (
     <div className="grid grid-cols-2 gap-1.5" lang="ja">
       {FORMS.map(f => (
         <div key={f.id} className={`rounded-lg border px-2 py-1.5 ${f.id === hi ? 'border-pink-400 bg-pink-50' : 'border-slate-200 bg-white'}`}>
           <div className="text-[11px] text-slate-600">{f.jp} · {f.vi}</div>
-          <div className="text-sm font-bold text-slate-900">{conjugate(verb.kanji, verb.g, f.id, true)}</div>
-          <div className="text-xs text-slate-600">{conjugate(verb.kana, verb.g, f.id)}</div>
+          <ConjText verb={verb} form={f.id} cls="text-sm font-bold text-slate-900" sub="text-xs text-slate-600" />
         </div>
       ))}
     </div>
@@ -93,11 +98,9 @@ const pill = (on: boolean) => `min-h-[44px] px-3 rounded-full text-sm font-bold 
 /** Chia động từ: luyện theo động từ của bài đang học, chọn đáp án hoặc gõ; có bảng chia đầy đủ và ôn lại câu sai. */
 export default function VocabConjugateMode({ items = [] }: { items?: VocabularyItem[] }) {
   const lessonVerbs = useMemo(() => verbsFromItems(items), [items]);
-  const [view, setView] = useState<'practice' | 'table' | 'rules'>('practice');
+  const [view, setView] = useState<'practice' | 'rules'>('practice');
   const [ruleForm, setRuleForm] = useState<Exclude<FormId, 'masu'>>('te');
-  const [useLesson, setUseLesson] = useState(true);
-  const pool = useLesson && lessonVerbs.length >= 3 ? lessonVerbs : VERBS;
-  const fromLesson = pool === lessonVerbs;
+  const pool = lessonVerbs.length >= 3 ? lessonVerbs : VERBS;
   const [mode, setMode] = useState<Mode>('choice');
   const [picked, setPicked] = useState<FormId[]>(COMMON);
   const [run, setRun] = useState(0);
@@ -109,7 +112,6 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
   const [hint, setHint] = useState(false);
   const [wrong, setWrong] = useState<Q[]>([]);
   const [score, setScore] = useState({ ok: 0, total: 0 });
-  const [tableVerb, setTableVerb] = useState(0);
   const qs: Q[] = useMemo(() => retry ?? shuffle(pool.flatMap(verb => picked.map(form => ({ verb, form })))).slice(0, 20), [pool, picked, run, retry]);
   const reset = () => { setI(0); setText(''); setChosen(null); setRes(null); setHint(false); setWrong([]); setScore({ ok: 0, total: 0 }); };
   const restart = (r: Q[] | null = null) => { setRetry(r); setRun(n => n + 1); reset(); };
@@ -123,34 +125,19 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
   const choose = (o: string) => { if (res) return; setChosen(o); grade(o === kanaAns); };
   const next = () => { setI(n => n + 1); setText(''); setChosen(null); setRes(null); setHint(false); };
   const form = q && FORMS.find(f => f.id === q.form)!;
-  const tv = pool[Math.min(tableVerb, pool.length - 1)];
   return (
     <div className="w-full max-w-lg mx-auto space-y-4">
       <div className="inline-flex p-1 rounded-full bg-slate-100 border border-slate-200">
-        {([['practice', 'Luyện tập'], ['table', 'Bảng chia'], ['rules', 'Quy tắc']] as const).map(([k, l]) => <button key={k} onClick={() => setView(k)} className={`min-h-[44px] px-4 rounded-full text-sm font-bold ${view === k ? 'bg-pink-500 text-white' : 'text-slate-700'}`}>{l}</button>)}
+        {([['practice', 'Luyện tập'], ['rules', 'Quy tắc']] as const).map(([k, l]) => <button key={k} onClick={() => setView(k)} className={`min-h-[44px] px-4 rounded-full text-sm font-bold ${view === k ? 'bg-pink-500 text-white' : 'text-slate-700'}`}>{l}</button>)}
       </div>
       {view === 'rules' && <Rules form={ruleForm} setForm={setRuleForm} />}
-      {view === 'table' && (
-        <div className="space-y-3">
-          <select value={Math.min(tableVerb, pool.length - 1)} onChange={e => setTableVerb(Number(e.target.value))} className="w-full min-h-[44px] rounded-xl border border-slate-300 bg-white px-3 text-sm font-bold text-slate-900" aria-label="Chọn động từ">
-            {pool.map((v, n) => <option key={v.kana + n} value={n}>{v.kanji}（{v.kana}）· {v.vi}</option>)}
-          </select>
-          <span className={`inline-block rounded-md px-2 py-0.5 text-xs font-extrabold ${GROUP_STYLE[tv.g]}`}>NHÓM {tv.g}</span>
-          <FormGrid verb={tv} />
-        </div>
-      )}
       {view === 'practice' && (
         <>
           <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Nguồn động từ và cách trả lời">
-            {lessonVerbs.length >= 3 && <>
-              <button aria-pressed={fromLesson} onClick={() => { setUseLesson(true); restart(); }} className={pill(fromLesson)}>Bài này ({lessonVerbs.length})</button>
-              <button aria-pressed={!fromLesson} onClick={() => { setUseLesson(false); restart(); }} className={pill(!fromLesson)}>Cơ bản ({VERBS.length})</button>
-              <span className="w-px h-6 bg-slate-300 mx-1" aria-hidden />
-            </>}
             <button aria-pressed={mode === 'choice'} onClick={() => setMode('choice')} className={pill(mode === 'choice')}>Chọn đáp án</button>
             <button aria-pressed={mode === 'type'} onClick={() => setMode('type')} className={pill(mode === 'type')}>Gõ</button>
           </div>
-          {lessonVerbs.length < 3 && <p className="text-xs text-slate-600">Bài này chưa có đủ động từ, đang dùng {VERBS.length} động từ cơ bản.</p>}
+          {lessonVerbs.length < 3 && <p className="text-xs text-slate-600">Bài này chưa có đủ động từ, đang dùng động từ cơ bản.</p>}
           <div className="flex flex-wrap gap-1.5" role="group" aria-label="Chọn thể cần luyện">
             {FORMS.map(f => <button key={f.id} aria-pressed={picked.includes(f.id)} onClick={() => togglePicked(f.id)} className={pill(picked.includes(f.id))}>{f.jp}</button>)}
           </div>
@@ -168,8 +155,8 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
               <div className="h-1.5 rounded-full bg-slate-200 overflow-hidden"><div className="h-full bg-pink-500 transition-[width]" style={{ width: `${(i / qs.length) * 100}%` }} /></div>
               <div className="text-center space-y-1">
                 <span className={`inline-block rounded-md px-2 py-0.5 text-xs font-extrabold ${GROUP_STYLE[q.verb.g]}`}>NHÓM {q.verb.g}</span>
-                <div className="text-3xl font-extrabold text-slate-900" lang="ja">{conjugate(q.verb.kanji, q.verb.g, 'masu', true)}</div>
-                <div className="text-sm text-slate-600">{conjugate(q.verb.kana, q.verb.g, 'masu')} · {q.verb.vi}</div>
+                <ConjText verb={q.verb} form="masu" cls="text-3xl font-extrabold text-slate-900" sub="text-sm text-slate-600" />
+                <div className="text-sm text-slate-600">{q.verb.vi}</div>
                 <div className="text-base font-bold text-pink-600">→ {form!.jp} <span className="text-slate-600 font-normal">({form!.vi})</span></div>
               </div>
               {res === null && (hint
@@ -192,8 +179,8 @@ export default function VocabConjugateMode({ items = [] }: { items?: VocabularyI
                   className={`w-full min-h-[48px] rounded-xl border-2 px-3 text-lg text-slate-900 ${res === 'ok' ? 'border-emerald-500 bg-emerald-50' : res === 'bad' ? 'border-rose-400 bg-rose-50' : 'border-slate-300 bg-white'}`}
                 />
               )}
-              {res === 'ok' && <p className="text-sm font-bold text-emerald-700">Chính xác! {kanjiAns}（{kanaAns}）</p>}
-              {res === 'bad' && <p className="text-sm font-bold text-rose-700">Chưa đúng. Đáp án: {kanjiAns}（{kanaAns}）<br /><span className="font-normal text-slate-700">{ruleFor(q)}</span></p>}
+              {res === 'ok' && <p className="text-sm font-bold text-emerald-700">Chính xác!</p>}
+              {res === 'bad' && <p className="text-sm font-bold text-rose-700">Đáp án: {kanjiAns === kanaAns ? kanaAns : `${kanjiAns}（${kanaAns}）`}<br /><span className="font-normal text-slate-700">{ruleFor(q)}</span></p>}
               {res !== null && <FormGrid verb={q.verb} hi={q.form} />}
               <div className="flex gap-2">
                 {res === null && mode === 'type' && <button onClick={() => { setText(kanaAns); grade(false); }} className="min-h-[44px] px-4 rounded-xl border border-slate-300 bg-white text-sm font-bold text-slate-700">Xem đáp án</button>}
