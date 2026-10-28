@@ -174,7 +174,8 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
         ))}
       </div>
 
-      {wide && <ProgressDashboard userProfile={userProfile} todayXp={0} embedded />}
+      {wide && <ProgressDashboard userProfile={userProfile} todayXp={0} embedded part="skills" />}
+      {wide && historyCard}
 
       </div>
 
@@ -182,8 +183,7 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
       <div className="min-w-0 space-y-2">
         <WeekStrip userProfile={userProfile} />
         <WordOfDay level={userProfile.studyTrack === 'business' ? 'BIZ' : targetLevel} />
-        {!wide && <ProgressDashboard userProfile={userProfile} todayXp={0} embedded />}
-        {wide && historyCard}
+        <ProgressDashboard userProfile={userProfile} todayXp={0} embedded part={wide ? 'rhythm' : undefined} />
       </div>
       </div>
 

@@ -34,6 +34,8 @@ interface Props {
   onTriggerCelebration?: () => void;
   onNavigateTab?: (tab: string) => void;
   embedded?: boolean;
+  /** Home page splits the overview: skill rings in one column, the calendar in the other. */
+  part?: 'skills' | 'rhythm';
 }
 
 const LEVELS: JLPTLevel[] = ["N5", "N4", "N3", "N2", "N1"];
@@ -45,6 +47,7 @@ export default function ProgressDashboard({
   todayXp,
   onNavigateTab,
   embedded,
+  part,
 }: Props) {
   const guestPlan = !userProfile.uid ? readGuestRoadmap() : undefined;
   const profile = guestPlan
@@ -142,7 +145,7 @@ export default function ProgressDashboard({
         {view === "overview" ? (
           <>
             {/* ── Skill progress ── */}
-            <section className="pd-card">
+            {part !== 'rhythm' && <section className="pd-card">
               {loading ? (
                 <Skeleton rows={3} />
               ) : (
@@ -171,10 +174,10 @@ export default function ProgressDashboard({
               {fallback && (
                 <p className="pd-footnote">Một số nội dung đang dùng thư viện dự phòng.</p>
               )}
-            </section>
+            </section>}
 
             {/* ── Calendar ── */}
-            <section className="pd-card">
+            {part !== 'skills' && <section className="pd-card">
               <div className="pd-card-header">
                 <h2 className="pd-card-title">Nhịp học</h2>
                 <div className="pd-range-pills">
@@ -217,7 +220,7 @@ export default function ProgressDashboard({
                   </Link>
                 </div>
               )}
-            </section>
+            </section>}
 
           </>
         ) : (
