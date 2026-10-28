@@ -1,0 +1,1 @@
+ozaq99/JLPT_exam (github.com/ozaq99/JLPT_exam): README states "ALLOW PUBLISH ON ANOTHER WEBSITE,APP WITH NO AUTHORIZE". Used: 310 N4 questions (csv/jlpt_n4.csv), original JLPT-style, not from official papers. Listening items are read by the app TTS from the script.
