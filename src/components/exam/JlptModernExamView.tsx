@@ -240,10 +240,10 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
 
           {/* Right: Controls (Font Size, Focus Mode, Palette, Submit) */}
           <div className="flex items-center gap-1 sm:gap-2">
-            <button onClick={toggleInstant} aria-pressed={instant} title="Chọn xong hiện đúng/sai và giải thích ngay" className={`h-8 px-2 rounded-lg border text-[11px] font-bold whitespace-nowrap cursor-pointer ${instant ? 'bg-[#10B981] text-white border-[#10B981]' : 'bg-white text-[#786D5E] border-[#EADFCF]'}`}>Hiện đáp án</button>
-            <button onClick={() => setKeywords(k => !k)} aria-pressed={keywords} title="Tô nền các từ có trong từ điển (chạm từ để xem nghĩa)" className={`h-8 px-2 rounded-lg border text-[11px] font-bold whitespace-nowrap cursor-pointer ${keywords ? 'bg-[#FEF3C7] border-[#F59E0B]' : 'bg-white text-[#786D5E] border-[#EADFCF]'}`}>Từ khóa</button>
-            <button onClick={() => { setCardIdx(0); setCardFlip(false); setIsCardsOpen(true); }} title="Thẻ ghi nhớ từ đề này" className="h-8 px-2 rounded-lg border border-[#EADFCF] bg-white text-[11px] font-bold whitespace-nowrap text-[#786D5E] cursor-pointer">Thẻ nhớ</button>
-            <button onClick={printExam} title="In đề + phiếu đáp án" className="h-8 px-2 rounded-lg border border-[#EADFCF] bg-white text-[11px] font-bold whitespace-nowrap text-[#786D5E] cursor-pointer">In đề</button>
+            <button onClick={toggleInstant} aria-pressed={instant} title="Chọn xong hiện đúng/sai và giải thích ngay" className={`h-8 px-1.5 sm:px-2 rounded-lg border text-[10px] sm:text-[11px] font-bold whitespace-nowrap cursor-pointer ${instant ? 'bg-[#10B981] text-white border-[#10B981]' : 'bg-white text-[#786D5E] border-[#EADFCF]'}`}>Hiện đáp án</button>
+            <button onClick={() => setKeywords(k => !k)} aria-pressed={keywords} title="Tô nền các từ có trong từ điển (chạm từ để xem nghĩa)" className={`h-8 px-1.5 sm:px-2 rounded-lg border text-[10px] sm:text-[11px] font-bold whitespace-nowrap cursor-pointer ${keywords ? 'bg-[#FEF3C7] border-[#F59E0B]' : 'bg-white text-[#786D5E] border-[#EADFCF]'}`}>Từ khóa</button>
+            <button onClick={() => { setCardIdx(0); setCardFlip(false); setIsCardsOpen(true); }} title="Thẻ ghi nhớ từ đề này" className="h-8 px-1.5 sm:px-2 rounded-lg border border-[#EADFCF] bg-white text-[10px] sm:text-[11px] font-bold whitespace-nowrap text-[#786D5E] cursor-pointer">Thẻ nhớ</button>
+            <button onClick={printExam} title="In đề + phiếu đáp án" className="h-8 px-1.5 sm:px-2 rounded-lg border border-[#EADFCF] bg-white text-[10px] sm:text-[11px] font-bold whitespace-nowrap text-[#786D5E] cursor-pointer">In đề</button>
             <span className="px-1 font-mono text-xs font-bold whitespace-nowrap text-[#1F2639]" aria-label="Số câu đã làm">
               {answeredCount}/{activeQuestions.length}
             </span>

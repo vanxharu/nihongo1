@@ -1,7 +1,8 @@
 import { DailyExam } from '../types';
+import { withExplanations } from './withExplanations';
 
 // Nguồn: https://www.jlpt.jp/samples/sampleindex.html (đề mẫu công khai N4 của Japan Foundation / JEES, bản 2018, đủ 4 phần + 4 file mp3 phần nghe). Ảnh minh họa cắt từ PDF gốc; audio cắt từ mp3 gốc.
-export const REAL_EXAMS_N4_OFFICIAL_2018: DailyExam = {
+const REAL_EXAMS_N4_OFFICIAL_2018_RAW: DailyExam = {
   "id": "jlpt_n4_official_sample_2018",
   "title": "JLPT N4 – Đề mẫu chính thức 2018 (Japan Foundation / JEES)",
   "level": "N4",
@@ -1571,3 +1572,5 @@ export const REAL_EXAMS_N4_OFFICIAL_2018: DailyExam = {
     }
   ]
 };
+
+export const REAL_EXAMS_N4_OFFICIAL_2018: DailyExam = withExplanations(REAL_EXAMS_N4_OFFICIAL_2018_RAW);

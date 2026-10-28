@@ -1,0 +1,1139 @@
+{
+"n4_18_v1": {
+"e": "【楽しかった】= たのしかった (tính từ い「楽しい」ở quá khứ): vui, thú vị. Câu: \"Hôm nay vui lắm nhỉ.\"",
+"o": [
+"いそがしい = bận rộn, chữ Hán là 忙しい.",
+"すずしい = mát mẻ, chữ Hán là 涼しい.",
+"Đúng: 楽 đọc là たの, 楽しい → 楽しかった.",
+"かなしい = buồn, chữ Hán là 悲しい."
+]
+},
+"n4_18_v2": {
+"e": "【味】= あじ: vị (của đồ ăn). \"Tôi thích vị này.\"",
+"o": [
+"かたち = hình dạng (形).",
+"いろ = màu sắc (色).",
+"におい = mùi (匂い).",
+"Đúng: 味 đọc là あじ (cũng gặp trong 味見 あじみ, 意味 いみ)."
+]
+},
+"n4_18_v3": {
+"e": "【不便】= ふべん: bất tiện (trái nghĩa 便利 べんり). 不 trong từ ghép Hán thường đọc là ふ, 便 đọc là べん.",
+"o": [
+"Đúng: ふ + べん. \"Khu này hơi bất tiện nhỉ.\"",
+"Sai: 不 không đọc là ぶ ở đây (ぶ như 不用心 ぶようじん, 不器用 ぶきよう).",
+"Sai: 便 đọc là べん chứ không phải へん (không có từ ふへん trong nghĩa này).",
+"Sai cả hai chỗ: ぶ và へん."
+]
+},
+"n4_18_v4": {
+"e": "【切って】= きって (動 切る: cắt). \"Hãy cắt rau giúp.\"",
+"o": [
+"とる = lấy (取る).",
+"Đúng: 切る → 切って (きって), 切 đọc きる/きって.",
+"あらう = rửa (洗う).",
+"もつ = cầm, mang (持つ)."
+]
+},
+"n4_18_v5": {
+"e": "【以外】= いがい: ngoài ~ ra. \"Mọi người ngoại trừ anh Hayashi đều đến.\"",
+"o": [
+"Sai: không có từ này.",
+"にがい = đắng (苦い), không liên quan.",
+"Sai: không có từ いそと.",
+"Đúng: 以 (い) + 外 (がい)."
+]
+},
+"n4_18_v6": {
+"e": "【雲】= くも: mây. \"Tôi nhìn mây suốt ngoài cửa sổ.\"",
+"o": [
+"ほし = ngôi sao (星).",
+"ゆき = tuyết (雪).",
+"Đúng: 雲 đọc là くも.",
+"そら = bầu trời (空)."
+]
+},
+"n4_18_v7": {
+"e": "【急行】= きゅうこう: tàu tốc hành. 急 = きゅう (âm kéo dài), 行 = こう (âm kéo dài).",
+"o": [
+"Sai: thiếu trường âm cả hai chỗ.",
+"Sai: 急 phải là きゅう (kéo dài).",
+"Sai: 行 phải là こう (kéo dài), không phải こ.",
+"Đúng: きゅうこう (cả hai đều kéo dài)."
+]
+},
+"n4_18_v8": {
+"e": "【写さないで】= うつさないで (写す: chụp, sao chép). \"Xin đừng chụp ảnh cái này.\"",
+"o": [
+"おす = ấn, đẩy (押す).",
+"Đúng: 写す → うつす, 写さないで = うつさないで.",
+"けす = tắt, xóa (消す).",
+"おとす = làm rơi (落とす)."
+]
+},
+"n4_18_v9": {
+"e": "【反対】= はんたい: phản đối. \"Tôi phản đối ý kiến này.\"",
+"o": [
+"Đúng: 反 = はん, 対 = たい.",
+"Sai: 反 không đọc là ほん.",
+"Sai: 対 không đọc là だい (nhầm với 大 だい).",
+"Sai: cả hai chỗ đều sai."
+]
+},
+"n4_18_v10": {
+"e": "Từ 【くろい】 viết bằng chữ Hán là 黒い: màu đen. Đi với 靴下 (tất): \"Tôi muốn đôi tất đen.\"",
+"o": [
+"白い (しろい) = trắng.",
+"Đúng: 黒い (くろい) = đen.",
+"赤い (あかい) = đỏ.",
+"青い (あおい) = xanh dương."
+]
+},
+"n4_18_v11": {
+"e": "【けいかく】= 計画: kế hoạch. 計 (đo, tính) + 画 (kế hoạch/bức tranh). \"Kế hoạch nghỉ hè vẫn chưa quyết định.\"",
+"o": [
+"Sai: 書 (viết) không thuộc từ này.",
+"Sai: 訂 (sửa) không dùng trong けいかく.",
+"Đúng: 計画.",
+"Sai: 訂書 không phải từ."
+]
+},
+"n4_18_v12": {
+"e": "【いしゃ】= 医者: bác sĩ. 医 (y) + 者 (người). \"Tôi muốn trở thành bác sĩ.\"",
+"o": [
+"Sai: 匠 (thợ) là chữ khác, hình giống 医 nhưng không phải.",
+"Sai: 医員 không phải từ này (chữ 員 là nhân viên).",
+"Sai: 匠者 không phải từ.",
+"Đúng: 医者."
+]
+},
+"n4_18_v13": {
+"e": "【よる】= 夜: buổi tối/đêm. \"Tối mai tôi đi chơi cùng gia đình.\"",
+"o": [
+"Đúng: 夜 (よる).",
+"昼 (ひる) = ban ngày/buổi trưa.",
+"夕 (ゆう) trong 夕方 ゆうがた = chiều tối, không đọc là よる.",
+"朝 (あさ) = buổi sáng."
+]
+},
+"n4_18_v14": {
+"e": "【かして】= 貸して (貸す: cho mượn). Bộ 貝 (tiền) + 代. \"Xin cho tôi mượn cái ô.\"",
+"o": [
+"Sai: 貨 (hóa) như 貨物, không đọc かす.",
+"Sai: 資 (tư) như 資料, không đọc かす.",
+"Đúng: 貸す = cho mượn/cho vay.",
+"Sai: 質 (chất) như 質問, không đọc かす."
+]
+},
+"n4_18_v15": {
+"e": "【しあい】= 試合: trận đấu. 試 (thử) + 合 (hợp). \"Ngày mai có trận bóng đá.\"",
+"o": [
+"Sai: cả 誠 và 会 đều sai.",
+"Sai: 誠 không thuộc từ này (試 mới đúng), dù 合 đúng.",
+"Sai: 試 đúng nhưng 会 sai; しあい là 試合, không phải 試会.",
+"Đúng: 試合 (しあい) = trận đấu."
+]
+},
+"n4_18_v16": {
+"e": "Nghe Sato bị thương, mọi người ~ → 心配しました (lo lắng). Cấu trúc 心配する phù hợp với chuyện người quen bị thương.",
+"o": [
+"Đúng: しんぱい = lo lắng.",
+"けいけん = kinh nghiệm, không đi với \"nghe tin bị thương\".",
+"しつれい = thất lễ.",
+"おじぎ = cúi chào (おじぎをする)."
+]
+},
+"n4_18_v17": {
+"e": "Mơ ước trở thành ca sĩ: 将来 歌手になるという夢があります. 夢 (ゆめ) = giấc mơ, ước mơ.",
+"o": [
+"けしき = phong cảnh.",
+"Đúng: ゆめ = ước mơ.",
+"おもいで = kỷ niệm (về quá khứ), không dùng cho tương lai.",
+"せわ = sự chăm sóc."
+]
+},
+"n4_18_v18": {
+"e": "ぜひ 来てくださいね = nhất định hãy đến nhé (lời mời nhiệt tình). ぜひ thường đi với ~てください、~たい.",
+"o": [
+"ひじょうに = rất, dùng với tính từ, không đi với 来てください.",
+"Đúng: ぜひ = nhất định.",
+"じゅうぶん = đầy đủ, không hợp nghĩa.",
+"いつも = luôn luôn, không hợp với lời mời một lần."
+]
+},
+"n4_18_v19": {
+"e": "Sắp ~ cách dùng máy, nên hãy nghe kỹ → 説明します (giải thích).",
+"o": [
+"じゅんび = chuẩn bị, 準備します không hợp \"nghe kỹ\".",
+"りよう = sử dụng, trùng nghĩa với cách dùng, không đi với \"để nghe kỹ\".",
+"Đúng: せつめい = giải thích, hướng dẫn.",
+"せいさん = sản xuất."
+]
+},
+"n4_18_v20": {
+"e": "Răng đau/xấu nên không ăn được thức ăn ~ → 固いもの (đồ cứng). 歯が悪い → 固いものは食べられない.",
+"o": [
+"きびしい = nghiêm khắc, không dùng cho đồ ăn.",
+"Đúng: かたい = cứng.",
+"はやい = nhanh/sớm.",
+"ふかい = sâu."
+]
+},
+"n4_18_v21": {
+"e": "デートに誘う = mời đi hẹn hò. Rồi bị từ chối \"không đi được\".",
+"o": [
+"Đúng: さそう = mời rủ.",
+"つたえる = truyền đạt.",
+"あんないする = hướng dẫn, dẫn đường.",
+"しょうかいする = giới thiệu (người)."
+]
+},
+"n4_18_v22": {
+"e": "Con trai cao thêm khoảng 5 ~ trong 1 năm → センチ (cm). Dùng đơn vị chiều cao.",
+"o": [
+"グラム = gam (khối lượng).",
+"ばん = số thứ tự (番), không phải đơn vị chiều cao.",
+"けん = ngôi nhà (軒).",
+"Đúng: センチ = cm."
+]
+},
+"n4_18_v23": {
+"e": "So sánh 3 cái máy tính và chọn cái nhẹ nhất → 比べて (くらべて).",
+"o": [
+"かたづける = dọn dẹp.",
+"かぞえる = đếm.",
+"Đúng: くらべる = so sánh.",
+"はらう = trả tiền."
+]
+},
+"n4_18_v24": {
+"e": "Đèn nhà Tanaka không sáng → có vẻ vắng nhà: 留守 (るす).",
+"o": [
+"うそ = lời nói dối.",
+"じゆう = tự do.",
+"ちゅうし = hủy bỏ, đình chỉ.",
+"Đúng: るす = vắng nhà."
+]
+},
+"n4_18_v25": {
+"e": "Đang tìm chìa khóa phòng nhưng vẫn ~ → 見つかりません (chưa tìm thấy). Tự động từ 見つかる.",
+"o": [
+"Đúng: 見つかる = được tìm thấy (tự động từ), phủ định 見つかりません.",
+"つかまえる = bắt (người, côn trùng), không dùng cho chìa khóa.",
+"しる = biết.",
+"さわる = chạm vào."
+]
+},
+"n4_18_v26": {
+"e": "アルバイトをしています = đang làm thêm → はたらいています (làm việc). Đây là câu đồng nghĩa.",
+"o": [
+"まって = đợi, khác nghĩa.",
+"Đúng: はたらく = làm việc ≈ làm thêm.",
+"のんで = uống, khác nghĩa.",
+"はなして = nói chuyện, khác nghĩa."
+]
+},
+"n4_18_v27": {
+"e": "すいえい (水泳) = bơi lội → およぐのがすき (thích bơi).",
+"o": [
+"はしる = chạy.",
+"Đúng: およぐ = bơi.",
+"ごはんを食べる = ăn cơm.",
+"本を読む = đọc sách."
+]
+},
+"n4_18_v28": {
+"e": "びっくりする = ngạc nhiên ≈ おどろく.",
+"o": [
+"わらう = cười.",
+"こまる = bối rối, gặp khó.",
+"おこる = tức giận.",
+"Đúng: おどろく = ngạc nhiên."
+]
+},
+"n4_18_v29": {
+"e": "うつくしい = đẹp (văn viết, trang trọng) ≈ きれい.",
+"o": [
+"Đúng: きれい = đẹp.",
+"元気 = khỏe.",
+"おもしろい = thú vị.",
+"わかい = trẻ."
+]
+},
+"n4_18_v30": {
+"e": "ゆにゅうする (輸入) = nhập khẩu = mua gạo từ nước khác (他の国から買う).",
+"o": [
+"Sai: \"bán cho nước khác\" là 輸出 (ゆしゅつ), xuất khẩu.",
+"Sai: \"nhận (miễn phí) từ nước khác\" không phải nhập khẩu.",
+"Đúng: nhập khẩu = mua từ nước khác.",
+"Sai: \"cho nước khác\" không phải."
+]
+},
+"n4_18_v31": {
+"e": "さいきん = gần đây. Dùng với sự việc gần đây đã xảy ra: \"Nghe nói gần đây Kimura kết hôn.\"",
+"o": [
+"Sai: さいきん không dùng cho ý \"vừa mới nấu xong\" (dùng さっき).",
+"Sai: さいきん + 出してください không hợp, cần thời điểm cụ thể.",
+"Đúng: gần đây (quá khứ gần) + けっこんした.",
+"Sai: さいきん + 来ますから sai thì, dùng もうすぐ."
+]
+},
+"n4_18_v32": {
+"e": "おと = âm thanh (tiếng động, như tiếng radio). Đúng: \"Tiếng radio to quá, xin nhỏ lại.\"",
+"o": [
+"Đúng: ラジオのおと = tiếng/âm thanh phát ra từ radio.",
+"Sai: \"phát âm\" nói là 発音 (はつおん), không dùng おと.",
+"Sai: bị gọi tên thì là \"giọng/tiếng gọi\" (声 こえ), không phải おと.",
+"Sai: với tiếng đàn, nhạc ta nói 曲 (きょく) hoặc 音楽; \"ゆうめいなおと\" không tự nhiên."
+]
+},
+"n4_18_v33": {
+"e": "けんがく (見学) = tham quan để học hỏi (nhà máy, trường học...). \"Tham quan nhà máy cùng thầy và bạn.\"",
+"o": [
+"Sai: đi mua đồ ở trung tâm thương mại là 買い物 (かいもの).",
+"Sai: tra từ điển là 調べる (しらべる), không phải 見学.",
+"Đúng: 工場を見学した.",
+"Sai: xem tin tức là 見る/見ている."
+]
+},
+"n4_18_v34": {
+"e": "かざる = trang trí, bày biện. Hợp nhất: \"Vì có khách đến nên hãy trang trí phòng bằng hoa.\"",
+"o": [
+"Sai: dán thông báo là 貼る (はる).",
+"Đúng: 花を飾る.",
+"Sai: phơi đồ là 干す (ほす).",
+"Sai: gắn lên tường là 付ける/掛ける."
+]
+},
+"n4_18_v35": {
+"e": "こうじ (工事) = công trình thi công. \"Đường này đang thi công nên không đi qua được.\"",
+"o": [
+"Sai: chữa răng ở nha sĩ là 治療 (ちりょう), không dùng こうじ.",
+"Sai: dùng áo cũ mãi thì nói 直す/修理, không phải こうじ.",
+"Sai: giá sách hỏng thì 直す/修理 (sửa chữa); こうじ là thi công lớn.",
+"Đúng: 道路工事 = thi công đường, nên không đi qua được."
+]
+},
+"n4_18_g1": {
+"e": "Có tính chất trong thời gian: 20分で終わりました (xong trong 20 phút). Trợ từ で biểu thị khoảng thời gian/lượng cần để hoàn thành.",
+"o": [
+"Sai: thiếu trợ từ nên câu không rõ ý.",
+"Sai: 20分しか + 終わりません mới đúng (phủ định), ở đây là 終わりました.",
+"Đúng: ~分で + động từ hoàn thành.",
+"Sai: ~を + 終わりました không tạo thành nghĩa \"trong 20 phút\"."
+]
+},
+"n4_18_g2": {
+"e": "会話する = nói chuyện cùng ai: 人と会話する. と chỉ đối tượng cùng làm.",
+"o": [
+"Sai: や liệt kê, không chỉ đối tượng nói chuyện.",
+"Sai: を không dùng với 会話する đối tượng người.",
+"Sai: へ chỉ hướng.",
+"Đúng: 人と会話する."
+]
+},
+"n4_18_g3": {
+"e": "Mẫu \"A を B させる\" (cho/khiến B làm): 両親を心配させる = làm cha mẹ lo lắng. Với 心配させる, người bị khiến lo được đánh dấu bằng を.",
+"o": [
+"Sai: で chỉ phương tiện/nơi chốn.",
+"Đúng: 両親を心配させる (khiến cha mẹ lo).",
+"Sai: の biến thành định ngữ danh từ.",
+"Sai: や liệt kê."
+]
+},
+"n4_18_g4": {
+"e": "Số lượng + も = nhấn mạnh nhiều đến mức bất ngờ: 八つも食べました (ăn tận 8 cái).",
+"o": [
+"Đúng: ~も nhấn mạnh số lượng nhiều.",
+"Sai: に không dùng sau số lượng ăn trong ngữ cảnh này.",
+"Sai: が làm chủ ngữ, không khớp với 食べました ở đây.",
+"Sai: で chỉ phương tiện/giới hạn, không diễn đạt nhấn mạnh."
+]
+},
+"n4_18_g5": {
+"e": "Bị động + người làm ra: 外国人によって作られました = được làm bởi người nước ngoài. によって dùng cho bị động của tác giả/người sáng tạo.",
+"o": [
+"Sai: から + người dùng khi nguồn nhận/gửi, không dùng cho sáng tạo.",
+"Sai: を không đi trước bị động như vậy.",
+"Sai: について = về (chủ đề).",
+"Đúng: ~によって作られる."
+]
+},
+"n4_18_g6": {
+"e": "だれでも = bất cứ ai (ai cũng): だれでも使えますが、予約が必要です.",
+"o": [
+"Đúng: だれでも ~ができる = ai cũng có thể.",
+"Sai: だれを + 使えます không đúng ngữ pháp.",
+"Sai: だれに không phù hợp.",
+"Sai: だれが + 使えます cần mệnh đề hỏi, ở đây là \"ai cũng\"."
+]
+},
+"n4_18_g7": {
+"e": "Hỏi cách thức: いつも(どうやって)国の家族に連絡しますか → trả lời \"viết mail\". どうやって = bằng cách nào.",
+"o": [
+"Sai: どのぐらい hỏi mức độ/tần suất.",
+"Sai: どの cần danh từ ngay sau.",
+"Đúng: どうやって = bằng cách nào (trả lời メール).",
+"Sai: どういう + danh từ, không đi trước 連絡しますか."
+]
+},
+"n4_18_g8": {
+"e": "Con gái vừa tốt nghiệp cấp ba tháng trước, sắp là lễ nhập học đại học: もうすぐ = sắp tới.",
+"o": [
+"だんだん = dần dần, không dùng cho sự kiện có ngày cụ thể.",
+"あまり = không ~ lắm (đi với phủ định).",
+"だいたい = đại khái.",
+"Đúng: もうすぐ = sắp sửa."
+]
+},
+"n4_18_g9": {
+"e": "なかなか + phủ định = mãi mà không: バスがなかなか来なかったので、タクシーで行きました.",
+"o": [
+"やっと = cuối cùng thì (kết quả tốt).",
+"Đúng: なかなか~ない = mãi không.",
+"きっと = chắc chắn.",
+"いつか = một lúc nào đó."
+]
+},
+"n4_18_g10": {
+"e": "Ngày mai không tiện, ngày kia thì OK: あさってなら大丈夫. なら nêu điều kiện/đề tài.",
+"o": [
+"なのに = vậy mà (trái kỳ vọng).",
+"だから = vì vậy, không hợp mạch.",
+"でも = nhưng, không kết nối với danh từ trước.",
+"Đúng: あさってなら = nếu là ngày kia thì."
+]
+},
+"n4_18_g11": {
+"e": "Khoảng thời gian + の + 間: 夏休みの間 (trong kỳ nghỉ hè). Danh từ + の間.",
+"o": [
+"Sai: に + 間 không dùng liền.",
+"Sai: で không đứng trước 間.",
+"Đúng: 名詞 + の間.",
+"Sai: thiếu の, 名詞 + 間 không tự nhiên."
+]
+},
+"n4_18_g12": {
+"e": "V辞書形 + のに + かかる (mất ~ để làm V): 切るのに2時間かかりました.",
+"o": [
+"Sai: 切ったり + かかる sai.",
+"Đúng: 切るのに + (thời gian) かかる.",
+"Sai: 切りに + 行く (đi để cắt) không hợp.",
+"Sai: 切るかどうか là \"có cắt hay không\"."
+]
+},
+"n4_18_g13": {
+"e": "午前中に用事があるので、午後は遅れるかもしれません (có thể sẽ đến muộn). かもしれません = có lẽ.",
+"o": [
+"Sai: 遅れないでください là yêu cầu người nghe, không phải ý người nói.",
+"Sai: 遅れないほうがいいです là lời khuyên.",
+"Đúng: 遅れるかもしれません = có thể đến trễ.",
+"Sai: 遅れてはいけません là cấm."
+]
+},
+"n4_18_g14": {
+"e": "Chỗ kia ~ cho thấy sắp có chỗ trống (空くまで待ちましょう): 空きそうです (có vẻ sắp trống), dạng そう chỉ dự đoán từ quan sát.",
+"o": [
+"Đúng: ~そうです = có vẻ sắp (dựa trên quan sát).",
+"Sai: 空きました là đã trống rồi, nhưng người kia nói \"đợi đến khi trống\".",
+"Sai: 空いています là đang trống, thế thì ngồi luôn.",
+"Sai: 空いたようです là phán đoán đã trống (rồi)."
+]
+},
+"n4_18_g15": {
+"e": "Nhờ người khác mang ghế: 持ってきてもらえますか (có thể nhờ mang đến giúp không?). Dạng nhờ lịch sự ~てもらえますか.",
+"o": [
+"Sai: ~なくてもいいですか hỏi \"không cần mang cũng được à\".",
+"Đúng: 持ってきてもらえますか.",
+"Sai: ~ないといけませんか hỏi \"có phải mang không\".",
+"Sai: 持ってきていませんか là \"chưa mang à\"."
+]
+},
+"n4_18_g16": {
+"e": "Sắp xếp: 先月まで花屋があった [4 場所に] [1 できた] [3 きっさては] [2 りんごのケーキが] おいしいです → vị trí ★ (ô thứ 3) là 3 きっさては. Nghĩa: \"Quán cà phê mới mở ở chỗ từng là tiệm hoa, bánh táo rất ngon.\"",
+"o": [
+"できた (ô thứ 2).",
+"りんごのケーキが (ô thứ 4).",
+"Đúng: ★ = きっさては.",
+"場所に (ô thứ 1)."
+]
+},
+"n4_18_g17": {
+"e": "Sắp xếp: かぎを [1 どこ] [3 に] [2 置いた] [4 か] 覚えていません → ★ (ô thứ 3) = 置いた. Nghĩa: \"Không nhớ đã để chìa khóa ở đâu.\"",
+"o": [
+"どこ (ô 1).",
+"Đúng: ★ = 置いた (ô 3).",
+"に (ô 2).",
+"か (ô 4)."
+]
+},
+"n4_18_g18": {
+"e": "Sắp xếp: ピアノを [1 ひくのが] [4 好きですが] [3 最近 いそがしくて] [2 ひく] 時間がありません → ★ (ô 3) = 最近いそがしくて. Nghĩa: \"Tôi thích chơi piano nhưng dạo này bận nên không có thời gian chơi.\"",
+"o": [
+"ひくのが (ô 1).",
+"ひく (ô 4).",
+"Đúng: ★ = 最近いそがしくて.",
+"好きですが (ô 2)."
+]
+},
+"n4_18_g19": {
+"e": "Sắp xếp: そふが [4 カメラを] [2 くれた] [1 大切に] [3 使って] います → ★ (ô 3) = 大切に. Nghĩa: \"Tôi trân trọng sử dụng chiếc máy ảnh ông cho vào sinh nhật 20 tuổi.\"",
+"o": [
+"Đúng: ★ = 大切に.",
+"くれた (ô 2).",
+"使って (ô 4).",
+"カメラを (ô 1)."
+]
+},
+"n4_18_g20": {
+"e": "Sắp xếp: 野球の試合を [3 見に行った] [2 ことがない] [4 ので] [1 ぜひ行きたい] です → ★ (ô 3) = ので. Nghĩa: \"Vì tôi chưa từng đi xem, nên nhất định muốn đi.\"",
+"o": [
+"ぜひ行きたい (ô 4).",
+"ことがない (ô 2).",
+"見に行った (ô 1).",
+"Đúng: ★ = ので (ô 3)."
+]
+},
+"n4_18_g21": {
+"e": "Mạch văn: 毎週泳いでいます。【21】、半年前までは泳げませんでした → nối bằng しかし (nhưng) vì hai vế đối lập: hiện giờ bơi, nhưng nửa năm trước không bơi được.",
+"o": [
+"それに = hơn nữa (bổ sung).",
+"だから = vì vậy.",
+"Đúng: しかし = nhưng.",
+"たとえば = ví dụ."
+]
+},
+"n4_18_g22": {
+"e": "ともだちは泳げたが、私【22】泳げませんでした: は (nhấn mạnh sự đối lập \"còn tôi thì\").",
+"o": [
+"Đúng: 私は = còn tôi thì (đối lập với bạn).",
+"Sai: なら chỉ điều kiện.",
+"Sai: でも = nhưng/cũng, không phải trợ từ ở đây.",
+"Sai: より dùng khi so sánh."
+]
+},
+"n4_18_g23": {
+"e": "Mẫu nhận hành động từ người khác: ともだちに泳ぎ方を教えてもらいました (được bạn dạy). に + もらう.",
+"o": [
+"Sai: 教えていました = đang dạy, chủ thể sai.",
+"Sai: 教えてあげました = tôi dạy bạn.",
+"Sai: 教えてくれました = bạn dạy tôi, nhưng câu có に (bạn) làm tác nhân nên cần もらう.",
+"Đúng: ともだちに教えてもらいました."
+]
+},
+"n4_18_g24": {
+"e": "それで少しずつ泳げるようになりました = dần dần bơi được. ように なる = đạt khả năng.",
+"o": [
+"Sai: 泳いでおきました = bơi sẵn.",
+"Đúng: ~ようになる chỉ sự thay đổi trạng thái (dần bơi được).",
+"Sai: 泳いでしまいました = bơi mất rồi.",
+"Sai: ことになる = được quyết định, không phải khả năng."
+]
+},
+"n4_18_g25": {
+"e": "Mục đích tiếp theo: 次に海に行くまでにたくさん練習したいです (muốn luyện tập nhiều). ~たいです diễn tả mong muốn.",
+"o": [
+"Sai: 練習するためです thiếu ý mong muốn.",
+"Sai: 練習したようです = dường như đã tập.",
+"Đúng: 練習したいです.",
+"Sai: 練習するそうです = nghe nói sẽ tập."
+]
+},
+"n4_18_r26": {
+"e": "Thông báo ghi: 12/5–12/7 đang thi nên không vào được phòng giáo viên; hãy nói với giáo viên lớp ở trong lớp. → Cần nói với giáo viên lớp mình trong lớp.",
+"o": [
+"Sai: không có câu bảo đợi đến hết kỳ thi.",
+"Sai: chính thông báo nói không vào được phòng giáo viên trong 3 ngày thi.",
+"Sai: đồ ở phòng 103 và nhà ăn, nhưng thông báo bảo nói với giáo viên chứ không bảo tự đến lấy.",
+"Đúng: 教室でクラスの先生に言ってください."
+]
+},
+"n4_18_r27": {
+"e": "Tác giả mùa đông mua kem đắt và ăn trong phòng ấm: đó là niềm vui (楽しみ). Mùa hè ăn hằng ngày nhưng mua loại rẻ.",
+"o": [
+"Sai: ăn \"mỗi ngày\" là mùa hè, và loại rẻ.",
+"Đúng: 冬・暖かい部屋・高いアイス.",
+"Sai: mùa hè ăn hằng ngày nhưng không phải niềm vui đặc biệt.",
+"Sai: mùa hè mua loại rẻ, không phải loại đắt."
+]
+},
+"n4_18_r28": {
+"e": "Ghi chú: ông Hayashi muốn được gọi lại khi đã quyết định NGÀY GIỜ tham quan và cũng muốn biết SỐ NGƯỜI đi → cần báo cả ngày giờ và số người.",
+"o": [
+"Sai: thiếu ngày giờ.",
+"Sai: thiếu số người.",
+"Đúng: 日と時間と人の数.",
+"Sai: không cần nói \"khi nào quyết định\"."
+]
+},
+"n4_18_r29": {
+"e": "Tác giả mua vì \"màu trông ngầu\" (色がかっこいいから買った). Lý do người bán nói chỉ là chuyện thú vị.",
+"o": [
+"Sai: đó là lý do nhà sản xuất làm loại đen, không phải lý do tác giả mua.",
+"Sai: người bán không nói nhiều người mua loại đen.",
+"Sai: bài không nói tẩy đen tẩy chữ tốt hơn.",
+"Đúng: 色がかっこいい."
+]
+},
+"n4_18_r30": {
+"e": "①「どうしよう」: ở ga Tokyo rộng, tác giả không biết chỗ tàu cần đổi (乗り換える電車の場所がわかりませんでした).",
+"o": [
+"Sai: không có chuyện không tìm thấy bạn.",
+"Sai: không xuống nhầm ga.",
+"Đúng: không biết chỗ lên tàu cần đổi.",
+"Sai: được gọi sau khi đang lo lắng, không phải nguyên nhân."
+]
+},
+"n4_18_r31": {
+"e": "Bà Yamada vừa uống trà vừa thấy tác giả đi qua đi lại nên lên tiếng (行ったり来たりしているのを見ていた).",
+"o": [
+"Đúng: thấy \"tôi\" đi qua đi lại.",
+"Sai: bà không nói muốn uống trà cùng.",
+"Sai: không nhầm với bạn.",
+"Sai: không có việc làm rơi ghi chú."
+]
+},
+"n4_18_r32": {
+"e": "②お礼: bà Yamada nói sắp về Kyoto nhưng vẫn dẫn tác giả tới tận chỗ tàu; tác giả lo bà trễ giờ, bà nói đi chuyến sau cũng được. → cảm ơn vì bà dẫn đường dù có thể về muộn.",
+"o": [
+"Sai: câu \"có nhiều tàu\" là lời bà trấn an, không phải lý do cảm ơn.",
+"Đúng: dù có thể về muộn vẫn dẫn đường.",
+"Sai: người lo giờ tàu là tác giả (hỏi bà), không phải bà lo giờ tàu của tác giả.",
+"Sai: bà nói chính bà được người khác giúp ở nước ngoài, không phải ai giúp người nước của tác giả."
+]
+},
+"n4_18_r33": {
+"e": "Tác giả cảm động vì được giúp, nghĩ \"mình cũng muốn giống bà Yamada ( )\" → muốn giúp người đang gặp khó: 困っている人に親切にしよう.",
+"o": [
+"Sai: nội dung không nói chuyện công việc.",
+"Sai: bà sống nước ngoài, tác giả không bảo muốn sống nước ngoài.",
+"Đúng: giúp người gặp khó khăn như bà đã giúp mình.",
+"Sai: không liên quan đến muốn biết ga Tokyo."
+]
+},
+"n4_18_r34": {
+"e": "Điều kiện: tháng 4, trong quán/nhà hàng, nghe nhạc, ăn trưa. ⑥ (29/4, nhà hàng Kurokawa 12:00–14:00, vừa ăn vừa nghe piano) khớp tất cả.",
+"o": [
+"② là 3/11 (tháng 3), ở chùa.",
+"③ là hòa nhạc ở nhà thi đấu, không ăn trưa, 17–19 giờ.",
+"⑤ là lễ hội ở công viên, không nghe nhạc trong quán.",
+"Đúng: ⑥."
+]
+},
+"n4_18_r35": {
+"e": "Điều kiện: thứ Bảy; tập trung từ 13 giờ trở đi; phí ≤ 1.000 yên. ② (Thứ Bảy 3/11, 13:50, 800 yên) và ③ (Thứ Bảy 4/8, 16:50, 950 yên) đạt. ④ tập trung 8 giờ (quá sớm), ⑤ là Chủ nhật, ⑥ 1.200 yên.",
+"o": [
+"Đúng: ② và ③.",
+"Sai: ④ tập trung 8 giờ, sớm hơn 13 giờ.",
+"Sai: ⑤ là Chủ nhật.",
+"Sai: ⑤ là Chủ nhật, thiếu ②."
+]
+},
+"n4_18_c1_1": {
+"e": "Cô khách chọn giấy gói hình thuyền (ア) và ruy băng mảnh (ウ): \"船の絵がいいです… 細いのにします\".",
+"o": [
+"Đúng: ア (giấy hình thuyền) + ウ (ruy băng mảnh).",
+"Sai: エ là ruy băng dày, cô chọn loại mảnh.",
+"Sai: イ là giấy hoa, cô chọn thuyền.",
+"Sai: イ giấy hoa và エ ruy băng dày đều không được chọn."
+]
+},
+"n4_18_c1_2": {
+"e": "Hôm nay ngày 7. Cô muốn dùng sách vào thứ Sáu 23 tuần sau nữa; yêu cầu trả trước hôm đó, thứ Năm 22 thì cô không đến trường → phải trả trước thứ Năm, tức thứ Tư 21. Chọn đáp án có ngày đó (3番).",
+"o": [
+"Sai: ngày 15 (thứ Năm) không phải hạn; sách cần dùng ngày 23.",
+"Sai: 22 (thứ Năm) là hôm trước ngày học nhưng cô không đến trường hôm đó.",
+"Đúng: 21 (thứ Tư), hôm trước đó.",
+"Sai: 23 là chính ngày dùng sách trong giờ học."
+]
+},
+"n4_18_c1_3": {
+"e": "Giáo viên dặn: ảnh về nước mình (写真), dép đi trong nhà (スリッパ); giấy gấp có sẵn, cơm trưa trường chuẩn bị → cần mang ảnh và dép (2番, đáp án là hình tương ứng).",
+"o": [
+"Sai: giấy gấp (trường có sẵn) + dép — thiếu ảnh, thừa giấy.",
+"Đúng: ảnh + dép đi trong nhà.",
+"Sai: giấy gấp + cơm hộp, cả hai đều không cần mang.",
+"Sai: ảnh + cơm hộp — cơm trưa trường chuẩn bị, còn thiếu dép."
+]
+},
+"n4_18_c1_4": {
+"e": "Nam sinh chuyển nhà tuần trước nên đổi địa chỉ; số điện thoại không đổi nên không cần; lớp tuần sau mới đổi nên đừng ghi. → chỉ viết tên (イ) và địa chỉ (ウ).",
+"o": [
+"Sai: ア (lớp) và エ (điện thoại) không cần ghi.",
+"Sai: lớp (ア) không cần ghi.",
+"Sai: điện thoại (エ) không cần ghi.",
+"Đúng: イ (tên) + ウ (địa chỉ)."
+]
+},
+"n4_18_c1_5": {
+"e": "Ông Kimura nhờ lấy tài liệu trong ngăn kéo; ban đầu nói \"thứ 2 từ dưới\", rồi sửa \"một ngăn trên nữa\" → ngăn thứ 3 từ dưới (3番).",
+"o": [
+"Sai: không phải ngăn đó.",
+"Sai: \"thứ 2 từ dưới\" là chỗ nói ban đầu, đã bị sửa.",
+"Đúng: sửa thành một ngăn phía trên → thứ 3 từ dưới.",
+"Sai: không phải ngăn đó."
+]
+},
+"n4_18_c1_6": {
+"e": "Cửa hàng: quét trong tiệm đã xong, phía trước tiệm quét hồi trưa rồi, cửa sổ chưa lau nhưng ông chủ làm; còn việc cuối là mang rác trong thùng ra phía sau tiệm → việc phải làm là đổ rác (3番).",
+"o": [
+"Sai: việc này đã xong.",
+"Sai: phía trước đã quét hồi trưa.",
+"Đúng: mang rác trong thùng ra phía sau tiệm.",
+"Sai: ông chủ nói sẽ tự lau cửa sổ."
+]
+},
+"n4_18_c1_7": {
+"e": "Giáo viên: sách này không bán ở hiệu sách trước ga/trong trường; giáo viên đặt hộ, tuần sau đến văn phòng (事務所) trả tiền và nhận sách. Quầy trước nhà ăn bán sách tên giống nhưng không dùng.",
+"o": [
+"Sai: không bán ở đó.",
+"Sai: không bán ở đó.",
+"Đúng: 事務所.",
+"Sai: quầy này bán sách tên giống nhưng sai."
+]
+},
+"n4_18_c1_8": {
+"e": "Cần mang: tiền 300 yên (ア) trả khi dùng, giày thể thao cho nhà thi đấu (イ). Vợt bóng bàn thì có sẵn (ウ không cần).",
+"o": [
+"Đúng: ア + イ.",
+"Sai: vợt (ウ) có sẵn không cần mang.",
+"Sai: thiếu tiền (ア).",
+"Sai: thiếu tiền (ア)."
+]
+},
+"n4_18_c2_1": {
+"e": "Câu ví dụ: hôm qua cô cùng bạn cũ đến quán gần biển ăn cơm (海の近くの店で食事).",
+"o": [
+"Đúng: ăn ở quán gần biển.",
+"Sai: chỉ hẹn lần sau cùng leo núi.",
+"Sai: định bơi nhưng không bơi.",
+"Sai: định đi dạo bờ biển nhưng không."
+]
+},
+"n4_18_c2_2": {
+"e": "Tuần sau nhà máy không làm nước trái cây; học sinh sẽ xem lúc làm kem (アイスクリーム).",
+"o": [
+"Sai: tuần sau không sản xuất nước ép.",
+"Đúng: アイスクリーム.",
+"Sai: kẹo không phải thứ được xem.",
+"Sai: bánh quy chỉ là quà sau tham quan."
+]
+},
+"n4_18_c2_3": {
+"e": "Nam sinh không dám đưa thư ở lớp; Yamamoto thường ở thư viện 30 phút; bạn gợi ý chờ bên ngoài thư viện; cậu quyết định đợi bên ngoài rồi trao tay → lúc cô ấy ra khỏi thư viện.",
+"o": [
+"Sai: ở lớp cậu đã thử mà không đưa được.",
+"Sai: cậu đã không đưa lúc cô rời lớp.",
+"Sai: thư viện nhiều người, cậu ngại.",
+"Đúng: đợi bên ngoài, đưa khi cô ấy ra khỏi thư viện."
+]
+},
+"n4_18_c2_4": {
+"e": "Ngày khai trương, vườn thú thường đóng 5 giờ chiều nhưng hôm đó mở đến 8 giờ tối → giờ đóng cửa muộn hơn.",
+"o": [
+"Sai: giờ mở vẫn 10 giờ.",
+"Đúng: giờ đóng muộn hơn (đến 8 giờ).",
+"Sai: học sinh cấp hai vẫn 500 yên.",
+"Sai: vé rẻ hơn là vào thứ Bảy đầu tháng, không liên quan ngày khai trương."
+]
+},
+"n4_18_c2_5": {
+"e": "Cô ngạc nhiên về chủng loại: nước cô chủ yếu bán đồ uống, ở Nhật bán cả chuối, hoa, quần áo, thậm chí máy biết nói tiếng địa phương.",
+"o": [
+"Sai: đặt nhiều nơi là điều bạn nam nhắc.",
+"Đúng: 売っているものの種類が多い.",
+"Sai: máy biết nói chỉ là một ví dụ của sự đa dạng.",
+"Sai: không bị mất trộm là điều nhắc ở sau, không phải điều cô ngạc nhiên nhất."
+]
+},
+"n4_18_c2_6": {
+"e": "Nhân viên: giảm giá trứng chỉ 1 tiếng buổi chiều; bây giờ đúng 5 giờ, còn 30 phút nữa mới bắt đầu → 5:30 đến 6:30.",
+"o": [
+"Sai: giờ bắt đầu là 5:30, không phải 5:00.",
+"Sai: đến 6:00 chỉ dài 1 tiếng nếu bắt đầu 5:00.",
+"Sai: kết thúc 6:30, không phải 6:00.",
+"Đúng: 5:30–6:30."
+]
+},
+"n4_18_c2_7": {
+"e": "Chọn công viên Higashi vì có ao, đi thuyền ngắm hoa anh đào; Bắc công viên đông hơn và có nhiều quầy đồ ăn. Công viên không đi bộ được từ công ty (đi xe buýt 15 phút).",
+"o": [
+"Sai: nhiều quầy đồ ăn là Bắc công viên.",
+"Sai: không khí lễ hội là Bắc công viên.",
+"Đúng: có thể ngắm hoa trên thuyền.",
+"Sai: đi bộ không được, phải đi xe buýt."
+]
+},
+"n4_18_c3_1": {
+"e": "Muốn biết bạn mua vòng cổ ở cửa hàng nào: それはどこで買ったんですか? (Cái đó mua ở đâu thế?).",
+"o": [
+"Sai: どの店で買うつもりですか hỏi dự định mua.",
+"Đúng: hỏi nơi đã mua.",
+"Sai: hỏi có mua hay không, không phải ở đâu."
+]
+},
+"n4_18_c3_2": {
+"e": "Nhờ bạn nhặt hộ cục tẩy: ごめん、消しゴムを拾ってくれる? (nhờ vả).",
+"o": [
+"Sai: đề nghị nhặt giúp (ta nhờ chứ không đề nghị).",
+"Đúng: nhờ làm giúp bằng ~てくれる?",
+"Sai: chỉ thông báo, không nhờ."
+]
+},
+"n4_18_c3_3": {
+"e": "Ở thang máy, nhường người khác ra trước: どうぞ、お先に (xin mời đi trước).",
+"o": [
+"Đúng: nhường đường.",
+"Sai: 前へ行きます = tôi đi lên trước.",
+"Sai: あとでお願いします không dùng để nhường."
+]
+},
+"n4_18_c3_4": {
+"e": "Bạn quên kéo khóa túi: カバンが開いているよ (túi đang mở đấy).",
+"o": [
+"Sai: nhờ bạn để mở túi, ngược mục đích.",
+"Sai: túi đang mở, không phải đóng.",
+"Đúng: nói tình trạng túi đang mở."
+]
+},
+"n4_18_c3_5": {
+"e": "Hỏi cách đọc: 何と書いてあるんですか? (Ở đây viết là gì thế?).",
+"o": [
+"Sai: hỏi cách viết.",
+"Đúng: hỏi nội dung/cách đọc chữ đã viết.",
+"Sai: hỏi nên viết gì."
+]
+},
+"n4_18_c4_1": {
+"e": "Được mời thêm trà: すみません、いただきます (Xin lỗi, tôi xin nhận) là cách nhận lời lịch sự.",
+"o": [
+"Đúng: nhận lời mời.",
+"Sai: lặp lời mời, người nghe mới là người nhận.",
+"Sai: どういたしまして là đáp lại cảm ơn."
+]
+},
+"n4_18_c4_2": {
+"e": "Hỏi \"nói chuyện được không?\" → trả lời はい、何ですか? (Vâng, chuyện gì?).",
+"o": [
+"Sai: trả lời như \"không nói\" không hợp.",
+"Sai: người hỏi không hề nhờ giúp.",
+"Đúng: đồng ý nghe."
+]
+},
+"n4_18_c4_3": {
+"e": "Hỏi chọn quà sinh nhật → đề xuất cụ thể: うーん、Tシャツはどう? (Áo phông thì sao?).",
+"o": [
+"Sai: không đề xuất cụ thể, trả lời lệch.",
+"Sai: người hỏi đã nói muốn tặng quà.",
+"Đúng: đề xuất món quà."
+]
+},
+"n4_18_c4_4": {
+"e": "\"Tài liệu đó lát nữa tôi dùng nên chưa cần dọn\" → じゃあ、ここに置いておきます (Vậy tôi để ở đây).",
+"o": [
+"Đúng: đáp lại hợp lý.",
+"Sai: \"tôi không dùng nữa\" trái với lời nói trước.",
+"Sai: dọn ngay là trái với lời dặn."
+]
+},
+"n4_18_c4_5": {
+"e": "Nhờ tư vấn cách chọn môn học → うん、何でも聞いて (Ừ, cứ hỏi đi).",
+"o": [
+"Sai: あげられない dùng khi tặng đồ.",
+"Đúng: đồng ý giúp.",
+"Sai: ぜひお願いする là người nhờ trả lời, đảo vai."
+]
+},
+"n4_18_c4_6": {
+"e": "Hỏi vết thương đã khỏi chưa → すっかり治りました (Khỏi hẳn rồi).",
+"o": [
+"Sai: あまりしませんでした không khớp câu hỏi.",
+"Sai: それはよかったです là phản ứng của người hỏi.",
+"Đúng: trả lời tình trạng đã khỏi."
+]
+},
+"n4_18_c4_7": {
+"e": "Hỏi tốt nghiệp xong định làm gì → 国に帰って貿易の仕事をします (Về nước làm việc buôn bán).",
+"o": [
+"Sai: trả lời về chuyện sẽ tốt nghiệp được, không phải kế hoạch.",
+"Đúng: nói kế hoạch sau tốt nghiệp.",
+"Sai: nói kinh nghiệm quá khứ."
+]
+},
+"n4_18_c4_8": {
+"e": "Hỏi \"có biết tài liệu họp ở đây không?\" → え、ないんですか? (Ơ, không còn à?) là phản ứng tự nhiên.",
+"o": [
+"Đúng: ngạc nhiên vì tài liệu biến mất.",
+"Sai: yêu cầu người hỏi dạy trong khi họ đang tìm.",
+"Sai: わかりませんでした (đã không biết) sai thì/ngữ cảnh."
+]
+},
+"n4_of_v1": {
+"e": "【通って】= かよって (通う: đi lại đều đặn). \"Anh tôi đi làm bằng xe buýt.\"",
+"o": [
+"むかう = hướng về.",
+"Đúng: 通う = đi lại (đi làm, đi học).",
+"わたる = băng qua.",
+"もどる = quay lại."
+]
+},
+"n4_of_v2": {
+"e": "【医学】= いがく: y học. 医 = い, 学 = がく.",
+"o": [
+"かがく = hóa học/khoa học (科学/化学).",
+"Đúng: いがく = 医学.",
+"すうがく = toán (数学).",
+"ぶんがく = văn học (文学)."
+]
+},
+"n4_of_v3": {
+"e": "【おくります】= 送ります (gửi). Bộ 辶 (đi) + 关. \"Gửi hành lý bằng tàu.\"",
+"o": [
+"Sai: 近 là gần.",
+"Sai: 逆 là ngược, nhìn giống nhưng không phải.",
+"Sai: 辺 là vùng quanh.",
+"Đúng: 送る."
+]
+},
+"n4_of_v4": {
+"e": "【おんがく】= 音楽: âm nhạc. 楽 là chữ giản thể trong tiếng Nhật.",
+"o": [
+"Đúng: 音楽.",
+"Sai: 樂 là dạng chữ phồn thể, không dùng trong chữ Nhật hiện đại.",
+"Sai: 薬 (thuốc), không phải 楽.",
+"Sai: 藥 là dạng cũ của 薬 (thuốc)."
+]
+},
+"n4_of_v5": {
+"e": "Hóa đơn nhận ở siêu thị cho biết đã mua gì → レシート (biên lai).",
+"o": [
+"レジ = quầy thu ngân.",
+"Đúng: レシート = biên lai.",
+"おつり = tiền thối.",
+"さいふ = ví."
+]
+},
+"n4_of_v6": {
+"e": "~しないで、どうぞたくさん食べてください → 遠慮しないで (đừng khách sáo).",
+"o": [
+"しつれい = thất lễ.",
+"しっぱい = thất bại.",
+"Đúng: えんりょ = khách sáo, ngại.",
+"はんたい = phản đối."
+]
+},
+"n4_of_v7": {
+"e": "料理が残っています = vẫn còn thức ăn → 料理はだいどころにまだあります.",
+"o": [
+"Đúng: まだある = vẫn còn.",
+"Sai: もうありません = hết rồi (trái nghĩa).",
+"Sai: đang nấu ở bếp.",
+"Sai: đang chuẩn bị, không phải còn lại."
+]
+},
+"n4_of_v8": {
+"e": "知らせる = cho biết (thông báo) ≈ 教える (cho biết, chỉ cho). パスポート番号を教えてください.",
+"o": [
+"Sai: 写す = chép/chụp.",
+"Sai: 直す = sửa.",
+"Sai: 決める = quyết định.",
+"Đúng: 教える ≈ 知らせる."
+]
+},
+"n4_of_v9": {
+"e": "けんぶつ (見物) = ngắm, tham quan (cảnh, phố). \"Hôm qua cùng bạn đi dạo ngắm phố Kyoto.\"",
+"o": [
+"Sai: ngắm hoa trong ngữ cảnh này không dùng 見物 mà 花見 (はなみ) thường hơn.",
+"Sai: xem tin tức = 見る.",
+"Đúng: 町を見物する.",
+"Sai: tham quan nhà máy là 見学 (けんがく), không phải 見物."
+]
+},
+"n4_of_v10": {
+"e": "じゅうしょ (住所) = địa chỉ nơi ở. \"Hãy viết địa chỉ nhà bạn vào đây.\"",
+"o": [
+"Sai: vị trí cạnh thư viện nói là 場所/となり, không dùng 住所 cho cơ quan.",
+"Sai: địa điểm cuộc họp là 場所 (ばしょ).",
+"Đúng: うちの住所.",
+"Sai: địa chỉ e-mail là メールアドレス, không phải 住所."
+]
+},
+"n4_of_g1": {
+"e": "~ています biểu thị kết quả còn lại: 机の下に落ちています (đang nằm dưới gầm bàn). Là tự động từ 落ちる + ている.",
+"o": [
+"Đúng: 落ちている = (nó) đang rơi nằm ở đó.",
+"Sai: 落ちていません = không rơi (trái với ý \"ở dưới bàn\").",
+"Sai: 落ちます = sẽ rơi.",
+"Sai: 落ちません = không rơi."
+]
+},
+"n4_of_g2": {
+"e": "Tới thứ Hai tuần sau vẫn phải uống thuốc: 飲んでください. Bác sĩ chỉ thị.",
+"o": [
+"Sai: 飲んでもいいです = được phép uống, không phải yêu cầu (và người hỏi hỏi \"không uống nữa được không\").",
+"Sai: 飲まないでください ngược nghĩa.",
+"Đúng: 飲んでください = hãy uống.",
+"Sai: 飲んではいけません = cấm uống, trái nghĩa."
+]
+},
+"n4_of_g3": {
+"e": "Sắp xếp: いいえ、[今] [書いて] [いる] [ところ] です → ★ = いる (ô 3): \"Chưa, bây giờ đang viết thư.\" Mẫu ~ているところ = đang đúng lúc làm.",
+"o": [
+"今 (ô 1).",
+"書いて (ô 2).",
+"Đúng: ★ = いる (ô 3).",
+"ところ (ô 4)."
+]
+},
+"n4_of_g4": {
+"e": "Sắp xếp: 山田さんは [ギターも] [ひけるし] [歌も] [上手] です → ô ★ (thứ 2) = ひけるし. Nghĩa: \"Anh Yamada chơi được cả guitar, hát cũng giỏi.\" Mẫu ~し~も = vừa... lại còn...",
+"o": [
+"上手 (ô 4).",
+"ギターも (ô 1).",
+"Đúng: ★ = ひけるし (ô 2).",
+"歌も (ô 3)."
+]
+},
+"n4_of_g5": {
+"e": "Chỗ đối lập với phần trước: 前は電車とバスで1時間半 / 今のアパートは大学まで歩いて10分 → は (so sánh/đối lập).",
+"o": [
+"Sai: も = cũng.",
+"Sai: が không tạo đối lập.",
+"Sai: や liệt kê.",
+"Đúng: アパートは (đối lập trước-sau)."
+]
+},
+"n4_of_g6": {
+"e": "Vì nhà mới gần trường, tác giả quyết định chuyển nhà: それで (vì thế).",
+"o": [
+"しかし = nhưng.",
+"Đúng: それで = vì vậy.",
+"たとえば = ví dụ.",
+"それから = rồi sau đó."
+]
+},
+"n4_of_g7": {
+"e": "Gần ga, siêu thị, nên cuộc sống đã trở nên tiện lợi hơn: 便利になりました (trở nên tiện lợi).",
+"o": [
+"Đúng: ~になりました = trở nên.",
+"Sai: 便利だそうです = nghe nói tiện.",
+"Sai: 便利だからです = vì tiện (câu không có vế kết quả).",
+"Sai: 便利でしょうか = có tiện không?"
+]
+},
+"n4_of_g8": {
+"e": "Chuyển nhà thật sự tốt: 本当によかったと思っています (tôi nghĩ vậy bây giờ). ~と思っています = đang nghĩ như vậy.",
+"o": [
+"Sai: 思うようです = dường như nghĩ.",
+"Đúng: 思っています.",
+"Sai: 思ったようです = dường như đã nghĩ.",
+"Sai: 思っていました = đã nghĩ (quá khứ)."
+]
+},
+"n4_of_g9": {
+"e": "Gửi kèm ảnh cùng thư này: 写真を送ります (tôi sẽ gửi).",
+"o": [
+"Sai: 送ってみませんか = mời người khác thử gửi.",
+"Sai: 送ってください = nhờ người khác.",
+"Sai: 送りましょうか = đề nghị, hỏi ý.",
+"Đúng: 送ります = quyết định/thông báo của người viết."
+]
+},
+"n4_of_r10": {
+"e": "Giá 100g = 400 yên → 500g = 2.000 yên. Mua từ 500g thì giảm 200 yên (1.800) và phí gửi 200 yên được miễn (ただ) → 1.800 yên.",
+"o": [
+"Sai: 1.700 là giảm thêm không có.",
+"Đúng: 2.000 − 200 = 1.800.",
+"Sai: 2.000 là chưa giảm.",
+"Sai: 2.200 là cộng thêm phí gửi dù được miễn."
+]
+},
+"n4_of_r11": {
+"e": "Đoạn 1: đến chào hàng xóm kèm món quà nhỏ (小さな品物) → tập quán. ",
+"o": [
+"Đúng: mang vật nhỏ đi chào hàng xóm.",
+"Sai: không chỉ cho người bên cạnh, và cũng chào cả trên dưới.",
+"Sai: thư chỉ để lại khi họ vắng nhà.",
+"Sai: thư bỏ vào hòm thư ở cửa nhà người khác, không dán ở cửa nhà mình."
+]
+},
+"n4_of_r12": {
+"e": "\"これからいろいろお世話になります。どうぞよろしくお願いします\" là ý nghĩa của lời chào → truyền tải tâm ý nhờ giúp đỡ.",
+"o": [
+"Sai: số đông không phải lý do.",
+"Sai: bài không nói là bắt buộc.",
+"Sai: không nói là thất lễ nếu không báo.",
+"Đúng: 「よろしくお願いします」という気持ち."
+]
+},
+"n4_of_r13": {
+"e": "Nếu vắng nhà thì bỏ thư chào vào hòm thư để họ biết mình đã đến chào.",
+"o": [
+"Đúng: báo là đã đến chào.",
+"Sai: không nhắc lấy đồ sau.",
+"Sai: không nhắc mời đến chơi.",
+"Sai: không nhắc nhờ liên lạc lại."
+]
+},
+"n4_of_r14": {
+"e": "Câu: 「引っ越しのあいさつ」をしない人も多くなっています → số người không chào ngày càng tăng.",
+"o": [
+"Sai: bài nói người sống một mình có nhiều người không chào, không nói số người sống một mình tăng.",
+"Sai: không có thông tin.",
+"Sai: ngược lại.",
+"Đúng: người không chào tăng."
+]
+},
+"n4_of_r15": {
+"e": "Bảng: 瓶・缶 (chai, lon) bỏ vào thùng C vào thứ Sáu hằng tuần. Hôm nay là ngày 1 (thứ Năm) → thứ Sáu gần nhất là ngày 2.",
+"o": [
+"Sai: ngày 1 (thứ Năm) là ngày rác cháy được, thùng A nhận giấy, rác bếp, quần áo cũ.",
+"Đúng: chai → thùng C, thứ Sáu = ngày 2.",
+"Sai: thùng D là rác cỡ lớn (bàn, ghế, giá sách), ngày thứ Ba đầu tháng.",
+"Sai: thùng B là rác không cháy (nhựa, băng cassette, CD, thủy tinh), vào thứ Tư."
+]
+},
+"n4_of_r16": {
+"e": "Giá sách = rác cỡ lớn → thùng D, thứ Ba đầu tiên của tháng = ngày 6. Băng cassette = rác không cháy → thùng B, thứ Tư hằng tuần = ngày 7 (ngày 1 là thứ Năm).",
+"o": [
+"Sai: thùng A (rác cháy được) không nhận giá sách, thùng C (chai, lon) không nhận cassette.",
+"Sai: giá sách không bỏ thùng A.",
+"Đúng: giá sách → D (6), cassette → B (7).",
+"Sai: cassette không bỏ thùng C (chai, lon), ngày 2 là thứ Sáu."
+]
+},
+"n4_of_c1": {
+"e": "Giáo viên: cơm hộp do nhà máy chuẩn bị, không cần mang; đồ uống phải tự mang; không được mang máy ảnh; mang ô. → Cần mang: đồ uống và ô (đáp án là phương án 4 theo hình).",
+"o": [
+"Sai: bộ đồ không đúng.",
+"Sai: bộ đồ không đúng.",
+"Sai: bộ đồ không đúng.",
+"Đúng: đồ uống + ô."
+]
+},
+"n4_of_c2": {
+"e": "Anh về nhà lấy ví nên bỏ lỡ tiết 1: かばんの中でなくて, 家に財布を忘れて取りに戻った.",
+"o": [
+"Sai: đi bằng xe buýt, không phải tàu.",
+"Sai: bị hỏi \"ngủ quên?\" và đã phủ nhận.",
+"Đúng: để quên ví ở nhà.",
+"Sai: cô tưởng vậy nhưng anh nói để ở nhà."
+]
+},
+"n4_of_c3": {
+"e": "Hết việc ra về, chào đồng nghiệp còn lại: お先に失礼します.",
+"o": [
+"Sai: お邪魔します = xin phép vào nhà người khác.",
+"Sai: お大事に = giữ gìn sức khỏe (với người ốm).",
+"Đúng: お先に失礼します."
+]
+},
+"n4_of_c4": {
+"e": "Hỏi \"tôi đi mua nước, cần mua gì không?\" → あ、コーヒー、お願いします (nhờ mua cà phê).",
+"o": [
+"Sai: ええ、いいですよ không trả lời câu hỏi.",
+"Sai: おいしそうですね dùng khi thấy đồ ăn.",
+"Đúng: nhờ mua cà phê."
+]
+}
+}

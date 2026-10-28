@@ -1,7 +1,8 @@
 import { DailyExam } from '../types';
+import { withExplanations } from './withExplanations';
 
 // Nguồn: https://jlpt.jp/e/samples/sample09.html (đề mẫu công khai của Japan Foundation / JEES, 2009). Phần nghe: 4 câu có âm thanh trong bản mẫu (cắt từ N4Sample.mp3).
-export const REAL_EXAMS_N4_OFFICIAL: DailyExam =  {
+const REAL_EXAMS_N4_OFFICIAL_RAW: DailyExam =  {
   "id": "jlpt_n4_official_sample",
   "title": "JLPT N4 – Đề mẫu chính thức (Japan Foundation / JEES)",
   "level": "N4",
@@ -458,3 +459,5 @@ export const REAL_EXAMS_N4_OFFICIAL: DailyExam =  {
     }
   ]
 };
+
+export const REAL_EXAMS_N4_OFFICIAL: DailyExam = withExplanations(REAL_EXAMS_N4_OFFICIAL_RAW);
