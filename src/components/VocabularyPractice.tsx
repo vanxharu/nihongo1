@@ -81,6 +81,7 @@ import { safeFetchJson } from '../utils/safeApi';
 
 import { shuffled, pickDistractors } from '../utils/quizShuffle';
 import { clickOnKey } from '../utils/a11y';
+import AiAnalyzeButton from './ai/AiAnalyzeButton';
 // Module-level client cache for Kanji Breakdowns
 const clientKanjiBreakdownCache = new Map<string, any>();
 
@@ -2968,6 +2969,7 @@ if (loading) {
                 <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
             )}
+            {currentItem && <AiAnalyzeButton kind="vocab" text={currentItem.kanji || currentItem.hiragana} context={`${currentItem.hiragana} — ${currentItem.meaning}`} />}
             <span className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-slate-300 font-mono font-bold bg-[#1a1f33]/90 px-1.5 py-1 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl border border-[#343d5f] shadow-2xs shrink-0 whitespace-nowrap">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
               <span>
@@ -3443,6 +3445,9 @@ if (loading) {
                 <button type="button" onClick={() => { setFlashcardDirection(p => p === 'JP_VI' ? 'VI_JP' : 'JP_VI'); setShowFlashcardAnswer(false); }} className="vocab-flashcard-direction flex items-center justify-center gap-1 text-slate-300 hover:text-white text-[11px] whitespace-nowrap rounded-md" title="Đổi chiều học" aria-label="Đổi chiều học"><ArrowLeftRight className="w-3 h-3" />{flashcardDirection === 'JP_VI' ? 'JP–VI' : 'VI–JP'}</button>
                 <div className="vocab-flashcard-tools flex items-center justify-end gap-1" role="group" aria-label="Công cụ học">
                   <SrsSwitch compact />
+                  {currentItem && (flashcardView === 'example' && currentItem.exampleSentence
+                    ? <AiAnalyzeButton kind="sentence" text={currentItem.exampleSentence} context={currentItem.exampleTranslation} />
+                    : <AiAnalyzeButton kind="vocab" text={currentItem.kanji || currentItem.hiragana} context={`${currentItem.hiragana} — ${currentItem.meaning}`} />)}
                   <button type="button" onClick={() => { setIsAutoplay(false); setCurrentIndex(0); setShowFlashcardAnswer(false); setReactionState('neutral'); }} title="Học lại từ đầu" aria-label="Học lại từ đầu"><RotateCcw className="w-4 h-4" /></button>
                   <button type="button" onClick={() => setIsAutoplay(p => !p)} title={isAutoplay ? 'Dừng tự động lật thẻ' : 'Tự động lật thẻ'} aria-label={isAutoplay ? 'Dừng tự động lật thẻ' : 'Tự động lật thẻ'} aria-pressed={isAutoplay} className={isAutoplay ? 'text-amber-400' : ''}>{isAutoplay ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}</button>
                   <button type="button" onClick={() => setIsShuffle(p => !p)} title="Đổi thứ tự ngẫu nhiên" aria-label="Đổi thứ tự ngẫu nhiên" aria-pressed={isShuffle} className={isShuffle ? 'text-emerald-400' : ''}><Shuffle className="w-4 h-4" /></button>
@@ -3848,6 +3853,7 @@ if (loading) {
               <div className="flex items-center justify-between gap-3 text-xs text-slate-400">
                 <button type="button" onClick={() => handleSpeak(currentItem.exampleSentence, true)} className={`flex items-center gap-2 py-1${speakClassFor(currentItem.exampleSentence)}`} aria-label="Nghe câu đọc hiểu"><Volume2 className="w-4 h-4" /><span>Bí quá thì nghe</span></button>
                 <div className="flex items-center gap-2">
+                  <AiAnalyzeButton kind="sentence" text={currentItem.exampleSentence} context={currentItem.exampleTranslation} />
                   <button type="button" onClick={() => setShowDokkaiTranslation(value => !value)} aria-pressed={showDokkaiTranslation} aria-label="Hiện nghĩa tiếng Việt" title="Ẩn / hiện nghĩa tiếng Việt" className="p-2 rounded">{showDokkaiTranslation ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}</button>
                   <button type="button" onClick={() => setShowOptions(value => !value)} aria-label="Cài đặt đọc hiểu" className="p-2"><Settings className="w-4 h-4" /></button>
                 </div>

@@ -21,6 +21,7 @@ import JlptMascot from './JlptMascot';
 import { speakJapanese } from '../../utils/audio';
 import JapaneseFuriganaText from '../JapaneseFuriganaText';
 import { deduplicateGrammars, getGrammarStatusWithAliases } from '../../utils/grammarDeduplicator';
+import AiAnalyzeButton from '../ai/AiAnalyzeButton';
 
 interface GrammarPointDetailViewProps {
   onCompleteReading?: () => boolean;
@@ -184,7 +185,7 @@ export const GrammarPointDetailView: React.FC<GrammarPointDetailViewProps> = ({
           <JlptMascot size={42} />
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-japanese">
-              {grammar.structure}
+              {grammar.structure} <AiAnalyzeButton kind="grammar" text={grammar.structure} context={`${grammar.meaning}${grammar.level ? ` (${grammar.level})` : ''}`} size={18} className="align-middle" />
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
               {grammar.meaning}

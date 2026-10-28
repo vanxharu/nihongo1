@@ -17,6 +17,7 @@ import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, 
 import './shadowing.css';
 import ShadowingLibrary from './ShadowingLibrary';
 import { readWatchProgress, saveWatchPosition, setWatched, onWatchProgress, resumeAt } from '../../utils/watchProgress';
+import AiAnalyzeButton from '../ai/AiAnalyzeButton';
 
 const field = 'w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 focus:border-amber-400 focus:outline-none';
 const compactButton = 'inline-flex min-h-8 items-center justify-center gap-1.5 rounded-lg bg-slate-800 px-3 text-xs font-semibold hover:bg-slate-700 disabled:opacity-40';
@@ -317,6 +318,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
                       <KaraokeCaption text={displayed.text} time={currentTime} start={displayed.start} end={displayed.end} timings={displayed.timings} analysis={displayedAnalysis} furigana={furigana} />
                     </div>
                     {translation && displayedAnalysis?.translation && <p className="karaoke-translation">{displayedAnalysis.translation}</p>}
+                    <div className="flex justify-center"><AiAnalyzeButton kind="video" text={displayed.text} /></div>
                   </> : <p className="text-center text-sm text-slate-400">Bấm phát video hoặc chọn một câu bên dưới</p>}
                 </div>
                 </div>

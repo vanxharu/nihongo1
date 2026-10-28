@@ -19513,6 +19513,70 @@ var import_firestore = require("firebase-admin/firestore");
 var import_promises = require("node:fs/promises");
 var import_node_path = __toESM(require("node:path"), 1);
 
+// src/data/shadowingExtra.ts
+var SHADOWING_EXTRA = [
+  ["MxWQeAZeI6I", 1727, "JLPT Test", "N4", "exam", "JLPT N4 LISTENING PRACTICE TEST WITH ANSWERS 2026.\u8074\u89E3"],
+  ["cy9P8f4lrEw", 1755, "JLPT Test", "N4", "exam", "JLPT N4 LISTENING PRACTICE TEST WITH ANSWERS 2026.\u3061\u3087\u3046\u304B\u3044"],
+  ["JYaF5-6XRKc", 1715, "JLPT Test", "N4", "exam", "JLPT N4 LISTENING PRACTICE TEST WITH ASWERS 2026.\u3061\u3087\u3046\u304B\u3044"],
+  ["NtGlda3878U", 1712, "JLPT Test", "N4", "exam", "JLPT N4 LISTENING PRACTICE TEST WITH ANSWERS 2026.\u3061\u3087\u3046\u304B\u3044"],
+  ["sraT7alhUd0", 1653, "JLPT Test", "N4", "exam", "JLPT N4 LISTENING PRACTICE TEST WITH ANSWERS.\u8074\u89E3"],
+  ["FNC2vNJ682g", 1859, "JLPT Test", "N4", "exam", "JLPT N4 LISTENING PRACTICE TEST WITH ANSWERS 2026.\u8074\u89E3"],
+  ["6rxLiaoM5Uc", 1720, "JLPT Test", "N4", "exam", "JLPT N4 LISTENING PRACTICE TEST WITH ANSWERS 2026.\u8074\u89E3"],
+  ["sWiAvKXIBsE", 1788, "JLPT Test", "N4", "exam", "JLPT N4 LISTENING PRACTICE TEST WITH ANSWERS 2026.\u8074\u89E3"],
+  ["xfs1Cm0exD0", 1793, "JLPT Test", "N4", "exam", "JLPT N4 LISTENING PRACTICE TEST WITH ANSWERS 2026.\u8074\u89E3"],
+  ["jWkqMxsm1Yk", 1672, "JLPT Test", "N4", "exam", "JLPT N4 LISTENING PRACTICE TEST WITH ANSWERS 2026.\u8074\u89E3"],
+  ["OnferoJ9J-0", 1048, "The Nihongo Dojo", "N4", "exam", "JAPANESE JLPT N4 CHOUKAI Listening Practice TEST with Answers (CHOUKAI)"],
+  ["TlwWL4jOAdw", 2249, "The Nihongo Dojo", "N4", "exam", "JAPANESE JLPT N4 CHOUKAI Listening Practice TEST with Answers"],
+  ["p5z8qAVfX20", 2222, "The Nihongo Dojo", "N4", "exam", "JAPANESE JLPT N4 Listening Practice Test with Answers"],
+  ["Bv2xIEMcCO0", 2176, "The Nihongo Dojo", "N4", "exam", "JAPANESE JLPT N4 Listening Practice Test with Answers"],
+  ["XR0GkscTM90", 1745, "The Nihongo Dojo", "N4", "exam", "JAPANESE JLPT N4 CHOUKAI Listening Practice TEST with Answers"],
+  ["pqehI0Y_xp8", 1719, "The Nihongo Dojo", "N4", "exam", "JAPANESE JLPT N4 CHOUKAI Listening Practice TEST with Answers (\u3061\u3087\u3046\u304B\u3044 )"],
+  ["rA3_atZiLFs", 1752, "The Nihongo Dojo", "N4", "exam", "JAPANESE JLPT N4 CHOUKAI Listening Practice TEST with Answers (\u3061\u3087\u3046\u304B\u3044 )"],
+  ["LnLUijVBRYE", 1768, "The Nihongo Dojo", "N4", "exam", "JAPANESE JLPT N4 Listening Practice Test with Answers"],
+  ["OD_EZv_XJ4k", 1733, "The Nihongo Dojo", "N4", "exam", "JAPANESE JLPT N4 Listening Practice TEST with Answers"],
+  ["zx47rpHezgg", 1769, "The Nihongo Dojo", "N4", "exam", "JLPT N4 JAPANESE LISTENING PRACTICE TEST WITH ANSWERS"],
+  ["ETvmnje6BuI", 1805, "Nihongo JLPT Crush", "N4", "exam", "JLPT N4 Japanese Listening Practice Test 2026 with Answers \u3061\u3087\u3046\u304B\u3044 (\u8074\u89E3)"],
+  ["2AUERnx4VV8", 1849, "Nihongo JLPT Crush", "N4", "exam", "JLPT N4 Japanese Listening Practice Test 2026 with Answers \u3061\u3087\u3046\u304B\u3044 (\u8074\u89E3)"],
+  ["vcaJAIrPG8g", 1885, "Nihongo JLPT Crush", "N4", "exam", "JLPT N4 Japanese Listening Practice Test 2026 with Answers \u3061\u3087\u3046\u304B\u3044 (\u8074\u89E3)"],
+  ["cRq64Bv4qZc", 1837, "Nihongo JLPT Crush", "N4", "exam", "JLPT N4 Japanese Listening Practice Test 2026 with Answers \u3061\u3087\u3046\u304B\u3044 (\u8074\u89E3)"],
+  ["Oy2s_Oe-ACo", 1729, "Nihongo JLPT Crush", "N4", "exam", "JLPT N4 Japanese Listening Practice Test 2026 with Answers \u3061\u3087\u3046\u304B\u3044 (\u8074\u89E3)"],
+  ["VNK5i-kQmQ0", 1762, "Nihongo JLPT Crush", "N4", "exam", "JLPT N4 Listening Practice Test 2026 with Answers \u3061\u3087\u3046\u304B\u3044 (\u8074\u89E3)"],
+  ["vBr4ddeuwN4", 1601, "Nihongo JLPT Crush", "N4", "exam", "JLPT N4 Japanese Listening Practice Test with Answer 2025"],
+  ["04ACzIhdz1s", 1531, "Nihongo JLPT Crush", "N4", "exam", "JLPT N4 Japanese Listening Practice Test 2025"],
+  ["Il39arI-r9Y", 2231, "Nihongo JLPT Crush", "N4", "exam", "JLPT N4 Japanese Listening Practice Test 2025 WITH ANSWERS  \u3061\u3087\u3046\u304B\u3044"],
+  ["BE2VoIx0gq0", 2286, "Nihongo JLPT Crush", "N4", "exam", "Japanese JLPT N4 listening practice test 2025 with answers | JLPT N4 listening mock test"],
+  ["TexblYZijiA", 350, "Nihongo con Teppei", "N4", "podcast", "Japanese podcast for beginners (Nihongo con Teppei)#1607\u300C\u97F3\u697D\u30B7\u30EA\u30FC\u30BA\u2460\u300D"],
+  ["RQhS7pLw0Rk", 1095, "Nihongo con Teppei", "N4", "podcast", "Nihongo con Teppei \u6CE2! #294\u300C\u3081\u3063\u3061\u3083\u3084\u308B\u6C17\u304C\u51FA\u3066\u304D\u305F\uFF01\u30DB\u30FC\uFF01\u300D"],
+  ["t2bAaub_G6o", 330, "Nihongo con Teppei", "N4", "podcast", "Japanese podcast for beginners (Nihongo con Teppei)#1606\u300CNihongo con Teppei\u304B\u3089\u306E\u304A\u9858\u3044\u304C\u3042\u308A\u307E\u3059\uFF01\u300D"],
+  ["fV0uazo917Q", 1165, "Nihongo con Teppei", "N4", "podcast", "Nihongo con Teppei \u6CE2! #293\u300C\u6751\u4E0A\u9F8D\u306B\u3064\u3044\u3066\u300D"],
+  ["5nDjpkkc48I", 760, "Nihongo con Teppei", "N4", "podcast", "Nihongo con Teppei \u6CE2! #292\u300C\u6D45\u3044\u5974\u306B\u3064\u3044\u3066\uFF01\u300D"],
+  ["o98AN6fmnug", 325, "Nihongo con Teppei", "N4", "podcast", "Japanese podcast for beginners (Nihongo con Teppei)#1604\u300C\u52C9\u5F37\u6642\u9593\u3092\u4F5C\u308B\u3053\u3068\u306B\u3064\u3044\u3066\uFF01\u300D"],
+  ["BEtGTneav-E", 740, "Nihongo con Teppei", "N4", "podcast", "Nihongo con Teppei \u6CE2! #291\u300C\u826F\u3044\u5148\u751F\u3068\u306F\uFF1F\u300D"],
+  ["WDpZjB_1PHE", 275, "Nihongo con Teppei", "N4", "podcast", "Japanese podcast for beginners (Nihongo con Teppei)#1603\u300C\u3084\u308B\u6C17\u3001\u30E2\u30C1\u30D9\u30FC\u30B7\u30E7\u30F3\u306E\u4FDD\u3061\u65B9\u306B\u3064\u3044\u3066\uFF01\u300D"],
+  ["K65rdMF4tuo", 295, "Nihongo con Teppei", "N4", "podcast", "Japanese podcast for beginners (Nihongo con Teppei)#1602\u300C\u4F1A\u8A71\u306E\u81EA\u4FE1\u304C\u306A\u3044\u3068\u8A00\u3046\u3053\u3068\u306B\u3064\u3044\u3066\uFF01\u300D"],
+  ["l-qKKvXJDqA", 1140, "Nihongo con Teppei", "N4", "podcast", "Nihongo con Teppei \u6CE2! #289\u300C\u4FFA\u306F\u306A\u305C\u30A2\u30B8\u30A2\u3067\u4EBA\u6C17\u304C\u306A\u3044\u306E\u304B\uFF01\uFF1F\u300D"],
+  ["S4hJksO-neI", 1315, "Japanese with Shun", "N4", "podcast", "Easy Japanese at Mount Fuji \u{1F1EF}\u{1F1F5} | N5 Listening Practice"],
+  ["_Oi-9tGMxyM", 1018, "Japanese with Shun", "N4", "podcast", "\u3010N5-N4\u3011Ep278 How to make a good relationship with people / Japanese Podcast for Beginners"],
+  ["OizSGEkzums", 992, "Japanese with Shun", "N4", "podcast", "\u3010N5-N4\u3011#156 Laos / Oyasumi Japanese Podcast for Beginners"],
+  ["ZCai4_tyshE", 882, "Japanese with Shun", "N4", "podcast", "\u3010N5-N4\u3011Ep277 New Friends, Old Friends / Japanese Podcast for Beginners"],
+  ["Uel6hD2rYLo", 1239, "Japanese with Shun", "N4", "podcast", "Easy Japanese Conversation on a Boat in Vietnam (N4\u2013N3)"],
+  ["UkED_tjDQ9g", 1349, "Japanese with Shun", "N4", "podcast", "I Explored Kamakura & Enoshima | Easy Japanese (N5\u2013N4)"],
+  ["HgatfkTSbjc", 695, "Japanese with Shun", "N4", "podcast", "\u3010N5-N4\u3011#155 Border / Oyasumi Japanese Podcast for Beginners"],
+  ["tEJT-ZNG-AU", 1132, "Japanese with Shun", "N4", "podcast", "Why You Still Can\u2019t Speak Japanese\uFF5CAnd How to Fix It"],
+  ["W7OPNaqIFUY", 641, "Japanese with Shun", "N4", "podcast", "\u3010N5-N4\u3011Ep276 What would you do if AI took your job? / Japanese Podcast for Beginners"],
+  ["L0XI39YKPfQ", 1427, "Japanese with Shun", "N4", "podcast", "What I Think About While Driving in Japan \u{1F1EF}\u{1F1F5} | Easy Japanese (N5\u2013N4)"],
+  ["bYC6GVPld6E", 1214, "YUYU\u306E\u65E5\u672C\u8A9EPodcast", "N3", "podcast", "\u30A2\u30CB\u30E1\u3068\u30C9\u30E9\u30DE\u3001\u65E5\u672C\u8A9E\u5B66\u7FD2\u306B\u5411\u3044\u3066\u308B\u306E\u306F\u3069\u3063\u3061\uFF1F / anime vs. J-Dramas: Which Is Better for Learning Japanese? YUYU \xD7 NordVPN"],
+  ["IJ6R4u05ppw", 1459, "YUYU\u306E\u65E5\u672C\u8A9EPodcast", "N3", "podcast", "\u65E5\u672C\u306B\u5E30\u3063\u305F\u3089\u3001\u884C\u304D\u305F\u3044\u5834\u6240\u304C\u3042\u308A\u307E\u3059\u3002 / Where I Want to Go When I Return to Japan YUYU \xD7 Saily \uFF5C YouTube\u30BF\u30A4\u30A2\u30C3\u30D7"],
+  ["7m9cK19SZzs", 1485, "YUYU\u306E\u65E5\u672C\u8A9EPodcast", "N3", "podcast", "\u65E5\u672C\u4EBA\u306F\u306A\u305C\u300C\u3093\u3067\u3059\u300D\u3092\u4F7F\u3046\u306E\u304B\uFF1F / Why Do Japanese People Say \u201CN DESU\u201D?"],
+  ["iVYn7L6gxUA", 1241, "YUYU\u306E\u65E5\u672C\u8A9EPodcast", "N3", "podcast", "\u306A\u305C\u300C\u9762\u767D\u304B\u3063\u305F\u8A71\u300D\u306F\u76F8\u624B\u306B\u4F1D\u308F\u3089\u306A\u3044\u306E\u304B\uFF1F / How to Make Any Movie Sound Interesting in Japanese"],
+  ["dR-wQy1cE8Q", 1298, "YUYU\u306E\u65E5\u672C\u8A9EPodcast", "N3", "podcast", "\u65E5\u672C\u8A9E\u4E0A\u7D1A\u8005\u306F\u300C\u76F8\u3065\u3061\u300D\u3092\u6E1B\u3089\u3059\uFF1F\u81EA\u7136\u306A\u4F1A\u8A71\u304C\u3067\u304D\u308B3\u3064\u306E\u30B3\u30C4 / Stop Overusing Aizuchi: 3 Ways to Sound More Natural in Japanese"],
+  ["-FKfGuQIh-U", 1434, "YUYU\u306E\u65E5\u672C\u8A9EPodcast", "N3", "podcast", "\u65E5\u672C\u8A9E\u5B66\u7FD2\u3092\u7D9A\u3051\u308B\u305F\u3081\u306B\u3001\u672C\u5F53\u306B\u5927\u5207\u306A3\u3064\u306E\u3053\u3068 / How to Keep Learning Japanese Without Giving Up"],
+  ["p8L8UeEWpgU", 939, "YUYU\u306E\u65E5\u672C\u8A9EPodcast", "N3", "podcast", "\u65E5\u672C\u8A9E\u304C\u8A71\u305B\u308B\u3088\u3046\u306B\u306A\u308B\u30B7\u30E3\u30C9\u30FC\u30A4\u30F3\u30B0\u30B5\u30A4\u30C8\u3001\u3064\u3044\u306B\u516C\u958B\uFF01 / YUYU Shadowing Is Here! The Ultimate Japanese Shadowing Website"],
+  ["wm2-H46TcOQ", 1456, "YUYU\u306E\u65E5\u672C\u8A9EPodcast", "N3", "podcast", "\u6301\u7D9A\u53EF\u80FD\u306A\u65E5\u672C\u8A9E\u5B66\u7FD2 / The Secret to Learning Japanese for Years"],
+  ["exNjnDeLzkQ", 1437, "YUYU\u306E\u65E5\u672C\u8A9EPodcast", "N3", "podcast", "\u30CD\u30AC\u30C6\u30A3\u30D6\u306A\u81EA\u5206\u3068\u3001\u3069\u3046\u3084\u3063\u3066\u751F\u304D\u308B\u306E\u304B\uFF1F / How to Accept the Negative Side of Yourself"],
+  ["nutiVYVGCxM", 1447, "YUYU\u306E\u65E5\u672C\u8A9EPodcast", "N3", "podcast", "\u4EBA\u751F\u304C\u3046\u307E\u304F\u3044\u304B\u306A\u3044\u3068\u304D\u306E\u30A2\u30C9\u30D0\u30A4\u30B9 / What to Remember When Life Isn\u2019t Going Your Way"]
+];
+
 // src/data/shadowingVideos.ts
 var videos = [
   ["2Qk4Hq1WqUA", 2025, 2112],
@@ -19526,7 +19590,7 @@ var videos = [
   ["GS5s4yBla1c", 2024, 1595],
   ["uulD42uByjU", 2024, 1897]
 ];
-var SHADOWING_VIDEOS = videos.map(([id, year, seconds], index) => ({
+var NOOK = videos.map(([id, year, seconds], index) => ({
   id: `shadowing-n4-${id}`,
   code: `N4 \u0110\u1EC1 luy\u1EC7n ${index + 1}`,
   title: `B\xE0i ${String(index + 1).padStart(2, "0")} \xB7 ${year}`,
@@ -19546,6 +19610,33 @@ var SHADOWING_VIDEOS = videos.map(([id, year, seconds], index) => ({
   createdAt: "2026-10-04T00:00:00.000Z",
   updatedAt: "2026-10-04T00:00:00.000Z"
 }));
+var mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+var counters = {};
+var EXTRA = SHADOWING_EXTRA.map(([id, seconds, source, level, kind, original]) => {
+  const n = counters[source] = (counters[source] || 0) + 1;
+  const exam = kind === "exam";
+  return {
+    id: `shadowing-${kind}-${id}`,
+    code: exam ? `N4 \u0110\u1EC1 ${n}` : `Podcast ${n}`,
+    title: exam ? `\u0110\u1EC1 luy\u1EC7n nghe N4 \xB7 B\xE0i ${String(n).padStart(2, "0")}` : original,
+    youtube_url: `https://www.youtube.com/watch?v=${id}`,
+    youtube_video_id: id,
+    level,
+    category: "Listening Practice",
+    source,
+    source_url: `https://www.youtube.com/watch?v=${id}`,
+    description: exam ? `\u0110\u1EC1 luy\u1EC7n nghe JLPT N4 do k\xEAnh ${source} bi\xEAn so\u1EA1n, c\xF3 \u0111\xE1p \xE1n trong video v\xE0 ph\u1EE5 \u0111\u1EC1 ti\u1EBFng Nh\u1EADt.` : `Podcast ti\u1EBFng Nh\u1EADt cho ng\u01B0\u1EDDi h\u1ECDc c\u1EE7a k\xEAnh ${source}, c\xF3 ph\u1EE5 \u0111\u1EC1 ti\u1EBFng Nh\u1EADt.`,
+    duration: mmss(seconds),
+    durationSeconds: seconds,
+    thumbnail: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+    has_answers: exam,
+    status: "active",
+    order: 100 + n,
+    createdAt: "2026-10-28T00:00:00.000Z",
+    updatedAt: "2026-10-28T00:00:00.000Z"
+  };
+});
+var SHADOWING_VIDEOS = [...NOOK, ...EXTRA];
 
 // src/utils/shadowing.ts
 function validShadowingTimings(cue) {
@@ -19634,7 +19725,7 @@ async function preparedCatalogVideo(database, id) {
   const packet = JSON.parse(source);
   if (packet.videoId !== id || packet.sentenceVersion !== version || typeof packet.title !== "string") throw new Error("INVALID_PREPARED_CATALOG");
   const cues = validateStoredCues(packet.cues);
-  if (cues.some((cue) => !cue.translation || !Array.isArray(cue.readings))) throw new Error("INCOMPLETE_PREPARED_CATALOG");
+  if (cues.some((cue) => !Array.isArray(cue.readings))) throw new Error("INCOMPLETE_PREPARED_CATALOG");
   try {
     await writeVideo(ref, packet.title, cues, existing?.revision || null, version);
   } catch (error) {
@@ -93821,46 +93912,8 @@ async function readPersistentJson(file) {
   return value;
 }
 
-// src/server/grammarProgress.ts
-function nextGrammarProgress(current, input, now = /* @__PURE__ */ new Date()) {
-  const attempts = (Number(current?.attempts) || 0) + 1;
-  const correctCount = (Number(current?.correctCount) || 0) + (input.isCorrect === true ? 1 : 0);
-  const incorrectCount = (Number(current?.incorrectCount) || 0) + (input.isCorrect === true ? 0 : 1);
-  const gain = Number.isFinite(input.score) ? Math.round(Math.max(0, Math.min(100, input.score)) * 0.2) : 15;
-  const masteryScore = input.isCorrect === true ? Math.min(100, (Number(current?.masteryScore) || 0) + gain) : Math.max(0, (Number(current?.masteryScore) || 0) - 20);
-  const status = masteryScore >= 90 && attempts >= 3 ? "mastered" : masteryScore >= 70 ? "practicing" : input.isCorrect !== true || masteryScore < 40 ? "review" : "learning";
-  const days = status === "mastered" ? 14 : status === "practicing" ? 5 : status === "review" ? 1 : 2;
-  const mistakes = Array.isArray(current?.recentMistakes) ? [...current.recentMistakes] : [];
-  if (input.isCorrect !== true && typeof input.mistakeText === "string") mistakes.unshift(input.mistakeText.slice(0, 1e3));
-  return { grammarId: input.grammarId, status, masteryScore, attempts, correctCount, incorrectCount, accuracyRate: Math.round(correctCount / attempts * 100), lastStudiedAt: now.toISOString(), nextReviewAt: new Date(now.getTime() + days * 864e5).toISOString(), recentMistakes: mistakes.slice(0, 5), needsReview: status === "review" || masteryScore < 70 };
-}
-async function recordGrammarAttempt(uid, input) {
-  if (typeof input.grammarId !== "string" || !input.grammarId || input.grammarId.length > 150 || typeof input.isCorrect !== "boolean") throw new Error("INVALID_PROGRESS");
-  const ref = firebaseDb().collection("app_users").doc(uid).collection("grammar_progress").doc(documentKey(input.grammarId));
-  return firebaseDb().runTransaction(async (tx) => {
-    const current = (await tx.get(ref)).data();
-    const next = nextGrammarProgress(current, input);
-    tx.set(ref, clean(next));
-    return next;
-  });
-}
-async function userGrammarProgress(uid) {
-  const snapshot = await firebaseDb().collection("app_users").doc(uid).collection("grammar_progress").get();
-  return Object.fromEntries(snapshot.docs.map((d) => {
-    const v = d.data();
-    return [v.grammarId, { ...v, needsReview: v.needsReview || new Date(v.nextReviewAt) <= /* @__PURE__ */ new Date() }];
-  }));
-}
-
-// server.ts
-var import_express = __toESM(require("express"), 1);
-var import_dotenv = __toESM(require("dotenv"), 1);
-var import_path = __toESM(require("path"), 1);
-var import_fs = __toESM(require("fs"), 1);
-var import_axios = __toESM(require("axios"), 1);
-var cheerio = __toESM(require("cheerio"), 1);
-var import_genai2 = require("@google/genai");
-var import_openai = __toESM(require("openai"), 1);
+// src/server/aiAnalysis.ts
+var import_node_crypto3 = require("node:crypto");
 
 // src/server/llm.ts
 var import_node_async_hooks2 = require("node:async_hooks");
@@ -94025,7 +94078,117 @@ async function callLLM(options) {
   return (await callLLMWithInfo(options)).text;
 }
 
+// src/server/aiAnalysis.ts
+var AI_KINDS = ["vocab", "sentence", "reading", "video", "grammar", "question"];
+var LIMITS = { vocab: 200, sentence: 600, reading: 6e3, video: 1e3, grammar: 600, question: 3e3 };
+function analysisKey(kind, text) {
+  return (0, import_node_crypto3.createHash)("sha256").update(`${kind}
+${text.trim()}`).digest("hex").slice(0, 40);
+}
+function validInput(kind, text, context) {
+  if (typeof kind !== "string" || !AI_KINDS.includes(kind)) return null;
+  if (typeof text !== "string" || !text.trim() || text.length > LIMITS[kind]) return null;
+  if (context !== void 0 && (typeof context !== "string" || context.length > 2e3)) return null;
+  return { kind, text: text.trim(), context: context?.trim() || "" };
+}
+var TASK = {
+  vocab: "Ph\xE2n t\xEDch T\u1EEA V\u1EF0NG ti\u1EBFng Nh\u1EADt: c\xE1ch \u0111\u1ECDc, ngh\u0129a (c\xE1c ngh\u0129a ch\xEDnh), t\u1EEB lo\u1EA1i, ch\u1EEF H\xE1n c\u1EA5u th\xE0nh (\xE2m H\xE1n Vi\u1EC7t), c\xE1ch d\xF9ng th\u01B0\u1EDDng g\u1EB7p, t\u1EEB \u0111\u1ED3ng/tr\xE1i ngh\u0129a, 2 c\xE2u v\xED d\u1EE5 c\xF3 d\u1ECBch, l\u1ED7i ng\u01B0\u1EDDi Vi\u1EC7t hay m\u1EAFc.",
+  sentence: "Ph\xE2n t\xEDch C\xC2U V\xCD D\u1EE4 ti\u1EBFng Nh\u1EADt: d\u1ECBch t\u1EF1 nhi\xEAn, t\xE1ch c\u1EE5m/t\u1EEB quan tr\u1ECDng (\u0111\u1ECDc + ngh\u0129a), gi\u1EA3i th\xEDch ng\u1EEF ph\xE1p trong c\xE2u, s\u1EAFc th\xE1i/ng\u1EEF c\u1EA3nh d\xF9ng.",
+  reading: "Ph\xE2n t\xEDch B\xC0I \u0110\u1ECCC HI\u1EC2U ti\u1EBFng Nh\u1EADt: t\xF3m t\u1EAFt \xFD ch\xEDnh, d\u1ECBch, t\u1EEB v\u1EF1ng kh\xF3 (\u0111\u1ECDc + ngh\u0129a), m\u1EABu ng\u1EEF ph\xE1p xu\u1EA5t hi\u1EC7n, c\xE1c c\xE2u then ch\u1ED1t v\xE0 c\xE1ch t\xECm th\xF4ng tin \u0111\u1EC3 tr\u1EA3 l\u1EDDi c\xE2u h\u1ECFi.",
+  video: "Ph\xE2n t\xEDch C\xC2U THO\u1EA0I trong video ti\u1EBFng Nh\u1EADt: d\u1ECBch t\u1EF1 nhi\xEAn, t\u1EEB v\u1EF1ng (\u0111\u1ECDc + ngh\u0129a), ng\u1EEF ph\xE1p, c\xE1ch n\xF3i kh\u1EA9u ng\u1EEF/r\xFAt g\u1ECDn n\u1EBFu c\xF3, m\u1EB9o luy\u1EC7n shadowing (ng\u1EAFt nh\u1ECBp, tr\u1ECDng \xE2m).",
+  grammar: "Ph\xE2n t\xEDch M\u1EAAU NG\u1EEE PH\xC1P ti\u1EBFng Nh\u1EADt: \xFD ngh\u0129a, c\u1EA5u tr\xFAc n\u1ED1i (th\u1EC3 n\xE0o + m\u1EABu), s\u1EAFc th\xE1i, ph\xE2n bi\u1EC7t v\u1EDBi m\u1EABu d\u1EC5 nh\u1EA7m, 3 c\xE2u v\xED d\u1EE5 c\xF3 d\u1ECBch, l\u1ED7i th\u01B0\u1EDDng g\u1EB7p.",
+  question: "Ph\xE2n t\xEDch C\xC2U H\u1ECEI THI JLPT: d\u1ECBch \u0111\u1EC1, ph\xE2n t\xEDch t\u1EEBng ph\u01B0\u01A1ng \xE1n v\xEC sao \u0111\xFAng/sai, ki\u1EBFn th\u1EE9c c\u1EA7n n\u1EAFm, m\u1EB9o l\xE0m d\u1EA1ng c\xE2u n\xE0y."
+};
+var SYSTEM = 'B\u1EA1n l\xE0 gi\xE1o vi\xEAn ti\u1EBFng Nh\u1EADt cho ng\u01B0\u1EDDi Vi\u1EC7t. Tr\u1EA3 l\u1EDDi b\u1EB1ng ti\u1EBFng Vi\u1EC7t, ch\xEDnh x\xE1c, ng\u1EAFn g\u1ECDn, kh\xF4ng b\u1ECBa. Ch\u1EC9 tr\u1EA3 v\u1EC1 JSON: {"translation": string (b\u1EA3n d\u1ECBch ti\u1EBFng Vi\u1EC7t, r\u1ED7ng n\u1EBFu kh\xF4ng c\u1EA7n), "summary": string (2-3 c\xE2u t\u1ED5ng quan), "points": [{"title": string, "body": string}] (3-8 m\u1EE5c)}. Kh\xF4ng markdown.';
+function parseAnalysis(raw) {
+  const v = JSON.parse(String(raw).replace(/^```(?:json)?\s*|\s*```$/g, ""));
+  const s = (x, n) => typeof x === "string" ? x.slice(0, n) : "";
+  if (!v || !Array.isArray(v.points)) throw new Error("INVALID_AI_OUTPUT");
+  const points = v.points.filter((p) => p && typeof p.title === "string" && typeof p.body === "string").slice(0, 10).map((p) => ({ title: s(p.title, 200), body: s(p.body, 3e3) }));
+  if (!points.length && !s(v.summary, 10)) throw new Error("INVALID_AI_OUTPUT");
+  return { translation: s(v.translation, 6e3), summary: s(v.summary, 2e3), points };
+}
+var doc = (id) => firebaseDb().collection("ai_analysis").doc(id);
+async function readAnalysis(kind, text) {
+  const snap = await doc(analysisKey(kind, text)).get();
+  return snap.exists ? snap.data().analysis : null;
+}
+async function createAnalysis(input, uid) {
+  const existing = await readAnalysis(input.kind, input.text);
+  if (existing) return existing;
+  const prompt = `${TASK[input.kind]}
+
+N\u1ED8I DUNG:
+${input.text}${input.context ? `
+
+NG\u1EEE C\u1EA2NH (tham kh\u1EA3o):
+${input.context}` : ""}`;
+  const result = await generateGemini({ contents: prompt, config: { systemInstruction: SYSTEM, responseMimeType: "application/json", maxOutputTokens: 3500 } });
+  const analysis = { ...parseAnalysis(result.text), model: String(result.modelUsed || ""), createdAt: (/* @__PURE__ */ new Date()).toISOString() };
+  await doc(analysisKey(input.kind, input.text)).set({ kind: input.kind, text: input.text, analysis, createdBy: uid, createdAt: analysis.createdAt });
+  return analysis;
+}
+async function aiAnalysisLookup(req, res) {
+  const input = validInput(req.body?.kind, req.body?.text, void 0);
+  if (!input) return res.status(400).json({ error: "N\u1ED9i dung ph\xE2n t\xEDch kh\xF4ng h\u1EE3p l\u1EC7." });
+  try {
+    const analysis = await readAnalysis(input.kind, input.text);
+    return analysis ? res.json({ analysis }) : res.status(404).json({ error: "Ch\u01B0a c\xF3 ph\xE2n t\xEDch." });
+  } catch {
+    return res.status(503).json({ error: "Ch\u01B0a \u0111\u1ECDc \u0111\u01B0\u1EE3c d\u1EEF li\u1EC7u ph\xE2n t\xEDch." });
+  }
+}
+async function aiAnalysisCreate(req, res) {
+  const input = validInput(req.body?.kind, req.body?.text, req.body?.context);
+  if (!input) return res.status(400).json({ error: "N\u1ED9i dung ph\xE2n t\xEDch kh\xF4ng h\u1EE3p l\u1EC7." });
+  try {
+    return res.json({ analysis: await createAnalysis(input, req.dbUser.uid) });
+  } catch (e) {
+    console.error("[ai-analysis]", e?.message);
+    return res.status(502).json({ error: "AI ch\u01B0a ph\xE2n t\xEDch \u0111\u01B0\u1EE3c. H\xE3y th\u1EED l\u1EA1i sau." });
+  }
+}
+
+// src/server/grammarProgress.ts
+function nextGrammarProgress(current, input, now = /* @__PURE__ */ new Date()) {
+  const attempts = (Number(current?.attempts) || 0) + 1;
+  const correctCount = (Number(current?.correctCount) || 0) + (input.isCorrect === true ? 1 : 0);
+  const incorrectCount = (Number(current?.incorrectCount) || 0) + (input.isCorrect === true ? 0 : 1);
+  const gain = Number.isFinite(input.score) ? Math.round(Math.max(0, Math.min(100, input.score)) * 0.2) : 15;
+  const masteryScore = input.isCorrect === true ? Math.min(100, (Number(current?.masteryScore) || 0) + gain) : Math.max(0, (Number(current?.masteryScore) || 0) - 20);
+  const status = masteryScore >= 90 && attempts >= 3 ? "mastered" : masteryScore >= 70 ? "practicing" : input.isCorrect !== true || masteryScore < 40 ? "review" : "learning";
+  const days = status === "mastered" ? 14 : status === "practicing" ? 5 : status === "review" ? 1 : 2;
+  const mistakes = Array.isArray(current?.recentMistakes) ? [...current.recentMistakes] : [];
+  if (input.isCorrect !== true && typeof input.mistakeText === "string") mistakes.unshift(input.mistakeText.slice(0, 1e3));
+  return { grammarId: input.grammarId, status, masteryScore, attempts, correctCount, incorrectCount, accuracyRate: Math.round(correctCount / attempts * 100), lastStudiedAt: now.toISOString(), nextReviewAt: new Date(now.getTime() + days * 864e5).toISOString(), recentMistakes: mistakes.slice(0, 5), needsReview: status === "review" || masteryScore < 70 };
+}
+async function recordGrammarAttempt(uid, input) {
+  if (typeof input.grammarId !== "string" || !input.grammarId || input.grammarId.length > 150 || typeof input.isCorrect !== "boolean") throw new Error("INVALID_PROGRESS");
+  const ref = firebaseDb().collection("app_users").doc(uid).collection("grammar_progress").doc(documentKey(input.grammarId));
+  return firebaseDb().runTransaction(async (tx) => {
+    const current = (await tx.get(ref)).data();
+    const next = nextGrammarProgress(current, input);
+    tx.set(ref, clean(next));
+    return next;
+  });
+}
+async function userGrammarProgress(uid) {
+  const snapshot = await firebaseDb().collection("app_users").doc(uid).collection("grammar_progress").get();
+  return Object.fromEntries(snapshot.docs.map((d) => {
+    const v = d.data();
+    return [v.grammarId, { ...v, needsReview: v.needsReview || new Date(v.nextReviewAt) <= /* @__PURE__ */ new Date() }];
+  }));
+}
+
 // server.ts
+var import_express = __toESM(require("express"), 1);
+var import_dotenv = __toESM(require("dotenv"), 1);
+var import_path = __toESM(require("path"), 1);
+var import_fs = __toESM(require("fs"), 1);
+var import_axios = __toESM(require("axios"), 1);
+var cheerio = __toESM(require("cheerio"), 1);
+var import_genai2 = require("@google/genai");
+var import_openai = __toESM(require("openai"), 1);
 var import_kuroshiro = __toESM(require("kuroshiro"), 1);
 var import_kuroshiro_analyzer_kuromoji2 = __toESM(require("kuroshiro-analyzer-kuromoji"), 1);
 
@@ -97796,7 +97959,8 @@ var COST_BEARING_PATHS = [
   "/api/handwriting/grade",
   "/api/handwriting/generate-exercise",
   "/api/kanji/ai-mnemonic",
-  "/api/sentence/analyze"
+  "/api/sentence/analyze",
+  "/api/ai/analysis"
 ];
 var RATE_WINDOW_MS = 6e4;
 var RATE_MAX_REQUESTS = 40;
@@ -97836,6 +98000,8 @@ app.post("/api/shadowing/video", shadowingVideo);
 app.all("/api/shadowing/refresh", (_req, res) => res.status(410).json({ error: "Ch\u1EE9c n\u0103ng c\u1EADp nh\u1EADt ph\u1EE5 \u0111\u1EC1 t\u1EF1 \u0111\u1ED9ng \u0111\xE3 \u0111\u01B0\u1EE3c g\u1EE1. H\xE3y d\xF9ng file ph\xE2n t\xEDch t\u0129nh." }));
 app.get("/api/shadowing/analysis", shadowingReadAnalysis);
 app.post("/api/shadowing/prepare", shadowingPrepare);
+app.post("/api/ai/analysis/lookup", aiAnalysisLookup);
+app.post("/api/ai/analysis", requireAuth, aiAnalysisCreate);
 app.all("/__/auth/*", async (req, res) => {
   try {
     const targetUrl = `https://nihongo-fd01e.firebaseapp.com${req.originalUrl}`;

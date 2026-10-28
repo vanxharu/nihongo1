@@ -58,7 +58,7 @@ test('every catalog file covers its exact source and repeated loads never join s
   const manifest = JSON.parse(await readFile(new URL('../public/shadowing-analysis/manifest.json', import.meta.url), 'utf8'));
   assert.equal(manifest.totalVideos, 10);
   let total = 0;
-  for (const video of SHADOWING_VIDEOS) {
+  for (const video of SHADOWING_VIDEOS.filter(v => v.source === 'The Nihongo Nook')) { // later additions ship prepared captions only
     const id = video.youtube_video_id;
     const source = JSON.parse(await readFile(new URL(`../public/shadowing-captions/${id}.json`, import.meta.url), 'utf8'));
     let cues = parsePreparedShadowingCaptions(source, id);

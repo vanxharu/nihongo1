@@ -1,4 +1,5 @@
 import type { YouTubeListeningVideo } from '../types';
+import { SHADOWING_EXTRA } from './shadowingExtra.js';
 
 // Verified against YouTube metadata: embeddable, Japanese captions, 2024/2025 editions.
 // These are publisher-created practice tests, not official JLPT past papers.
@@ -15,7 +16,7 @@ const videos: [string, number, number][] = [
   ['uulD42uByjU', 2024, 1897],
 ];
 
-export const SHADOWING_VIDEOS: YouTubeListeningVideo[] = videos.map(([id, year, seconds], index) => ({
+const NOOK: YouTubeListeningVideo[] = videos.map(([id, year, seconds], index) => ({
   id: `shadowing-n4-${id}`, code: `N4 Đề luyện ${index + 1}`,
   title: `Bài ${String(index + 1).padStart(2, '0')} · ${year}`,
   youtube_url: `https://www.youtube.com/watch?v=${id}`, youtube_video_id: id,
@@ -27,3 +28,22 @@ export const SHADOWING_VIDEOS: YouTubeListeningVideo[] = videos.map(([id, year, 
   has_answers: true, status: 'active', order: index + 1,
   createdAt: '2026-10-04T00:00:00.000Z', updatedAt: '2026-10-04T00:00:00.000Z',
 }));
+
+const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+const counters: Record<string, number> = {};
+// Added 2026-10-28: channel practice tests and learner podcasts; captions are YouTube Japanese captions (no Vietnamese).
+const EXTRA: YouTubeListeningVideo[] = SHADOWING_EXTRA.map(([id, seconds, source, level, kind, original]) => {
+  const n = counters[source] = (counters[source] || 0) + 1;
+  const exam = kind === 'exam';
+  return {
+    id: `shadowing-${kind}-${id}`, code: exam ? `N4 Đề ${n}` : `Podcast ${n}`,
+    title: exam ? `Đề luyện nghe N4 · Bài ${String(n).padStart(2, '0')}` : original,
+    youtube_url: `https://www.youtube.com/watch?v=${id}`, youtube_video_id: id, level, category: 'Listening Practice', source,
+    source_url: `https://www.youtube.com/watch?v=${id}`,
+    description: exam ? `Đề luyện nghe JLPT N4 do kênh ${source} biên soạn, có đáp án trong video và phụ đề tiếng Nhật.` : `Podcast tiếng Nhật cho người học của kênh ${source}, có phụ đề tiếng Nhật.`,
+    duration: mmss(seconds), durationSeconds: seconds, thumbnail: `https://img.youtube.com/vi/${id}/hqdefault.jpg`,
+    has_answers: exam, status: 'active', order: 100 + n, createdAt: '2026-10-28T00:00:00.000Z', updatedAt: '2026-10-28T00:00:00.000Z',
+  };
+});
+
+export const SHADOWING_VIDEOS: YouTubeListeningVideo[] = [...NOOK, ...EXTRA];

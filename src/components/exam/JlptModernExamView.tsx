@@ -38,6 +38,7 @@ import ShibaMascot from '../mascot/ShibaMascot';
 import LiquidGlassButton from '../ui/LiquidGlassButton';
 
 import { svgDataUri } from '../../utils/sanitizeHtml';
+import AiAnalyzeButton from '../ai/AiAnalyzeButton';
 export interface JlptModernExamViewProps {
   exam: DailyExam;
   selectedSectionMode: ExamSectionMode;
@@ -295,6 +296,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
                   <div className="text-[#1F2639] font-medium text-base sm:text-lg leading-relaxed whitespace-pre-line tracking-wide font-sans">
                     {tapOn ? <TappableJa text={readingPassage} highlight={keywords} marks={passageMarks} /> : renderFormattedQuestion(readingPassage)}
                   </div>
+                  <div className="flex justify-end"><AiAnalyzeButton kind="reading" text={readingPassage} /></div>
                   <ReadingHelper qid={currentQuestion.id} passage={readingPassage} question={currentQuestion.question} revealed={revealedNow} />
                 </div>
 
@@ -769,6 +771,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
               </ul>
             )}
             {currentQuestion.section !== 'choukai' && (() => { const w = vocabIn(`${currentQuestion.question} ${currentQuestion.options.join(' ')}`).slice(0, 8); return w.length ? <p className="text-[13px]"><b>Từ trong câu:</b> {w.map(x => `${x.word} (${x.reading}) = ${x.meaning}`).join(' · ')}</p> : null; })()}
+            <p className="flex items-center gap-1 text-[13px] font-bold">Phân tích bằng AI <AiAnalyzeButton kind="question" text={[currentQuestion.audioScript, currentQuestion.question, ...currentQuestion.options.map((o, k) => `${k + 1}. ${o}`)].filter(Boolean).join('\n').slice(0, 3000)} context={`Đáp án đúng: ${currentQuestion.correctIndex + 1}`} /></p>
             {VI.q[currentQuestion.id] && <p className="text-[13px]"><b>Dịch câu hỏi:</b> {VI.q[currentQuestion.id]}</p>}
             {currentQuestion.audioScript && <p className="text-[13px] text-[#786D5E] whitespace-pre-line">🎧 {currentQuestion.audioScript}</p>}
             {VI.s[currentQuestion.id] && <p className="text-[13px] whitespace-pre-line"><b>Dịch lời nghe:</b>\n{VI.s[currentQuestion.id]}</p>}

@@ -1,6 +1,7 @@
 import { listUserFiles, userFilePart, writeUserFile } from './src/server/userFiles';
 import { getLearningState, saveLearningState, stageLearningState, learningStateManifest, learningStatePart } from './src/server/cloudLearningState';
 import { persistentJsonExists, readPersistentJson, writePersistentJson, persistentRequest } from './src/server/persistentJson';
+import { aiAnalysisLookup, aiAnalysisCreate } from './src/server/aiAnalysis';
 import { recordGrammarAttempt, userGrammarProgress } from './src/server/grammarProgress';
 import express from "express";
 import dotenv from "dotenv";
@@ -102,7 +103,7 @@ const COST_BEARING_PATHS = [
   '/api/exam/generate-ai', '/api/exam/ai-grade-and-explain', '/api/exam/review-user-notes',
   '/api/kaiwa/chat', '/api/japanese-chat', '/api/chat-gpt', '/api/transcribe-audio',
   '/api/handwriting/grade', '/api/handwriting/generate-exercise', '/api/kanji/ai-mnemonic',
-  '/api/sentence/analyze',
+  '/api/sentence/analyze', '/api/ai/analysis',
 ];
 const RATE_WINDOW_MS = 60_000;
 const RATE_MAX_REQUESTS = 40;
@@ -138,6 +139,9 @@ app.post('/api/shadowing/video', shadowingVideo);
 app.all('/api/shadowing/refresh', (_req, res) => res.status(410).json({ error: 'Chức năng cập nhật phụ đề tự động đã được gỡ. Hãy dùng file phân tích tĩnh.' }));
 app.get('/api/shadowing/analysis', shadowingReadAnalysis);
 app.post('/api/shadowing/prepare', shadowingPrepare);
+// Phân tích AI dùng chung (lưu Firestore): xem tự do, tạo mới cần đăng nhập.
+app.post('/api/ai/analysis/lookup', aiAnalysisLookup);
+app.post('/api/ai/analysis', requireAuth, aiAnalysisCreate);
 
 // Transparent Firebase Auth reverse proxy for localhost & custom domains
 app.all('/__/auth/*', async (req, res) => {

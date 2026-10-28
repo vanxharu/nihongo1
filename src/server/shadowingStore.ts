@@ -72,7 +72,7 @@ async function preparedCatalogVideo(database: FirebaseFirestore.Firestore, id: s
   const packet = JSON.parse(source);
   if (packet.videoId !== id || packet.sentenceVersion !== version || typeof packet.title !== 'string') throw new Error('INVALID_PREPARED_CATALOG');
   const cues = validateStoredCues(packet.cues);
-  if (cues.some(cue => !cue.translation || !Array.isArray(cue.readings))) throw new Error('INCOMPLETE_PREPARED_CATALOG');
+  if (cues.some(cue => !Array.isArray(cue.readings))) throw new Error('INCOMPLETE_PREPARED_CATALOG');
   try { await writeVideo(ref, packet.title, cues, existing?.revision || null, version); }
   catch (error) { if (!(error instanceof Error) || error.message !== 'REVISION_CONFLICT') throw error; }
   return readVideo(ref);
