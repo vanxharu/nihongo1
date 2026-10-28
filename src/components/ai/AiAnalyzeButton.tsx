@@ -14,6 +14,17 @@ async function post(url: string, body: unknown) {
   return { status: r.status, data };
 }
 
+// Pre-written analyses ship as static files named like the server key (sha256 of kind + text).
+async function staticAnalysis(kind: string, text: string): Promise<Analysis | null> {
+  try {
+    const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(`${kind}\n${text.trim()}`));
+    const key = [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 40);
+    const r = await fetch(`/ai-analysis/${key}.json`);
+    if (!r.ok || !r.headers.get('content-type')?.includes('json')) return null;
+    return (await r.json()).analysis || null;
+  } catch { return null; }
+}
+
 /** Nút icon "Phân tích AI": xem bản phân tích đã lưu chung; chưa có thì người đã đăng nhập tạo mới (lưu cho mọi người). */
 export default function AiAnalyzeButton({ kind, text, context, className = '', size = 16 }: { kind: AiKind; text: string; context?: string; className?: string; size?: number }) {
   const [open, setOpen] = useState(false);
@@ -27,6 +38,8 @@ export default function AiAnalyzeButton({ kind, text, context, className = '', s
     if (memo.has(key)) { setResult(memo.get(key)!); setState('done'); return; }
     setState('loading'); setError('');
     try {
+      const ready = await staticAnalysis(kind, text);
+      if (ready) { memo.set(key, ready); setResult(ready); setState('done'); return; }
       const found = await post('/api/ai/analysis/lookup', { kind, text });
       if (found.status === 200 && found.data.analysis) { memo.set(key, found.data.analysis); setResult(found.data.analysis); setState('done'); return; }
       if (found.status !== 404) throw new Error(found.data.error || 'Không đọc được phân tích.');
@@ -51,7 +64,7 @@ export default function AiAnalyzeButton({ kind, text, context, className = '', s
               <p lang="ja" className="mt-1 text-base font-bold line-clamp-3 whitespace-pre-line">{text}</p></div>
             <button type="button" onClick={() => setOpen(false)} aria-label="Đóng" className="p-1.5 rounded-lg cursor-pointer hover:bg-[color:var(--ui-tint)]"><X size={18} /></button>
           </div>
-          {state === 'loading' && <p className="flex items-center gap-2 py-6 text-sm" style={{ color: 'var(--ui-muted)' }}><Loader2 size={16} className="animate-spin" /> Đang phân tích… (lần đầu mất vài giây, sau đó lưu lại cho mọi người)</p>}
+          {state === 'loading' && <p className="flex items-center gap-2 py-6 text-sm" style={{ color: 'var(--ui-muted)' }}><Loader2 size={16} className="animate-spin" /> Đang tải phân tích…</p>}
           {state === 'login' && <p className="py-4 text-sm">Nội dung này chưa có ai phân tích. Hãy <b>đăng nhập</b> để tạo phân tích bằng AI — kết quả sẽ được lưu cho mọi người cùng xem.</p>}
           {state === 'error' && <p className="py-4 text-sm text-rose-400">{error} <button type="button" className="underline cursor-pointer" onClick={() => void run()}>Thử lại</button></p>}
           {state === 'done' && result && <div className="space-y-3 text-sm leading-relaxed">

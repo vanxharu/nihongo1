@@ -11,6 +11,7 @@ interface PitchAccentDisplayProps {
   showExplanation?: boolean;
   className?: string;
   variant?: 'badge' | 'transparent';
+  meaning?: string;
 }
 
 function PitchAccentDisplayComponent({
@@ -18,12 +19,13 @@ function PitchAccentDisplayComponent({
   reading,
   showExplanation = false,
   className = '',
-  variant = 'badge'
+  variant = 'badge',
+  meaning = ''
 }: PitchAccentDisplayProps) {
   const [showTooltip, setShowTooltip] = useState(false);
   const dialogRef = useDialogFocus(showTooltip, () => setShowTooltip(false));
-  const accent = useMemo(() => getPitchAccent(kanji, reading), [kanji, reading]);
-  const pitches = useMemo(() => calculateMoraPitches(reading, accent.type), [reading, accent.type]);
+  const accent = useMemo(() => getPitchAccent(kanji, reading, meaning), [kanji, reading, meaning]);
+  const pitches = useMemo(() => calculateMoraPitches(reading, accent.type ?? 0), [reading, accent.type]);
 
   // Helper for pitch type details
   const details = useMemo(() => {
@@ -72,6 +74,9 @@ function PitchAccentDisplayComponent({
       particleText: 'Trợ từ "ga" đi kèm GIỌNG THẤP',
     };
   }, [accent.type, pitches.length]);
+
+  // No dictionary accent: show the reading only, never a guessed contour.
+  if (accent.type === null) return <span className={`inline-block font-mono text-xs sm:text-sm font-semibold ${variant === 'transparent' ? 'text-blue-300' : 'text-slate-600 dark:text-slate-300'} ${className}`}>{reading}</span>;
 
   return (
     <div className={`relative inline-flex flex-col items-center ${className}`}>
@@ -144,6 +149,7 @@ function PitchAccentDisplayComponent({
               <span className="text-slate-600 dark:text-slate-300 block mb-0.5">Trợ từ đi kèm (が):</span>
               {details.particleText}
             </div>
+            <p className="text-[10px] text-slate-400">Dữ liệu dấu nhấn: Kanjium (Uros O.), CC BY-SA 4.0</p>
           </div>
         </div>, document.getElementById('app-root-container') || document.body
       )}

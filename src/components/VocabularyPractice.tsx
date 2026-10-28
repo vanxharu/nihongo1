@@ -3314,6 +3314,7 @@ if (loading) {
                                 <PitchAccentDisplay 
                                   kanji={currentItem.kanji} 
                                   reading={currentItem.hiragana} 
+                                  meaning={currentItem.meaning}
                                 />
                               </div>
                             )}
@@ -3355,7 +3356,7 @@ if (loading) {
                               {currentItem.onyomi && <span><b className="text-sky-300 text-base mr-1">音</b>{currentItem.onyomi}</span>}
                               {currentItem.kunyomi && <span><b className="text-amber-300 text-base mr-1">訓</b>{currentItem.kunyomi}</span>}
                             </div>
-                          ) : <PitchAccentDisplay kanji={currentItem.kanji} reading={currentItem.hiragana} variant="transparent" className="vocab-answer-reading" />}
+                          ) : <PitchAccentDisplay kanji={currentItem.kanji} reading={currentItem.hiragana} meaning={currentItem.meaning} variant="transparent" className="vocab-answer-reading" />}
                           {(currentItem.hanViet || (currentItem.kanji && getHanViet(currentItem.kanji))) && <p className="vocab-answer-hanviet text-sm font-semibold uppercase text-emerald-400">{currentItem.hanViet || getHanViet(currentItem.kanji)}</p>}
                           <h3 className="text-base sm:text-lg font-bold text-emerald-400">{currentItem.meaning}</h3>
                           {renderFlashcardWordTypes(currentItem)}
@@ -3396,7 +3397,7 @@ if (loading) {
                               {currentItem.onyomi && <span><b className="text-sky-300 text-base mr-1">音</b>{currentItem.onyomi}</span>}
                               {currentItem.kunyomi && <span><b className="text-amber-300 text-base mr-1">訓</b>{currentItem.kunyomi}</span>}
                             </div>
-                          ) : <PitchAccentDisplay kanji={currentItem.kanji} reading={currentItem.hiragana} variant="transparent" className="vocab-answer-reading" />}
+                          ) : <PitchAccentDisplay kanji={currentItem.kanji} reading={currentItem.hiragana} meaning={currentItem.meaning} variant="transparent" className="vocab-answer-reading" />}
                           {(currentItem.hanViet || (currentItem.kanji && getHanViet(currentItem.kanji))) && <p className="vocab-answer-hanviet text-sm font-semibold uppercase text-emerald-400">{currentItem.hanViet || getHanViet(currentItem.kanji)}</p>}
                           <h3 className="text-base sm:text-lg font-bold text-emerald-400">{currentItem.meaning}</h3>
                           {renderFlashcardWordTypes(currentItem)}
@@ -3557,6 +3558,7 @@ if (loading) {
                         <PitchAccentDisplay 
                           kanji={currentItem.kanji} 
                           reading={currentItem.hiragana} 
+                          meaning={currentItem.meaning}
                         />
                       </div>
                     )}

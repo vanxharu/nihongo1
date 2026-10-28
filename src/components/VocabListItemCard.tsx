@@ -352,7 +352,7 @@ function VocabListItemCardComponent({
             </div>
             {showPitchAccent && (
               <div className="origin-left scale-90 max-w-full overflow-x-auto no-scrollbar mt-1">
-                <PitchAccentDisplay kanji={v.kanji || ''} reading={v.hiragana} variant="transparent" className="text-sm tracking-wider" />
+                <PitchAccentDisplay kanji={v.kanji || ''} reading={v.hiragana} meaning={v.meaning} variant="transparent" className="text-sm tracking-wider" />
               </div>
             )}
           </div>
