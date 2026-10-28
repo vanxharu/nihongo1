@@ -16,6 +16,7 @@ import { auth } from '../../lib/firebase';
 import { activeShadowingCue, normalizeShadowingTimeline, readShadowingResponse, parseShadowingAlignment, validShadowingTimings, visibleShadowingCue, parsePreparedShadowingCaptions, prepareShadowingSentenceCues } from '../../utils/shadowing';
 import './shadowing.css';
 import ShadowingLibrary from './ShadowingLibrary';
+import { readWatchProgress, saveWatchPosition, setWatched, onWatchProgress, resumeAt } from '../../utils/watchProgress';
 
 const field = 'w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-slate-100 focus:border-amber-400 focus:outline-none';
 const compactButton = 'inline-flex min-h-8 items-center justify-center gap-1.5 rounded-lg bg-slate-800 px-3 text-xs font-semibold hover:bg-slate-700 disabled:opacity-40';
@@ -58,6 +59,13 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
   const [editing, setEditing] = useState(false);
   const [revision, setRevision] = useState<string | null>(null);
   const [customTitle, setCustomTitle] = useState('');
+  // Tiến độ xem: lưu vị trí mỗi 5 giây; mở lại video thì mời xem tiếp.
+  const [watch, setWatch] = useState(readWatchProgress);
+  useEffect(() => onWatchProgress(() => setWatch(readWatchProgress())), []);
+  const lastSaved = useRef(-1);
+  const timeOwner = useRef<string | null>(null); // video mà currentTime đang thuộc về (tránh ghi giờ của video trước sang video mới)
+  const [resumeTime, setResumeTime] = useState(0);
+  useEffect(() => { lastSaved.current = -1; timeOwner.current = null; setResumeTime(videoId ? resumeAt(readWatchProgress()[videoId]) : 0); }, [videoId]);
   const [personalVideos, setPersonalVideos] = useState<any[]>([]);
   const [authUid, setAuthUid] = useState<string | null | undefined>(undefined);
   const storageSuffix = `${authUid || 'guest'}:${videoId}`;
@@ -245,14 +253,28 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
     else if (cue?.start !== null && cue?.start !== undefined) playerRef.current?.seek(cue.start);
   }
   const library = SHADOWING_VIDEOS.filter(v => v.status === 'active');
+  const videoDuration = SHADOWING_VIDEOS.find(v => v.youtube_video_id === videoId)?.durationSeconds || cues[cues.length - 1]?.end || 0;
+  useEffect(() => {
+    if (!videoId || timeOwner.current !== videoId || currentTime <= 1 || !videoDuration || Math.abs(currentTime - lastSaved.current) < 5) return;
+    lastSaved.current = currentTime;
+    saveWatchPosition(videoId, currentTime, videoDuration);
+  }, [videoId, currentTime, videoDuration]);
+  const watched = !!(videoId && watch[videoId]?.watched);
   const sources = [...new Set(library.map(v => v.source))];
   const sourceTitle = customTitle || SHADOWING_VIDEOS.find(v => v.youtube_video_id === videoId)?.title;
   return <div className="shadowing-page mx-auto max-w-7xl space-y-3 px-3 py-3 pb-28 text-slate-100 sm:px-6">
     {notice && <p role="status" className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">{notice}</p>}
-    {!videoId ? <ShadowingLibrary videos={library} personalVideos={personalVideos} onOpen={chooseVideo} onMode={setMode} /> : <>
+    {!videoId ? <ShadowingLibrary videos={library} personalVideos={personalVideos} onOpen={chooseVideo} onMode={setMode} progress={watch} /> : <>
       <div className="flex flex-col gap-2 lg:grid lg:items-start lg:gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)]">
         <div className="max-lg:contents lg:space-y-4">
           {mode === 'analysis' && <div className="max-lg:hidden"><VideoLearningPanel videoId={videoId || ''} cues={cues} selected={displayedIndex} onJump={jumpCue} analysis={cache.current} onAnalyze={cue=>{setInsightCue({...cue});}} revision={analysisRevision} time={currentTime} furigana={furigana} showTranslation={translation} /></div>}
+          <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+            {resumeTime > 0 ? <span role="status" className="flex flex-wrap items-center gap-2 rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-1.5">
+              <span>Đang xem dở tới <b>{formatDuration(resumeTime)}</b></span>
+              <button className={compactButton} onClick={() => { playerRef.current?.seek(resumeTime); setResumeTime(0); }}>Xem tiếp</button><button className={compactButton} onClick={() => setResumeTime(0)}>Xem từ đầu</button>
+            </span> : <span />}
+            <button aria-pressed={watched} onClick={() => videoId && setWatched(videoId, !watched)} className={`shadowing-pill${watched ? ' shadowing-pill-active' : ''}`} title={watched ? 'Bỏ đánh dấu đã xem' : 'Đánh dấu video đã xem'}>{watched ? '✓ Đã xem' : 'Đánh dấu đã xem'}</button>
+          </div>
           <div className="shadowing-sticky"><ShadowingPlayer
             ref={playerRef}
             key={videoId}
@@ -260,7 +282,7 @@ export default function ShadowingHub({ onStudyReward }: { onStudyReward?: (activ
             start={parseShadowingTime(start)}
             end={parseShadowingTime(end)}
             sentenceKey={sentence}
-            onTime={setCurrentTime}
+            onTime={t => { timeOwner.current = videoId; setCurrentTime(t); }}
             compact={mode === 'dictation'}
             onPrev={selected > 0 ? () => jumpCue(selected - 1) : undefined}
             onNext={selected < cues.length - 1 ? () => jumpCue(selected + 1) : undefined}
