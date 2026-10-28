@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"次の駅で 右の ドアが 開きます。","analysis":{"translation":"Ở nhà ga tiếp theo, cửa bên phải sẽ mở.","summary":"","points":[{"title":"次の駅で","body":"\"ở ga tiếp theo\"."},{"title":"右のドアが","body":"\"cửa bên phải\"."},{"title":"開きます","body":"\"sẽ mở\": 開く đọc あく = (cửa) mở (tự động từ)."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

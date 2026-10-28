@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"今晩は 月が 明るく 見えます。","analysis":{"translation":"Tối nay có thể thấy trăng sáng.","summary":"","points":[{"title":"今晩は","body":"\"tối nay\"."},{"title":"月が明るく見えます","body":"\"trăng trông sáng\": Aい → く + 見える."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"兄と よく 虫を とりに 行きました。","analysis":{"translation":"Tôi thường đi bắt côn trùng với anh trai.","summary":"","points":[{"title":"兄とよく","body":"\"thường cùng anh trai\"."},{"title":"虫をとりに行きました","body":"\"đi bắt côn trùng\": V-ます bỏ ます + に 行く."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

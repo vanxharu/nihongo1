@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"木の 枝に 鳥が 止まって います。","analysis":{"translation":"Con chim đang đậu trên cành cây.","summary":"","points":[{"title":"木の枝に","body":"\"trên cành cây\"."},{"title":"鳥が止まっています","body":"\"chim đang đậu\": 止まる = dừng, đậu."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
