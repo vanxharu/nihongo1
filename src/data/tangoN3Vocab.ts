@@ -1,5 +1,5 @@
 import { VocabularyItem } from "../types";
-import { TANGO_N3_EXTRA } from "./tangoN3Extra";
+import { TANGO_N3_EXTRA } from "./tangoN3Extra.js";
 
 const TANGO_N3_BASE: VocabularyItem[] = [
   {
