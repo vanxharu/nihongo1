@@ -7,6 +7,7 @@ Làm tiếp từ đâu: chạy `npx tsx scripts/ai-analysis-todo.ts <nhóm> <s�
 Script tự bỏ qua mục đã có file, nên luôn in đúng phần tiếp theo:
 - `vocab` — Tango N4 theo bài (`vocab:tango_c1_s3` …), mỗi từ gồm 1 mục từ + 1 mục câu ví dụ
 - `grammar` — ngữ pháp N4 theo bài (`grammar:N4:30` …)
+- `exam` — đề thi N4 (câu hỏi + bài đọc), theo đề
 - `video` — câu thoại video Shadowing mới, video ngắn trước
 
 Viết phân tích theo đúng thứ tự todo → ghép bằng `pair.py` (scratchpad) hoặc tự tạo JSONL
@@ -25,6 +26,9 @@ Viết phân tích theo đúng thứ tự todo → ghép bằng `pair.py` (scrat
 
 - 2026-10-28 (tối): XONG toàn bộ Tango N4 (36 bài, 1787 mục từ + câu ví dụ) và toàn bộ ngữ pháp N4 (110 mẫu + 1 mẫu gộp んです/んですが của bản production).
 
+- 2026-10-28 (khuya): XONG toàn bộ đề thi N4 (594/594: 13 đề, câu hỏi + bài đọc). Câu hỏi: point = cụm trong đề + từng
+  phương án "1. …" đánh ✔ Đúng / ✘ kèm lý do; câu ★ ghi vị trí từng mảnh. Bản dịch lấy tự động từ examTranslations/examStudyData.
+
 ## Tiếp theo
 - video: video ngắn tiếp theo theo todo (94/9951 câu)
-- Chưa làm: câu hỏi thi, bài đọc hiểu, Tango N5/N3 (cần thêm vào scripts/ai-analysis-items.ts)
+- Chưa làm: Tango N5/N3, đề N5/N3 (cần thêm vào scripts/ai-analysis-items.ts)
