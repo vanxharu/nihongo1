@@ -67,6 +67,8 @@ export function useAuth() {
 }
 
 const LOCAL_STORAGE_KEY = 'nhai_kanji_user_profile_v1';
+// Ảnh mặc định (🦊 của tài khoản mới, 🐕 của hồ sơ khách được nhập lên khi đăng nhập lần đầu) = chưa chọn ảnh riêng → dùng ảnh tài khoản Google.
+export const isDefaultAvatar = (a?: string | null) => !a || a === '🦊' || a === '🐕';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -133,7 +135,8 @@ const parseDbUser = (dbData: any): UserProfile => {
       email: dbData.email || undefined,
       username: dbData.username || undefined,
       name: dbData.name || 'Học viên JLPT',
-      avatar: dbData.avatar || '🦊',
+      // Chưa chọn ảnh riêng → ảnh tài khoản Google (server không lưu ảnh này, nên mọi lần đọc lại hồ sơ đều phải gắn lại).
+      avatar: isDefaultAvatar(dbData.avatar) && dbData.uid && dbData.uid === auth.currentUser?.uid && auth.currentUser?.photoURL ? auth.currentUser.photoURL : dbData.avatar || '🦊',
       targetLevel: (dbData.targetLevel || dbData.target_level || 'N4') as any,
       xp: dbData.xp !== null && dbData.xp !== undefined ? dbData.xp : 0,
       streak: dbData.streak !== null && dbData.streak !== undefined ? dbData.streak : 0,
@@ -406,7 +409,7 @@ const parseDbUser = (dbData: any): UserProfile => {
         if (syncData.success && syncData.user) {
           const parsed = parseDbUser(syncData.user);
           // Chưa chọn ảnh riêng (còn emoji mặc định) → dùng ảnh của tài khoản mail.
-          if (firebaseUser.photoURL && (!syncData.user.avatar || parsed.avatar === '🦊')) parsed.avatar = firebaseUser.photoURL;
+          if (firebaseUser.photoURL && isDefaultAvatar(parsed.avatar)) parsed.avatar = firebaseUser.photoURL;
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
           console.log('[AUTH] Profile: LOADED');
           return parsed;
@@ -425,7 +428,7 @@ const parseDbUser = (dbData: any): UserProfile => {
           console.log('[AUTH] Profile: LOADED');
           return {
             ...parsed,
-            avatar: parsed.avatar && parsed.avatar !== '🦊' ? parsed.avatar : firebaseUser.photoURL || parsed.avatar,
+            avatar: isDefaultAvatar(parsed.avatar) ? firebaseUser.photoURL || parsed.avatar : parsed.avatar,
             role: 'user'
           };
         }
