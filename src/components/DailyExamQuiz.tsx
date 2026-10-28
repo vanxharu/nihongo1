@@ -44,7 +44,8 @@ import { REAL_EXAMS_N4_OFFICIAL } from '../data/realExamsN4_Official';
 import { REAL_EXAMS_N4_OFFICIAL_2018 } from '../data/realExamsN4_Official2018';
 
 // Chỉ giữ đề chính thức mới thêm; các đề cũ đã xoá.
-const JLPT_PAST_EXAMS: DailyExam[] = [REAL_EXAMS_N4_OFFICIAL_2018, REAL_EXAMS_N4_OFFICIAL];
+import { JLPTSUCCESS_N4_EXAMS } from '../data/jlptSuccessN4';
+const JLPT_PAST_EXAMS: DailyExam[] = [REAL_EXAMS_N4_OFFICIAL_2018, REAL_EXAMS_N4_OFFICIAL, ...JLPTSUCCESS_N4_EXAMS];
 import { ensureFullExamQuestions, JLPT_LEVEL_TARGETS } from '../data/jlptExamGenerator';
 import SrsSwitch from './ui/SrsSwitch';
 import { calculateSRS } from '../utils/srs';

@@ -1,0 +1,1 @@
+Audio and text: JLPT N4 Tutor, https://github.com/gauravhq/jlptsuccess, licensed CC BY 4.0 (repo LICENSE: CC BY-SA 4.0). AI-authored, synthetic voice, unreviewed. Modified: converted to this app format.

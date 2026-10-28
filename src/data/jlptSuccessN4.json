@@ -1,0 +1,862 @@
+[
+ {
+  "id": "jlptsuccess_n4_reading",
+  "title": "JLPT N4 – Đọc hiểu (JLPTSuccess)",
+  "level": "N4",
+  "year": "2026",
+  "session": "CC BY 4.0 · JLPT N4 Tutor (github.com/gauravhq/jlptsuccess) · AI soạn, chưa duyệt",
+  "category": "mock_daily",
+  "durationMinutes": 20,
+  "questions": [
+   {
+    "id": "n4.read.001.q1",
+    "question": "この人は 何時に おきますか。",
+    "hint": "",
+    "options": [
+     "ろく時",
+     "七時",
+     "はち時",
+     "きゅう時"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "わたしは 毎日 七時に 起きます。朝ごはんを 食べてから、学校に 行きます。学校では 日本語と すうがくを 勉強します。午後 三時に うちに 帰って、しゅくだいを します。夜は テレビを 見ながら、ご飯を 食べます。十時ごろ ねます。",
+    "explanation": "(EN) \"わたしは 毎日 七時に 起きます\" - I get up at seven every day."
+   },
+   {
+    "id": "n4.read.001.q2",
+    "question": "この人は 学校で 何を 勉強しますか。",
+    "hint": "",
+    "options": [
+     "えいごと すうがく",
+     "日本語と すうがく",
+     "日本語と えいご",
+     "おんがくと すうがく"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "わたしは 毎日 七時に 起きます。朝ごはんを 食べてから、学校に 行きます。学校では 日本語と すうがくを 勉強します。午後 三時に うちに 帰って、しゅくだいを します。夜は テレビを 見ながら、ご飯を 食べます。十時ごろ ねます。",
+    "explanation": "(EN) \"日本語と すうがくを 勉強します\""
+   },
+   {
+    "id": "n4.read.002.q1",
+    "question": "今日の てんきは どうですか。",
+    "hint": "",
+    "options": [
+     "はれ",
+     "くもり",
+     "雨",
+     "ゆき"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "今日は あさから 雨が ふっています。さむい日なので、あつい コーヒーを 飲みました。午後は 雨が やむかも しれませんが、あたたかい 服を 着て でかけたいです。明日は はれると 思います。",
+    "explanation": "(EN) \"今日は あさから 雨が ふっています\""
+   },
+   {
+    "id": "n4.read.002.q2",
+    "question": "この人は 午後 何を したいですか。",
+    "hint": "",
+    "options": [
+     "うちに いる",
+     "コーヒーを 飲む",
+     "あたたかい服を 着て でかける",
+     "ねる"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "今日は あさから 雨が ふっています。さむい日なので、あつい コーヒーを 飲みました。午後は 雨が やむかも しれませんが、あたたかい 服を 着て でかけたいです。明日は はれると 思います。",
+    "explanation": "(EN) \"あたたかい 服を 着て でかけたいです\""
+   },
+   {
+    "id": "n4.read.003.q1",
+    "question": "この人の 家族は 何人ですか。",
+    "hint": "",
+    "options": [
+     "さん人",
+     "よん人",
+     "五人",
+     "ろく人"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "わたしの 家族は 五人です。父と 母と 兄が 一人、妹が 一人 います。父は 会社員で、母は 先生です。兄は 大学生で、東京に 住んでいます。妹は 高校生です。わたしたちは 毎週 日曜日に いっしょに 食事を します。",
+    "explanation": "(EN) \"わたしの 家族は 五人です\""
+   },
+   {
+    "id": "n4.read.003.q2",
+    "question": "兄は どこに すんでいますか。",
+    "hint": "",
+    "options": [
+     "おおさか",
+     "きょうと",
+     "東京",
+     "きたうみみち"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "わたしの 家族は 五人です。父と 母と 兄が 一人、妹が 一人 います。父は 会社員で、母は 先生です。兄は 大学生で、東京に 住んでいます。妹は 高校生です。わたしたちは 毎週 日曜日に いっしょに 食事を します。",
+    "explanation": "(EN) \"兄は 大学生で、東京に 住んでいます\""
+   },
+   {
+    "id": "n4.read.003.q3",
+    "question": "家族は いつ いっしょに 食事を しますか。",
+    "hint": "",
+    "options": [
+     "毎日",
+     "毎週 ど曜日",
+     "毎週 日曜日",
+     "毎げつ"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "わたしの 家族は 五人です。父と 母と 兄が 一人、妹が 一人 います。父は 会社員で、母は 先生です。兄は 大学生で、東京に 住んでいます。妹は 高校生です。わたしたちは 毎週 日曜日に いっしょに 食事を します。",
+    "explanation": "(EN) \"毎週 日曜日に いっしょに 食事を します\""
+   },
+   {
+    "id": "n4.read.004.q1",
+    "question": "いつ きょうとに 行きましたか。",
+    "hint": "",
+    "options": [
+     "いまにち",
+     "きのう",
+     "先月",
+     "去ねん"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "先月、わたしは 友だちと きょうとに 行きました。新かんせんで 東京から きょうとまで 二時間半 かかりました。きょうとでは 古い おてらを いくつか 見ました。おてらの 中は しずかで、きれいでした。お昼は きょうとの 有名な 料理を 食べました。とても おいしかったです。また 行きたいと 思います。",
+    "explanation": "(EN) \"先月、わたしは 友だちと きょうとに 行きました\""
+   },
+   {
+    "id": "n4.read.004.q2",
+    "question": "東京から きょうとまで どのくらい かかりましたか。",
+    "hint": "",
+    "options": [
+     "いち時間",
+     "二時間半",
+     "さん時間",
+     "よん時間"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "先月、わたしは 友だちと きょうとに 行きました。新かんせんで 東京から きょうとまで 二時間半 かかりました。きょうとでは 古い おてらを いくつか 見ました。おてらの 中は しずかで、きれいでした。お昼は きょうとの 有名な 料理を 食べました。とても おいしかったです。また 行きたいと 思います。",
+    "explanation": "(EN) \"二時間半 かかりました\""
+   },
+   {
+    "id": "n4.read.004.q3",
+    "question": "きょうとで 何を 食べましたか。",
+    "hint": "",
+    "options": [
+     "アメリカの 料理",
+     "きょうとの 有名な 料理",
+     "中こくの 料理",
+     "なにも 食べなかった"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "先月、わたしは 友だちと きょうとに 行きました。新かんせんで 東京から きょうとまで 二時間半 かかりました。きょうとでは 古い おてらを いくつか 見ました。おてらの 中は しずかで、きれいでした。お昼は きょうとの 有名な 料理を 食べました。とても おいしかったです。また 行きたいと 思います。",
+    "explanation": "(EN) \"きょうとの 有名な 料理を 食べました\""
+   },
+   {
+    "id": "n4.read.005.q1",
+    "question": "なぜ デパートに 行きましたか。",
+    "hint": "",
+    "options": [
+     "じぶんの たんじょうびの プレゼントを かうため",
+     "妹の たんじょうびの プレゼントを かうため",
+     "ともだちと あうため",
+     "りょこうの じゅんびのため"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "きのう、わたしは デパートに 行きました。妹の たんじょうびの プレゼントを かいたかったです。一かいで かわいい かばんを 見ましたが、たかかったので、かいませんでした。三かいで 安くて きれいな ぼうしを 見つけました。それを かいました。妹は きっと よろこぶと 思います。",
+    "explanation": "(EN) \"妹の たんじょうびの プレゼントを かいたかったです\""
+   },
+   {
+    "id": "n4.read.005.q2",
+    "question": "なぜ 一かいの かばんを かいませんでしたか。",
+    "hint": "",
+    "options": [
+     "きれいじゃ なかったから",
+     "たかかったから",
+     "いろが よくなかったから",
+     "ちいさかったから"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "きのう、わたしは デパートに 行きました。妹の たんじょうびの プレゼントを かいたかったです。一かいで かわいい かばんを 見ましたが、たかかったので、かいませんでした。三かいで 安くて きれいな ぼうしを 見つけました。それを かいました。妹は きっと よろこぶと 思います。",
+    "explanation": "(EN) \"たかかったので、かいませんでした\""
+   },
+   {
+    "id": "n4.read.006.q1",
+    "question": "いつから 日本語を 勉強していますか。",
+    "hint": "",
+    "options": [
+     "一かげつまえ",
+     "はん年まえ",
+     "一年まえ",
+     "に年まえ"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "わたしは 日本語を 勉強しはじめて 一年に なります。さいしょは ひらがなも わからなかったですが、今は かんじも すこし よめます。先生は とても しんせつで、わたしが わからない時は ゆっくり せつめいして くれます。週に 三かい クラスに 行って、毎日 三十分 ふくしゅうします。日本人の 友だちと 話すことが、いちばん 楽しいです。",
+    "explanation": "(EN) \"日本語を 勉強しはじめて 一年に なります\""
+   },
+   {
+    "id": "n4.read.006.q2",
+    "question": "一週間に 何かい クラスに 行きますか。",
+    "hint": "",
+    "options": [
+     "一かい",
+     "にかい",
+     "三かい",
+     "毎日"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "わたしは 日本語を 勉強しはじめて 一年に なります。さいしょは ひらがなも わからなかったですが、今は かんじも すこし よめます。先生は とても しんせつで、わたしが わからない時は ゆっくり せつめいして くれます。週に 三かい クラスに 行って、毎日 三十分 ふくしゅうします。日本人の 友だちと 話すことが、いちばん 楽しいです。",
+    "explanation": "(EN) \"週に 三かい クラスに 行って\""
+   },
+   {
+    "id": "n4.read.006.q3",
+    "question": "いちばん 楽しいことは 何ですか。",
+    "hint": "",
+    "options": [
+     "先生と 話すこと",
+     "日本人の 友だちと 話すこと",
+     "かんじを よむこと",
+     "ふくしゅうすること"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "わたしは 日本語を 勉強しはじめて 一年に なります。さいしょは ひらがなも わからなかったですが、今は かんじも すこし よめます。先生は とても しんせつで、わたしが わからない時は ゆっくり せつめいして くれます。週に 三かい クラスに 行って、毎日 三十分 ふくしゅうします。日本人の 友だちと 話すことが、いちばん 楽しいです。",
+    "explanation": "(EN) \"日本人の 友だちと 話すことが、いちばん 楽しいです\""
+   },
+   {
+    "id": "n4.read.007.q1",
+    "question": "この人の すきな 食べ物は 何ですか。",
+    "hint": "",
+    "options": [
+     "てんぷらと そば",
+     "すしと ラーメン",
+     "うどんと カレー",
+     "おこのみやきと たこやき"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "日本には おいしい 食べ物が たくさん あります。わたしの すきな 食べ物は すしと ラーメンです。すしは あまり たかくない店で 食べることが できます。ラーメンは みせによって あじが ちがいます。今度の 週まつ、新しい ラーメン店に 行ってみたいです。",
+    "explanation": "(EN) \"わたしの すきな 食べ物は すしと ラーメンです\""
+   },
+   {
+    "id": "n4.read.007.q2",
+    "question": "ラーメンに ついて 何と 言っていますか。",
+    "hint": "",
+    "options": [
+     "いつも おなじ あじ",
+     "みせに よって あじが ちがう",
+     "たかい",
+     "からい"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "日本には おいしい 食べ物が たくさん あります。わたしの すきな 食べ物は すしと ラーメンです。すしは あまり たかくない店で 食べることが できます。ラーメンは みせによって あじが ちがいます。今度の 週まつ、新しい ラーメン店に 行ってみたいです。",
+    "explanation": "(EN) \"ラーメンは みせによって あじが ちがいます\""
+   },
+   {
+    "id": "n4.read.008.q1",
+    "question": "いつから 新しい 仕事を 始めますか。",
+    "hint": "",
+    "options": [
+     "今にち",
+     "来しゅう",
+     "来月",
+     "来年"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "わたしは 来月から 新しい 会社で はたらく ことに なりました。今までの 会社では 五年間 はたらきましたが、もっと 大きい 会社に いきたかったので、てんしょく しました。新しい 会社は 駅から 近くて、たてものも きれいです。どうりょうの 人たちは みんな しんせつそうです。きんちょうしますが、楽しみにしています。",
+    "explanation": "(EN) \"来月から 新しい 会社で はたらく ことに なりました\""
+   },
+   {
+    "id": "n4.read.008.q2",
+    "question": "なぜ てんしょく しましたか。",
+    "hint": "",
+    "options": [
+     "まえの 会社が きらいだったから",
+     "もっと 大きい 会社に いきたかったから",
+     "おきんが ほしかったから",
+     "いえから 近かったから"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "わたしは 来月から 新しい 会社で はたらく ことに なりました。今までの 会社では 五年間 はたらきましたが、もっと 大きい 会社に いきたかったので、てんしょく しました。新しい 会社は 駅から 近くて、たてものも きれいです。どうりょうの 人たちは みんな しんせつそうです。きんちょうしますが、楽しみにしています。",
+    "explanation": "(EN) \"もっと 大きい 会社に いきたかったので、てんしょく しました\""
+   },
+   {
+    "id": "n4.read.008.q3",
+    "question": "新しい 会社の ばしょは どうですか。",
+    "hint": "",
+    "options": [
+     "駅から とおい",
+     "駅から 近い",
+     "いなかに ある",
+     "うみの そばに ある"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "わたしは 来月から 新しい 会社で はたらく ことに なりました。今までの 会社では 五年間 はたらきましたが、もっと 大きい 会社に いきたかったので、てんしょく しました。新しい 会社は 駅から 近くて、たてものも きれいです。どうりょうの 人たちは みんな しんせつそうです。きんちょうしますが、楽しみにしています。",
+    "explanation": "(EN) \"駅から 近くて\""
+   },
+   {
+    "id": "n4.read.009.q1",
+    "question": "なぜ びょういんに 行きましたか。",
+    "hint": "",
+    "options": [
+     "あたまが いたかったから",
+     "おなかが いたかったから",
+     "けがを したから",
+     "かぜを ひいたから"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "今朝、おなかが いたかったので、びょういんに 行きました。お医者さんは わたしを みてから、「だいじょうぶです。たくさん 休んで ください」と 言いました。くすりも もらいました。三日間、しごとを 休まなければ なりません。一日 三かい くすりを 飲んで、はやく よく なりたいです。",
+    "explanation": "(EN) \"おなかが いたかったので、びょういんに 行きました\""
+   },
+   {
+    "id": "n4.read.009.q2",
+    "question": "何日 しごとを 休みますか。",
+    "hint": "",
+    "options": [
+     "一日",
+     "に日",
+     "三日",
+     "一しゅう間"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "今朝、おなかが いたかったので、びょういんに 行きました。お医者さんは わたしを みてから、「だいじょうぶです。たくさん 休んで ください」と 言いました。くすりも もらいました。三日間、しごとを 休まなければ なりません。一日 三かい くすりを 飲んで、はやく よく なりたいです。",
+    "explanation": "(EN) \"三日間、しごとを 休まなければ なりません\""
+   },
+   {
+    "id": "n4.read.009.q3",
+    "question": "一日に 何かい くすりを 飲みますか。",
+    "hint": "",
+    "options": [
+     "一かい",
+     "にかい",
+     "三かい",
+     "よんかい"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "今朝、おなかが いたかったので、びょういんに 行きました。お医者さんは わたしを みてから、「だいじょうぶです。たくさん 休んで ください」と 言いました。くすりも もらいました。三日間、しごとを 休まなければ なりません。一日 三かい くすりを 飲んで、はやく よく なりたいです。",
+    "explanation": "(EN) \"一日 三かい くすりを 飲んで\""
+   },
+   {
+    "id": "n4.read.010.q1",
+    "question": "なぜ 今の 人は あまり うんどうしませんか。",
+    "hint": "",
+    "options": [
+     "いそがしいから",
+     "コンピューターや スマートフォンの まえに ずっと すわっているから",
+     "うんどうが きらいだから",
+     "おきんが かかるから"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "今の 時代、たくさんの 人は あまり うんどうしません。コンピューターや スマートフォンの まえに ずっと すわっていることが 多いです。しかし、けんこうのために うんどうは とても たいせつだと 思います。毎日 三十分でも 歩けば、からだが 元気になります。わたしは 朝、駅まで 歩いて 行くように しています。みなさんも 何か 始めて みませんか。",
+    "explanation": "(EN) \"コンピューターや スマートフォンの まえに ずっと すわっていることが 多いです\""
+   },
+   {
+    "id": "n4.read.010.q2",
+    "question": "この人は 朝 何を しますか。",
+    "hint": "",
+    "options": [
+     "ジョギング",
+     "駅まで 歩いて 行く",
+     "たいそう",
+     "なにも しない"
+    ],
+    "correctIndex": 1,
+    "section": "dokkai",
+    "readingPassage": "今の 時代、たくさんの 人は あまり うんどうしません。コンピューターや スマートフォンの まえに ずっと すわっていることが 多いです。しかし、けんこうのために うんどうは とても たいせつだと 思います。毎日 三十分でも 歩けば、からだが 元気になります。わたしは 朝、駅まで 歩いて 行くように しています。みなさんも 何か 始めて みませんか。",
+    "explanation": "(EN) \"わたしは 朝、駅まで 歩いて 行くように しています\""
+   },
+   {
+    "id": "n4.read.010.q3",
+    "question": "この人の 意見は 何ですか。",
+    "hint": "",
+    "options": [
+     "うんどうは ひつようない",
+     "コンピューターは よくない",
+     "けんこうのために うんどうは たいせつ",
+     "駅まで 歩くのが しんどい"
+    ],
+    "correctIndex": 2,
+    "section": "dokkai",
+    "readingPassage": "今の 時代、たくさんの 人は あまり うんどうしません。コンピューターや スマートフォンの まえに ずっと すわっていることが 多いです。しかし、けんこうのために うんどうは とても たいせつだと 思います。毎日 三十分でも 歩けば、からだが 元気になります。わたしは 朝、駅まで 歩いて 行くように しています。みなさんも 何か 始めて みませんか。",
+    "explanation": "(EN) \"けんこうのために うんどうは とても たいせつだと 思います\""
+   }
+  ]
+ },
+ {
+  "id": "jlptsuccess_n4_listening",
+  "title": "JLPT N4 – Nghe hiểu (JLPTSuccess)",
+  "level": "N4",
+  "year": "2026",
+  "session": "CC BY 4.0 · JLPT N4 Tutor (github.com/gauravhq/jlptsuccess) · AI soạn, chưa duyệt",
+  "category": "mock_daily",
+  "durationMinutes": 30,
+  "questions": [
+   {
+    "id": "n4.listen.001",
+    "question": "あした、二人は どこで 会いますか。",
+    "hint": "",
+    "options": [
+     "病院の 前",
+     "カフェの 前",
+     "えいがかんの 前",
+     "こうえんの 前"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.001.mp3",
+    "audioScript": "男の人と 女の人が 話しています。あした、二人は どこで 会いますか。\n男：あした、さん時に 会いませんか。\n女：いいですね。どこで 会いますか。\n男：病院の 前で どうですか。\n女：カフェの 前の ほうが いいです。\n男：はい、わかりました。",
+    "explanation": "(EN) The man initially suggested 病院, but the woman preferred カフェ and the man agreed."
+   },
+   {
+    "id": "n4.listen.003",
+    "question": "あした、二人は どこで 会いますか。",
+    "hint": "",
+    "options": [
+     "えきの 前",
+     "デパートの 前",
+     "えいがかんの 前",
+     "こうえんの 前"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.003.mp3",
+    "audioScript": "男の人と 女の人が 話しています。あした、二人は どこで 会いますか。\n男：あした、ご時に 会いませんか。\n女：いいですね。どこで 会いますか。\n男：えきの 前で どうですか。\n女：デパートの 前の ほうが いいです。\n男：はい、わかりました。",
+    "explanation": "(EN) The man initially suggested えき, but the woman preferred デパート and the man agreed."
+   },
+   {
+    "id": "n4.listen.004",
+    "question": "あした、二人は どこで 会いますか。",
+    "hint": "",
+    "options": [
+     "病院の 前",
+     "本やの 前",
+     "えいがかんの 前",
+     "こうえんの 前"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.004.mp3",
+    "audioScript": "男の人と 女の人が 話しています。あした、二人は どこで 会いますか。\n男：あした、はち時に 会いませんか。\n女：いいですね。どこで 会いますか。\n男：病院の 前で どうですか。\n女：本やの 前の ほうが いいです。\n男：はい、わかりました。",
+    "explanation": "(EN) The man initially suggested 病院, but the woman preferred 本や and the man agreed."
+   },
+   {
+    "id": "n4.listen.005",
+    "question": "あした、二人は どこで 会いますか。",
+    "hint": "",
+    "options": [
+     "デパートの 前",
+     "銀行の 前",
+     "えいがかんの 前",
+     "こうえんの 前"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.005.mp3",
+    "audioScript": "男の人と 女の人が 話しています。あした、二人は どこで 会いますか。\n男：あした、く時に 会いませんか。\n女：いいですね。どこで 会いますか。\n男：デパートの 前で どうですか。\n女：銀行の 前の ほうが いいです。\n男：はい、わかりました。",
+    "explanation": "(EN) The man initially suggested デパート, but the woman preferred 銀行 and the man agreed."
+   },
+   {
+    "id": "n4.listen.006",
+    "question": "あした、二人は どこで 会いますか。",
+    "hint": "",
+    "options": [
+     "カフェの 前",
+     "ホテルの 前",
+     "えいがかんの 前",
+     "こうえんの 前"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.006.mp3",
+    "audioScript": "男の人と 女の人が 話しています。あした、二人は どこで 会いますか。\n男：あした、さん時に 会いませんか。\n女：いいですね。どこで 会いますか。\n男：カフェの 前で どうですか。\n女：ホテルの 前の ほうが いいです。\n男：はい、わかりました。",
+    "explanation": "(EN) The man initially suggested カフェ, but the woman preferred ホテル and the man agreed."
+   },
+   {
+    "id": "n4.listen.008",
+    "question": "あした、二人は どこで 会いますか。",
+    "hint": "",
+    "options": [
+     "カフェの 前",
+     "えきの 前",
+     "えいがかんの 前",
+     "こうえんの 前"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.008.mp3",
+    "audioScript": "男の人と 女の人が 話しています。あした、二人は どこで 会いますか。\n男：あした、ご時に 会いませんか。\n女：いいですね。どこで 会いますか。\n男：カフェの 前で どうですか。\n女：えきの 前の ほうが いいです。\n男：はい、わかりました。",
+    "explanation": "(EN) The man initially suggested カフェ, but the woman preferred えき and the man agreed."
+   },
+   {
+    "id": "n4.listen.009",
+    "question": "あした、二人は どこで 会いますか。",
+    "hint": "",
+    "options": [
+     "病院の 前",
+     "デパートの 前",
+     "えいがかんの 前",
+     "こうえんの 前"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.009.mp3",
+    "audioScript": "男の人と 女の人が 話しています。あした、二人は どこで 会いますか。\n男：あした、はち時に 会いませんか。\n女：いいですね。どこで 会いますか。\n男：病院の 前で どうですか。\n女：デパートの 前の ほうが いいです。\n男：はい、わかりました。",
+    "explanation": "(EN) The man initially suggested 病院, but the woman preferred デパート and the man agreed."
+   },
+   {
+    "id": "n4.listen.010",
+    "question": "あした、二人は どこで 会いますか。",
+    "hint": "",
+    "options": [
+     "えきの 前",
+     "本やの 前",
+     "えいがかんの 前",
+     "こうえんの 前"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.010.mp3",
+    "audioScript": "男の人と 女の人が 話しています。あした、二人は どこで 会いますか。\n男：あした、く時に 会いませんか。\n女：いいですね。どこで 会いますか。\n男：えきの 前で どうですか。\n女：本やの 前の ほうが いいです。\n男：はい、わかりました。",
+    "explanation": "(EN) The man initially suggested えき, but the woman preferred 本や and the man agreed."
+   },
+   {
+    "id": "n4.listen.011",
+    "question": "おとこの ひとは なにを かいましたか。",
+    "hint": "",
+    "options": [
+     "りんごを ひとつ",
+     "りんごを ふたつ",
+     "りんごを みっつ",
+     "なにも かいませんでした"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.011.mp3",
+    "audioScript": "おとこの ひとが みせで かいものを しています。なにを かいましたか。\n男：すみません、りんごは ありますか。\n店：はい、こちらです。200円です。\n男：じゃあ、ふたつ ください。",
+    "explanation": "(EN) The man asked for two of the りんご (りんご)."
+   },
+   {
+    "id": "n4.listen.012",
+    "question": "おとこの ひとは なにを かいましたか。",
+    "hint": "",
+    "options": [
+     "パンを ひとつ",
+     "パンを ふたつ",
+     "パンを みっつ",
+     "なにも かいませんでした"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.012.mp3",
+    "audioScript": "おとこの ひとが みせで かいものを しています。なにを かいましたか。\n男：すみません、パンは ありますか。\n店：はい、こちらです。150円です。\n男：じゃあ、ふたつ ください。",
+    "explanation": "(EN) The man asked for two of the パン (ぱん)."
+   },
+   {
+    "id": "n4.listen.013",
+    "question": "おとこの ひとは なにを かいましたか。",
+    "hint": "",
+    "options": [
+     "ぎゅうにゅうを ひとつ",
+     "ぎゅうにゅうを ふたつ",
+     "ぎゅうにゅうを みっつ",
+     "なにも かいませんでした"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.013.mp3",
+    "audioScript": "おとこの ひとが みせで かいものを しています。なにを かいましたか。\n男：すみません、ぎゅうにゅうは ありますか。\n店：はい、こちらです。180円です。\n男：じゃあ、ふたつ ください。",
+    "explanation": "(EN) The man asked for two of the ぎゅうにゅう (ぎゅうにゅう)."
+   },
+   {
+    "id": "n4.listen.014",
+    "question": "おとこの ひとは なにを かいましたか。",
+    "hint": "",
+    "options": [
+     "お茶を ひとつ",
+     "お茶を ふたつ",
+     "お茶を みっつ",
+     "なにも かいませんでした"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.014.mp3",
+    "audioScript": "おとこの ひとが みせで かいものを しています。なにを かいましたか。\n男：すみません、お茶は ありますか。\n店：はい、こちらです。120円です。\n男：じゃあ、ふたつ ください。",
+    "explanation": "(EN) The man asked for two of the お茶 (おちゃ)."
+   },
+   {
+    "id": "n4.listen.015",
+    "question": "おとこの ひとは なにを かいましたか。",
+    "hint": "",
+    "options": [
+     "みずを ひとつ",
+     "みずを ふたつ",
+     "みずを みっつ",
+     "なにも かいませんでした"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.015.mp3",
+    "audioScript": "おとこの ひとが みせで かいものを しています。なにを かいましたか。\n男：すみません、みずは ありますか。\n店：はい、こちらです。100円です。\n男：じゃあ、ふたつ ください。",
+    "explanation": "(EN) The man asked for two of the みず (みず)."
+   },
+   {
+    "id": "n4.listen.016",
+    "question": "おとこの ひとは なにを かいましたか。",
+    "hint": "",
+    "options": [
+     "カバンを ひとつ",
+     "カバンを ふたつ",
+     "カバンを みっつ",
+     "なにも かいませんでした"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.016.mp3",
+    "audioScript": "おとこの ひとが みせで かいものを しています。なにを かいましたか。\n男：すみません、カバンは ありますか。\n店：はい、こちらです。3000円です。\n男：じゃあ、ふたつ ください。",
+    "explanation": "(EN) The man asked for two of the カバン (かばん)."
+   },
+   {
+    "id": "n4.listen.017",
+    "question": "おとこの ひとは なにを かいましたか。",
+    "hint": "",
+    "options": [
+     "くつを ひとつ",
+     "くつを ふたつ",
+     "くつを みっつ",
+     "なにも かいませんでした"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.017.mp3",
+    "audioScript": "おとこの ひとが みせで かいものを しています。なにを かいましたか。\n男：すみません、くつは ありますか。\n店：はい、こちらです。5000円です。\n男：じゃあ、ふたつ ください。",
+    "explanation": "(EN) The man asked for two of the くつ (くつ)."
+   },
+   {
+    "id": "n4.listen.018",
+    "question": "おとこの ひとは なにを かいましたか。",
+    "hint": "",
+    "options": [
+     "シャツを ひとつ",
+     "シャツを ふたつ",
+     "シャツを みっつ",
+     "なにも かいませんでした"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.018.mp3",
+    "audioScript": "おとこの ひとが みせで かいものを しています。なにを かいましたか。\n男：すみません、シャツは ありますか。\n店：はい、こちらです。2500円です。\n男：じゃあ、ふたつ ください。",
+    "explanation": "(EN) The man asked for two of the シャツ (しゃつ)."
+   },
+   {
+    "id": "n4.listen.019",
+    "question": "おとこの ひとは なにを かいましたか。",
+    "hint": "",
+    "options": [
+     "ぼうしを ひとつ",
+     "ぼうしを ふたつ",
+     "ぼうしを みっつ",
+     "なにも かいませんでした"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.019.mp3",
+    "audioScript": "おとこの ひとが みせで かいものを しています。なにを かいましたか。\n男：すみません、ぼうしは ありますか。\n店：はい、こちらです。1500円です。\n男：じゃあ、ふたつ ください。",
+    "explanation": "(EN) The man asked for two of the ぼうし (ぼうし)."
+   },
+   {
+    "id": "n4.listen.020",
+    "question": "おとこの ひとは なにを かいましたか。",
+    "hint": "",
+    "options": [
+     "じてんしゃを ひとつ",
+     "じてんしゃを ふたつ",
+     "じてんしゃを みっつ",
+     "なにも かいませんでした"
+    ],
+    "correctIndex": 1,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.020.mp3",
+    "audioScript": "おとこの ひとが みせで かいものを しています。なにを かいましたか。\n男：すみません、じてんしゃは ありますか。\n店：はい、こちらです。12000円です。\n男：じゃあ、ふたつ ください。",
+    "explanation": "(EN) The man asked for two of the じてんしゃ (じてんしゃ)."
+   },
+   {
+    "id": "n4.listen.021",
+    "question": "おとこの ひとは なにに ついて はなしていますか。",
+    "hint": "",
+    "options": [
+     "day after tomorrow",
+     "てんき",
+     "りょこう",
+     "しごと"
+    ],
+    "correctIndex": 0,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.021.mp3",
+    "audioScript": "あさっては とても いいです。",
+    "explanation": "(EN) The speaker is talking about day after tomorrow."
+   },
+   {
+    "id": "n4.listen.022",
+    "question": "おとこの ひとは なにに ついて はなしていますか。",
+    "hint": "",
+    "options": [
+     "evening",
+     "てんき",
+     "りょこう",
+     "しごと"
+    ],
+    "correctIndex": 0,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.022.mp3",
+    "audioScript": "ゆうがたは とても いいです。",
+    "explanation": "(EN) The speaker is talking about evening."
+   },
+   {
+    "id": "n4.listen.023",
+    "question": "おとこの ひとは なにに ついて はなしていますか。",
+    "hint": "",
+    "options": [
+     "company employee",
+     "てんき",
+     "りょこう",
+     "しごと"
+    ],
+    "correctIndex": 0,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.023.mp3",
+    "audioScript": "会社員は とても いいです。",
+    "explanation": "(EN) The speaker is talking about company employee."
+   },
+   {
+    "id": "n4.listen.024",
+    "question": "おとこの ひとは なにに ついて はなしていますか。",
+    "hint": "",
+    "options": [
+     "pupil, schoolchild",
+     "てんき",
+     "りょこう",
+     "しごと"
+    ],
+    "correctIndex": 0,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.024.mp3",
+    "audioScript": "せいとは とても いいです。",
+    "explanation": "(EN) The speaker is talking about pupil, schoolchild."
+   },
+   {
+    "id": "n4.listen.025",
+    "question": "おとこの ひとは なにに ついて はなしていますか。",
+    "hint": "",
+    "options": [
+     "grandmother, elderly woman",
+     "てんき",
+     "りょこう",
+     "しごと"
+    ],
+    "correctIndex": 0,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.025.mp3",
+    "audioScript": "おばあさんは とても いいです。",
+    "explanation": "(EN) The speaker is talking about grandmother, elderly woman."
+   },
+   {
+    "id": "n4.listen.026",
+    "question": "おとこの ひとは なにに ついて はなしていますか。",
+    "hint": "",
+    "options": [
+     "woman",
+     "てんき",
+     "りょこう",
+     "しごと"
+    ],
+    "correctIndex": 0,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.026.mp3",
+    "audioScript": "女は とても いいです。",
+    "explanation": "(EN) The speaker is talking about woman."
+   },
+   {
+    "id": "n4.listen.027",
+    "question": "おとこの ひとは なにに ついて はなしていますか。",
+    "hint": "",
+    "options": [
+     "mouth",
+     "てんき",
+     "りょこう",
+     "しごと"
+    ],
+    "correctIndex": 0,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.027.mp3",
+    "audioScript": "くちは とても いいです。",
+    "explanation": "(EN) The speaker is talking about mouth."
+   },
+   {
+    "id": "n4.listen.028",
+    "question": "おとこの ひとは なにに ついて はなしていますか。",
+    "hint": "",
+    "options": [
+     "tonight",
+     "てんき",
+     "りょこう",
+     "しごと"
+    ],
+    "correctIndex": 0,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.028.mp3",
+    "audioScript": "こんやは とても いいです。",
+    "explanation": "(EN) The speaker is talking about tonight."
+   },
+   {
+    "id": "n4.listen.029",
+    "question": "おとこの ひとは なにに ついて はなしていますか。",
+    "hint": "",
+    "options": [
+     "parents",
+     "てんき",
+     "りょこう",
+     "しごと"
+    ],
+    "correctIndex": 0,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.029.mp3",
+    "audioScript": "りょうしんは とても いいです。",
+    "explanation": "(EN) The speaker is talking about parents."
+   },
+   {
+    "id": "n4.listen.030",
+    "question": "おとこの ひとは なにに ついて はなしていますか。",
+    "hint": "",
+    "options": [
+     "this morning",
+     "てんき",
+     "りょこう",
+     "しごと"
+    ],
+    "correctIndex": 0,
+    "section": "choukai",
+    "audioUrl": "/audio/jlptsuccess/n4.listen.030.mp3",
+    "audioScript": "けさは とても いいです。",
+    "explanation": "(EN) The speaker is talking about this morning."
+   }
+  ]
+ }
+]
