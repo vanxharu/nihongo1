@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"先生から ていねいな メールを いただきました。","analysis":{"translation":"Tôi đã nhận e-mail lịch sự từ giáo viên.","summary":"","points":[{"title":"先生から","body":"\"từ thầy\"."},{"title":"ていねいなメールを","body":"\"email lịch sự\"."},{"title":"いただきました","body":"\"đã nhận\": khiêm nhường ngữ của もらう."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"彼は サッカーも 野球も とても うまいです。","analysis":{"translation":"Anh ấy rất giỏi đá bóng lẫn bóng chày.","summary":"","points":[{"title":"彼は","body":"\"anh ấy\"."},{"title":"サッカーも野球も","body":"\"cả bóng đá lẫn bóng chày\"."},{"title":"とてもうまいです","body":"\"rất giỏi\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

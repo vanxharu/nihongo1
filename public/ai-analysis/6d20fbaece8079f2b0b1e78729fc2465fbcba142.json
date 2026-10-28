@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"この 店は 外国の お客さんが とても ふえて います。","analysis":{"translation":"Tiệm này khách nước ngoài tăng nhiều.","summary":"","points":[{"title":"この店は","body":"\"quán này\"."},{"title":"外国のお客さんが","body":"\"khách nước ngoài\"."},{"title":"とてもふえています","body":"\"đang tăng nhiều\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
