@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"バスに 乗って、東京を 見物しました。","analysis":{"translation":"Tôi đã đi xe buýt tham quan Tokyo.","summary":"","points":[{"title":"バスに乗って","body":"\"lên xe buýt\": 乗り物 + に 乗る."},{"title":"東京を見物しました","body":"\"đã tham quan Tokyo\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

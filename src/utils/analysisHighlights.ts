@@ -5,7 +5,8 @@ type Point = { title: string; body: string };
 const JP = /[぀-ヿ㐀-鿿々ー]/;
 const escape = (c: string) => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 // Match ignoring the spaces textbook sentences put between words (ランチの 時間).
-const looseRegex = (s: string) => new RegExp([...s.replace(/\s+/g, '')].map(escape).join('\\s*'));
+// Commas are ignored too, so a chunk written without 、 still matches 毎日、3時に.
+const looseRegex = (s: string) => new RegExp([...s.replace(/[\s、，,]+/g, '')].map(escape).join('[\\s、，,]*'));
 
 function vocabItems(body: string) {
   return body.split(/\s·\s/).map(part => {

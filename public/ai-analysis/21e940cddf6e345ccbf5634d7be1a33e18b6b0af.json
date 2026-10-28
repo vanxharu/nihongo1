@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"あの 店は 2000円で 食べ放題です。","analysis":{"translation":"Tiệm đó có thể ăn tùy thích với 2000 yên.","summary":"","points":[{"title":"あの店は","body":"\"quán kia thì\"."},{"title":"2000円で","body":"\"với 2000 yên\"."},{"title":"食べ放題です","body":"\"ăn thả cửa\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

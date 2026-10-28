@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"今日は 洋食が 食べたいです。","analysis":{"translation":"Hôm nay tôi muốn ăn món Tây.","summary":"","points":[{"title":"今日は","body":"\"hôm nay\"."},{"title":"洋食が食べたいです","body":"\"muốn ăn món Tây\": N が 食べたい."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
