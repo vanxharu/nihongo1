@@ -11,5 +11,5 @@ const groups: string[] = [];
 for (const i of items) {
   if (!i.group.startsWith(prefix) || (!process.env.ALL && existsSync(analysisPath(i.kind, i.text)))) continue;
   if (!groups.includes(i.group)) { if (groups.length >= Number(limit)) break; groups.push(i.group); }
-  console.log(JSON.stringify({ k: i.kind, t: i.text, c: i.context }));
+  console.log(JSON.stringify({ k: i.kind, t: i.text, c: i.context, ...(i.qid && { q: i.qid }) }));
 }
