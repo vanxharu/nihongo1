@@ -83,7 +83,8 @@ export default function MobilePracticeHub({ userProfile, onNavigate }: MobilePra
   const [year, month, day] = todayStr.split('-').map(Number);
   const dayNumber = Math.floor(Date.UTC(year, month - 1, day) / 86400000);
   const dailyRotation = ((dayNumber % 7) + 7) % 7;
-  const srsDue = Object.values(userProfile.vocabStatus || {}).filter((v: any) => v && typeof v === 'object' && v.nextReviewDate && new Date(v.nextReviewDate) <= new Date()).length;
+  // Thanh này mở trang Từ vựng: chỉ đếm lịch của bộ từ vựng (bỏ kanji kj_, sổ tay my_, dữ liệu đã gỡ oj_) để khớp số ở trang.
+  const srsDue = Object.entries(userProfile.vocabStatus || {}).filter(([id, v]: [string, any]) => !/^(kj|my|oj)_/.test(id) && v && typeof v === 'object' && v.nextReviewDate && new Date(v.nextReviewDate) <= new Date()).length;
   type DailySkill = 'vocab' | 'grammar' | 'kanji';
   const skillNames: Record<DailySkill, string> = { vocab: 'Từ vựng', grammar: 'Ngữ pháp', kanji: 'Kanji' };
   const skillRoutes: Record<DailySkill, string> = { vocab: 'vocabulary', grammar: 'grammar', kanji: 'kanji' };

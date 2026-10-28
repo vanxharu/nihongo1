@@ -5,7 +5,7 @@ import VocabularyIllustration, { preloadVocabularyIllustrations } from './Vocabu
  */
 
 import { useParams } from 'react-router-dom';
-import { calculateSRS } from '../utils/srs';
+import { reviewSRS } from '../utils/srs';
 import { maskVocabularyInExample } from '../utils/vocabularyCloze';
 import HeartLike from './ui/HeartLike';
 import SrsSwitch from './ui/SrsSwitch';
@@ -827,16 +827,19 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   
   // Lessons group
   // SRS due items should include any studied item within the allowed target levels
+  // Kanji: các chế độ luyện tách mỗi chữ thành từng từ (id …_wN) nhưng lịch ôn tính theo chữ.
+  const srsKey = (v: { id: string }) => (kanjiMode ? v.id.replace(/_w\d+$/, '') : v.id);
+  // Đến hạn tính trên cả bộ đang mở (mọi cấp, mọi giáo trình) để khớp số đếm ở thanh SRS trên điện thoại.
   const srsDueItems = useMemo(() => {
     const now = new Date();
-    return filteredVocab.filter(v => {
+    return vocabData.filter(v => {
       const s = userProfile.vocabStatus[v.id] as any;
       if (s && typeof s === 'object' && s.nextReviewDate) {
         return new Date(s.nextReviewDate) <= now;
       }
       return false;
     });
-  }, [filteredVocab, userProfile.vocabStatus]);
+  }, [vocabData, userProfile.vocabStatus]);
 
   // SRS tự động (công tắc SRS): bật + có từ đến hạn thì vào phiên ôn một lần mỗi lần mở trang; tắt thì thoát phiên.
   const [srsOn] = useSrsAuto();
@@ -2279,8 +2282,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
     const { currentItem: item, userProfile: profile } = stateRef.current;
     if (!item || markTimerRef.current !== null) return; // a mark is already pending: ignore repeats (no XP farming / double skip)
     const status = { ...profile.vocabStatus };
-    const oldStatus = typeof status[item.id] === 'object' ? (status[item.id] as any) : null;
-    status[item.id] = calculateSRS(oldStatus, mastered ? 5 : 2);
+    const oldStatus = typeof status[srsKey(item)] === 'object' ? (status[srsKey(item)] as any) : null;
+    status[srsKey(item)] = reviewSRS(oldStatus, mastered);
     updateProfile({ vocabStatus: status });
     if (mastered) {
       playCorrectSound();
@@ -2401,13 +2404,17 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       playCorrectSound();
       onEarnXp(20);
       const status = { ...userProfile.vocabStatus };
-      const oldStatus = typeof status[currentItem.id] === 'object' ? (status[currentItem.id] as any) : null;
-      status[currentItem.id] = calculateSRS(oldStatus, 5);
+      const oldStatus = typeof status[srsKey(currentItem)] === 'object' ? (status[srsKey(currentItem)] as any) : null;
+      status[srsKey(currentItem)] = reviewSRS(oldStatus, true);
       updateProfile({ vocabStatus: status });
     } else {
       setCramFeedback('wrong');
       setReactionState('wrong');
       playIncorrectSound();
+      const status = { ...userProfile.vocabStatus };
+      const oldStatus = typeof status[srsKey(currentItem)] === 'object' ? (status[srsKey(currentItem)] as any) : null;
+      status[srsKey(currentItem)] = reviewSRS(oldStatus, false);
+      updateProfile({ vocabStatus: status });
     }
   };
 
@@ -2432,8 +2439,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       const randomPraise = QUIZ_PRAISES[Math.floor(Math.random() * QUIZ_PRAISES.length)];
       setQuizFeedbackMessage(randomPraise);
       const status = { ...userProfile.vocabStatus };
-      const oldStatus = typeof status[currentItem.id] === 'object' ? (status[currentItem.id] as any) : null;
-      status[currentItem.id] = calculateSRS(oldStatus, 5);
+      const oldStatus = typeof status[srsKey(currentItem)] === 'object' ? (status[srsKey(currentItem)] as any) : null;
+      status[srsKey(currentItem)] = reviewSRS(oldStatus, true);
       updateProfile({ vocabStatus: status });
     } else {
       setReactionState('wrong');
@@ -2441,8 +2448,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       const randomRoast = QUIZ_ROASTS[Math.floor(Math.random() * QUIZ_ROASTS.length)];
       setQuizFeedbackMessage(randomRoast);
       const status = { ...userProfile.vocabStatus };
-      const oldStatus = typeof status[currentItem.id] === 'object' ? (status[currentItem.id] as any) : null;
-      status[currentItem.id] = calculateSRS(oldStatus, 2);
+      const oldStatus = typeof status[srsKey(currentItem)] === 'object' ? (status[srsKey(currentItem)] as any) : null;
+      status[srsKey(currentItem)] = reviewSRS(oldStatus, false);
       updateProfile({ vocabStatus: status });
     }
   };
@@ -2463,6 +2470,11 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       setSelectedAnswerIndex(correctIdx);
       playIncorrectSound();
     }
+    // Đầu hàng = không nhớ: đưa vào lịch ôn như trả lời sai.
+    const status = { ...userProfile.vocabStatus };
+    const oldStatus = typeof status[srsKey(currentItem)] === 'object' ? (status[srsKey(currentItem)] as any) : null;
+    status[srsKey(currentItem)] = reviewSRS(oldStatus, false);
+    updateProfile({ vocabStatus: status });
   };
 
   const handleSelectDokkai = (idx: number) => {
@@ -2479,8 +2491,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       const randomPraise = QUIZ_PRAISES[Math.floor(Math.random() * QUIZ_PRAISES.length)];
       setQuizFeedbackMessage(randomPraise);
       const status = { ...userProfile.vocabStatus };
-      const oldStatus = typeof status[currentItem.id] === 'object' ? (status[currentItem.id] as any) : null;
-      status[currentItem.id] = calculateSRS(oldStatus, 5);
+      const oldStatus = typeof status[srsKey(currentItem)] === 'object' ? (status[srsKey(currentItem)] as any) : null;
+      status[srsKey(currentItem)] = reviewSRS(oldStatus, true);
       updateProfile({ vocabStatus: status });
     } else {
       setReactionState('wrong');
@@ -2488,8 +2500,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
       const randomRoast = QUIZ_ROASTS[Math.floor(Math.random() * QUIZ_ROASTS.length)];
       setQuizFeedbackMessage(randomRoast);
       const status = { ...userProfile.vocabStatus };
-      const oldStatus = typeof status[currentItem.id] === 'object' ? (status[currentItem.id] as any) : null;
-      status[currentItem.id] = calculateSRS(oldStatus, 2);
+      const oldStatus = typeof status[srsKey(currentItem)] === 'object' ? (status[srsKey(currentItem)] as any) : null;
+      status[srsKey(currentItem)] = reviewSRS(oldStatus, false);
       updateProfile({ vocabStatus: status });
     }
   };

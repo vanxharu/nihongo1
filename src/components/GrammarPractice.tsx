@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { UserProfile, GrammarItem, JLPTLevel } from '../types';
 import { GRAMMAR_DATA } from '../data';
 import { safeFetchJson } from '../utils/safeApi';
+import { reviewSRS } from '../utils/srs';
+import type { SRSStatus } from '../types';
 import { deduplicateGrammars, getGrammarStatusWithAliases } from '../utils/grammarDeduplicator';
 import GrammarMindmapOverview from './grammar/GrammarMindmapOverview';
 import './grammar/grammarLayout.css';
@@ -11,6 +13,13 @@ import GrammarPointDetailView from './grammar/GrammarPointDetailView';
 import GrammarPracticeView from './grammar/GrammarPracticeView';
 import fallbackAiContents from '../data/grammarAiContents.json';
 import { FALLBACK_PATTERNS } from './grammarData';
+
+// Lịch SM-2 của một mẫu ngữ pháp lưu trong grammarStatus: srsStage = số lần nhớ liên tiếp + 1 (0 = không ôn), nextReview (ms).
+const grammarSrs = (st: any): SRSStatus | null => Number(st?.srsStage) > 0 && st?.nextReview
+  ? { interval: Number(st.srsInterval) || 1, easeFactor: Number(st.srsEase) || 2.5, repetitions: Number(st.srsStage) - 1, nextReviewDate: new Date(st.nextReview).toISOString() }
+  : null;
+const grammarSrsFields = (s: SRSStatus) => ({ srsStage: s.repetitions + 1, srsInterval: s.interval, srsEase: s.easeFactor, nextReview: Date.parse(s.nextReviewDate) });
+export const isGrammarDue = (st: any, now = Date.now()) => Number(st?.srsStage) > 0 && !!st?.nextReview && st.nextReview <= now;
 
 const LOCAL_GRAMMARS: GrammarItem[] = GRAMMAR_DATA.length ? GRAMMAR_DATA : Object.entries(FALLBACK_PATTERNS).flatMap(([level, lessons]) => Object.entries(lessons).flatMap(([lesson, patterns]) => patterns.map((pattern, index) => ({ ...pattern, id: `local_${level}_${lesson}_${index}`, level: level as JLPTLevel, lessonNumber: Number(lesson), lessonName: `Bài ${lesson}` }))));
 
@@ -224,9 +233,10 @@ export default function GrammarPractice({
           isBookmarked: false
         };
 
-    const nextStage = Number(current.srsStage || 0) === 0 ? 1 : 0;
+    const on = Number(current.srsStage || 0) === 0;
     const now = Date.now();
-    const nextReviewTime = nextStage === 1 ? now + 24 * 60 * 60 * 1000 : null;
+    // Bật: ôn lần đầu vào ngày mai (như vừa học xong). Tắt: bỏ khỏi lịch.
+    const srs = on ? grammarSrsFields(reviewSRS(null, true)) : { srsStage: 0, nextReview: null };
 
     const currentMap = (typeof userProfile.grammarStatus === 'object' && userProfile.grammarStatus !== null)
       ? userProfile.grammarStatus
@@ -236,10 +246,9 @@ export default function GrammarPractice({
       ...currentMap,
       [grammarId]: {
         ...current,
-        srsStage: nextStage,
-        nextReview: nextReviewTime,
+        ...srs,
         lastReviewed: now,
-        state: nextStage > 0 ? ('learning' as const) : ('new' as const)
+        state: on ? ('learning' as const) : ('new' as const)
       }
     };
 
@@ -273,7 +282,9 @@ export default function GrammarPractice({
         correctCount: isCorrect ? (Number(current.correctCount || 0) + 1) : Number(current.correctCount || 0),
         incorrectCount: !isCorrect ? (Number(current.incorrectCount || 0) + 1) : Number(current.incorrectCount || 0),
         lastReviewed: Date.now(),
-        state: isCorrect ? (current.state === 'mastered' ? ('mastered' as const) : ('learned' as const)) : current.state
+        state: isCorrect ? (current.state === 'mastered' ? ('mastered' as const) : ('learned' as const)) : current.state,
+        // Sai thì tự vào lịch ôn; đã trong lịch thì đúng/sai cập nhật SM-2 (đúng trước hạn không giãn).
+        ...(grammarSrs(current) || !isCorrect ? grammarSrsFields(reviewSRS(grammarSrs(current), isCorrect)) : {})
       }
     };
 
@@ -302,8 +313,24 @@ export default function GrammarPractice({
     return deduplicateGrammars(raw);
   }, [grammars, selectedLevel, selectedLessonNumber]);
 
+  const dueGrammars = useMemo(() => {
+    const now = Date.now();
+    return grammars.filter(g => isGrammarDue(userProfile.grammarStatus?.[g.id], now));
+  }, [grammars, userProfile.grammarStatus]);
+
   return (
     <div className="grammar-reference-layout min-h-screen bg-[#0f1217] bg-[radial-gradient(rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:24px_24px] text-slate-100 selection:bg-blue-600 selection:text-white pb-16">
+      {(viewMode === 'lesson-list' || viewMode === 'lesson-detail') && dueGrammars.length > 0 && (
+        <button
+          type="button"
+          onClick={() => { setSelectedGrammar(dueGrammars[0]); setViewMode('practice'); }}
+          className="mx-auto mt-4 flex w-[calc(100%-2rem)] max-w-3xl items-center justify-between gap-3 rounded-xl border border-emerald-600/60 bg-emerald-950/60 px-4 py-3 text-left text-sm text-emerald-200 cursor-pointer"
+        >
+          <b>{dueGrammars.length} mẫu ngữ pháp đến hạn ôn hôm nay</b>
+          <span className="shrink-0">Ôn ngay: {dueGrammars[0].structure}</span>
+        </button>
+      )}
+
       {/* 2. LESSON LIST SCREEN (Screen 2) */}
       {viewMode === 'lesson-list' && (
         <GrammarLessonListView

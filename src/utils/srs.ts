@@ -37,3 +37,17 @@ export function calculateSRS(
     repetitions,
   };
 }
+
+export const isDue = (s: { nextReviewDate?: string } | null | undefined, now = new Date()) =>
+  !!s?.nextReviewDate && new Date(s.nextReviewDate) <= now;
+
+/**
+ * Ghi một lần trả lời vào lịch SM-2.
+ * Chỉ giãn lịch khi đã đến hạn (hoặc chưa có lịch): trả lời đúng nhiều lần trong ngày không làm khoảng cách tăng vọt.
+ * Trả lời sai thì luôn đưa về ôn lại sau 1 ngày.
+ */
+export function reviewSRS(current: SRSStatus | null | undefined, correct: boolean, now = new Date()): SRSStatus {
+  if (!correct) return calculateSRS(current ?? null, 2);
+  if (current && !isDue(current, now)) return current;
+  return calculateSRS(current ?? null, 5);
+}

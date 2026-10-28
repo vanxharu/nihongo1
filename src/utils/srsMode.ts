@@ -25,3 +25,6 @@ export type SrsQuestionRecord = { question: any; srs: { interval: number; easeFa
 export const readSrsQuestions = (): Record<string, SrsQuestionRecord> => { try { return JSON.parse(localStorage.getItem(WRONG_KEY) || '{}'); } catch { return {}; } };
 export const writeSrsQuestions = (v: Record<string, SrsQuestionRecord>) => { try { localStorage.setItem(WRONG_KEY, JSON.stringify(v)); } catch { /* storage full */ } };
 export const dueSrsQuestions = () => Object.values(readSrsQuestions()).filter(r => new Date(r.srs.nextReviewDate) <= new Date()).map(r => r.question);
+// Đề AI đánh số câu giống nhau ở mọi đề (ai_n4_1…): gắn mã đề để câu của đề này không ghi đè lịch của đề khác.
+// Câu trong phiên ôn SRS đã mang sẵn khoá này làm id.
+export const srsQuestionKey = (examId: string, qid: string) => (examId.startsWith('ai_exam_') ? `${examId}:${qid}` : qid);

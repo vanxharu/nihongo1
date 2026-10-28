@@ -48,8 +48,8 @@ import { JLPTSUCCESS_N4_EXAMS } from '../data/jlptSuccessN4';
 const JLPT_PAST_EXAMS: DailyExam[] = [REAL_EXAMS_N4_OFFICIAL_2018, REAL_EXAMS_N4_OFFICIAL, ...JLPTSUCCESS_N4_EXAMS];
 import { ensureFullExamQuestions, JLPT_LEVEL_TARGETS } from '../data/jlptExamGenerator';
 import SrsSwitch from './ui/SrsSwitch';
-import { calculateSRS } from '../utils/srs';
-import { dueSrsQuestions, readSrsAuto, readSrsQuestions, useSrsAuto, writeSrsQuestions } from '../utils/srsMode';
+import { reviewSRS } from '../utils/srs';
+import { dueSrsQuestions, readSrsAuto, readSrsQuestions, srsQuestionKey, useSrsAuto, writeSrsQuestions } from '../utils/srsMode';
 import { JlptOfficialScoreReport } from './JlptOfficialScoreReport';
 import { JlptRealBookletExam } from './JlptRealBookletExam';
 import { JlptModernExamView } from './exam/JlptModernExamView';
@@ -900,13 +900,16 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
       }
     });
 
-    // SRS tự động: câu sai vào lịch ôn (SM-2); câu đúng lần ôn sau thì giãn dần, đủ 4 lần đúng thì ra khỏi lịch.
+    // SRS tự động: câu sai vào lịch ôn (SM-2); câu đúng chỉ giãn lịch khi đã đến hạn, đủ 4 lần đúng thì ra khỏi lịch.
+    // Câu bỏ trống không tính (chưa làm ≠ làm sai).
     if (readSrsAuto()) {
       const rec = readSrsQuestions();
       relevantQuestions.forEach(q => {
-        const prev = rec[q.id];
-        if (userAnswers[q.id] !== q.correctIndex) rec[q.id] = { question: q, srs: calculateSRS(prev?.srs ?? null, 2) };
-        else if (prev) { const next = calculateSRS(prev.srs, 5); if (next.repetitions >= 4) delete rec[q.id]; else rec[q.id] = { ...prev, srs: next }; }
+        if (userAnswers[q.id] === undefined) return;
+        const key = srsQuestionKey(selectedExam.id, q.id);
+        const prev = rec[key];
+        if (userAnswers[q.id] !== q.correctIndex) rec[key] = { question: { ...q, id: key }, srs: reviewSRS(prev?.srs, false) };
+        else if (prev) { const next = reviewSRS(prev.srs, true); if (next.repetitions >= 4) delete rec[key]; else rec[key] = { ...prev, srs: next }; }
       });
       writeSrsQuestions(rec);
     }
