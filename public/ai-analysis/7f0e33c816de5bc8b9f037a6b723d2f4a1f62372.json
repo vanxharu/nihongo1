@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"彼は 私を「きみ」と よびます。","analysis":{"translation":"Anh ấy gọi tôi là em.","summary":"","points":[{"title":"彼は私を","body":"\"anh ấy (gọi) tôi\"."},{"title":"「きみ」とよびます","body":"\"gọi là 'kimi'\": N を ～と よぶ = gọi N là ～."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

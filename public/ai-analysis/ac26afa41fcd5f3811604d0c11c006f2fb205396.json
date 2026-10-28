@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"その くつは 今日の 服に 合いますね。","analysis":{"translation":"Đôi giày đó hợp với trang phục hôm nay nhỉ.","summary":"","points":[{"title":"そのくつは","body":"\"đôi giày đó\"."},{"title":"今日の服に合いますね","body":"\"hợp với bộ đồ hôm nay nhỉ\": N に 合う."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

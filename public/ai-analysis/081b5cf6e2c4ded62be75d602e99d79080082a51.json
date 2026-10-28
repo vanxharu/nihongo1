@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"彼女とは 友だちの 紹介で 知り合いました。","analysis":{"translation":"Tôi quen biết cô ấy nhờ sự giới thiệu của bạn tôi.","summary":"","points":[{"title":"彼女とは","body":"\"với cô ấy thì\"."},{"title":"友だちの紹介で","body":"\"qua sự giới thiệu của bạn\": で chỉ cách thức."},{"title":"知り合いました","body":"\"đã quen\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"彼女は ぼくにとって 特別な 人です。","analysis":{"translation":"Cô ấy là người đặc biệt đối với tôi.","summary":"","points":[{"title":"彼女はぼくにとって","body":"\"cô ấy, đối với anh\": N に とって."},{"title":"特別な人です","body":"\"là người đặc biệt\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

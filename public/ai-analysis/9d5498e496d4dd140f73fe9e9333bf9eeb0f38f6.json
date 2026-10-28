@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"友だちから メールの 返事が なかなか 来ません。","analysis":{"translation":"E-mail hồi âm của bạn tôi mãi không đến.","summary":"","points":[{"title":"友だちから","body":"\"từ bạn\"."},{"title":"メールの返事が","body":"\"thư trả lời\"."},{"title":"なかなか来ません","body":"\"mãi không đến\": なかなか + phủ định = mãi không."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
