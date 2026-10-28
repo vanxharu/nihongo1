@@ -336,26 +336,9 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
 
           {/* Center: Flag & Quick Palette Access */}
           <div className="flex items-center gap-2">
-            {currentQuestion && (
-              <button
-                onClick={() => onToggleFlag(currentQuestion.id)}
-                className={`h-12 px-3.5 rounded-xl border font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs ${
-                  flaggedQuestions[currentQuestion.id]
-                    ? 'bg-[#FEF3C7] text-[#92400E] border-[#F59E0B]'
-                    : 'bg-[#FDFBF7] text-[#786D5E] border-[#EADFCF] hover:text-[#1F2639]'
-                }`}
-                title="Ghim để xem lại trước khi nộp bài"
-              >
-                <Bookmark className={`w-4 h-4 ${flaggedQuestions[currentQuestion.id] ? 'fill-[#F59E0B] text-[#F59E0B]' : ''}`} />
-                <span className="hidden md:inline">
-                  {flaggedQuestions[currentQuestion.id] ? 'Đã ghim xem lại' : 'Ghim câu này'}
-                </span>
-              </button>
-            )}
-
             <button
               onClick={() => setIsPaletteOpen(true)}
-              className="h-12 px-4 rounded-xl bg-[#FDF1E2] hover:bg-[#F4EDE2] border border-[#EADFCF] text-[#1F2639] font-bold text-xs transition flex items-center gap-1.5 cursor-pointer"
+              className="xl:hidden h-12 px-4 rounded-xl bg-[#FDF1E2] hover:bg-[#F4EDE2] border border-[#EADFCF] text-[#1F2639] font-bold text-xs transition flex items-center gap-1.5 cursor-pointer"
             >
               <Grid className="w-4 h-4 text-[#F4A643]" />
               <span>Bảng câu hỏi ({answeredCount}/{activeQuestions.length})</span>
