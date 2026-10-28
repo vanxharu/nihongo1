@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Sparkles, X, Loader2 } from 'lucide-react';
 import { auth } from '../../lib/firebase';
+import { analysisHighlights } from '../../utils/analysisHighlights';
 
 export type AiKind = 'vocab' | 'sentence' | 'reading' | 'video' | 'grammar' | 'question';
 type Analysis = { translation: string; summary: string; points: { title: string; body: string }[] };
@@ -32,6 +33,11 @@ export default function AiAnalyzeButton({ kind, text, context, className = '', s
   const [result, setResult] = useState<Analysis | null>(null);
   const [error, setError] = useState('');
   const key = `${kind}\n${text.trim()}`;
+  const [picked, setPicked] = useState(0);
+  // Design 4: vocab/grammar points drawn as highlights on the text itself; other points stay below.
+  const marked = useMemo(() => result && text.length <= 400 ? analysisHighlights(text, result.points) : null, [result, text]);
+  const hl = marked?.highlights.length ? marked.highlights : null;
+  const sel = hl?.[Math.min(picked, hl.length - 1)];
 
   const run = async () => {
     setOpen(true);
@@ -61,16 +67,35 @@ export default function AiAnalyzeButton({ kind, text, context, className = '', s
         <div className="w-full sm:max-w-2xl max-h-[85vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl text-left" style={{ background: 'var(--ui-surface, #1b2236)', color: 'var(--ui-ink, #f1f5f9)', border: '1px solid var(--ui-line, #384156)' }} onClick={e => e.stopPropagation()}>
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="min-w-0"><p className="flex items-center gap-1.5 text-xs font-black uppercase tracking-wide" style={{ color: 'var(--ui-primary, #f2b35e)' }}><Sparkles size={13} /> {TITLES[kind]}</p>
-              <p lang="ja" className="mt-1 text-base font-bold line-clamp-3 whitespace-pre-line">{text}</p></div>
+              {hl ? <p lang="ja" className="mt-2 text-xl sm:text-2xl font-bold leading-[1.9] whitespace-pre-line">{hl.map((h, i) => <React.Fragment key={i}>
+                  {text.slice(i ? hl[i - 1].end : 0, h.start)}
+                  <button type="button" onClick={() => setPicked(i)} aria-pressed={sel === h} aria-label={`${h.label}: ${h.meaning}`}
+                    className="cursor-pointer rounded-sm px-0.5 font-bold"
+                    style={h.type === 'vocab' ? { background: sel === h ? '#3B82F6' : 'rgba(59,130,246,.18)', color: sel === h ? '#fff' : 'inherit', borderBottom: '3px solid #3B82F6' }
+                      : { background: sel === h ? 'rgba(234,88,12,.35)' : 'rgba(234,88,12,.16)', borderBottom: '3px dashed #EA580C' }}>{text.slice(h.start, h.end)}</button>
+                </React.Fragment>)}{text.slice(hl[hl.length - 1].end)}</p>
+              : <p lang="ja" className="mt-1 text-base font-bold line-clamp-3 whitespace-pre-line">{text}</p>}</div>
             <button type="button" onClick={() => setOpen(false)} aria-label="Đóng" className="p-1.5 rounded-lg cursor-pointer hover:bg-[color:var(--ui-tint)]"><X size={18} /></button>
           </div>
           {state === 'loading' && <p className="flex items-center gap-2 py-6 text-sm" style={{ color: 'var(--ui-muted)' }}><Loader2 size={16} className="animate-spin" /> Đang tải phân tích…</p>}
           {state === 'login' && <p className="py-4 text-sm">Nội dung này chưa có ai phân tích. Hãy <b>đăng nhập</b> để tạo phân tích bằng AI — kết quả sẽ được lưu cho mọi người cùng xem.</p>}
           {state === 'error' && <p className="py-4 text-sm text-rose-400">{error} <button type="button" className="underline cursor-pointer" onClick={() => void run()}>Thử lại</button></p>}
           {state === 'done' && result && <div className="space-y-3 text-sm leading-relaxed">
-            {result.translation && <div><p className="text-xs font-bold mb-1" style={{ color: 'var(--ui-muted)' }}>Dịch</p><p className="whitespace-pre-line">{result.translation}</p></div>}
+            {hl && sel && <>
+              <div className="flex flex-wrap gap-4 text-xs" style={{ color: 'var(--ui-muted)' }}>
+                <span className="flex items-center gap-1.5"><i className="inline-block w-4" style={{ borderBottom: '3px solid #3B82F6' }} />Từ vựng</span>
+                <span className="flex items-center gap-1.5"><i className="inline-block w-4" style={{ borderBottom: '3px dashed #EA580C' }} />Ngữ pháp</span>
+                <span>Bấm vào phần tô màu để xem</span>
+              </div>
+              <div className="rounded-xl p-3" style={{ border: `1px solid ${sel.type === 'vocab' ? 'rgba(59,130,246,.45)' : 'rgba(234,88,12,.45)'}`, background: sel.type === 'vocab' ? 'rgba(59,130,246,.08)' : 'rgba(234,88,12,.08)' }}>
+                <p className="flex flex-wrap items-baseline gap-2"><b lang="ja" className="text-lg">{sel.label}</b>{sel.reading && <span lang="ja" style={{ color: 'var(--ui-muted)' }}>{sel.reading}</span>}</p>
+                <p className="text-[15px]">{sel.meaning}</p>
+                {sel.inner?.map((w, i) => <p key={i} className="mt-1 text-[13px]"><b lang="ja">{w.label}</b>{w.reading && <span lang="ja" style={{ color: 'var(--ui-muted)' }}> {w.reading}</span>}: {w.meaning}</p>)}
+              </div>
+            </>}
+            {result.translation && <div className={hl ? 'pt-3' : ''} style={hl ? { borderTop: '1px solid var(--ui-line, #384156)' } : undefined}>{!hl && <p className="text-xs font-bold mb-1" style={{ color: 'var(--ui-muted)' }}>Dịch</p>}<p className={`whitespace-pre-line ${hl ? 'text-base' : ''}`}>{result.translation}</p></div>}
             {result.summary && <p className="whitespace-pre-line">{result.summary}</p>}
-            {result.points.map((p, i) => <div key={i} className="rounded-xl p-3" style={{ background: 'var(--ui-soft, #232b40)' }}><p className="font-bold mb-1">{p.title}</p><p className="whitespace-pre-line">{p.body}</p></div>)}
+            {result.points.map((p, i) => marked?.usedPoints.has(i) ? null : <div key={i} className="rounded-xl p-3" style={{ background: 'var(--ui-soft, #232b40)' }}><p className="font-bold mb-1">{p.title}</p><p className="whitespace-pre-line">{p.body}</p></div>)}
             <p className="text-[11px]" style={{ color: 'var(--ui-muted)' }}>Phân tích bằng AI, có thể chưa chính xác — hãy đối chiếu với giáo trình.</p>
           </div>}
         </div>
