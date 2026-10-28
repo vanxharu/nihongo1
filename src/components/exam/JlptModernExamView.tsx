@@ -241,7 +241,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
           {/* Right: Controls (Font Size, Focus Mode, Palette, Submit) */}
           <div className="flex items-center gap-1 sm:gap-2">
             <button onClick={toggleInstant} aria-pressed={instant} title="Chọn xong hiện đúng/sai và giải thích ngay" className={`h-8 px-1.5 sm:px-2 rounded-lg border text-[10px] sm:text-[11px] font-bold whitespace-nowrap cursor-pointer ${instant ? 'bg-[#10B981] text-white border-[#10B981]' : 'bg-white text-[#786D5E] border-[#EADFCF]'}`}>Hiện đáp án</button>
-            <button onClick={() => setKeywords(k => !k)} aria-pressed={keywords} title="Tô nền các từ có trong từ điển (chạm từ để xem nghĩa)" className={`h-8 px-1.5 sm:px-2 rounded-lg border text-[10px] sm:text-[11px] font-bold whitespace-nowrap cursor-pointer ${keywords ? 'bg-[#FEF3C7] border-[#F59E0B]' : 'bg-white text-[#786D5E] border-[#EADFCF]'}`}>Từ khóa</button>
+            <button onClick={() => setKeywords(k => !k)} aria-pressed={keywords} title="Tô nền các từ có trong từ điển (chạm từ để xem nghĩa)" className={`h-8 px-1.5 sm:px-2 rounded-lg border text-[10px] sm:text-[11px] font-bold whitespace-nowrap cursor-pointer ${keywords ? 'bg-[#FEF3C7] border-[#F59E0B] !text-[#1F2639]' : 'bg-white text-[#786D5E] border-[#EADFCF]'}`}>Từ khóa</button>
             <button onClick={() => { setCardIdx(0); setCardFlip(false); setIsCardsOpen(true); }} title="Thẻ ghi nhớ từ đề này" className="h-8 px-1.5 sm:px-2 rounded-lg border border-[#EADFCF] bg-white text-[10px] sm:text-[11px] font-bold whitespace-nowrap text-[#786D5E] cursor-pointer">Thẻ nhớ</button>
             <button onClick={printExam} title="In đề + phiếu đáp án" className="h-8 px-1.5 sm:px-2 rounded-lg border border-[#EADFCF] bg-white text-[10px] sm:text-[11px] font-bold whitespace-nowrap text-[#786D5E] cursor-pointer">In đề</button>
             <span className="px-1 font-mono text-xs font-bold whitespace-nowrap text-[#1F2639]" aria-label="Số câu đã làm">
@@ -774,8 +774,8 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
         </div>
 
         {(isSubmitted || (instant && userAnswers[currentQuestion.id] !== undefined)) && (
-          <div className="rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-4 text-sm leading-relaxed space-y-2 text-[#1F2639]">
-            <p className="font-bold text-[#047857]">Đáp án đúng: {currentQuestion.correctIndex + 1}. {currentQuestion.options[currentQuestion.correctIndex]}</p>
+          <div className="rounded-xl border-2 border-[#10B981] bg-white p-4 text-sm leading-relaxed space-y-2 text-[#1F2639]">
+            <p className="font-bold text-[#10B981]">Đáp án đúng: {currentQuestion.correctIndex + 1}. {currentQuestion.options[currentQuestion.correctIndex]}</p>
             {currentQuestion.explanation && <p className="whitespace-pre-line">{currentQuestion.explanation}</p>}
             {Array.isArray(currentQuestion.optionExplanations) && (
               <ul className="space-y-1 text-[13px]">

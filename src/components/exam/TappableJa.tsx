@@ -69,8 +69,8 @@ export const TappableJa: React.FC<{ text: string; highlight?: boolean; marks?: s
   return (
     <>
       {parts.map((p, i) => p.hit
-        ? <button key={i} type="button" onClick={e => { e.stopPropagation(); setSel(p.hit!); }} className={`cursor-pointer border-b border-dotted border-[#F4A643] ${highlight || p.mark ? 'bg-[#FEF3C7]' : ''}`}>{p.t}</button>
-        : p.mark ? <mark key={i} className="bg-[#FDE68A]">{p.t}</mark> : <React.Fragment key={i}>{p.t}</React.Fragment>)}
+        ? <button key={i} type="button" onClick={e => { e.stopPropagation(); setSel(p.hit!); }} className="cursor-pointer border-b border-dotted border-[#F4A643]" style={highlight || p.mark ? { background: '#FDE68A', color: '#1F2639' } : undefined}>{p.t}</button>
+        : p.mark ? <mark key={i} style={{ background: '#FDE68A', color: '#1F2639' }}>{p.t}</mark> : <React.Fragment key={i}>{p.t}</React.Fragment>)}
       {sel && (
         <span className="fixed inset-x-4 bottom-24 z-50 mx-auto max-w-sm rounded-2xl border border-[#EADFCF] bg-white p-4 shadow-2xl block text-left font-sans tracking-normal" role="dialog">
           <span className="flex items-start justify-between gap-2">
@@ -118,9 +118,9 @@ export const ReadingHelper: React.FC<{ qid: string; passage: string; question: s
               const lead = revealed && s.for.includes(qid);
               return (
                 <div key={i}>
-                  <button type="button" onClick={() => setSent(sent === i ? null : i)} className={`text-left leading-7 cursor-pointer ${lead ? 'bg-[#FDE68A]' : sent === i ? 'bg-[#FEF3C7]' : ''}`}>{s.ja}</button>
+                  <button type="button" onClick={() => setSent(sent === i ? null : i)} className="text-left leading-7 cursor-pointer" style={lead || sent === i ? { background: lead ? '#FDE68A' : '#FEF3C7', color: '#1F2639' } : undefined}>{s.ja}</button>
                   {lead && <span className="ml-1 text-[11px] font-bold text-[#B45309]">← dẫn tới đáp án</span>}
-                  {sent === i && <p className="text-[13px] text-[#047857] pl-3">{s.vi || 'Chưa có bản dịch cho câu này.'}</p>}
+                  {sent === i && <p className="text-[13px] text-[#10B981] pl-3">{s.vi || 'Chưa có bản dịch cho câu này.'}</p>}
                 </div>
               );
             })}
