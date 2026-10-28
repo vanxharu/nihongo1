@@ -171,7 +171,7 @@
 #app-root-container .vocab-flashcard-controls{background:var(--ui-surface)!important;border-color:var(--ui-line)!important}
 .vocab-flashcard-tools button{display:flex;align-items:center;justify-content:center;width:32px;height:36px;border-radius:6px;color:var(--ui-muted);cursor:pointer}
 .vocab-flashcard-tools button:hover{background:var(--ui-soft);color:var(--ui-ink)}
-#app-root-container .vocab-flashcard-tools button[aria-pressed=true],#app-root-container .vocab-flashcard-tools button[aria-expanded=true]{color:var(--ui-primary)!important;background:var(--ui-tint)}
+#app-root-container .vocab-flashcard-tools button[aria-pressed=true],#app-root-container .vocab-flashcard-tools button[aria-expanded=true],#app-root-container .vocab-flashcard-tools button[aria-checked=true]{color:var(--ui-primary)!important;background:color-mix(in srgb,var(--ui-primary) 18%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ui-primary) 55%,transparent)}
 #app-root-container .vocab-flashcard-tabs button[aria-pressed=true]{background:var(--ui-primary)!important;color:var(--ui-on-primary)!important}
 #app-root-container .vocab-flashcard-mark{width:36px;height:36px;cursor:pointer}
 #app-root-container #btn-flashcard-fail{background:var(--ui-error-soft)!important;color:var(--ui-error)!important}
