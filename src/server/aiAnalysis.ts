@@ -22,11 +22,11 @@ export function validInput(kind: unknown, text: unknown, context: unknown): { ki
 }
 
 const TASK: Record<AiKind, string> = {
-  vocab: 'Phân tích TỪ VỰNG tiếng Nhật: cách đọc, nghĩa (các nghĩa chính), từ loại, chữ Hán cấu thành (âm Hán Việt), cách dùng thường gặp, từ đồng/trái nghĩa, 2 câu ví dụ có dịch, lỗi người Việt hay mắc.',
+  vocab: 'Phân tích TỪ VỰNG tiếng Nhật. translation = nghĩa chính. Các point đầu: chia từ thành từng chữ Hán/phần (kana ghép thì giữ cả cụm); title = phần đó chép nguyên văn từ từ đã cho, body = nghĩa trong ngoặc kép · âm Hán Việt · cách đọc trong từ. Sau đó các point không phải tiếng Nhật: Cách dùng (kèm ví dụ có dịch), Phân biệt với từ dễ nhầm, Lưu ý lỗi người Việt hay mắc.',
   sentence: 'Phân tích CÂU VÍ DỤ tiếng Nhật. translation = bản dịch tự nhiên, summary để rỗng. Chia câu thành các cụm theo thứ tự xuất hiện; mỗi point: title = cụm nguyên văn chép đúng từ câu (không sửa, không thêm), body = nghĩa của cụm trong ngoặc kép + giải thích từ vựng (cách đọc) và ngữ pháp trong cụm: thể chia, trợ từ, vì sao dùng như vậy, so sánh với cách dùng dễ nhầm.',
   reading: 'Phân tích BÀI ĐỌC HIỂU tiếng Nhật: tóm tắt ý chính, dịch, từ vựng khó (đọc + nghĩa), mẫu ngữ pháp xuất hiện, các câu then chốt và cách tìm thông tin để trả lời câu hỏi.',
   video: 'Phân tích CÂU THOẠI trong video tiếng Nhật. translation = bản dịch tự nhiên, summary để rỗng. Chia câu thành các cụm theo thứ tự xuất hiện; mỗi point: title = cụm nguyên văn chép đúng từ câu (không sửa, không thêm), body = nghĩa của cụm trong ngoặc kép + giải thích từ vựng (cách đọc) và ngữ pháp trong cụm: thể chia, trợ từ, vì sao dùng như vậy, so sánh với cách dùng dễ nhầm. Nêu cả cách nói khẩu ngữ/rút gọn nếu có.',
-  grammar: 'Phân tích MẪU NGỮ PHÁP tiếng Nhật: ý nghĩa, cấu trúc nối (thể nào + mẫu), sắc thái, phân biệt với mẫu dễ nhầm, 3 câu ví dụ có dịch, lỗi thường gặp.',
+  grammar: 'Phân tích MẪU NGỮ PHÁP tiếng Nhật. Các point đầu: mỗi phần tiếng Nhật trong mẫu đã cho (chép nguyên văn từ mẫu, các phần không chồng nhau) giải thích vai trò và cách nối. Sau đó các point: Ví dụ (3 câu có dịch), Phân biệt với mẫu dễ nhầm, Lưu ý lỗi thường gặp.',
   question: 'Phân tích CÂU HỎI THI JLPT: dịch đề, phân tích từng phương án vì sao đúng/sai, kiến thức cần nắm, mẹo làm dạng câu này.',
 };
 

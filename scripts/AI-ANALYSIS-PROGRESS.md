@@ -16,7 +16,8 @@ Viết phân tích theo đúng thứ tự todo → ghép bằng `pair.py` (scrat
 - Câu ví dụ & câu thoại video: chia câu thành CỤM theo thứ tự; mỗi point: title = cụm chép nguyên văn từ câu
   (cụm không chồng nhau), body = "nghĩa" + giải thích từ vựng/ngữ pháp trong cụm (thể chia, trợ từ, vì sao, dễ nhầm với gì).
   summary để rỗng. Kiểm tra mọi cụm khớp câu: chạy analysisHighlights (mọi point phải nằm trong usedPoints).
-- Từ vựng, ngữ pháp: các mục Cách đọc / Cách dùng / Phân biệt như cũ.
+- Từ vựng: các point đầu = từng chữ Hán/phần của từ (title chép từ từ, body = "nghĩa" · Hán Việt · cách đọc), sau đó Cách dùng / Phân biệt / Lưu ý.
+- Ngữ pháp: các point đầu = từng phần tiếng Nhật trong mẫu (chép từ mẫu, không chồng nhau), sau đó Ví dụ / Phân biệt / Lưu ý.
 
 ## Đã xong
 - 2026-10-28: Tango N4 bài tango_c1_s1, tango_c1_s2 (52 từ + 52 câu ví dụ); ngữ pháp N4 bài 26–29 (12 mẫu);
