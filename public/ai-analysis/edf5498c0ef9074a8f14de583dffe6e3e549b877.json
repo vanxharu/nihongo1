@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"病気が 治ったので、明日 退院します。","analysis":{"translation":"Vì đã hết bệnh nên ngày mai tôi sẽ xuất viện.","summary":"","points":[{"title":"病気が治ったので","body":"\"vì đã khỏi bệnh\"."},{"title":"明日退院します","body":"\"mai xuất viện\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

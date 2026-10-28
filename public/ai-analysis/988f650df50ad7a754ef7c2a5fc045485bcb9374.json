@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"姉は 看護師を しています。","analysis":{"translation":"Chị tôi làm y tá.","summary":"","points":[{"title":"姉は","body":"\"chị tôi\"."},{"title":"看護師をしています","body":"\"làm y tá\": N を して いる = làm nghề N."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
