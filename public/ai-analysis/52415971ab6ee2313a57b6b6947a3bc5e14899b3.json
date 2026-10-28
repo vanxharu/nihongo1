@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"リモコンで 車の ドアを そうさします。","analysis":{"translation":"Điều khiển cửa xe hơi bằng đồ điều khiển từ xa.","summary":"","points":[{"title":"リモコンで","body":"\"bằng điều khiển từ xa\"."},{"title":"車のドアを","body":"\"cửa xe\"."},{"title":"そうさします","body":"\"điều khiển\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

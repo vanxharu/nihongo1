@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"バス停の 近くに 車を 止めてはいけません。","analysis":{"translation":"Không được đậu xe gần trạm xe buýt.","summary":"","points":[{"title":"バス停の近くに","body":"\"gần trạm xe buýt\"."},{"title":"車を止めてはいけません","body":"\"không được đỗ xe\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

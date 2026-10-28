@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"信号の ところで 2台の タクシーが ぶつかりました。","analysis":{"translation":"Ở chỗ đèn giao thông, 2 chiếc taxi đã đụng nhau.","summary":"","points":[{"title":"信号のところで","body":"\"ở chỗ đèn giao thông\"."},{"title":"2台のタクシーが","body":"\"2 chiếc taxi\": 台 = đếm xe."},{"title":"ぶつかりました","body":"\"đã đâm nhau\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
