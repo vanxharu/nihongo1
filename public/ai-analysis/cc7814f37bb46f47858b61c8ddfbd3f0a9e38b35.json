@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"この テキストは 明日 使います。","analysis":{"translation":"Ngày mai sẽ sử dụng sách này.","summary":"","points":[{"title":"このテキストは","body":"\"cuốn giáo trình này thì\"."},{"title":"明日使います","body":"\"ngày mai dùng\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"家には 小さい 花びんしか ありません。","analysis":{"translation":"Ở nhà chỉ có bình hoa nhỏ.","summary":"","points":[{"title":"家には","body":"\"ở nhà thì\"."},{"title":"小さい花びんしか","body":"\"chỉ… bình hoa nhỏ\": しか + phủ định = chỉ."},{"title":"ありません","body":"\"không có\" (đi với しか → chỉ có)."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

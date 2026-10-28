@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"明日、友だちの 家を 訪問します。","analysis":{"translation":"Ngày mai tôi sẽ đến thăm nhà bạn tôi.","summary":"","points":[{"title":"明日","body":"\"ngày mai\"."},{"title":"友だちの家を","body":"\"nhà bạn\" (đối tượng thăm, dùng を)."},{"title":"訪問します","body":"\"sẽ đến thăm\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

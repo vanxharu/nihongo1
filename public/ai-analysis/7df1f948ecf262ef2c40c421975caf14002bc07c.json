@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"部屋の すみに つくえを 置いて います。","analysis":{"translation":"Tôi đặt cái bàn ở góc phòng.","summary":"","points":[{"title":"部屋のすみに","body":"\"ở góc phòng\"."},{"title":"つくえを","body":"\"cái bàn (học/làm việc)\"."},{"title":"置いています","body":"\"đang đặt\": 置く（おく）→ 置いて いる."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

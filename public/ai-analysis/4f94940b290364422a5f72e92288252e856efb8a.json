@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"ここを 押すと、テレビが つきます。","analysis":{"translation":"Bấm chỗ này, tivi sẽ bật lên.","summary":"","points":[{"title":"ここを押すと","body":"\"hễ bấm vào đây thì\": V-る + と."},{"title":"テレビがつきます","body":"\"tivi bật lên\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

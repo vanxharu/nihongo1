@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"友だちが 来るので、部屋を 片づけました。","analysis":{"translation":"Vì bạn tôi sẽ đến nên tôi đã dọn dẹp phòng ốc.","summary":"","points":[{"title":"友だちが来るので","body":"\"vì bạn sẽ đến\": ので = vì."},{"title":"部屋を片づけました","body":"\"đã dọn phòng\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

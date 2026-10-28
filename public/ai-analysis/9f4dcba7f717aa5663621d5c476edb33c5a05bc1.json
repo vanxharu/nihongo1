@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"今度の 週末、友だちを 家に 招待します。","analysis":{"translation":"Cuối tuần này, tôi sẽ mời bạn tôi đến nhà.","summary":"","points":[{"title":"今度の週末","body":"\"cuối tuần này/tới\": 週末（しゅうまつ）."},{"title":"友だちを家に","body":"\"bạn (đến) nhà\": 人 を + nơi に."},{"title":"招待します","body":"\"sẽ mời\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

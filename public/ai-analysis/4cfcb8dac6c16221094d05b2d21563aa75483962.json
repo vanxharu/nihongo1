@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"休みの 日は お昼ごろ 起きます。","analysis":{"translation":"Ngày nghỉ tôi thức dậy vào khoảng trưa.","summary":"","points":[{"title":"休みの日は","body":"\"ngày nghỉ thì\": 休み（やすみ）の 日."},{"title":"お昼ごろ","body":"\"khoảng trưa\": ごろ = khoảng (thời điểm)."},{"title":"起きます","body":"\"thức dậy\" (thói quen)."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

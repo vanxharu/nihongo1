@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"この びんに 何が 入って いますか。","analysis":{"translation":"Có cái gì trong bình này?","summary":"","points":[{"title":"このびんに","body":"\"trong cái chai này\"."},{"title":"何が","body":"\"cái gì\"."},{"title":"入っていますか","body":"\"đang chứa\": 入る（はいる）→ 入って いる = (bên trong) có."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

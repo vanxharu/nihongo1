@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"先生の 質問に 答えます。","analysis":{"translation":"Tôi trả lời câu hỏi của giáo viên.","summary":"","points":[{"title":"先生の質問に","body":"\"câu hỏi của thầy\": に chỉ đối tượng trả lời."},{"title":"答えます","body":"\"trả lời\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

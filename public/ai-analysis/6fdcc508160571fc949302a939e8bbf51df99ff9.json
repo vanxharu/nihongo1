@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"入り口で 部屋の 番号を 押して ください。","analysis":{"translation":"Vui lòng nhấn số phòng ở cửa vào.","summary":"","points":[{"title":"入り口で","body":"\"ở cửa vào\": で chỉ nơi hành động."},{"title":"部屋の番号を","body":"\"số phòng\": 番号（ばんごう）."},{"title":"押してください","body":"\"hãy bấm\": 押す（おす）→ 押して."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

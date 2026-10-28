@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"山下さんは 中学校で フランス語を 勉強しました。","analysis":{"translation":"Anh/chị Yamashita đã học tiếng Pháp ở trường cấp II.","summary":"","points":[{"title":"山下さんは中学校で","body":"\"anh Yamashita ở trường cấp 2\": で chỉ nơi hành động."},{"title":"フランス語を勉強しました","body":"\"đã học tiếng Pháp\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

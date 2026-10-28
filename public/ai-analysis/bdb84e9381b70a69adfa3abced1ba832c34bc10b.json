@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"父は 30年前、この高校を 卒業しました。","analysis":{"translation":"Cha tôi đã tốt nghiệp trường trung học này 30 năm trước.","summary":"","points":[{"title":"父は30年前","body":"\"bố tôi, 30 năm trước\": 30年前（さんじゅうねんまえ）."},{"title":"この高校を卒業しました","body":"\"đã tốt nghiệp trường cấp 3 này\": trường + を 卒業."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

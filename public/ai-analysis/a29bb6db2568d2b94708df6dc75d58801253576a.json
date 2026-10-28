@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"妹が 中学校に 入学します。","analysis":{"translation":"Em gái tôi sẽ vào trường cấp II.","summary":"","points":[{"title":"妹が","body":"\"em gái\"."},{"title":"中学校に入学します","body":"\"vào học trường cấp 2\": trường + に 入学する."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

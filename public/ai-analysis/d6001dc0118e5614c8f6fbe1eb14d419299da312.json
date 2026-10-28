@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"ちょっと エアコンの 温度を 上げて ください。","analysis":{"translation":"Vui lòng tăng nhiệt độ máy điều hòa một chút.","summary":"","points":[{"title":"ちょっと","body":"\"một chút\"."},{"title":"エアコンの温度を","body":"\"nhiệt độ máy điều hòa\": 温度（おんど）."},{"title":"上げてください","body":"\"hãy tăng\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

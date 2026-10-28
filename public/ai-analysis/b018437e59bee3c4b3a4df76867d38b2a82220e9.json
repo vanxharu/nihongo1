@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"教室を 出るときは 電気を 消して ください。","analysis":{"translation":"Khi ra khỏi phòng học, hãy tắt đèn.","summary":"","points":[{"title":"教室を出るときは","body":"\"khi ra khỏi lớp\": V-る + とき."},{"title":"電気を消してください","body":"\"hãy tắt đèn\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

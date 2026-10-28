@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"せんたく物を 片づけてから 出かけます。","analysis":{"translation":"Sau khi dọn đồ giặt thì tôi sẽ đi ra ngoài.","summary":"","points":[{"title":"せんたく物を","body":"\"đồ giặt\"."},{"title":"片づけてから","body":"\"sau khi dọn\": V-て から = sau khi."},{"title":"出かけます","body":"\"đi ra ngoài\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

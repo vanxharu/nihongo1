@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"パスポートは つくえの 引き出しの 中に あります。","analysis":{"translation":"Hộ chiếu ở trong ngăn kéo của cái bàn.","summary":"","points":[{"title":"パスポートは","body":"\"hộ chiếu thì\"."},{"title":"つくえの引き出しの中に","body":"\"ở trong ngăn kéo bàn\": N の 中（なか）に."},{"title":"あります","body":"\"có (ở đó)\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

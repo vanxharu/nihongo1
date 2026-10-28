@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"水道の 水を 飲んでも だいじょうぶです。","analysis":{"translation":"Uống nước máy cũng được.","summary":"","points":[{"title":"水道の水を","body":"\"nước máy\" (tân ngữ)."},{"title":"飲んでも","body":"\"dù uống\": 飲む → 飲んでも."},{"title":"だいじょうぶです","body":"\"cũng không sao\": V-ても だいじょうぶ = làm V cũng được."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

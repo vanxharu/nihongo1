@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"うちの 台所は 使いやすいです。","analysis":{"translation":"Phòng bếp nhà tôi dễ sử dụng.","summary":"","points":[{"title":"うちの台所は","body":"\"bếp nhà tôi thì\"."},{"title":"使いやすいです","body":"\"dễ dùng\": 使う → 使い + やすい = dễ làm."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

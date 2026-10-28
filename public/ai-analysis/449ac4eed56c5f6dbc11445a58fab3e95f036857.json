@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"この ベッドは 自分で 組み立てて ください。","analysis":{"translation":"Bạn hãy tự mình lắp ráp cái giường này.","summary":"","points":[{"title":"このベッドは","body":"\"cái giường này thì\"."},{"title":"自分で","body":"\"tự mình\": 自分（じぶん）で."},{"title":"組み立ててください","body":"\"hãy lắp ráp\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

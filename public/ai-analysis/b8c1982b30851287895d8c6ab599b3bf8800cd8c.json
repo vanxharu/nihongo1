@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"私は ベッドより ふとんの ほうが 好きです。","analysis":{"translation":"Tôi thích nệm hơn giường.","summary":"","points":[{"title":"私はベッドより","body":"\"tôi, so với giường\": N より = so với."},{"title":"ふとんのほうが好きです","body":"\"thích nệm hơn\": N の ほうが ～ = N thì… hơn."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

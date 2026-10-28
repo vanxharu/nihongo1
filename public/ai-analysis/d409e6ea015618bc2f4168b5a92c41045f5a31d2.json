@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"これは 私の 自宅の 電話番号です。","analysis":{"translation":"Đây là số điện thoại nhà riêng của tôi.","summary":"","points":[{"title":"これは","body":"\"đây là\"."},{"title":"私の自宅の","body":"\"của nhà riêng tôi\"."},{"title":"電話番号です","body":"\"số điện thoại\": 電話番号（でんわばんごう）."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
