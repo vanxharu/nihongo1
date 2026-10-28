@@ -405,7 +405,8 @@ const parseDbUser = (dbData: any): UserProfile => {
           if(!migration.ok)throw new Error('Không nhập được tiến độ cũ lên Firebase.');
           const imported=await migration.json();syncData.user=imported.user;
         }
-        await connectCloudLearning(firebaseUser);
+        // Đồng bộ dữ liệu học (tải/đẩy nhiều phần) chạy nền: không bắt màn đăng nhập chờ; xong sẽ phát 'learning-cloud-restored' để app nạp lại.
+        void connectCloudLearning(firebaseUser).catch(e => console.warn('[AUTH] Cloud learning sync failed:', e));
         if (syncData.success && syncData.user) {
           const parsed = parseDbUser(syncData.user);
           // Chưa chọn ảnh riêng (còn emoji mặc định) → dùng ảnh của tài khoản mail.
