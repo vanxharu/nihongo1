@@ -31,6 +31,9 @@ import {
 import { DailyExam, ExamQuestion, UserProfile } from '../../types';
 import { JLPT_SECTION_METAS, ExamSectionMode, renderFormattedQuestion } from '../DailyExamQuiz';
 import { TappableJa, ReadingHelper, vocabIn, studySentences } from './TappableJa';
+import examVi from '../../data/examTranslations.json';
+// Bản dịch tiếng Việt (Claude soạn): q = câu hỏi kèm đáp án đúng, s = lời nghe; khoá theo id câu.
+const VI = examVi as { q: Record<string, string>; s: Record<string, string> };
 import ShibaMascot from '../mascot/ShibaMascot';
 import LiquidGlassButton from '../ui/LiquidGlassButton';
 
@@ -766,7 +769,9 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
               </ul>
             )}
             {currentQuestion.section !== 'choukai' && (() => { const w = vocabIn(`${currentQuestion.question} ${currentQuestion.options.join(' ')}`).slice(0, 8); return w.length ? <p className="text-[13px]"><b>Từ trong câu:</b> {w.map(x => `${x.word} (${x.reading}) = ${x.meaning}`).join(' · ')}</p> : null; })()}
+            {VI.q[currentQuestion.id] && <p className="text-[13px]"><b>Dịch câu hỏi:</b> {VI.q[currentQuestion.id]}</p>}
             {currentQuestion.audioScript && <p className="text-[13px] text-[#786D5E] whitespace-pre-line">🎧 {currentQuestion.audioScript}</p>}
+            {VI.s[currentQuestion.id] && <p className="text-[13px] whitespace-pre-line"><b>Dịch lời nghe:</b>\n{VI.s[currentQuestion.id]}</p>}
           </div>
         )}
 
