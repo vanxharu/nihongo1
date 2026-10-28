@@ -697,8 +697,22 @@ const URL_VOCAB_MODE = () => {
 export default function VocabularyPractice({ userProfile, updateProfile, onEarnXp, initialLevel, kanjiMode, myMode }: VocabularyPracticeProps) {
   // Mục tiêu "Công sở": tab Từ vựng mở bộ từ công sở thay cho bộ từ JLPT (link theo cấp /jlpt/:level vẫn mở JLPT).
   const businessMode = !kanjiMode && !myMode && !initialLevel && userProfile.studyTrack === 'business';
-  const [vocabData, setVocabData] = useState<VocabularyItem[]>([]);
+  const [vocabBase, setVocabData] = useState<VocabularyItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [extraItems, setExtraItems] = useState<VocabularyItem[]>([]);
+  // Bổ sung N5–N1 từ OpenJLPT (tải riêng, chỉ phần chưa có trong kho hiện tại).
+  useEffect(() => {
+    if (myMode || businessMode || loading) return;
+    let live = true;
+    import('../data/openjlptItems').then(m => {
+      const extra = kanjiMode
+        ? kanjiRowsToVocab(m.openjlptKanjiRows(new Set(vocabBase.map(v => v.kanji)))).map(v => sanitizeVocabItem({ ...v, hanViet: getHanViet(v.kanji) }))
+        : m.openjlptVocab(vocabBase).map(v => sanitizeVocabItem({ ...v, hanViet: getHanViet(v.kanji || '') }));
+      if (live) setExtraItems(extra);
+    }).catch(() => {});
+    return () => { live = false; };
+  }, [vocabBase, loading, kanjiMode, myMode, businessMode]);
+  const vocabData = useMemo(() => extraItems.length ? [...vocabBase, ...extraItems] : vocabBase, [vocabBase, extraItems]);
 
 
 

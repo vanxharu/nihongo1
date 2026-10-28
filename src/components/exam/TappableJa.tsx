@@ -31,7 +31,7 @@ function getDict(): Dict {
     }
   }
   // Từ N5–N1 còn thiếu: OpenJLPT (CC BY-SA 4.0, JMdict), nghĩa tiếng Anh; chỉ bổ sung, không ghi đè.
-  for (const [k, [r, m]] of Object.entries(openjlpt as Record<string, [string, string]>)) {
+  for (const [k, [r, m]] of Object.entries(openjlpt as unknown as Record<string, [string, string]>)) {
     if (k.length < 2 && !/[一-龯]/.test(k)) continue;
     if (!dict.has(k)) add(k, { word: k, reading: r, meaning: `(EN) ${m}`, ext: true });
   }
