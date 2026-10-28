@@ -11,7 +11,6 @@ import GrammarLessonListView from './grammar/GrammarLessonListView';
 import GrammarLessonDetailView from './grammar/GrammarLessonDetailView';
 import GrammarPointDetailView from './grammar/GrammarPointDetailView';
 import GrammarPracticeView from './grammar/GrammarPracticeView';
-import fallbackAiContents from '../data/grammarAiContents.json';
 import { FALLBACK_PATTERNS } from './grammarData';
 
 // Lịch SM-2 của một mẫu ngữ pháp lưu trong grammarStatus: srsStage = số lần nhớ liên tiếp + 1 (0 = không ôn), nextReview (ms).
@@ -91,7 +90,7 @@ export default function GrammarPractice({
 
   // Grammars data state
   const [grammars, setGrammars] = useState<GrammarItem[]>(() => deduplicateGrammars(LOCAL_GRAMMARS));
-  const [aiContents, setAiContents] = useState<Record<string, any>>(fallbackAiContents as Record<string, any>);
+  const [aiContents, setAiContents] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Load latest grammars from backend
@@ -111,11 +110,13 @@ export default function GrammarPractice({
             const dbLevels = new Set(dbGrammars.data.map(g => g.level));
             setGrammars(deduplicateGrammars([...dbGrammars.data, ...LOCAL_GRAMMARS.filter(g => !dbLevels.has(g.level))]));
           }
-          if (aiRes.ok && aiRes.data) {
-            const dataMap = aiRes.data?.data || aiRes.data;
-            if (dataMap && typeof dataMap === 'object') {
-              setAiContents(dataMap);
-            }
+          const dataMap = aiRes.ok ? aiRes.data?.data || aiRes.data : null;
+          if (dataMap && typeof dataMap === 'object') {
+            setAiContents(dataMap);
+          } else {
+            // Bản dự phòng (~1MB) chỉ nạp khi server không trả nội dung, không nằm sẵn trong gói trang Ngữ pháp.
+            const fallback = (await import('../data/grammarAiContents.json')).default as Record<string, any>;
+            if (isMounted) setAiContents(fallback);
           }
         }
       } catch (err) {

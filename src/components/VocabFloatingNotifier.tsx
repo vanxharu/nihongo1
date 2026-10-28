@@ -11,7 +11,8 @@ import {
   syncRemindersWithServiceWorker,
   startBackgroundVocabTicker,
   formatVocabOriginLabel,
-  VocabNotificationPayload
+  VocabNotificationPayload,
+  whenVocabPoolReady,
 } from '../utils/notifications';
 
 interface VocabFloatingNotifierProps {
@@ -20,7 +21,9 @@ interface VocabFloatingNotifierProps {
 
 export default function VocabFloatingNotifier({ onEarnXp }: VocabFloatingNotifierProps) {
   const [activeWord, setActiveWord] = useState<VocabNotificationPayload | null>(null);
-  const vocabPool = useMemo(() => getAllVocabPool(), []);
+  const [poolVersion, setPoolVersion] = useState(0);
+  useEffect(() => { let live = true; void whenVocabPoolReady().then(() => live && setPoolVersion(v => v + 1)); return () => { live = false; }; }, []);
+  const vocabPool = useMemo(() => getAllVocabPool(), [poolVersion]);
   const [speaking, setSpeaking] = useState<'word' | 'example' | null>(null);
 
   useEffect(() => {

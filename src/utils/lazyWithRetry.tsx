@@ -4,6 +4,27 @@ import React, { lazy } from 'react';
  * Robust lazy loading with automatic retry for dynamic imports.
  * Handles network hiccups, dev server restarts, and stale deployment chunks.
  */
+// Sau mỗi lần deploy, tab đang mở vẫn trỏ tới các file JS cũ (đã bị xoá) → lỗi tải module.
+// Phát hiện bản mới bằng cách so file index trong HTML hiện tại với file trang đang chạy.
+async function newBuildAvailable(): Promise<boolean> {
+  try {
+    const current = document.querySelector<HTMLScriptElement>('script[type="module"][src*="/assets/index-"]')?.getAttribute('src');
+    if (!current) return false;
+    const html = await (await fetch('/', { cache: 'no-store' })).text();
+    return !html.includes(current);
+  } catch { return false; }
+}
+const RELOAD_KEY = 'chunk-reload-at';
+function reloadOnceForNewBuild(): boolean {
+  try {
+    const last = Number(sessionStorage.getItem(RELOAD_KEY) || 0);
+    if (Date.now() - last < 30000) return false; // vừa tải lại mà vẫn lỗi: không lặp vô hạn
+    sessionStorage.setItem(RELOAD_KEY, String(Date.now()));
+  } catch { /* storage bị chặn: vẫn tải lại một lần */ }
+  window.location.reload();
+  return true;
+}
+
 export function lazyWithRetry<T extends React.ComponentType<any>>(
   componentImport: () => Promise<{ default: T }>,
   retries = 4,
@@ -16,6 +37,9 @@ export function lazyWithRetry<T extends React.ComponentType<any>>(
         return await componentImport();
       } catch (error) {
         lastError = error;
+        // Lỗi do bản deploy mới (không phải mạng chập chờn): tải lại trang ngay, khỏi chờ thử lại ~5 giây.
+        // Chỉ xảy ra lúc chuyển sang mục mới, nên không làm mất bài đang làm.
+        if (i === 0 && await newBuildAvailable() && reloadOnceForNewBuild()) return new Promise<never>(() => {});
         if (i < retries - 1) {
           await new Promise((resolve) => setTimeout(resolve, interval * (i + 1)));
         }

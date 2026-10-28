@@ -56,7 +56,7 @@ import { JlptModernExamView } from './exam/JlptModernExamView';
 import { ExamHistoryModal } from './ExamHistoryModal';
 import { PrintableExamBooklet } from './PrintableExamBooklet';
 import { showLearningFeedback } from '../utils/learningMotion';
-import { PdfExamBookletViewer } from './PdfExamBookletViewer';
+const PdfExamBookletViewer = React.lazy(() => import('./PdfExamBookletViewer').then(m => ({ default: m.PdfExamBookletViewer }))); // pdfjs ~550KB: chỉ nạp khi mở đề PDF
 
 import { localDateStr } from '../utils/localDate';
 const EXAM_PRAISES = [
@@ -1099,6 +1099,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
           {/* TAB 1: PDF IMPORT & PRACTICE WORKSPACE */}
           {(mainTab === 'pdf_practice' || showPdfPractice) ? (
             <div className="animate-fade-in">
+              <React.Suspense fallback={<div className="p-8 text-center text-sm opacity-70">Đang tải trình xem đề PDF…</div>}>
               <PdfExamBookletViewer 
                 initialExam={selectedExam || undefined} 
                 userProfile={userProfile} 
@@ -1107,6 +1108,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                   setMainTab('library');
                 }} 
               />
+              </React.Suspense>
             </div>
           ) : mainTab === 'ai_builder' ? (
             /* TAB 2: AI JLPT BUILDER STUDIO */

@@ -48,7 +48,7 @@ const AchievementsView = lazyWithRetry(() => import('./components/achievements/A
 const MobilePracticeHub = lazyWithRetry(() => import('./components/mobile/MobilePracticeHub'));
 const MobileProfileView = lazyWithRetry(() => import('./components/mobile/MobileProfileView'));
 import SaveToNotebookModal from './components/SaveToNotebookModal';
-import JlptWordDetailModal from './components/JlptWordDetailModal';
+const JlptWordDetailModal = lazyWithRetry(() => import('./components/JlptWordDetailModal')); // kéo theo Tango N4: chỉ nạp khi mở tra từ
 import ShibaMascot from './components/mascot/ShibaMascot';
 import Toasts, { toast } from './components/ui/Toasts';
 import CommandPalette from './components/ui/CommandPalette';
@@ -937,7 +937,7 @@ export default function App() {
 
       {/* Mazii Word Detail Lookup Modal */}
       {selectedMaziiWord && (
-        <JlptWordDetailModal
+        <React.Suspense fallback={null}><JlptWordDetailModal
           wordInfo={selectedMaziiWord}
           onClose={() => setSelectedMaziiWord(null)}
           onSaveVocab={(v: any) => {
@@ -952,7 +952,7 @@ export default function App() {
             const currentTarget = typeof selectedMaziiWord === 'string' ? selectedMaziiWord : selectedMaziiWord?.word;
             return (typeof x === 'string' ? x : x.word) === currentTarget;
           })}
-        />
+        /></React.Suspense>
       )}
 
       {/* PWA Install Banner & Modal */}

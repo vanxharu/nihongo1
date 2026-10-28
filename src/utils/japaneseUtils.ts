@@ -1,6 +1,5 @@
 import { EXAMPLE_FURIGANA } from '../data/exampleFurigana';
 import { KANJI_DICTIONARY } from '../data/kanjiDictionary';
-import { TANGO_N4_VOCABULARY } from '../data/tangoN4Vocab';
 
 /**
  * Auto-generated comprehensive Kanji to Hán Việt dictionary
@@ -3507,10 +3506,6 @@ export function ensureVocabExample(item: {
 // Pre-compiled and sorted base keywords from COMMON_KANJI_READINGS & All Vocab Datasets
 const baseKeywordsMap: Record<string, string> = { ...COMMON_KANJI_READINGS };
 
-// Add all standard vocab datasets (N5, N4, Tango N4, N3, N2, N1) and extract verb/adjective stems & inflections
-const staticVocabSources = [
-  ...(Array.isArray(TANGO_N4_VOCABULARY) ? TANGO_N4_VOCABULARY : [])
-];
 
 function registerKeyword(k: string, r: string) {
   if (!k || !r || !/[\u4e00-\u9faf\u3400-\u4dbf]/.test(k)) return;
@@ -3519,7 +3514,8 @@ function registerKeyword(k: string, r: string) {
   }
 }
 
-staticVocabSources.forEach((v: any) => {
+// Bộ Tango N4 (~700KB) nạp sau khi trang hiện lên để không làm nặng gói tải đầu; xong thì dựng lại bảng từ khoá furigana.
+const registerVocabKeywords = (list: any[]) => list.forEach((v: any) => {
   const originalKanji = v.kanji || v.word || '';
   const isTildeBound = /[～~〜〰]/.test(originalKanji);
   const rawKanji = cleanVocabSymbols(originalKanji);
@@ -3596,13 +3592,20 @@ staticVocabSources.forEach((v: any) => {
   });
 });
 
-export const PRECOMPILED_BASE_KEYWORDS: { kanji: string; hiragana: string }[] = Object.entries(baseKeywordsMap)
+const compileKeywords = () => Object.entries(baseKeywordsMap)
   .filter(([kanji]) => kanji && /[\u4e00-\u9faf\u3400-\u4dbf]/.test(kanji))
   .map(([kanji, hiragana]) => ({ kanji, hiragana }))
   .sort((a, b) => b.kanji.length - a.kanji.length);
+export let PRECOMPILED_BASE_KEYWORDS: { kanji: string; hiragana: string }[] = compileKeywords();
 
 // Fast in-memory cache for sentence furigana parts
 const sentenceFuriganaCache = new Map<string, FuriganaPart[]>();
+
+import('../data/tangoN4Vocab').then(m => {
+  registerVocabKeywords(Array.isArray(m.TANGO_N4_VOCABULARY) ? m.TANGO_N4_VOCABULARY : []);
+  PRECOMPILED_BASE_KEYWORDS = compileKeywords();
+  sentenceFuriganaCache.clear();
+}).catch(() => { /* chỉ thiếu bớt furigana từ Tango N4 */ });
 const MAX_CACHE_SIZE = 1000;
 
 export function getSentenceFuriganaParts(

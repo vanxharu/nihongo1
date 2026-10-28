@@ -3,9 +3,6 @@
  * Supports Windows Desktop Toast / Floating Notifications with JLPT Level filtering & Background Web Worker
  */
 
-import { TANGO_N4_VOCABULARY } from '../data/tangoN4Vocab';
-import { TANGO_N5_VOCABULARY } from '../data/tangoN5Vocab';
-import { TANGO_N3_VOCABULARY } from '../data/tangoN3Vocab';
 import {
   getHanViet,
   getSentenceHiraganaReading,
@@ -462,6 +459,14 @@ let _cachedVocabPool: VocabNotificationPayload[] | null = null;
 /**
  * Get all available vocabulary across all JLPT levels with rich curriculum & lesson metadata
  */
+// Bộ Tango (~2.5MB) nạp riêng sau khi trang hiện lên, không nằm trong gói tải đầu.
+// Khi chưa nạp xong, kho thông báo chỉ có từ tuỳ chỉnh và không được lưu cache.
+let TANGO: { n3: any[]; n4: any[]; n5: any[] } | null = null;
+const tangoReady = Promise.all([import('../data/tangoN4Vocab'), import('../data/tangoN5Vocab'), import('../data/tangoN3Vocab')])
+  .then(([a, b, c]) => { TANGO = { n4: a.TANGO_N4_VOCABULARY, n5: b.TANGO_N5_VOCABULARY, n3: c.TANGO_N3_VOCABULARY }; _cachedVocabPool = null; })
+  .catch(() => { /* thử lại ở lần tải trang sau */ });
+export const whenVocabPoolReady = () => tangoReady;
+
 export const getAllVocabPool = (): VocabNotificationPayload[] => {
   if (_cachedVocabPool && _cachedVocabPool.length > 0) {
     return _cachedVocabPool;
@@ -571,9 +576,11 @@ export const getAllVocabPool = (): VocabNotificationPayload[] => {
     });
   };
 
-  processList(TANGO_N4_VOCABULARY, 'N4', 'tango', 'Tango 1500');
-  processList(TANGO_N5_VOCABULARY, 'N5', 'tango', 'Tango N5 1000');
-  processList(TANGO_N3_VOCABULARY, 'N3', 'tango', 'Tango N3 2000');
+  if (TANGO) {
+    processList(TANGO.n4, 'N4', 'tango', 'Tango 1500');
+    processList(TANGO.n5, 'N5', 'tango', 'Tango N5 1000');
+    processList(TANGO.n3, 'N3', 'tango', 'Tango N3 2000');
+  }
 
   // Load user custom imported vocabularies from localStorage
   try {
@@ -590,7 +597,7 @@ export const getAllVocabPool = (): VocabNotificationPayload[] => {
     console.error('Error loading custom vocabularies into pool:', e);
   }
 
-  _cachedVocabPool = pool;
+  if (TANGO) _cachedVocabPool = pool;
   return pool;
 };
 
@@ -770,6 +777,8 @@ export const syncRemindersWithServiceWorker = async (
 
   try {
     const registration = await navigator.serviceWorker.ready;
+    // Không gửi kho rỗng cho service worker khi bộ Tango còn đang nạp (sẽ xoá danh sách từ đã có ở SW).
+    if (!TANGO) { await tangoReady; if (!vocabList?.length) vocabList = undefined; }
     const list = vocabList || getEffectiveVocabPool(settings);
     const finalList = list.length > 0 ? list : getAllVocabPool();
 
