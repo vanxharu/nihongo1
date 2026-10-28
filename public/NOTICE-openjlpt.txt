@@ -1,1 +1,0 @@
-src/data/openjlptGlossary.json: derived from OpenJLPT (github.com/evanclan/OpenJLPT, CC BY-SA 4.0), which uses JMdict (EDRDG, CC BY-SA 4.0) and Jonathan Waller JLPT lists (CC BY). Words, readings and first three English glosses only. Share-alike applies to this file.
