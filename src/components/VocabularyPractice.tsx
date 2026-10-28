@@ -945,7 +945,8 @@ export default function VocabularyPractice({ userProfile, updateProfile, onEarnX
   const quickFilteredLessons = useMemo(() => {
     if (!quickLessonSearch.trim()) return lessons;
     const q = quickLessonSearch.toLowerCase().trim();
-    return lessons.filter(l => 
+    return lessons.filter((l, i) => 
+      String(i + 1) === q || // số "Bài N" hiển thị trong ô chọn bài
       l.name.toLowerCase().includes(q) || 
       (l.lessonNumber !== null && l.lessonNumber.toString().includes(q)) ||
       (l.lessonTitleJp && l.lessonTitleJp.toLowerCase().includes(q))
@@ -4316,14 +4317,25 @@ if (loading) {
                     Không tìm thấy bài học nào phù hợp với "{quickLessonSearch}"
                   </div>
                 ) : (
-                  quickFilteredLessons.map((les) => {
+                  quickFilteredLessons.map((les, i) => {
                     const originalIndex = lessons.findIndex(l => l.id === les.id);
+                    // Tango: "Sec 1: 時間 (Thời gian) · Phần 1: 私たちの毎日" → nhóm theo Phần, thẻ đánh số bài liên tục.
+                    const split = (n: string) => { const m = n.match(/^(Sec\s*\d+):\s*(.+?)\s*·\s*(Phần\s*\d+)/); return m ? { sec: m[1], title: m[2], part: m[3] } : null; };
+                    const info = split(les.name);
+                    const prev = i > 0 ? split(quickFilteredLessons[i - 1].name) : null;
+                    const partHeader = info && info.part !== prev?.part;
                     const isCurrent = originalIndex === currentLessonIndex;
                     const stats = lessonVocabCountMap[les.id] || { total: 0, learned: 0 };
 
                     return (
+                      <React.Fragment key={les.id}>
+                      {partHeader && (
+                        <div className={`col-span-full flex items-baseline gap-2 px-1 ${i > 0 ? 'pt-3' : ''}`}>
+                          <span className="text-[11px] font-black uppercase tracking-wider text-sky-300">{info!.part}</span>
+                          <span className="text-xs text-slate-400 truncate">{les.lessonTitleJp}</span>
+                        </div>
+                      )}
                       <button
-                        key={les.id}
                         onClick={() => {
                           if (originalIndex !== -1) {
                             setCurrentLessonIndex(originalIndex);
@@ -4338,10 +4350,16 @@ if (loading) {
                             : 'bg-[#121626] border-[#2b3353] hover:border-sky-500/60 hover:bg-[#1a2035] text-slate-200'
                         }`}
                       >
+                        {info && (
+                          <span className={`shrink-0 w-9 h-9 rounded-lg flex flex-col items-center justify-center leading-none ${isCurrent ? 'bg-emerald-500 text-slate-950' : 'bg-[#1d2440] text-sky-200'}`}>
+                            <span className="text-[8px] font-bold opacity-80">BÀI</span>
+                            <span className="text-sm font-black">{originalIndex + 1}</span>
+                          </span>
+                        )}
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
                             <span className="font-extrabold text-xs sm:text-sm truncate">
-                              {les.name}
+                              {info ? info.title : les.name}
                             </span>
                             {isCurrent && (
                               <span className="text-[9px] bg-emerald-500 text-slate-950 font-black px-1.5 py-0.2 rounded-full shrink-0">
@@ -4349,7 +4367,9 @@ if (loading) {
                               </span>
                             )}
                           </div>
-                          {les.lessonTitleJp && (
+                          {info ? (
+                            <p className="text-[11px] text-slate-400 truncate mt-0.5">{info.part} · {info.sec}</p>
+                          ) : les.lessonTitleJp && (
                             <p className="text-[11px] text-slate-400 truncate mt-0.5">
                               {les.lessonTitleJp}
                             </p>
@@ -4360,6 +4380,7 @@ if (loading) {
                           <span className="font-bold text-slate-300">{stats.total}</span> từ
                         </div>
                       </button>
+                      </React.Fragment>
                     );
                   })
                 )}
