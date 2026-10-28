@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 import { DailyExam, ExamQuestion, UserProfile } from '../../types';
 import { JLPT_SECTION_METAS, ExamSectionMode, renderFormattedQuestion } from '../DailyExamQuiz';
-import { TappableJa, ReadingHelper, vocabIn } from './TappableJa';
+import { TappableJa, ReadingHelper, vocabIn, studySentences } from './TappableJa';
 import ShibaMascot from '../mascot/ShibaMascot';
 import LiquidGlassButton from '../ui/LiquidGlassButton';
 
@@ -193,6 +193,8 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
 
   // Check if current question is Reading (dokkai) with passage
   const isDokkaiQuestion = currentQuestion?.section === 'dokkai';
+  const revealedNow = !!currentQuestion && (isSubmitted || (instant && userAnswers[currentQuestion.id] !== undefined));
+  const passageMarks = useMemo(() => revealedNow && currentQuestion?.readingPassage ? (studySentences(currentQuestion.readingPassage) || []).filter(x => x.for.includes(currentQuestion.id)).map(x => x.ja) : [], [revealedNow, currentQuestion]);
   const readingPassage = currentQuestion?.readingPassage || (isDokkaiQuestion ? currentQuestion?.contextPassage : undefined);
 
   return (
@@ -288,9 +290,9 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
                 {/* Left: Reading Passage Card */}
                 <div className="lg:col-span-6 bg-white rounded-2xl p-5 border border-[#EADFCF] shadow-xs space-y-3 sticky top-20 max-h-[75vh] overflow-y-auto">
                   <div className="text-[#1F2639] font-medium text-base sm:text-lg leading-relaxed whitespace-pre-line tracking-wide font-sans">
-                    {tapOn ? <TappableJa text={readingPassage} highlight={keywords} /> : renderFormattedQuestion(readingPassage)}
+                    {tapOn ? <TappableJa text={readingPassage} highlight={keywords} marks={passageMarks} /> : renderFormattedQuestion(readingPassage)}
                   </div>
-                  <ReadingHelper qid={currentQuestion.id} passage={readingPassage} question={currentQuestion.question} />
+                  <ReadingHelper qid={currentQuestion.id} passage={readingPassage} question={currentQuestion.question} revealed={revealedNow} />
                 </div>
 
                 {/* Right: Question & Multiple Choices */}
