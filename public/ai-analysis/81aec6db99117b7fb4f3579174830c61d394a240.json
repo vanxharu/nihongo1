@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"走ったら、ひざの 調子が 悪くなりました。","analysis":{"translation":"Sau khi chạy thì tình trạng đầu gối trở nên xấu đi.","summary":"","points":[{"title":"走ったら","body":"\"sau khi chạy thì\"."},{"title":"ひざの調子が悪くなりました","body":"\"đầu gối có vấn đề\": 調子が 悪い = tình trạng không tốt."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

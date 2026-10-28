@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"うちの 近くの スポーツクラブは 安くて 便利です。","analysis":{"translation":"Câu lạc bộ thể thao gần nhà tôi rẻ và tiện lợi.","summary":"","points":[{"title":"うちの近くのスポーツクラブは","body":"\"phòng tập gần nhà\"."},{"title":"安くて便利です","body":"\"rẻ và tiện\": Aい → くて (nối)."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

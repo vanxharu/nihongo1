@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"山田さんは 髪が 長いです。","analysis":{"translation":"Tóc chị Yamada dài.","summary":"","points":[{"title":"山田さんは","body":"\"chị Yamada\"."},{"title":"髪が長いです","body":"\"tóc dài\": N1 は N2 が A."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

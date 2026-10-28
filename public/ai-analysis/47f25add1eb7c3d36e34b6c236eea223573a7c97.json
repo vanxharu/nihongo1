@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"私が 行く 病院の 先生は 女性です。","analysis":{"translation":"Bác sỹ bệnh viện tôi đi là phụ nữ.","summary":"","points":[{"title":"私が行く病院の先生は","body":"\"bác sĩ ở bệnh viện tôi hay đến\"."},{"title":"女性です","body":"\"là nữ\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
