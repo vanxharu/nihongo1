@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"大好きな 作家が 新しい 小説を 発表しました。","analysis":{"translation":"Tác giả tôi rất yêu thích đã công bố tiểu thuyết mới.","summary":"","points":[{"title":"大好きな作家が","body":"\"tác giả tôi rất thích\": 作家（さっか）."},{"title":"新しい小説を発表しました","body":"\"đã ra mắt tiểu thuyết mới\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

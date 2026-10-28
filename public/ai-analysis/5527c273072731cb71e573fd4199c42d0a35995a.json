@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"この 番組は 海外でも 放送されています。","analysis":{"translation":"Chương trình này cũng được phát sóng ở hải ngoại.","summary":"","points":[{"title":"この番組は","body":"\"chương trình này\"."},{"title":"海外でも","body":"\"cả ở nước ngoài\"."},{"title":"放送されています","body":"\"được phát sóng\": bị động."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
