@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"父に ペットは だめだと 言われました。","analysis":{"translation":"Tôi bị cha nói không được nuôi thú cưng.","summary":"","points":[{"title":"父に","body":"\"bởi bố\"."},{"title":"ペットはだめだと","body":"\"rằng thú cưng thì không được\"."},{"title":"言われました","body":"\"bị nói\": bị động của 言う."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

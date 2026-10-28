@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"ニュースは 見ませんが、ドラマは よく 見ます。","analysis":{"translation":"Tin tức thì tôi không xem nhưng phim truyền hình thì thường xem.","summary":"","points":[{"title":"ニュースは見ませんが","body":"\"tin tức thì không xem nhưng\"."},{"title":"ドラマはよく見ます","body":"\"phim truyền hình thì hay xem\": は đối chiếu."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"好きな 俳優が 出る 映画を 見に 行きます。","analysis":{"translation":"Tôi đi xem phim có diễn viên yêu thích xuất hiện.","summary":"","points":[{"title":"好きな俳優が出る","body":"\"có diễn viên mình thích tham gia\": mệnh đề bổ nghĩa 映画."},{"title":"映画を見に行きます","body":"\"đi xem phim\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
