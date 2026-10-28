@@ -69,6 +69,8 @@ export function useAuth() {
 const LOCAL_STORAGE_KEY = 'nhai_kanji_user_profile_v1';
 // Chưa có ảnh, hoặc ảnh mặc định cũ (🦊 tài khoản mới, 🐕 hồ sơ khách) = chưa chọn ảnh riêng → dùng ảnh tài khoản Google.
 export const isDefaultAvatar = (a?: string | null) => !a || a === '🦊' || a === '🐕';
+// Tài khoản tạo bằng mật khẩu rồi mới liên kết Google: ảnh nằm ở providerData, user.photoURL có thể rỗng.
+const googlePhoto = (u?: User | null) => u?.photoURL || u?.providerData.find(p => p.photoURL)?.photoURL || '';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -136,7 +138,7 @@ const parseDbUser = (dbData: any): UserProfile => {
       username: dbData.username || undefined,
       name: dbData.name || 'Học viên JLPT',
       // Chưa chọn ảnh riêng → ảnh tài khoản Google (server không lưu ảnh này, nên mọi lần đọc lại hồ sơ đều phải gắn lại).
-      avatar: isDefaultAvatar(dbData.avatar) && dbData.uid && dbData.uid === auth.currentUser?.uid && auth.currentUser?.photoURL ? auth.currentUser.photoURL : isDefaultAvatar(dbData.avatar) ? '' : dbData.avatar,
+      avatar: isDefaultAvatar(dbData.avatar) ? (dbData.uid && dbData.uid === auth.currentUser?.uid ? googlePhoto(auth.currentUser) : '') : dbData.avatar,
       targetLevel: (dbData.targetLevel || dbData.target_level || 'N4') as any,
       xp: dbData.xp !== null && dbData.xp !== undefined ? dbData.xp : 0,
       streak: dbData.streak !== null && dbData.streak !== undefined ? dbData.streak : 0,
@@ -368,7 +370,7 @@ const parseDbUser = (dbData: any): UserProfile => {
     // 1. Base profile from Firebase user info
     const defaultProfile: UserProfile = {
       name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'Học viên JLPT'),
-      avatar: firebaseUser.photoURL || '',
+      avatar: googlePhoto(firebaseUser),
       targetLevel: 'N4',
       xp: 0,
       streak: 1,
@@ -410,7 +412,11 @@ const parseDbUser = (dbData: any): UserProfile => {
         if (syncData.success && syncData.user) {
           const parsed = parseDbUser(syncData.user);
           // Chưa chọn ảnh riêng (còn emoji mặc định) → dùng ảnh của tài khoản mail.
-          if (firebaseUser.photoURL && isDefaultAvatar(parsed.avatar)) parsed.avatar = firebaseUser.photoURL;
+          if (googlePhoto(firebaseUser) && isDefaultAvatar(syncData.user.avatar)) {
+            parsed.avatar = googlePhoto(firebaseUser);
+            // Server chưa lưu được ảnh (thẻ đăng nhập không có ảnh) → lưu từ máy, chạy nền.
+            void fetch('/api/user/profile', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` }, body: JSON.stringify({ avatar: parsed.avatar }) }).catch(() => {});
+          }
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
           console.log('[AUTH] Profile: LOADED');
           return parsed;
@@ -429,7 +435,7 @@ const parseDbUser = (dbData: any): UserProfile => {
           console.log('[AUTH] Profile: LOADED');
           return {
             ...parsed,
-            avatar: isDefaultAvatar(parsed.avatar) ? firebaseUser.photoURL || parsed.avatar : parsed.avatar,
+            avatar: isDefaultAvatar(parsed.avatar) ? googlePhoto(firebaseUser) || parsed.avatar : parsed.avatar,
             role: 'user'
           };
         }
@@ -483,7 +489,7 @@ const parseDbUser = (dbData: any): UserProfile => {
         try {
           const c = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || 'null');
           if (c && c.uid === currentUser.uid && c.name && c.name !== 'Học viên JLPT' && isMounted) {
-            setDbUser({ ...c, role: 'user' }); // quyền admin chỉ tin server
+            setDbUser({ ...c, avatar: isDefaultAvatar(c.avatar) ? googlePhoto(currentUser) : c.avatar, role: 'user' }); // quyền admin chỉ tin server
             setAuthStatus('AUTHENTICATED');
             setLoading(false);
           }
