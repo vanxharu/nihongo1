@@ -1,6 +1,6 @@
 import { DailyExam } from '../types';
 import success from './jlptSuccessN4.json';
-import ozaq from './ozaqN4.json';
+import ozaq from './ozaqExams.json';
 
 // Nguồn bên thứ ba, đều là đề tự soạn (không phải đề thật), chưa duyệt:
 // - JLPT N4 Tutor (github.com/gauravhq/jlptsuccess), CC BY 4.0 / CC BY-SA 4.0
