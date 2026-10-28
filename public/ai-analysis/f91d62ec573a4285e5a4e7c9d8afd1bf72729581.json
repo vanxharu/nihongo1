@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"私は 祖母が 大好きです。","analysis":{"translation":"Tôi rất yêu bà tôi.","summary":"Bày tỏ tình cảm với bà.","points":[{"title":"Từ vựng","body":"大好き（だいすき）: rất thích, rất yêu."},{"title":"Ngữ pháp","body":"私は N が 大好きです: tôi rất thích/yêu N."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
