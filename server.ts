@@ -2943,17 +2943,22 @@ app.post('/api/user/sync', requireAuth, async (req: any, res) => {
       newLastActive = todayStr;
     }
     
+    // Chưa chọn ảnh riêng (emoji mặc định) → lưu ảnh tài khoản Google lên hồ sơ ngay khi đăng nhập.
+    const picture = typeof req.user?.picture === 'string' && /^https:\/\//.test(req.user.picture) ? req.user.picture : '';
+    const avatar = picture && (!dbUser.avatar || dbUser.avatar === '🦊' || dbUser.avatar === '🐕') ? picture : undefined;
+
     // Check if streak changed or last active changed
-    if (updatedStreak !== dbUser.streak || newLastActive !== dbUser.lastActiveDate) {
+    if (updatedStreak !== dbUser.streak || newLastActive !== dbUser.lastActiveDate || avatar) {
       try {
         const updatedUser = await updateUserProfile(dbUser.uid, {
           streak: updatedStreak,
-          lastActiveDate: newLastActive
+          lastActiveDate: newLastActive,
+          ...(avatar && { avatar })
         });
         res.json({ success: true, user: { ...(updatedUser || dbUser), ...learning } });
       } catch (dbErr) {
         console.warn("DB update failed in /api/user/sync, returning memory dbUser:", dbErr);
-        res.json({ success: true, user: { ...dbUser, streak: updatedStreak, lastActiveDate: newLastActive } });
+        res.json({ success: true, user: { ...dbUser, streak: updatedStreak, lastActiveDate: newLastActive, ...(avatar && { avatar }) } });
       }
     } else {
       res.json({ success: true, user: dbUser });

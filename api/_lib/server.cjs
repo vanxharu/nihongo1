@@ -100410,16 +100410,19 @@ app.post("/api/user/sync", requireAuth, async (req, res) => {
       }
       newLastActive = todayStr;
     }
-    if (updatedStreak !== dbUser.streak || newLastActive !== dbUser.lastActiveDate) {
+    const picture = typeof req.user?.picture === "string" && /^https:\/\//.test(req.user.picture) ? req.user.picture : "";
+    const avatar = picture && (!dbUser.avatar || dbUser.avatar === "\u{1F98A}" || dbUser.avatar === "\u{1F415}") ? picture : void 0;
+    if (updatedStreak !== dbUser.streak || newLastActive !== dbUser.lastActiveDate || avatar) {
       try {
         const updatedUser = await updateUserProfile(dbUser.uid, {
           streak: updatedStreak,
-          lastActiveDate: newLastActive
+          lastActiveDate: newLastActive,
+          ...avatar && { avatar }
         });
         res.json({ success: true, user: { ...updatedUser || dbUser, ...learning } });
       } catch (dbErr) {
         console.warn("DB update failed in /api/user/sync, returning memory dbUser:", dbErr);
-        res.json({ success: true, user: { ...dbUser, streak: updatedStreak, lastActiveDate: newLastActive } });
+        res.json({ success: true, user: { ...dbUser, streak: updatedStreak, lastActiveDate: newLastActive, ...avatar && { avatar } } });
       }
     } else {
       res.json({ success: true, user: dbUser });

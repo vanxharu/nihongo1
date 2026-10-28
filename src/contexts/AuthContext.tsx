@@ -400,7 +400,7 @@ const parseDbUser = (dbData: any): UserProfile => {
         const syncData = await syncResponse.json();
         if(syncData.success && syncData.user?.profileMigrationVersion===0){
           const cached=profileBeforeSync;
-          const profile=cached&&(!cached.uid||cached.uid===firebaseUser.uid)?cached:{};
+          const profile=cached&&(!cached.uid||cached.uid===firebaseUser.uid)?{...cached,avatar:isDefaultAvatar(cached.avatar)?undefined:cached.avatar}:{}; // ảnh mặc định của hồ sơ khách không được đè ảnh Google đã lưu
           const migration=await fetch('/api/user/import-browser',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${idToken}`},body:JSON.stringify({profile})});
           if(!migration.ok)throw new Error('Không nhập được tiến độ cũ lên Firebase.');
           const imported=await migration.json();syncData.user=imported.user;
