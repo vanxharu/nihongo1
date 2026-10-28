@@ -3,9 +3,10 @@ import { Volume2, X } from 'lucide-react';
 import { TANGO_N3_VOCABULARY, TANGO_N4_VOCABULARY, TANGO_N5_VOCABULARY, VOCABULARY_DATA } from '../../data';
 import { getDokkaiTranslation } from '../../data/dokkaiTranslations';
 import study from '../../data/examStudyData.json';
+import openjlpt from '../../data/openjlptGlossary.json';
 import { speakJapanese } from '../../utils/audio';
 
-export interface Hit { word: string; reading: string; meaning: string }
+export interface Hit { word: string; reading: string; meaning: string; ext?: boolean }
 type Dict = Map<string, Hit>;
 let dict: Dict | null = null;
 const SUFFIX = 'いるうくぐすつぬぶむ';
@@ -28,6 +29,11 @@ function getDict(): Dict {
       if (k.length < 2 && !/[一-龯]/.test(k)) continue; // bỏ trợ từ 1 chữ
       if (!dict.has(k)) add(k, hit);
     }
+  }
+  // Từ N5–N1 còn thiếu: OpenJLPT (CC BY-SA 4.0, JMdict), nghĩa tiếng Anh; chỉ bổ sung, không ghi đè.
+  for (const [k, [r, m]] of Object.entries(openjlpt as Record<string, [string, string]>)) {
+    if (k.length < 2 && !/[一-龯]/.test(k)) continue;
+    if (!dict.has(k)) add(k, { word: k, reading: r, meaning: `(EN) ${m}`, ext: true });
   }
   return dict;
 }
@@ -81,6 +87,7 @@ export const TappableJa: React.FC<{ text: string; highlight?: boolean; marks?: s
             </span>
           </span>
           <span className="mt-1 block text-sm">{sel.meaning}</span>
+          {sel.ext && <span className="mt-2 block text-[10px] text-[#786D5E]">Nguồn: OpenJLPT · JMdict (EDRDG), CC BY-SA 4.0</span>}
         </span>
       )}
     </>
