@@ -15,6 +15,7 @@ import PitchAccentDisplay from './PitchAccentDisplay';
 import JapaneseFuriganaText from './JapaneseFuriganaText';
 
 import { clickOnKey } from '../utils/a11y';
+import AiAnalyzeButton from './ai/AiAnalyzeButton';
 interface VocabListItemCardProps {
   v: VocabularyItem;
   index: number;
@@ -301,6 +302,7 @@ function VocabListItemCardComponent({
           <div className="flex items-center gap-0.5 shrink-0">
             <span onClick={(e) => e.stopPropagation()}><HeartLike size={28} className="text-slate-400" pressed={!!isWordStarred} onToggle={(e) => { e.stopPropagation(); onToggleStar(v.id); }} label={isWordStarred ? 'Bỏ yêu thích' : 'Yêu thích'} /></span>
             <button type="button" onClick={(e) => { e.stopPropagation(); onSpeak(v.kanji, false); }} className={`text-slate-400 hover:text-white p-1 rounded cursor-pointer${speakingText === v.kanji ? ' vocab-audio-playing' : ''}`} title="Phát âm chữ Hán"><Volume2 className="w-4 h-4" /></button>
+            <AiAnalyzeButton kind="vocab" text={v.kanji} context={`${v.hiragana} — ${v.meaning}`} />
           </div>
         </div>
         <div className="border-t border-slate-700/70 bg-[#272B3C] px-3.5 py-2.5 flex flex-col gap-3">
@@ -314,6 +316,7 @@ function VocabListItemCardComponent({
                     <JapaneseFuriganaText sentence={w.sentence} currentItem={{ kanji: v.kanji, hiragana: v.hiragana }} showFurigana={true} forceDark={true} size="base" onClickKanji={onSelectKanji} className="tracking-wide" />
                   </div>
                   <button type="button" onClick={(e) => { e.stopPropagation(); onSpeak(w.sentence, true); }} className={`text-slate-400 hover:text-white p-1 shrink-0 cursor-pointer${speakingText === w.sentence ? ' vocab-audio-playing' : ''}`} title="Nghe câu ví dụ"><Volume2 className="w-4 h-4" /></button>
+                  <AiAnalyzeButton kind="sentence" text={w.sentence} context={w.sentenceVi} />
                 </div>
               )}
               {w.sentenceVi && <div className="text-xs text-slate-400">{w.sentenceVi}</div>}
@@ -364,6 +367,7 @@ function VocabListItemCardComponent({
             >
               <Volume2 className="w-4 h-4" />
             </button>
+            <AiAnalyzeButton kind="vocab" text={v.kanji || v.hiragana} context={`${v.hiragana} — ${v.meaning}`} />
           </div>
         </div>
 
@@ -388,6 +392,7 @@ function VocabListItemCardComponent({
           >
             <Volume2 className="w-4 h-4" />
           </button>
+          {ex.exampleSentence && <AiAnalyzeButton kind="sentence" text={ex.exampleSentence} context={ex.exampleTranslation} />}
         </div>
       </div>
 
