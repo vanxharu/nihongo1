@@ -23,6 +23,8 @@ Viết phân tích theo đúng thứ tự todo → ghép bằng `pair.py` (scrat
 - 2026-10-28: Tango N4 bài tango_c1_s1, tango_c1_s2 (52 từ + 52 câu ví dụ); ngữ pháp N4 bài 26–29 (12 mẫu);
   video WDpZjB_1PHE, K65rdMF4tuo (Nihongo con Teppei, 94 câu). Tổng: 210 mục.
 
+- 2026-10-28 (tối): XONG toàn bộ Tango N4 (36 bài, 1787 mục từ + câu ví dụ) và toàn bộ ngữ pháp N4 (110 mẫu + 1 mẫu gộp んです/んですが của bản production).
+
 ## Tiếp theo
-- vocab: tango_c1_s3 · grammar: N4 bài 30 · video: video ngắn tiếp theo theo todo
+- video: video ngắn tiếp theo theo todo (94/9951 câu)
 - Chưa làm: câu hỏi thi, bài đọc hiểu, Tango N5/N3 (cần thêm vào scripts/ai-analysis-items.ts)
