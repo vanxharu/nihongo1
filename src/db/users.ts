@@ -20,7 +20,7 @@ export async function getOrCreateUser(uid:string,email:string,emailVerified=fals
     const snapshot=await tx.get(ref);const existing=snapshot.data();
     if(existing){if(isBootstrapAdmin(normalized,emailVerified)&&existing.role!=='admin'){tx.update(ref,{role:'admin'});return {...existing,role:'admin'};}return existing;}
     const today=new Date().toISOString().slice(0,10);
-    const value={id:uid,uid,email:normalized,username:normalized.split('@')[0].replace(/[^a-z0-9_]/g,''),name:normalized.split('@')[0]||'Học viên JLPT',avatar:'🦊',targetLevel:'N4',xp:0,streak:0,coins:0,lastActiveDate:today,studyDays:JSON.stringify([today]),completedLessons:'[]',vocabStatus:'{}',grammarStatus:'{}',kanjiStatus:'{}',dailyTestResults:'[]',role:isBootstrapAdmin(normalized,emailVerified)?'admin':'user',isVip:false,createdAt:new Date().toISOString(),profileMigrationVersion:0};
+    const value={id:uid,uid,email:normalized,username:normalized.split('@')[0].replace(/[^a-z0-9_]/g,''),name:normalized.split('@')[0]||'Học viên JLPT',avatar:'',targetLevel:'N4',xp:0,streak:0,coins:0,lastActiveDate:today,studyDays:JSON.stringify([today]),completedLessons:'[]',vocabStatus:'{}',grammarStatus:'{}',kanjiStatus:'{}',dailyTestResults:'[]',role:isBootstrapAdmin(normalized,emailVerified)?'admin':'user',isVip:false,createdAt:new Date().toISOString(),profileMigrationVersion:0};
     tx.create(ref,value);return value;
   });
 }

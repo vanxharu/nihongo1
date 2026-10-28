@@ -25,7 +25,7 @@ export default function UserAvatar({
   avatar,
   name,
   className = 'w-10 h-10 rounded-full',
-  fallbackEmoji = '🦊'
+  fallbackEmoji = ''
 }: UserAvatarProps) {
   const [imgError, setImgError] = useState(false);
 
@@ -51,7 +51,8 @@ export default function UserAvatar({
   }
 
   // If avatar is a short string / emoji (length <= 6)
-  const isEmojiOrShort = avatar && avatar.trim().length > 0 && avatar.trim().length <= 6;
+  // 🦊/🐕 là ảnh mặc định cũ (không phải người dùng chọn) → hiện biểu tượng người thay vì emoji.
+  const isEmojiOrShort = avatar && avatar.trim().length > 0 && avatar.trim().length <= 6 && !['🦊', '🐕'].includes(avatar.trim());
   const displayEmoji = isEmojiOrShort ? avatar.trim() : fallbackEmoji;
 
   return (

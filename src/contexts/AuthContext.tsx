@@ -67,7 +67,7 @@ export function useAuth() {
 }
 
 const LOCAL_STORAGE_KEY = 'nhai_kanji_user_profile_v1';
-// Ảnh mặc định (🦊 của tài khoản mới, 🐕 của hồ sơ khách được nhập lên khi đăng nhập lần đầu) = chưa chọn ảnh riêng → dùng ảnh tài khoản Google.
+// Chưa có ảnh, hoặc ảnh mặc định cũ (🦊 tài khoản mới, 🐕 hồ sơ khách) = chưa chọn ảnh riêng → dùng ảnh tài khoản Google.
 export const isDefaultAvatar = (a?: string | null) => !a || a === '🦊' || a === '🐕';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -136,7 +136,7 @@ const parseDbUser = (dbData: any): UserProfile => {
       username: dbData.username || undefined,
       name: dbData.name || 'Học viên JLPT',
       // Chưa chọn ảnh riêng → ảnh tài khoản Google (server không lưu ảnh này, nên mọi lần đọc lại hồ sơ đều phải gắn lại).
-      avatar: isDefaultAvatar(dbData.avatar) && dbData.uid && dbData.uid === auth.currentUser?.uid && auth.currentUser?.photoURL ? auth.currentUser.photoURL : dbData.avatar || '🦊',
+      avatar: isDefaultAvatar(dbData.avatar) && dbData.uid && dbData.uid === auth.currentUser?.uid && auth.currentUser?.photoURL ? auth.currentUser.photoURL : isDefaultAvatar(dbData.avatar) ? '' : dbData.avatar,
       targetLevel: (dbData.targetLevel || dbData.target_level || 'N4') as any,
       xp: dbData.xp !== null && dbData.xp !== undefined ? dbData.xp : 0,
       streak: dbData.streak !== null && dbData.streak !== undefined ? dbData.streak : 0,
@@ -368,7 +368,7 @@ const parseDbUser = (dbData: any): UserProfile => {
     // 1. Base profile from Firebase user info
     const defaultProfile: UserProfile = {
       name: firebaseUser.displayName || (firebaseUser.email ? firebaseUser.email.split('@')[0] : 'Học viên JLPT'),
-      avatar: firebaseUser.photoURL || '🦊',
+      avatar: firebaseUser.photoURL || '',
       targetLevel: 'N4',
       xp: 0,
       streak: 1,

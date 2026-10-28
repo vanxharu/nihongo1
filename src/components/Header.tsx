@@ -166,7 +166,7 @@ export default function Header({
     setIsProfileOpen(false);
   };
 
-  const avatars = ['🐕', '🦊', '🌸', '🐱', '🐼', '🐸', '🐨', '🦄', '🐯', '🐙', '🐶', '🐰', '🦁', '🦉', '🐢', '🦖', '😀', '😎', '🤓', '😇', '🤖'];
+  const avatars = ['🌸', '🐱', '🐼', '🐸', '🐨', '🦄', '🐯', '🐙', '🐶', '🐰', '🦁', '🦉', '🐢', '🦖', '😀', '😎', '🤓', '😇', '🤖'];
 
   // Calculate learning progress
   const dailyPercent = Math.min(100, Math.round((todayXp / 50) * 100));
@@ -259,7 +259,7 @@ export default function Header({
             title="Hồ sơ học tập & Cài đặt hệ thống"
           >
             <div className="relative flex items-center justify-center w-6 h-6 rounded-full bg-white border border-slate-200 text-sm">
-              <UserAvatar avatar={userProfile.avatar} name={userProfile.name} fallbackEmoji="🦊" className="w-6 h-6 rounded-full text-xs" />
+              <UserAvatar avatar={userProfile.avatar} name={userProfile.name} className="w-6 h-6 rounded-full text-xs" />
               <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 border border-white" />
             </div>
             <span className="hidden md:inline text-xs font-semibold text-slate-800 max-w-[110px] truncate">

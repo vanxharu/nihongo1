@@ -97551,7 +97551,7 @@ async function getOrCreateUser(uid, email, emailVerified = false) {
       return existing;
     }
     const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-    const value = { id: uid, uid, email: normalized, username: normalized.split("@")[0].replace(/[^a-z0-9_]/g, ""), name: normalized.split("@")[0] || "H\u1ECDc vi\xEAn JLPT", avatar: "\u{1F98A}", targetLevel: "N4", xp: 0, streak: 0, coins: 0, lastActiveDate: today, studyDays: JSON.stringify([today]), completedLessons: "[]", vocabStatus: "{}", grammarStatus: "{}", kanjiStatus: "{}", dailyTestResults: "[]", role: isBootstrapAdmin(normalized, emailVerified) ? "admin" : "user", isVip: false, createdAt: (/* @__PURE__ */ new Date()).toISOString(), profileMigrationVersion: 0 };
+    const value = { id: uid, uid, email: normalized, username: normalized.split("@")[0].replace(/[^a-z0-9_]/g, ""), name: normalized.split("@")[0] || "H\u1ECDc vi\xEAn JLPT", avatar: "", targetLevel: "N4", xp: 0, streak: 0, coins: 0, lastActiveDate: today, studyDays: JSON.stringify([today]), completedLessons: "[]", vocabStatus: "{}", grammarStatus: "{}", kanjiStatus: "{}", dailyTestResults: "[]", role: isBootstrapAdmin(normalized, emailVerified) ? "admin" : "user", isVip: false, createdAt: (/* @__PURE__ */ new Date()).toISOString(), profileMigrationVersion: 0 };
     tx.create(ref, value);
     return value;
   });

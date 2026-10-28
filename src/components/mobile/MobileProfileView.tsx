@@ -43,7 +43,7 @@ interface MobileProfileViewProps {
   onResetProgress?: () => void;
 }
 
-const AVATARS = ['🦊', '🐱', '🐶', '🐼', '🦁', '🐯', '🐰', '🐻', '🐨', '🐵', '🌸', '⚡'];
+const AVATARS = ['🐱', '🐶', '🐼', '🦁', '🐯', '🐰', '🐻', '🐨', '🐵', '🌸', '⚡'];
 
 export default function MobileProfileView({
   userProfile,
@@ -60,7 +60,7 @@ export default function MobileProfileView({
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [tempName, setTempName] = useState(userProfile.name || (user?.displayName || ''));
   const [cropSrc, setCropSrc] = useState<string | null>(null);
-  const [tempAvatar, setTempAvatar] = useState(userProfile.avatar || '🦊');
+  const [tempAvatar, setTempAvatar] = useState(userProfile.avatar || '');
   const [tempLevel, setTempLevel] = useState<TargetChoice>(targetChoice({ ...userProfile, targetLevel: userProfile.targetLevel || 'N4' }));
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [saveSuccessMsg, setSaveSuccessMsg] = useState(false);
@@ -87,7 +87,7 @@ export default function MobileProfileView({
       <section className="profile-identity">
         <UserAvatar avatar={userProfile.avatar} className="profile-avatar" />
         <div className="profile-identity-copy"><span className="profile-label">{user ? 'HỒ SƠ HỌC VIÊN' : 'HỒ SƠ TRÊN THIẾT BỊ'}</span><h2>{userProfile.name || user?.displayName || 'Bạn học tiếng Nhật'}</h2><p>Mục tiêu {userProfile.studyTrack === 'business' ? 'Công sở' : `JLPT ${targetLevel}`} <span>·</span> Cấp {levelInfo.level}</p></div>
-        <AnimatedButton type="button" className="profile-edit" onClick={() => { setTempName(userProfile.name); setTempAvatar(userProfile.avatar || '🦊'); setTempLevel(targetChoice({ ...userProfile, targetLevel })); setIsProfileModalOpen(true); }}>Sửa hồ sơ <ChevronRight size={16} /></AnimatedButton>
+        <AnimatedButton type="button" className="profile-edit" onClick={() => { setTempName(userProfile.name); setTempAvatar(userProfile.avatar || ''); setTempLevel(targetChoice({ ...userProfile, targetLevel })); setIsProfileModalOpen(true); }}>Sửa hồ sơ <ChevronRight size={16} /></AnimatedButton>
       </section>
       <div className="profile-grid">
         <section className="profile-xp"><div className="profile-section-heading"><h2>Hành trình XP</h2><Award size={20} /></div><strong><SlidingNumber number={userProfile.xp || 0} initiallyStable thousandSeparator="." className="tabular-nums" /><small>XP</small></strong><p>{levelInfo.title}</p><div className="profile-meter" role="progressbar" aria-label="Tiến độ lên cấp" aria-valuenow={levelInfo.progressPercent} aria-valuemin={0} aria-valuemax={100}><span style={{width:`${levelInfo.progressPercent}%`}} /></div><div className="profile-xp-caption"><span>Cấp {levelInfo.level}</span><span>Còn {Math.max(0,levelInfo.nextLevelXp - userProfile.xp).toLocaleString()} XP đến cấp {levelInfo.level + 1}</span></div><AnimatedButton type="button" className="profile-text-action" onClick={() => onNavigate('progress')}>Xem tiến độ học <ChevronRight size={16} /></AnimatedButton></section>

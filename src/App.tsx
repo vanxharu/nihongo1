@@ -60,7 +60,7 @@ const GUEST_STORAGE_KEY = 'nhai_kanji_guest_profile_v1';
 
 const DEFAULT_PROFILE: UserProfile = {
   name: 'Khách',
-  avatar: '🐕',
+  avatar: '',
   targetLevel: 'N5',
   xp: 0,
   streak: 0,

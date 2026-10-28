@@ -423,7 +423,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                   {filteredUsers.map((u) => (
                     <tr key={u.uid} className="hover:bg-slate-50/50 transition-colors">
                       <td data-label="Học viên" className="px-6 py-4 flex items-center gap-3">
-                        <UserAvatar avatar={u.avatar} name={u.name} fallbackEmoji="🦊" className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 text-lg shrink-0" />
+                        <UserAvatar avatar={u.avatar} name={u.name} className="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 text-lg shrink-0" />
                         <div className="min-w-0">
                           <p className="font-bold text-slate-950 truncate flex items-center gap-1.5">
                             {u.name || 'Học viên JLPT'}
