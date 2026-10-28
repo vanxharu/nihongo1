@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"強い 風で 電車が 止まって しまいました。","analysis":{"translation":"Vì gió lớn nên tàu điện ngừng mất rồi.","summary":"","points":[{"title":"強い風で","body":"\"vì gió mạnh\": で chỉ nguyên nhân."},{"title":"電車が止まってしまいました","body":"\"tàu đã bị dừng\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

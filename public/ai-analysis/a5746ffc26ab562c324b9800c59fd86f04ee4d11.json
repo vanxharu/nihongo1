@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"駅前に 新しい スーパーが できました。","analysis":{"translation":"Trước nhà ga có một siêu thị mới.","summary":"","points":[{"title":"駅前に","body":"\"trước ga\"."},{"title":"新しいスーパーが","body":"\"siêu thị mới\"."},{"title":"できました","body":"\"đã mở, được xây xong\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

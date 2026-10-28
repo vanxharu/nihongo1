@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"大きい 台風が 来るかもしれません。","analysis":{"translation":"Có thể một cơn bão lớn sẽ đến.","summary":"","points":[{"title":"大きい台風が","body":"\"cơn bão lớn\"."},{"title":"来るかもしれません","body":"\"có thể sẽ đến\": ～かもしれません = có lẽ."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

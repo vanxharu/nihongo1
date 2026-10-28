@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"この 城は 450年前に 建てられました。","analysis":{"translation":"Lâu đài này được xây dựng vào 450 năm trước.","summary":"","points":[{"title":"この城は","body":"\"lâu đài này thì\"."},{"title":"450年前に","body":"\"vào 450 năm trước\"."},{"title":"建てられました","body":"\"đã được xây\": 建てる → bị động 建てられる."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

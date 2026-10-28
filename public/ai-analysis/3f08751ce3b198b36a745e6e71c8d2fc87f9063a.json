@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"日本と 比べると、私の 国は とても 寒いです。","analysis":{"translation":"So với Nhật, nước tôi rất lạnh.","summary":"","points":[{"title":"日本と比べると","body":"\"so với Nhật thì\"."},{"title":"私の国は","body":"\"đất nước tôi\"."},{"title":"とても寒いです","body":"\"rất lạnh\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
