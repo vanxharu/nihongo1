@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"今、テストの ための 勉強中です。","analysis":{"translation":"Bây giờ tôi đang học bài kiểm tra.","summary":"","points":[{"title":"今","body":"\"bây giờ\"."},{"title":"テストのための","body":"\"dành cho bài kiểm tra\": N の ための = để, cho N."},{"title":"勉強中です","body":"\"đang học\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

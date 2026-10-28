@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"きのうの テストは とても 易しかったです。","analysis":{"translation":"Bài kiểm tra hôm qua rất dễ.","summary":"","points":[{"title":"きのうのテストは","body":"\"bài kiểm tra hôm qua thì\"."},{"title":"とても易しかったです","body":"\"đã rất dễ\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

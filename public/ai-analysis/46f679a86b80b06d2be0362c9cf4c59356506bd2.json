@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"彼は とても まじめな 学生です。","analysis":{"translation":"Anh ấy là một sinh viên rất chăm chỉ.","summary":"","points":[{"title":"彼は","body":"\"anh ấy thì\": 彼（かれ）."},{"title":"とてもまじめな学生です","body":"\"là sinh viên rất chăm chỉ\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

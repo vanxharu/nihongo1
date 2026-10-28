@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"きのうの テストの 点は よくなかったです。","analysis":{"translation":"Điểm bài kiểm tra hôm qua không tốt.","summary":"","points":[{"title":"きのうのテストの点は","body":"\"điểm bài kiểm tra hôm qua thì\"."},{"title":"よくなかったです","body":"\"đã không tốt\": いい → よくなかった."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

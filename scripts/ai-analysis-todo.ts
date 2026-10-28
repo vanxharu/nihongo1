@@ -9,7 +9,7 @@ for (const i of items) { const s = (stats[i.group.split(':')[0]] ||= [0, 0]); s[
 console.error(Object.entries(stats).map(([k, [d, t]]) => `${k}: ${d}/${t}`).join(' · '));
 const groups: string[] = [];
 for (const i of items) {
-  if (!i.group.startsWith(prefix) || existsSync(analysisPath(i.kind, i.text))) continue;
+  if (!i.group.startsWith(prefix) || (!process.env.ALL && existsSync(analysisPath(i.kind, i.text)))) continue;
   if (!groups.includes(i.group)) { if (groups.length >= Number(limit)) break; groups.push(i.group); }
   console.log(JSON.stringify({ k: i.kind, t: i.text, c: i.context }));
 }

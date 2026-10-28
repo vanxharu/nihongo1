@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"日本の 大学を 受けたいです。","analysis":{"translation":"Tôi muốn dự thi vào trường đại học của Nhật.","summary":"","points":[{"title":"日本の大学を","body":"\"(kỳ thi vào) trường đại học Nhật\": を chỉ đối tượng dự thi."},{"title":"受けたいです","body":"\"muốn thi\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
