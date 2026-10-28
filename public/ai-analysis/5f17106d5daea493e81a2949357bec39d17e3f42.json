@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"今日の 会議は 午後 3時からです。","analysis":{"translation":"Cuộc họp hôm nay (bắt đầu) từ 3 giờ chiều.","summary":"","points":[{"title":"今日の会議は","body":"\"cuộc họp hôm nay thì\"."},{"title":"午後3時からです","body":"\"từ 3 giờ chiều\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

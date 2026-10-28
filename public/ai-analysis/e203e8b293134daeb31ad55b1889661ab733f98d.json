@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"1分でも ちこくしては いけません。","analysis":{"translation":"Không được đi trễ dù chỉ 1 phút.","summary":"","points":[{"title":"1分でも","body":"\"dù chỉ 1 phút\": でも = dù chỉ."},{"title":"ちこくしてはいけません","body":"\"không được đến muộn\": V-ては いけません."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

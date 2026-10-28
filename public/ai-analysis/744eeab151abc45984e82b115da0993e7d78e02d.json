@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"パソコンの ソフトを 作る 仕事が したいです。","analysis":{"translation":"Tôi muốn làm công việc tạo ra phần mềm máy vi tính.","summary":"","points":[{"title":"パソコンのソフトを作る","body":"\"làm phần mềm máy tính\": mệnh đề bổ nghĩa cho 仕事."},{"title":"仕事がしたいです","body":"\"muốn làm công việc\": N が したい."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

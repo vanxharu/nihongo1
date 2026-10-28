@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"田中さんは 仕事で 成功しました。","analysis":{"translation":"Anh/chị Tanaka đã thành công trong công việc.","summary":"","points":[{"title":"田中さんは","body":"\"anh Tanaka thì\"."},{"title":"仕事で成功しました","body":"\"đã thành công trong công việc\": で chỉ phạm vi."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

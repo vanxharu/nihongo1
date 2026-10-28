@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"私は ITの 会社に つとめて います。","analysis":{"translation":"Tôi đang làm việc tại một công ty IT.","summary":"","points":[{"title":"私はITの会社に","body":"\"tôi (làm) ở công ty IT\": nơi + に."},{"title":"つとめています","body":"\"đang làm việc\": つとめる → つとめて いる (trạng thái lâu dài)."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

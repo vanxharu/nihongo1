@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"名刺の 名前が まちがって いました。","analysis":{"translation":"Tên trên danh thiếp bị sai.","summary":"","points":[{"title":"名刺の名前が","body":"\"tên trên danh thiếp\"."},{"title":"まちがっていました","body":"\"đã bị sai\": まちがう → まちがって いる = trạng thái sai."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

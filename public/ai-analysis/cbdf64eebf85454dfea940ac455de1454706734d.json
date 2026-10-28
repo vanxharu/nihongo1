@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"店長に 仕事を たのまれました。","analysis":{"translation":"Tôi được cửa hàng trưởng nhờ công việc.","summary":"","points":[{"title":"店長に","body":"\"bởi cửa hàng trưởng\": người thực hiện trong câu bị động đi với に."},{"title":"仕事をたのまれました","body":"\"được nhờ việc\": たのむ → bị động たのまれる."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"この 会社には どんな 技術が ありますか。","analysis":{"translation":"Công ty này có kỹ thuật như thế nào?","summary":"","points":[{"title":"この会社には","body":"\"ở công ty này thì\"."},{"title":"どんな技術が","body":"\"kỹ thuật như thế nào\"."},{"title":"ありますか","body":"\"có không\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

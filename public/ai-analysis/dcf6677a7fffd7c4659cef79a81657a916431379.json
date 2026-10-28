@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"今日、はじめての 給料を もらいました。","analysis":{"translation":"Hôm nay tôi lãnh lương lần đầu tiên.","summary":"","points":[{"title":"今日","body":"\"hôm nay\"."},{"title":"はじめての給料を","body":"\"tháng lương đầu tiên\": はじめて の N = N đầu tiên."},{"title":"もらいました","body":"\"đã nhận\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
