@@ -4330,9 +4330,12 @@ if (loading) {
                     return (
                       <React.Fragment key={les.id}>
                       {partHeader && (
-                        <div className={`col-span-full flex items-baseline gap-2 px-1 ${i > 0 ? 'pt-3' : ''}`}>
-                          <span className="text-[11px] font-black uppercase tracking-wider text-sky-300">{info!.part}</span>
-                          <span className="text-xs text-slate-400 truncate">{les.lessonTitleJp}</span>
+                        <div
+                          className={`col-span-full sticky top-0 z-10 flex items-center gap-3 rounded-xl border-l-4 border-sky-400 px-3 py-2.5 ${i > 0 ? 'mt-3' : ''}`}
+                          style={{ background: 'color-mix(in srgb, #38bdf8 16%, var(--ui-surface, #161b2e))', boxShadow: '0 4px 12px rgba(0,0,0,.18)' }}
+                        >
+                          <span className="shrink-0 rounded-lg bg-sky-500 px-2.5 py-1 text-xs sm:text-sm font-black uppercase tracking-wide" style={{ color: '#0b1220' }}>{info!.part}</span>
+                          <span className="min-w-0 truncate text-sm sm:text-base font-extrabold" style={{ color: 'var(--ui-ink, #f1f5f9)' }}>{les.lessonTitleJp}</span>
                         </div>
                       )}
                       <button
