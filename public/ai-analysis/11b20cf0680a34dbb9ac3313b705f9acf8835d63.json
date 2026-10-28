@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"トマトを 半分に 切って ください。","analysis":{"translation":"Hãy cắt cà chua thành một nửa. (Hãy cắt cà chua làm đôi).","summary":"","points":[{"title":"トマトを","body":"\"cà chua\"."},{"title":"半分に切ってください","body":"\"hãy cắt làm đôi\": N に 切る = cắt thành N."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

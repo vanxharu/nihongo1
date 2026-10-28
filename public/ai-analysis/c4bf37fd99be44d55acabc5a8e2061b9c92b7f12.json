@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"計算するのに、時間が かかります。","analysis":{"translation":"Mất thời gian để tính toán.","summary":"","points":[{"title":"計算するのに","body":"\"để tính toán\": V-る のに = để (dùng với thời gian/tiền)."},{"title":"時間がかかります","body":"\"tốn thời gian\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

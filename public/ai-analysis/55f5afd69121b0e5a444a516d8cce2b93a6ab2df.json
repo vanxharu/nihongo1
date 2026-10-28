@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"ラーメン屋に たくさんの 人が 並んで います。","analysis":{"translation":"Có nhiều người xếp hàng ở tiệm mì.","summary":"","points":[{"title":"ラーメン屋に","body":"\"ở quán ramen\"."},{"title":"たくさんの人が","body":"\"nhiều người\"."},{"title":"並んでいます","body":"\"đang xếp hàng\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

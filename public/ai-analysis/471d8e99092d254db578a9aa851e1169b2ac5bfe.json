@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"この 店の 食料品は 安いです。","analysis":{"translation":"Hàng thực phẩm ở cửa hàng này rẻ.","summary":"","points":[{"title":"この店の食料品は","body":"\"thực phẩm của cửa hàng này thì\"."},{"title":"安いです","body":"\"rẻ\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

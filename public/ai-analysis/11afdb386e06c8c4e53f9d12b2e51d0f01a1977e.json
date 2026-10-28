@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"火が 強いので、少し 弱くして ください。","analysis":{"translation":"Vì lửa lớn nên hãy làm cho nhỏ lại một chút.","summary":"","points":[{"title":"火が強いので","body":"\"vì lửa to\"."},{"title":"少し弱くしてください","body":"\"hãy vặn nhỏ lại chút\": 弱い → 弱く する."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

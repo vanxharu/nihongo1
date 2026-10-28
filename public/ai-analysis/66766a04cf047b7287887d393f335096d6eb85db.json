@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"これが 本物なら、高くても 買いたいです。","analysis":{"translation":"Nếu đây là hàng thật thì có đắt tôi cũng muốn mua.","summary":"","points":[{"title":"これが本物なら","body":"\"nếu cái này là đồ thật\": N なら = nếu là N."},{"title":"高くても","body":"\"dù đắt\"."},{"title":"買いたいです","body":"\"cũng muốn mua\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"魚を 10分くらい 焼きます。","analysis":{"translation":"Nướng cá khoảng 10 phút.","summary":"","points":[{"title":"魚を","body":"\"cá\"."},{"title":"10分くらい焼きます","body":"\"nướng khoảng 10 phút\": くらい = khoảng."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
