@@ -1,1 +1,1 @@
-{"kind":"video","text":"もう何年かな?","analysis":{"translation":"Không biết đã bao nhiêu năm rồi nhỉ?","summary":"Tự hỏi về khoảng thời gian.","points":[{"title":"Ngữ pháp","body":"～かな: tự hỏi nhẹ nhàng. もう: đã (bao lâu rồi)."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
+{"kind":"video","text":"もう何年かな?","analysis":{"translation":"Không biết đã bao nhiêu năm rồi nhỉ?","summary":"","points":[{"title":"もう何年かな","body":"\"đã bao nhiêu năm rồi nhỉ\": もう = đã; 何年（なんねん）; かな = tự hỏi."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

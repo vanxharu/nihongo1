@@ -23,16 +23,16 @@ export function validInput(kind: unknown, text: unknown, context: unknown): { ki
 
 const TASK: Record<AiKind, string> = {
   vocab: 'Phân tích TỪ VỰNG tiếng Nhật: cách đọc, nghĩa (các nghĩa chính), từ loại, chữ Hán cấu thành (âm Hán Việt), cách dùng thường gặp, từ đồng/trái nghĩa, 2 câu ví dụ có dịch, lỗi người Việt hay mắc.',
-  sentence: 'Phân tích CÂU VÍ DỤ tiếng Nhật: dịch tự nhiên, tách cụm/từ quan trọng (đọc + nghĩa), giải thích ngữ pháp trong câu, sắc thái/ngữ cảnh dùng.',
+  sentence: 'Phân tích CÂU VÍ DỤ tiếng Nhật. translation = bản dịch tự nhiên, summary để rỗng. Chia câu thành các cụm theo thứ tự xuất hiện; mỗi point: title = cụm nguyên văn chép đúng từ câu (không sửa, không thêm), body = nghĩa của cụm trong ngoặc kép + giải thích từ vựng (cách đọc) và ngữ pháp trong cụm: thể chia, trợ từ, vì sao dùng như vậy, so sánh với cách dùng dễ nhầm.',
   reading: 'Phân tích BÀI ĐỌC HIỂU tiếng Nhật: tóm tắt ý chính, dịch, từ vựng khó (đọc + nghĩa), mẫu ngữ pháp xuất hiện, các câu then chốt và cách tìm thông tin để trả lời câu hỏi.',
-  video: 'Phân tích CÂU THOẠI trong video tiếng Nhật: dịch tự nhiên, từ vựng (đọc + nghĩa), ngữ pháp, cách nói khẩu ngữ/rút gọn nếu có, mẹo luyện shadowing (ngắt nhịp, trọng âm).',
+  video: 'Phân tích CÂU THOẠI trong video tiếng Nhật. translation = bản dịch tự nhiên, summary để rỗng. Chia câu thành các cụm theo thứ tự xuất hiện; mỗi point: title = cụm nguyên văn chép đúng từ câu (không sửa, không thêm), body = nghĩa của cụm trong ngoặc kép + giải thích từ vựng (cách đọc) và ngữ pháp trong cụm: thể chia, trợ từ, vì sao dùng như vậy, so sánh với cách dùng dễ nhầm. Nêu cả cách nói khẩu ngữ/rút gọn nếu có.',
   grammar: 'Phân tích MẪU NGỮ PHÁP tiếng Nhật: ý nghĩa, cấu trúc nối (thể nào + mẫu), sắc thái, phân biệt với mẫu dễ nhầm, 3 câu ví dụ có dịch, lỗi thường gặp.',
   question: 'Phân tích CÂU HỎI THI JLPT: dịch đề, phân tích từng phương án vì sao đúng/sai, kiến thức cần nắm, mẹo làm dạng câu này.',
 };
 
 const SYSTEM = 'Bạn là giáo viên tiếng Nhật cho người Việt. Trả lời bằng tiếng Việt, chính xác, ngắn gọn, không bịa. ' +
   'Chỉ trả về JSON: {"translation": string (bản dịch tiếng Việt, rỗng nếu không cần), "summary": string (2-3 câu tổng quan), ' +
-  '"points": [{"title": string, "body": string}] (3-8 mục)}. Không markdown.';
+  '"points": [{"title": string, "body": string}] (1-8 mục)}. Không markdown.';
 
 export function parseAnalysis(raw: string): AiAnalysis {
   const v = JSON.parse(String(raw).replace(/^```(?:json)?\s*|\s*```$/g, ''));

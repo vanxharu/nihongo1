@@ -1,5 +1,5 @@
 // Turns an analysis' "Từ vựng" / "Ngữ pháp" points into highlight ranges on the analysed text (design 4).
-export type Highlight = { start: number; end: number; type: 'vocab' | 'grammar'; label: string; reading: string; meaning: string; inner?: Highlight[] };
+export type Highlight = { start: number; end: number; type: 'vocab' | 'grammar' | 'chunk'; label: string; reading: string; meaning: string; inner?: Highlight[] };
 type Point = { title: string; body: string };
 
 const JP = /[぀-ヿ㐀-鿿々ー]/;
@@ -32,7 +32,16 @@ export function analysisHighlights(text: string, points: Point[]) {
   const found: Highlight[] = [];
   const used = new Set<number>();
   const free = (s: number, e: number) => found.every(h => e <= h.start || s >= h.end);
-  // Grammar first: a word inside a grammar match (時間 in の 時間) is shown inside that match's card.
+  // Sentence analyses split the sentence into quoted chunks (title = the chunk itself): those come first.
+  points.forEach((p, i) => {
+    if (/từ vựng|ngữ pháp/i.test(p.title) || !JP.test(p.title)) return;
+    const m = looseRegex(p.title).exec(text);
+    if (m && free(m.index, m.index + m[0].length)) {
+      found.push({ start: m.index, end: m.index + m[0].length, type: 'chunk', label: p.title, reading: '', meaning: p.body });
+      used.add(i);
+    }
+  });
+  // Grammar before vocab: a word inside a grammar match (時間 in の 時間) is shown inside that match's card.
   const order = points.map((p, i) => i).sort((a, b) => Number(/ngữ pháp/i.test(points[b].title)) - Number(/ngữ pháp/i.test(points[a].title)));
   order.forEach(i => {
     const p = points[i];

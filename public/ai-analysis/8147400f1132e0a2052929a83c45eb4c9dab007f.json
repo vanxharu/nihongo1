@@ -1,1 +1,1 @@
-{"kind":"video","text":"僕はエネルギーの先生です。","analysis":{"translation":"Tôi là 'thầy giáo năng lượng'.","summary":"Câu đùa tự giới thiệu.","points":[{"title":"Ngữ pháp","body":"N1 の N2: N2 về N1."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
+{"kind":"video","text":"僕はエネルギーの先生です。","analysis":{"translation":"Tôi là 'thầy giáo năng lượng'.","summary":"","points":[{"title":"僕はエネルギーの先生です","body":"\"tôi là giáo viên về năng lượng\": câu đùa tự giới thiệu."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

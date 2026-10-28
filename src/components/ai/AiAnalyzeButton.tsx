@@ -72,6 +72,7 @@ export default function AiAnalyzeButton({ kind, text, context, className = '', s
                   <button type="button" onClick={() => setPicked(i)} aria-pressed={sel === h} aria-label={`${h.label}: ${h.meaning}`}
                     className="cursor-pointer rounded-sm px-0.5 font-bold"
                     style={h.type === 'vocab' ? { background: sel === h ? '#3B82F6' : 'rgba(59,130,246,.18)', color: sel === h ? '#fff' : 'inherit', borderBottom: '3px solid #3B82F6' }
+                      : h.type === 'chunk' ? { background: sel === h ? 'rgba(13,148,136,.32)' : 'rgba(13,148,136,.12)', borderBottom: '3px solid #0D9488' }
                       : { background: sel === h ? 'rgba(234,88,12,.35)' : 'rgba(234,88,12,.16)', borderBottom: '3px dashed #EA580C' }}>{text.slice(h.start, h.end)}</button>
                 </React.Fragment>)}{text.slice(hl[hl.length - 1].end)}</p>
               : <p lang="ja" className="mt-1 text-base font-bold line-clamp-3 whitespace-pre-line">{text}</p>}</div>
@@ -83,13 +84,14 @@ export default function AiAnalyzeButton({ kind, text, context, className = '', s
           {state === 'done' && result && <div className="space-y-3 text-sm leading-relaxed">
             {hl && sel && <>
               <div className="flex flex-wrap gap-4 text-xs" style={{ color: 'var(--ui-muted)' }}>
-                <span className="flex items-center gap-1.5"><i className="inline-block w-4" style={{ borderBottom: '3px solid #3B82F6' }} />Từ vựng</span>
-                <span className="flex items-center gap-1.5"><i className="inline-block w-4" style={{ borderBottom: '3px dashed #EA580C' }} />Ngữ pháp</span>
+                {hl.some(h => h.type === 'chunk') && <span className="flex items-center gap-1.5"><i className="inline-block w-4" style={{ borderBottom: '3px solid #0D9488' }} />Cụm câu</span>}
+                {hl.some(h => h.type === 'vocab') && <span className="flex items-center gap-1.5"><i className="inline-block w-4" style={{ borderBottom: '3px solid #3B82F6' }} />Từ vựng</span>}
+                {hl.some(h => h.type === 'grammar') && <span className="flex items-center gap-1.5"><i className="inline-block w-4" style={{ borderBottom: '3px dashed #EA580C' }} />Ngữ pháp</span>}
                 <span>Bấm vào phần tô màu để xem</span>
               </div>
-              <div className="rounded-xl p-3" style={{ border: `1px solid ${sel.type === 'vocab' ? 'rgba(59,130,246,.45)' : 'rgba(234,88,12,.45)'}`, background: sel.type === 'vocab' ? 'rgba(59,130,246,.08)' : 'rgba(234,88,12,.08)' }}>
+              <div className="rounded-xl p-3" style={{ border: `1px solid ${sel.type === 'vocab' ? 'rgba(59,130,246,.45)' : sel.type === 'chunk' ? 'rgba(13,148,136,.45)' : 'rgba(234,88,12,.45)'}`, background: sel.type === 'vocab' ? 'rgba(59,130,246,.08)' : sel.type === 'chunk' ? 'rgba(13,148,136,.08)' : 'rgba(234,88,12,.08)' }}>
                 <p className="flex flex-wrap items-baseline gap-2"><b lang="ja" className="text-lg">{sel.label}</b>{sel.reading && <span lang="ja" style={{ color: 'var(--ui-muted)' }}>{sel.reading}</span>}</p>
-                <p className="text-[15px]">{sel.meaning}</p>
+                <p className="text-[15px] whitespace-pre-line">{sel.meaning}</p>
                 {sel.inner?.map((w, i) => <p key={i} className="mt-1 text-[13px]"><b lang="ja">{w.label}</b>{w.reading && <span lang="ja" style={{ color: 'var(--ui-muted)' }}> {w.reading}</span>}: {w.meaning}</p>)}
               </div>
             </>}
