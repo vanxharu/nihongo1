@@ -1,0 +1,1 @@
+jlpt-daily (github.com/VJHOHOHO/jlpt-daily): author LISENSE.txt: "Cho phep su dung lai, cho phep dang tai tren web cong khai." Used: 67 grammar items (gram_bank_76.json) with Vietnamese explanations. Not used: scores/children records.

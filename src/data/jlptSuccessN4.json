@@ -858,5 +858,954 @@
     "explanation": "(EN) The speaker is talking about this morning."
    }
   ]
+ },
+ {
+  "id": "jlptdaily_n4_grammar",
+  "title": "JLPT N4 – Ngữ pháp luyện tập (jlpt-daily)",
+  "level": "N4",
+  "year": "2026",
+  "session": "Nguồn: jlpt-daily (VJHOHOHO), được phép dùng lại · đề tự soạn, chưa duyệt",
+  "category": "mock_daily",
+  "durationMinutes": 30,
+  "questions": [
+   {
+    "id": "jd_g01",
+    "question": "母は毎日私に弁当を（　　）。",
+    "hint": "",
+    "options": [
+     "作ってくれます",
+     "作ってあげます",
+     "作ってもらいます",
+     "作ってくれません"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Người khác làm cho 「tôi」 → 〜てくれる."
+   },
+   {
+    "id": "jd_g02",
+    "question": "辞書を（　　）、自分の力で考えてみてください。",
+    "hint": "",
+    "options": [
+     "見ないで",
+     "見なくて",
+     "見ないと",
+     "見なければ"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ないで＝không … mà …."
+   },
+   {
+    "id": "jd_g03",
+    "question": "明日は試験ですから、今晩（　　）。",
+    "hint": "",
+    "options": [
+     "勉強しなければならない",
+     "勉強しなくてもいい",
+     "勉強してはいけない",
+     "勉強するはずだ"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜なければならない＝phải …."
+   },
+   {
+    "id": "jd_g04",
+    "question": "大切な写真を（　　）。",
+    "hint": "",
+    "options": [
+     "なくしてしまいました",
+     "なくしてみました",
+     "なくしておきました",
+     "なくすところです"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜てしまう＝lỡ … mất (tiếc nuối)."
+   },
+   {
+    "id": "jd_g05",
+    "question": "このケーキ、（　　）？",
+    "hint": "",
+    "options": [
+     "食べてみてください",
+     "食べてしまいます",
+     "食べておきます",
+     "食べたばかりです"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜てみる＝thử …."
+   },
+   {
+    "id": "jd_g06",
+    "question": "天気がいいと、富士山（　　）。",
+    "hint": "",
+    "options": [
+     "が見えます",
+     "を見ます",
+     "が聞こえます",
+     "を話せます"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "見える＝nhìn thấy được (tự hiện ra trong tầm mắt)."
+   },
+   {
+    "id": "jd_g07",
+    "question": "雨（　　）ら、試合は中止です。",
+    "hint": "",
+    "options": [
+     "が降った",
+     "を降った",
+     "が降っても",
+     "を降れば"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜たら＝nếu …."
+   },
+   {
+    "id": "jd_g08",
+    "question": "（　　）も、毎日運動しています。",
+    "hint": "",
+    "options": [
+     "忙しくて",
+     "忙しいたら",
+     "忙しくば",
+     "忙しいなくて"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ても＝dù … cũng …."
+   },
+   {
+    "id": "jd_g09",
+    "question": "もっと早く（　　）よかった。",
+    "hint": "",
+    "options": [
+     "起きれば",
+     "起きても",
+     "起きるところだった",
+     "起きるはずだった"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ばよかった＝giá mà … thì tốt (hối tiếc)."
+   },
+   {
+    "id": "jd_g10",
+    "question": "弟は母に（　　）。",
+    "hint": "",
+    "options": [
+     "しかられました",
+     "しかりました",
+     "しからせました",
+     "しかられてあげました"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Bị động: しかられる＝bị mắng."
+   },
+   {
+    "id": "jd_g11",
+    "question": "母は私に部屋を（　　）。",
+    "hint": "",
+    "options": [
+     "掃除させました",
+     "掃除されました",
+     "掃除してくれました",
+     "掃除してもらいました"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Sai khiến: 〜させる＝bắt/cho … làm."
+   },
+   {
+    "id": "jd_g13",
+    "question": "彼は（　　）疲れているようです。",
+    "hint": "",
+    "options": [
+     "とても",
+     "とてもそうで",
+     "とてもらしいで",
+     "とてもはずで"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ようだ＝có vẻ … (suy đoán); とても bổ nghĩa cho 疲れている."
+   },
+   {
+    "id": "jd_g14",
+    "question": "彼女は今家に（　　）はずです。",
+    "hint": "",
+    "options": [
+     "いる",
+     "いたそうだ",
+     "いるようだ",
+     "いるところだ"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜はず＝chắc chắn … (suy đoán có căn cứ)."
+   },
+   {
+    "id": "jd_g15",
+    "question": "週末は山に（　　）つもりです。",
+    "hint": "",
+    "options": [
+     "登る",
+     "登るはずだ",
+     "登るようだ",
+     "登ったそうだ"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜つもり＝dự định …."
+   },
+   {
+    "id": "jd_g16",
+    "question": "今ご飯を（　　）ところです。",
+    "hint": "",
+    "options": [
+     "食べている",
+     "食べたばかりだ",
+     "食べたことがある",
+     "食べてしまう"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ているところ＝đang …."
+   },
+   {
+    "id": "jd_g17",
+    "question": "さっき昼ご飯を（　　）。",
+    "hint": "",
+    "options": [
+     "食べたばかりです",
+     "食べているところです",
+     "食べてみます",
+     "食べるはずです"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜たばかり＝vừa mới …."
+   },
+   {
+    "id": "jd_g18",
+    "question": "私は富士山に（　　）ことがあります。",
+    "hint": "",
+    "options": [
+     "登った",
+     "登っているところだ",
+     "登るつもりだ",
+     "登らせた"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜たことがある＝đã từng …."
+   },
+   {
+    "id": "jd_g19",
+    "question": "今日は傘を（　　）もいいです。",
+    "hint": "",
+    "options": [
+     "持って行かなくて",
+     "持って行かなければなりません",
+     "持って行ってはいけません",
+     "持って行くところだ"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜なくてもいい＝không … cũng được."
+   },
+   {
+    "id": "jd_g20",
+    "question": "日本語が（　　）ようになりました。",
+    "hint": "",
+    "options": [
+     "話せる",
+     "話すそうだ",
+     "話されよう",
+     "話してみる"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ようになる＝trở nên có thể …."
+   },
+   {
+    "id": "jd_g21",
+    "question": "彼は風邪を（　　）らしいです。",
+    "hint": "",
+    "options": [
+     "ひいた",
+     "ひくそうだ",
+     "ひくようだ",
+     "ひくはずだ"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜らしい＝nghe nói/có vẻ …; 風邪をひいた＝bị cảm (quá khứ)."
+   },
+   {
+    "id": "jd_g22",
+    "question": "このラーメンは（　　）すぎます。",
+    "hint": "",
+    "options": [
+     "熱",
+     "熱なさ",
+     "熱くて",
+     "熱すぎることだ"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜すぎる＝quá …; 熱い→熱すぎる."
+   },
+   {
+    "id": "jd_g23",
+    "question": "旅行の前に、切符を（　　）。",
+    "hint": "",
+    "options": [
+     "買っておきます",
+     "買ってみます",
+     "買ってしまいます",
+     "買ったばかりです"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ておく＝làm sẵn/chuẩn bị trước."
+   },
+   {
+    "id": "jd_g25",
+    "question": "昨日、困っている友達にノートを（　　）。",
+    "hint": "",
+    "options": [
+     "貸してあげた",
+     "貸してくれた",
+     "貸してもらった",
+     "貸さなかった"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "「Tôi」 làm cho người khác → 〜てあげる."
+   },
+   {
+    "id": "jd_g26",
+    "question": "先生に作文を（　　）。",
+    "hint": "",
+    "options": [
+     "直してもらった",
+     "直してくれた",
+     "直してあげた",
+     "直さなかった"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "に＋〜てもらう＝nhờ ai đó làm cho tôi."
+   },
+   {
+    "id": "jd_g27",
+    "question": "一人で全部（　　）。",
+    "hint": "",
+    "options": [
+     "食べられる",
+     "食べさせる",
+     "食べたい",
+     "食べる"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Thể khả năng nhóm 2: bỏ る＋られる."
+   },
+   {
+    "id": "jd_g28",
+    "question": "この漢字が（　　）。",
+    "hint": "",
+    "options": [
+     "読める",
+     "読まれる",
+     "読ませる",
+     "読みたい"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Thể khả năng nhóm 1: đuôi đổi sang cột え (読む→読める)."
+   },
+   {
+    "id": "jd_g29",
+    "question": "昨日、駅で財布を（　　）。",
+    "hint": "",
+    "options": [
+     "盗まれた",
+     "盗んだ",
+     "盗ませた",
+     "盗める"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Bị động nhóm 1: đuôi đổi sang cột あ＋れる (盗む→盗まれる)."
+   },
+   {
+    "id": "jd_g30",
+    "question": "私は先生に（　　）。",
+    "hint": "",
+    "options": [
+     "ほめられた",
+     "ほめた",
+     "ほめさせる",
+     "ほめれる"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Bị động: 先生に＋られる＝bị/được thầy …."
+   },
+   {
+    "id": "jd_g31",
+    "question": "昨日、母は弟に野菜を（　　）。",
+    "hint": "",
+    "options": [
+     "食べさせた",
+     "食べられた",
+     "食べた",
+     "食べさせる"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Sai khiến nhóm 2: bỏ る＋させる (bắt … làm)."
+   },
+   {
+    "id": "jd_g32",
+    "question": "練習（　　）、上手になります。",
+    "hint": "",
+    "options": [
+     "すればするほど",
+     "したらするほど",
+     "するとするほど",
+     "するならするほど"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ば〜ほど＝càng … càng …."
+   },
+   {
+    "id": "jd_g34",
+    "question": "京都に行く（　　）、清水寺がおすすめです。",
+    "hint": "",
+    "options": [
+     "なら",
+     "と",
+     "ば",
+     "たら"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜なら＝nếu nói đến … (đi kèm gợi ý/nhận định)."
+   },
+   {
+    "id": "jd_g35",
+    "question": "雨が（　　）、試合をします。",
+    "hint": "",
+    "options": [
+     "降っても",
+     "降ると",
+     "降れば",
+     "降るなら"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ても＝dù … cũng …."
+   },
+   {
+    "id": "jd_g36",
+    "question": "外を見て。雨が（　　）みたいだよ。",
+    "hint": "",
+    "options": [
+     "降っている",
+     "降る",
+     "降った",
+     "降り"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜みたいだ＝có vẻ … (suy đoán từ điều đang thấy)."
+   },
+   {
+    "id": "jd_g37",
+    "question": "このケーキ、（　　）ね。",
+    "hint": "",
+    "options": [
+     "おいしそうだ",
+     "おいしいそうだ",
+     "おいしかったそうだ",
+     "おいしそうな"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "様態のそうだ: bỏ い＋そうだ＝trông có vẻ …."
+   },
+   {
+    "id": "jd_g39",
+    "question": "彼は真面目だから、嘘を（　　）。",
+    "hint": "",
+    "options": [
+     "つくはずがない",
+     "つくはずだ",
+     "つくらしい",
+     "つくそうだ"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜はずがない＝không thể nào … (phủ định mạnh)."
+   },
+   {
+    "id": "jd_g40",
+    "question": "日本に留学する（　　）、日本語を勉強している。",
+    "hint": "",
+    "options": [
+     "ために",
+     "ように",
+     "せいで",
+     "おかげで"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ために＝để … (mục đích)."
+   },
+   {
+    "id": "jd_g41",
+    "question": "忘れない（　　）、メモしておきます。",
+    "hint": "",
+    "options": [
+     "ように",
+     "ために",
+     "し",
+     "から"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ない＋ように＝để không …."
+   },
+   {
+    "id": "jd_g42",
+    "question": "この店は安い（　　）、おいしいし、また来たい。",
+    "hint": "",
+    "options": [
+     "し",
+     "から",
+     "ので",
+     "けど"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜し〜し＝vừa … vừa … (liệt kê lý do)."
+   },
+   {
+    "id": "jd_g43",
+    "question": "先生の（　　）、試験に合格できた。",
+    "hint": "",
+    "options": [
+     "おかげで",
+     "せいで",
+     "ために",
+     "ように"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜おかげで＝nhờ … (kết quả tốt)."
+   },
+   {
+    "id": "jd_g44",
+    "question": "台風の（　　）、飛行機が欠航になった。",
+    "hint": "",
+    "options": [
+     "せいで",
+     "おかげで",
+     "ために",
+     "し"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜せいで＝tại … (kết quả xấu, mang ý trách)."
+   },
+   {
+    "id": "jd_g47",
+    "question": "寝る（　　）、歯をみがきます。",
+    "hint": "",
+    "options": [
+     "まえに",
+     "あとで",
+     "あいだに",
+     "たびに"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Thể từ điển＋まえに＝trước khi …."
+   },
+   {
+    "id": "jd_g49",
+    "question": "暗く（　　）、家に帰ろう。",
+    "hint": "",
+    "options": [
+     "ならないうちに",
+     "なってから",
+     "なったあとで",
+     "なるたびに"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ない＋うちに＝nhân lúc chưa …."
+   },
+   {
+    "id": "jd_g50",
+    "question": "この歌を（　　）、故郷を思い出す。",
+    "hint": "",
+    "options": [
+     "聞くたびに",
+     "聞くまえに",
+     "聞いたあとで",
+     "聞きながら"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Thể từ điển＋たびに＝mỗi lần …."
+   },
+   {
+    "id": "jd_g51",
+    "question": "今から出かける（　　）です。",
+    "hint": "",
+    "options": [
+     "ところ",
+     "ばかり",
+     "あいだ",
+     "たび"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Thể từ điển＋ところ＝sắp sửa …."
+   },
+   {
+    "id": "jd_g52",
+    "question": "弟はゲームをして（　　）いる。",
+    "hint": "",
+    "options": [
+     "ばかり",
+     "ところ",
+     "まえに",
+     "たびに"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜てばかりいる＝cứ suốt … (mang ý phàn nàn)."
+   },
+   {
+    "id": "jd_g53",
+    "question": "財布には100円（　　）入っていない。",
+    "hint": "",
+    "options": [
+     "しか",
+     "だけ",
+     "さえ",
+     "ほど"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜しか＋phủ định＝chỉ có … (nhấn mạnh ít)."
+   },
+   {
+    "id": "jd_g54",
+    "question": "彼は漢字（　　）読める。すごいね。",
+    "hint": "",
+    "options": [
+     "さえ",
+     "しか",
+     "だけ",
+     "ほど"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜さえ＝ngay cả …."
+   },
+   {
+    "id": "jd_g55",
+    "question": "東京は大阪（　　）寒くない。",
+    "hint": "",
+    "options": [
+     "ほど",
+     "くらい",
+     "だけ",
+     "しか"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ほど〜ない＝không … bằng …."
+   },
+   {
+    "id": "jd_g56",
+    "question": "昨日は3時間（　　）寝た。",
+    "hint": "",
+    "options": [
+     "くらい",
+     "ほど",
+     "しか",
+     "さえ"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Số lượng＋くらい＝khoảng …."
+   },
+   {
+    "id": "jd_g57",
+    "question": "窓を（　　）寝てしまった。",
+    "hint": "",
+    "options": [
+     "開けたまま",
+     "開けてから",
+     "開けるまえに",
+     "開けながら"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜た＋まま＝cứ để nguyên trạng thái …."
+   },
+   {
+    "id": "jd_g58",
+    "question": "机の上には本（　　）がたくさんある。",
+    "hint": "",
+    "options": [
+     "など",
+     "しか",
+     "さえ",
+     "ほど"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜など＝… vân vân (nêu ví dụ)."
+   },
+   {
+    "id": "jd_g59",
+    "question": "私の夢は医者に（　　）です。",
+    "hint": "",
+    "options": [
+     "なること",
+     "なったこと",
+     "なるため",
+     "なりかた"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Thể từ điển＋こと＝danh từ hoá động từ (việc ….)."
+   },
+   {
+    "id": "jd_g61",
+    "question": "転勤で、来月大阪に（　　）。",
+    "hint": "",
+    "options": [
+     "引っ越すことになった",
+     "引っ越すことにした",
+     "引っ越すはずだ",
+     "引っ越すつもりだ"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ことになった＝được quyết định là … (do hoàn cảnh bên ngoài)."
+   },
+   {
+    "id": "jd_g62",
+    "question": "毎日、日本語で日記を（　　）にしている。",
+    "hint": "",
+    "options": [
+     "書くよう",
+     "書いたよう",
+     "書くため",
+     "書くし"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Thể từ điển＋ようにしている＝cố gắng duy trì thói quen …."
+   },
+   {
+    "id": "jd_g63",
+    "question": "約束は（　　）。",
+    "hint": "",
+    "options": [
+     "守るべきだ",
+     "守るはずだ",
+     "守るみたいだ",
+     "守るそうだ"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜べきだ＝nên … (đạo lý/nghĩa vụ)."
+   },
+   {
+    "id": "jd_g64",
+    "question": "この漢字の（　　）を教えてください。",
+    "hint": "",
+    "options": [
+     "読み方",
+     "読みこと",
+     "読むの",
+     "読みため"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Thể ます bỏ ます＋方＝cách …."
+   },
+   {
+    "id": "jd_g65",
+    "question": "この辞書は字が大きくて（　　）。",
+    "hint": "",
+    "options": [
+     "読みやすい",
+     "読みにくい",
+     "読みそうだ",
+     "読みたい"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Thể ます bỏ ます＋やすい＝dễ …."
+   },
+   {
+    "id": "jd_g66",
+    "question": "この肉はかたくて（　　）。",
+    "hint": "",
+    "options": [
+     "食べにくい",
+     "食べやすい",
+     "食べそうだ",
+     "食べたい"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "Thể ます bỏ ます＋にくい＝khó …."
+   },
+   {
+    "id": "jd_g67",
+    "question": "明日、弟に部屋を（　　）。",
+    "hint": "",
+    "options": [
+     "掃除してほしい",
+     "掃除してくれた",
+     "掃除してもらった",
+     "掃除してあげた"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜てほしい＝muốn người khác …."
+   },
+   {
+    "id": "jd_g69",
+    "question": "「写真を撮ってもいいですか」「ええ、（　　）よ。」",
+    "hint": "",
+    "options": [
+     "撮ってもいい",
+     "撮ってはいけない",
+     "撮らなくてもいい",
+     "撮ってみて"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜てもいい＝được phép …."
+   },
+   {
+    "id": "jd_g70",
+    "question": "もう8時だ。早く（　　）。",
+    "hint": "",
+    "options": [
+     "行かなくちゃ",
+     "行かなかったら",
+     "行かないで",
+     "行ってみる"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜なくちゃ＝phải … (văn nói của 〜なくてはいけない)."
+   },
+   {
+    "id": "jd_g71",
+    "question": "傘を（　　）出かけたから、びしょぬれになった。",
+    "hint": "",
+    "options": [
+     "持たないで",
+     "持って",
+     "忘れないで",
+     "さして"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ないで＝không … mà …."
+   },
+   {
+    "id": "jd_g72",
+    "question": "このケーキ、おいしいよ。（　　）。",
+    "hint": "",
+    "options": [
+     "食べてごらん",
+     "食べてみる",
+     "食べている",
+     "食べさせる"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜てごらん＝thử … xem (khuyên người khác thử)."
+   },
+   {
+    "id": "jd_g73",
+    "question": "あ、財布を（　　）！",
+    "hint": "",
+    "options": [
+     "忘れちゃった",
+     "忘れてみた",
+     "忘れておいた",
+     "忘れないで"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ちゃう＝văn nói của 〜てしまう (lỡ … mất)."
+   },
+   {
+    "id": "jd_g74",
+    "question": "黒板に明日の予定が（　　）。",
+    "hint": "",
+    "options": [
+     "書いてある",
+     "書いておく",
+     "書いている",
+     "書いてみる"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜てある＝đã được … sẵn (trạng thái còn lại do ai đó cố ý làm)."
+   },
+   {
+    "id": "jd_g75",
+    "question": "ちょっとコンビニへ（　　）。",
+    "hint": "",
+    "options": [
+     "行ってくる",
+     "行っていく",
+     "行ってみる",
+     "行っておく"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜てくる＝đi … (rồi quay lại)."
+   },
+   {
+    "id": "jd_g76",
+    "question": "ここで（　　）。",
+    "hint": "",
+    "options": [
+     "写真を撮らないでください",
+     "写真を撮らなくてください",
+     "写真を撮らないようにください",
+     "写真を撮らなくてはいけません"
+    ],
+    "correctIndex": 0,
+    "section": "bunpou",
+    "explanation": "〜ないでください＝xin đừng …."
+   }
+  ]
  }
 ]
