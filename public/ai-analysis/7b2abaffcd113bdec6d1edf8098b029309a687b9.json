@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"あの フランス料理の 店は かなり 高そうです。","analysis":{"translation":"Tiệm ăn Pháp đó có vẻ khá là đắt.","summary":"","points":[{"title":"あのフランス料理の店は","body":"\"nhà hàng Pháp kia\"."},{"title":"かなり高そうです","body":"\"có vẻ khá đắt\": Aい bỏ い + そう."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}

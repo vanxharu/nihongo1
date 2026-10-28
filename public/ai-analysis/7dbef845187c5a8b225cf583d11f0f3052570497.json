@@ -1,0 +1,1 @@
+{"kind":"sentence","text":"きのうは 熱が ありました。それで、学校を 休みました。","analysis":{"translation":"Hôm qua tôi bị sốt. Vì vậy, tôi đã nghỉ học.","summary":"","points":[{"title":"きのうは熱がありました","body":"\"hôm qua tôi bị sốt\"."},{"title":"それで","body":"\"vì thế\"."},{"title":"学校を休みました","body":"\"đã nghỉ học\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
