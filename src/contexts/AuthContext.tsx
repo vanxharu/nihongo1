@@ -69,8 +69,15 @@ export function useAuth() {
 const LOCAL_STORAGE_KEY = 'nhai_kanji_user_profile_v1';
 // Chưa có ảnh, hoặc ảnh mặc định cũ (🦊 tài khoản mới, 🐕 hồ sơ khách) = chưa chọn ảnh riêng → dùng ảnh tài khoản Google.
 export const isDefaultAvatar = (a?: string | null) => !a || a === '🦊' || a === '🐕';
-// Tài khoản tạo bằng mật khẩu rồi mới liên kết Google: ảnh nằm ở providerData, user.photoURL có thể rỗng.
-const googlePhoto = (u?: User | null) => u?.photoURL || u?.providerData.find(p => p.photoURL)?.photoURL || '';
+// Ảnh hiện tại của tài khoản Google nằm ở providerData (Firebase cập nhật mỗi lần đăng nhập); user.photoURL giữ ảnh lúc
+// tạo tài khoản nên có thể là link cũ đã chết (đổi ảnh Google), hoặc rỗng khi tạo bằng mật khẩu rồi mới liên kết Google.
+const googlePhoto = (u?: User | null) => u?.providerData.find(p => p.providerId === 'google.com' && p.photoURL)?.photoURL || u?.photoURL || u?.providerData.find(p => p.photoURL)?.photoURL || '';
+const isGoogleHosted = (a?: string | null) => !!a && /^https:\/\/[^/]*googleusercontent\.com\//.test(a);
+/** Ảnh hiển thị: ảnh người dùng tự chọn giữ nguyên; ảnh mặc định hoặc link ảnh Google cũ → ảnh Google hiện tại. */
+export const accountAvatar = (a: string | null | undefined, u?: User | null) => {
+  const fresh = googlePhoto(u);
+  return isDefaultAvatar(a) || (isGoogleHosted(a) && fresh && fresh !== a) ? fresh || '' : a!;
+};
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
@@ -138,7 +145,7 @@ const parseDbUser = (dbData: any): UserProfile => {
       username: dbData.username || undefined,
       name: dbData.name || 'Học viên JLPT',
       // Chưa chọn ảnh riêng → ảnh tài khoản Google (server không lưu ảnh này, nên mọi lần đọc lại hồ sơ đều phải gắn lại).
-      avatar: isDefaultAvatar(dbData.avatar) ? (dbData.uid && dbData.uid === auth.currentUser?.uid ? googlePhoto(auth.currentUser) : '') : dbData.avatar,
+      avatar: dbData.uid && dbData.uid === auth.currentUser?.uid ? accountAvatar(dbData.avatar, auth.currentUser) : isDefaultAvatar(dbData.avatar) ? '' : dbData.avatar,
       targetLevel: (dbData.targetLevel || dbData.target_level || 'N4') as any,
       xp: dbData.xp !== null && dbData.xp !== undefined ? dbData.xp : 0,
       streak: dbData.streak !== null && dbData.streak !== undefined ? dbData.streak : 0,
@@ -411,9 +418,10 @@ const parseDbUser = (dbData: any): UserProfile => {
         void connectCloudLearning(firebaseUser).catch(e => console.warn('[AUTH] Cloud learning sync failed:', e));
         if (syncData.success && syncData.user) {
           const parsed = parseDbUser(syncData.user);
-          // Chưa chọn ảnh riêng (còn emoji mặc định) → dùng ảnh của tài khoản mail.
-          if (googlePhoto(firebaseUser) && isDefaultAvatar(syncData.user.avatar)) {
-            parsed.avatar = googlePhoto(firebaseUser);
+          // Chưa chọn ảnh riêng, hoặc link ảnh Google đã cũ → dùng ảnh hiện tại của tài khoản mail.
+          const fresh = accountAvatar(syncData.user.avatar, firebaseUser);
+          if (fresh && fresh !== syncData.user.avatar) {
+            parsed.avatar = fresh;
             // Server chưa lưu được ảnh (thẻ đăng nhập không có ảnh) → lưu từ máy, chạy nền.
             void fetch('/api/user/profile', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` }, body: JSON.stringify({ avatar: parsed.avatar }) }).catch(() => {});
           }
@@ -435,7 +443,7 @@ const parseDbUser = (dbData: any): UserProfile => {
           console.log('[AUTH] Profile: LOADED');
           return {
             ...parsed,
-            avatar: isDefaultAvatar(parsed.avatar) ? googlePhoto(firebaseUser) || parsed.avatar : parsed.avatar,
+            avatar: accountAvatar(parsed.avatar, firebaseUser) || parsed.avatar,
             role: 'user'
           };
         }
@@ -489,7 +497,7 @@ const parseDbUser = (dbData: any): UserProfile => {
         try {
           const c = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || 'null');
           if (c && c.uid === currentUser.uid && c.name && c.name !== 'Học viên JLPT' && isMounted) {
-            setDbUser({ ...c, avatar: isDefaultAvatar(c.avatar) ? googlePhoto(currentUser) : c.avatar, role: 'user' }); // quyền admin chỉ tin server
+            setDbUser({ ...c, avatar: accountAvatar(c.avatar, currentUser), role: 'user' }); // quyền admin chỉ tin server
             setAuthStatus('AUTHENTICATED');
             setLoading(false);
           }

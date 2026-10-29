@@ -22,7 +22,7 @@ import {
   X
 } from 'lucide-react';
 import { UserProfile, JLPTLevel } from '../../types';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth, accountAvatar } from '../../contexts/AuthContext';
 import { AchievementMascotIcon } from '../achievements/AchievementMascotIcon';
 import { ACHIEVEMENTS_LIST, calculateUnlockedAchievements } from '../../data/achievementsData';
 import { isSoundEnabled, setSoundEnabled } from '../../utils/audio';
@@ -177,17 +177,17 @@ export default function MobileProfileView({
                   </div>
                 </div>
 
-                {user?.photoURL && (
+                {accountAvatar('', user) && (
                   <AnimatedButton
                     type="button"
-                    onClick={() => setTempAvatar(user.photoURL!)}
+                    onClick={() => setTempAvatar(accountAvatar('', user))}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
-                      tempAvatar === user.photoURL
+                      tempAvatar === accountAvatar('', user)
                         ? 'bg-amber-500/20 border-2 border-amber-500 text-amber-300'
                         : 'bg-[#12172A] border border-slate-700 text-slate-400 hover:text-slate-200'
                     }`}
                   >
-                    <UserAvatar avatar={user.photoURL} className="w-6 h-6 rounded-full" />
+                    <UserAvatar avatar={accountAvatar('', user)} className="w-6 h-6 rounded-full" />
                     <span>Dùng ảnh đại diện tài khoản</span>
                   </AnimatedButton>
                 )}

@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import JpStudyLogo from './JpStudyLogo';
 import { useDialogFocus } from '../hooks/useDialogFocus';
 import { SignupSteps } from './ui/AuthFx';
+import { accountAvatar } from '../contexts/AuthContext';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -245,7 +246,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         </div>
 
         <div className="u062-hi" aria-hidden={!welcome}>
-          <span className="u062-av" aria-hidden="true">{user?.photoURL ? <img src={user.photoURL} alt="" referrerPolicy="no-referrer" /> : welcomeName.charAt(0).toUpperCase()}</span>
+          <span className="u062-av" aria-hidden="true">{accountAvatar('', user) ? <img src={accountAvatar('', user)} alt="" referrerPolicy="no-referrer" /> : welcomeName.charAt(0).toUpperCase()}</span>
           <h3>Chào mừng, {welcomeName}</h3>
           <p>Đang đưa bạn vào ứng dụng…</p>
         </div>
