@@ -723,19 +723,27 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
 
   // Lưu tiến độ làm dở (đáp án + câu hiện tại) để nút "Tiếp tục" khôi phục; bộ đếm giờ bắt đầu lại.
   const PROGRESS_KEY = 'jlpt_exam_progress';
-  const readProgress = (): Record<string, any> => { try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch { return {}; } };
+  // Keyed by exam + section ("id|mode"): progress in Nghe hiểu must not hijack starting Từ vựng of the same exam.
+  const progressKey = (id: string, mode: string) => `${id}|${mode}`;
+  const readProgress = (): Record<string, any> => {
+    try {
+      const raw = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
+      return Object.fromEntries(Object.entries(raw).map(([k, v]: [string, any]) => [k.includes('|') ? k : progressKey(k, v?.mode || 'ALL'), v]));
+    } catch { return {}; }
+  };
   const [savedProgress, setSavedProgress] = useState<Record<string, any>>(readProgress);
   useEffect(() => {
     if (!isPlaying || !selectedExam || examViewFormat !== 'interactive') return;
     const all = readProgress();
-    if (isSubmitted) delete all[selectedExam.id];
-    else if (Object.keys(userAnswers).length) all[selectedExam.id] = { mode: selectedSectionMode, answers: userAnswers, flagged: flaggedQuestions, index: currentQuestionIndex, ids: selectedExam.questions.map(q => q.id) };
+    const key = progressKey(selectedExam.id, selectedSectionMode);
+    if (isSubmitted) delete all[key];
+    else if (Object.keys(userAnswers).length) all[key] = { mode: selectedSectionMode, answers: userAnswers, flagged: flaggedQuestions, index: currentQuestionIndex, ids: selectedExam.questions.map(q => q.id) };
     else return;
     try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(all)); } catch { /* storage blocked */ }
     setSavedProgress(all);
   }, [isPlaying, isSubmitted, userAnswers, flaggedQuestions, currentQuestionIndex]);
-  const handleResumeExam = (exam: DailyExam) => {
-    const saved = savedProgress[exam.id]; if (!saved) return;
+  const handleResumeExam = (exam: DailyExam, mode: ExamSectionMode) => {
+    const saved = savedProgress[progressKey(exam.id, mode)]; if (!saved) return;
     handleStartExam(exam, saved.mode, 'interactive', saved.ids);
     setUserAnswers(saved.answers || {}); setFlaggedQuestions(saved.flagged || {}); setCurrentQuestionIndex(saved.index || 0);
   };
@@ -1084,7 +1092,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
     return <article key={exam.id} className="study-exam-card" data-level={exam.level}>
       <span className="study-level">{exam.level}</span>
       <div className="study-exam-main"><h3>{exam.title}</h3><div className="study-exam-spec"><span>{exam.category === 'ai_generated' ? 'Đề do AI soạn' : exam.session || (exam.year ? `Năm ${exam.year}` : 'Đề luyện tập')}</span><span><FileText size={13} />{pickExamBatch(exam.questions === questions ? exam : { ...exam, questions }).questions.length} câu</span></div></div>
-      <div className="study-exam-actions">{savedProgress[exam.id] ? <button onClick={() => handleResumeExam(exam)}>Tiếp tục</button> : <button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}>Luyện</button>}</div>
+      <div className="study-exam-actions">{savedProgress[progressKey(exam.id, lobbyPracticeMode)] ? <button onClick={() => handleResumeExam(exam, lobbyPracticeMode)}>Tiếp tục</button> : <button disabled={!questions.length} onClick={() => handleStartExam(exam, lobbyPracticeMode, 'interactive')}>Luyện</button>}</div>
     </article>;
   };
   return (
