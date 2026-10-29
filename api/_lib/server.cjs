@@ -100907,11 +100907,11 @@ app.get("/api/admin/users", requireAuth, requireAdmin, async (req, res) => {
 });
 app.post("/api/admin/users/update", requireAuth, requireAdmin, async (req, res) => {
   try {
-    const { uid, role, xp, coins, streak, name, isVip } = req.body;
+    const { uid, role, xp, coins, streak, name, isVip, avatar } = req.body;
     if (!uid) {
       return res.status(400).json({ error: "uid is required" });
     }
-    const updated = await updateUserProfile(uid, { role, xp, coins, streak, name, isVip }, true);
+    const updated = await updateUserProfile(uid, { role, xp, coins, streak, name, isVip, ...avatar === "" && { avatar: "" } }, true);
     res.json({ success: true, user: updated });
   } catch (error) {
     console.error("Error in /api/admin/users/update:", error);

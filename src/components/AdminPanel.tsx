@@ -9,6 +9,7 @@ import { Database, Users, Settings, Activity, Server, AlertCircle,
 import AdminDataPanel from "./AdminDataPanel";
 import ConfirmModal from "./ConfirmModal";
 import UserAvatar from "./UserAvatar";
+import { describeAvatar } from "../utils/blankImage";
 import AdminDialog from "./AdminDialog";
 import "./admin.css";
 
@@ -83,6 +84,14 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
       fetchUsers();
     }
   }, [activeTab, token, userProfile.role]);
+
+  // Xóa ảnh đã lưu: lần đăng nhập sau dùng lại ảnh Google.
+  const resetAvatar = async () => {
+    if (!editingUser || !token) return;
+    const r = await fetch('/api/admin/users/update', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ uid: editingUser.uid, avatar: '' }) });
+    if (r.ok) { setEditingUser({ ...editingUser, avatar: '' }); setSuccess('Đã xóa ảnh đại diện. Lần đăng nhập sau sẽ dùng ảnh Google.'); void fetchUsers(); }
+    else setError('Không xóa được ảnh đại diện.');
+  };
 
   // Handle Edit User Submit
   const handleEditSubmit = async (e: React.FormEvent) => {
@@ -524,6 +533,14 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
               </h3>
 
               <form onSubmit={handleEditSubmit} className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <UserAvatar avatar={editingUser.avatar} name={editingUser.name} className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 text-xl" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Ảnh đại diện</p>
+                    <p className="text-xs text-slate-700 break-all">{describeAvatar(editingUser.avatar)}</p>
+                  </div>
+                  {editingUser.avatar && <button type="button" onClick={() => void resetAvatar()} className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold cursor-pointer">Xóa ảnh</button>}
+                </div>
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Tên hiển thị</label>
                   <input

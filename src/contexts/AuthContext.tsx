@@ -13,6 +13,7 @@ import {
   updateProfile as firebaseUpdateProfile
 } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { isBlankImage } from '../utils/blankImage';
 import { auth } from '../lib/firebase';
 import { UserProfile } from '../types';
 
@@ -419,7 +420,9 @@ const parseDbUser = (dbData: any): UserProfile => {
         if (syncData.success && syncData.user) {
           const parsed = parseDbUser(syncData.user);
           // Chưa chọn ảnh riêng, hoặc link ảnh Google đã cũ → dùng ảnh hiện tại của tài khoản mail.
-          const fresh = accountAvatar(syncData.user.avatar, firebaseUser);
+          // Ảnh nhúng trống (cắt ảnh lỗi trước đây) cũng thay bằng ảnh Google.
+          const blank = typeof syncData.user.avatar === 'string' && syncData.user.avatar.startsWith('data:image/') && !!googlePhoto(firebaseUser) && await isBlankImage(syncData.user.avatar);
+          const fresh = blank ? googlePhoto(firebaseUser) : accountAvatar(syncData.user.avatar, firebaseUser);
           if (fresh && (fresh !== syncData.user.avatar || isGoogleHosted(fresh))) {
             parsed.avatar = fresh;
             // Lưu lên hồ sơ: máy chủ chép ảnh Google thành ảnh nhúng (link Google có thể bị trình duyệt chặn hoặc hết hạn).

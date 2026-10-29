@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User } from 'lucide-react';
+import { isBlankImage } from '../utils/blankImage';
 
 interface UserAvatarProps {
   avatar?: string | null;
@@ -44,6 +45,8 @@ export default function UserAvatar({
           className="w-full h-full object-cover rounded-[inherit]"
           referrerPolicy="no-referrer"
           onError={() => setImgError(true)}
+          // ảnh nhúng bị trống (đen/trong suốt) → hiện biểu tượng thay vì ô trống
+          onLoad={() => { if (avatar.startsWith('data:')) void isBlankImage(avatar).then(b => b && setImgError(true)); }}
           loading="lazy"
         />
       </div>
