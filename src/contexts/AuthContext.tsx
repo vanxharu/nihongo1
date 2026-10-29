@@ -420,10 +420,13 @@ const parseDbUser = (dbData: any): UserProfile => {
           const parsed = parseDbUser(syncData.user);
           // Chưa chọn ảnh riêng, hoặc link ảnh Google đã cũ → dùng ảnh hiện tại của tài khoản mail.
           const fresh = accountAvatar(syncData.user.avatar, firebaseUser);
-          if (fresh && fresh !== syncData.user.avatar) {
+          if (fresh && (fresh !== syncData.user.avatar || isGoogleHosted(fresh))) {
             parsed.avatar = fresh;
-            // Server chưa lưu được ảnh (thẻ đăng nhập không có ảnh) → lưu từ máy, chạy nền.
-            void fetch('/api/user/profile', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` }, body: JSON.stringify({ avatar: parsed.avatar }) }).catch(() => {});
+            // Lưu lên hồ sơ: máy chủ chép ảnh Google thành ảnh nhúng (link Google có thể bị trình duyệt chặn hoặc hết hạn).
+            try {
+              const saved = await fetch('/api/user/profile', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${idToken}` }, body: JSON.stringify({ avatar: fresh }), signal: AbortSignal.timeout(8000) }).then(r => r.ok ? r.json() : null);
+              if (typeof saved?.user?.avatar === 'string' && saved.user.avatar.startsWith('data:image/')) parsed.avatar = saved.user.avatar;
+            } catch { /* giữ link Google */ }
           }
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsed));
           console.log('[AUTH] Profile: LOADED');

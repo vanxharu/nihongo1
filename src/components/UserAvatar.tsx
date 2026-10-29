@@ -60,7 +60,7 @@ export default function UserAvatar({
       {displayEmoji ? (
         <span className="leading-none select-none text-[1.15em]">{displayEmoji}</span>
       ) : (
-        <User className="w-1/2 h-1/2 opacity-75" />
+        <User className="w-1/2 h-1/2 text-slate-400" />
       )}
     </div>
   );

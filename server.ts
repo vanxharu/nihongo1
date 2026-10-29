@@ -2959,7 +2959,8 @@ app.post('/api/user/sync', requireAuth, async (req: any, res) => {
     
     // Chưa chọn ảnh riêng (emoji mặc định) → lưu ảnh tài khoản Google lên hồ sơ ngay khi đăng nhập.
     const picture = typeof req.user?.picture === 'string' && /^https:\/\//.test(req.user.picture) ? req.user.picture : '';
-    const avatar = picture && (!dbUser.avatar || dbUser.avatar === '🦊' || dbUser.avatar === '🐕') ? picture : undefined;
+    const replace = !dbUser.avatar || dbUser.avatar === '🦊' || dbUser.avatar === '🐕' || /^https:\/\/[^/]*googleusercontent\.com\//.test(dbUser.avatar);
+    const avatar = picture && replace ? (await inlineGooglePhoto(picture)) ?? (dbUser.avatar ? undefined : picture) : undefined;
 
     // Check if streak changed or last active changed
     if (updatedStreak !== dbUser.streak || newLastActive !== dbUser.lastActiveDate || avatar) {
@@ -2983,14 +2984,28 @@ app.post('/api/user/sync', requireAuth, async (req: any, res) => {
   }
 });
 
+// Google photo links can be blocked by browser tracking protection (Edge, Brave) or expire when the photo changes:
+// store a copy as a data URL in the profile instead. Only googleusercontent images, small, short timeout.
+async function inlineGooglePhoto(url: unknown): Promise<string | undefined> {
+  if (typeof url !== 'string' || !/^https:\/\/[a-z0-9.-]*googleusercontent\.com\//i.test(url)) return undefined;
+  try {
+    const r = await fetch(url, { signal: AbortSignal.timeout(5000), redirect: 'error' });
+    const type = r.headers.get('content-type') || '';
+    if (!r.ok || !/^image\/(png|jpeg|webp|gif)/.test(type)) return undefined;
+    const buf = Buffer.from(await r.arrayBuffer());
+    return buf.length && buf.length <= 300_000 ? `data:${type.split(';')[0]};base64,${buf.toString('base64')}` : undefined;
+  } catch { return undefined; }
+}
+
 app.post('/api/user/profile', requireAuth, async (req: any, res) => {
   try {
     const learning = req.body.studyRoadmap !== undefined ? await saveLearningProfile(req.dbUser.uid, req.body.studyRoadmap) : await readLearningProfile(req.dbUser.uid);
     const dbUser = { ...req.dbUser, ...learning };
-    const { 
-      name, avatar, targetLevel, xp, coins, studyDays, 
+    const {
+      name, targetLevel, xp, coins, studyDays, 
       completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords, studyTrack 
     } = req.body;
+    const avatar = (await inlineGooglePhoto(req.body.avatar)) ?? req.body.avatar;
     // Game counters come from the client: reject non-numeric/absurd values and oversized blobs.
     const badNum = (v: unknown) => v !== undefined && v !== null && (typeof v !== 'number' || !Number.isFinite(v) || v < 0 || v > 10_000_000);
     const tooBig = (v: unknown) => v !== undefined && JSON.stringify(v).length > 1_000_000;

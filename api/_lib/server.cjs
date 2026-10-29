@@ -100785,7 +100785,8 @@ app.post("/api/user/sync", requireAuth, async (req, res) => {
       newLastActive = todayStr;
     }
     const picture = typeof req.user?.picture === "string" && /^https:\/\//.test(req.user.picture) ? req.user.picture : "";
-    const avatar = picture && (!dbUser.avatar || dbUser.avatar === "\u{1F98A}" || dbUser.avatar === "\u{1F415}") ? picture : void 0;
+    const replace = !dbUser.avatar || dbUser.avatar === "\u{1F98A}" || dbUser.avatar === "\u{1F415}" || /^https:\/\/[^/]*googleusercontent\.com\//.test(dbUser.avatar);
+    const avatar = picture && replace ? await inlineGooglePhoto(picture) ?? (dbUser.avatar ? void 0 : picture) : void 0;
     if (updatedStreak !== dbUser.streak || newLastActive !== dbUser.lastActiveDate || avatar) {
       try {
         const updatedUser = await updateUserProfile(dbUser.uid, {
@@ -100806,13 +100807,24 @@ app.post("/api/user/sync", requireAuth, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+async function inlineGooglePhoto(url) {
+  if (typeof url !== "string" || !/^https:\/\/[a-z0-9.-]*googleusercontent\.com\//i.test(url)) return void 0;
+  try {
+    const r = await fetch(url, { signal: AbortSignal.timeout(5e3), redirect: "error" });
+    const type = r.headers.get("content-type") || "";
+    if (!r.ok || !/^image\/(png|jpeg|webp|gif)/.test(type)) return void 0;
+    const buf = Buffer.from(await r.arrayBuffer());
+    return buf.length && buf.length <= 3e5 ? `data:${type.split(";")[0]};base64,${buf.toString("base64")}` : void 0;
+  } catch {
+    return void 0;
+  }
+}
 app.post("/api/user/profile", requireAuth, async (req, res) => {
   try {
     const learning = req.body.studyRoadmap !== void 0 ? await saveLearningProfile(req.dbUser.uid, req.body.studyRoadmap) : await readLearningProfile(req.dbUser.uid);
     const dbUser = { ...req.dbUser, ...learning };
     const {
       name,
-      avatar,
       targetLevel,
       xp,
       coins,
@@ -100826,6 +100838,7 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
       myWords,
       studyTrack
     } = req.body;
+    const avatar = await inlineGooglePhoto(req.body.avatar) ?? req.body.avatar;
     const badNum = (v) => v !== void 0 && v !== null && (typeof v !== "number" || !Number.isFinite(v) || v < 0 || v > 1e7);
     const tooBig = (v) => v !== void 0 && JSON.stringify(v).length > 1e6;
     if (badNum(xp) || badNum(coins) || [studyDays, completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords].some(tooBig) || myWords !== void 0 && !Array.isArray(myWords)) {
