@@ -9,7 +9,7 @@ import { Database, Users, Settings, Activity, Server, AlertCircle,
 import AdminDataPanel from "./AdminDataPanel";
 import ConfirmModal from "./ConfirmModal";
 import UserAvatar from "./UserAvatar";
-import { describeAvatar } from "../utils/blankImage";
+import { describeAvatar, inspectImage } from "../utils/blankImage";
 import AdminDialog from "./AdminDialog";
 import "./admin.css";
 
@@ -538,6 +538,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Ảnh đại diện</p>
                     <p className="text-xs text-slate-700 break-all">{describeAvatar(editingUser.avatar)}</p>
+                    {editingUser.avatar && /^(data:image|https?:)/.test(editingUser.avatar) && <AvatarCheck src={editingUser.avatar} />}
                   </div>
                   {editingUser.avatar && <button type="button" onClick={() => void resetAvatar()} className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-semibold cursor-pointer">Xóa ảnh</button>}
                 </div>
@@ -683,4 +684,10 @@ function SystemStatus({ token }: { token: string | null | undefined }) {
       </div>
     </motion.div>
   );
+}
+
+function AvatarCheck({ src }: { src: string }) {
+  const [info, setInfo] = useState('Đang kiểm tra ảnh…');
+  useEffect(() => { let live = true; void inspectImage(src).then(i => live && setInfo(i)); return () => { live = false; }; }, [src]);
+  return <p className="text-[11px] text-slate-500 break-all">{info} · <a href={src} target="_blank" rel="noreferrer" className="underline">Mở ảnh</a></p>;
 }
