@@ -688,6 +688,11 @@ function SystemStatus({ token }: { token: string | null | undefined }) {
 
 function AvatarCheck({ src }: { src: string }) {
   const [info, setInfo] = useState('Đang kiểm tra ảnh…');
+  const [show, setShow] = useState(false);
   useEffect(() => { let live = true; void inspectImage(src).then(i => live && setInfo(i)); return () => { live = false; }; }, [src]);
-  return <p className="text-[11px] text-slate-500 break-all">{info} · <a href={src} target="_blank" rel="noreferrer" className="underline">Mở ảnh</a></p>;
+  // Trình duyệt chặn mở link data: ở tab mới (ra about:blank) → xem ngay trong hộp thoại, nền ô caro để thấy phần trong suốt.
+  return <div className="text-[11px] text-slate-500 break-all">
+    <p>{info} · <button type="button" onClick={() => setShow(v => !v)} className="underline cursor-pointer">{show ? 'Ẩn ảnh' : 'Xem ảnh lớn'}</button></p>
+    {show && <img src={src} alt="Ảnh đại diện đang lưu" className="mt-1 w-32 h-32 object-contain rounded border border-slate-300" style={{ background: 'repeating-conic-gradient(#ccc 0 25%, #fff 0 50%) 0 0 / 16px 16px' }} />}
+  </div>;
 }
