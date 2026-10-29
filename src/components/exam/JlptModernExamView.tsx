@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 import { DailyExam, ExamQuestion, UserProfile } from '../../types';
 import { JLPT_SECTION_METAS, ExamSectionMode, renderFormattedQuestion } from '../DailyExamQuiz';
-import { TappableJa, ReadingHelper, vocabIn, studySentences } from './TappableJa';
+import { TappableJa, ReadingHelper, WordsIn, studySentences } from './TappableJa';
 import examVi from '../../data/examTranslations.json';
 // Bản dịch tiếng Việt (Claude soạn): q = câu hỏi kèm đáp án đúng, s = lời nghe; khoá theo id câu.
 const VI = examVi as { q: Record<string, string>; s: Record<string, string> };
@@ -770,7 +770,7 @@ export const JlptModernExamView: React.FC<JlptModernExamViewProps> = ({
                 {currentQuestion.optionExplanations.map((t, k) => t ? <li key={k}><b>{k + 1}.</b> {t}</li> : null)}
               </ul>
             )}
-            {currentQuestion.section !== 'choukai' && (() => { const w = vocabIn(`${currentQuestion.question} ${currentQuestion.options.join(' ')}`).slice(0, 8); return w.length ? <p className="text-[13px]"><b>Từ trong câu:</b> {w.map(x => `${x.word} (${x.reading}) = ${x.meaning}`).join(' · ')}</p> : null; })()}
+            {currentQuestion.section !== 'choukai' && <WordsIn text={`${currentQuestion.question} ${currentQuestion.options.join(' ')}`} />}
             <p className="flex items-center gap-1 text-[13px] font-bold">Phân tích bằng AI <AiAnalyzeButton kind="question" text={[currentQuestion.audioScript, currentQuestion.question, ...currentQuestion.options.map((o, k) => `${k + 1}. ${o}`)].filter(Boolean).join('\n').slice(0, 3000)} context={`Đáp án đúng: ${currentQuestion.correctIndex + 1}`} /></p>
             {VI.q[currentQuestion.id] && <p className="text-[13px]"><b>Dịch câu hỏi:</b> {VI.q[currentQuestion.id]}</p>}
             {currentQuestion.audioScript && <p className="text-[13px] text-[#786D5E] whitespace-pre-line">🎧 {currentQuestion.audioScript}</p>}

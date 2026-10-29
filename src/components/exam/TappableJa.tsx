@@ -1,71 +1,81 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { buildLookup, wordSpans, type Hit, type JaToken } from '../../utils/jaWords';
 import { Volume2, X } from 'lucide-react';
 import { TANGO_N3_VOCABULARY, TANGO_N4_VOCABULARY, TANGO_N5_VOCABULARY, VOCABULARY_DATA } from '../../data';
 import { getDokkaiTranslation } from '../../data/dokkaiTranslations';
 import study from '../../data/examStudyData.json';
 import { speakJapanese } from '../../utils/audio';
 
-export interface Hit { word: string; reading: string; meaning: string }
-type Dict = Map<string, Hit>;
-let dict: Dict | null = null;
-const SUFFIX = 'いるうくぐすつぬぶむ';
+let lookup: ReturnType<typeof buildLookup> | null = null;
+const tokenCache = new Map<string, Promise<JaToken[]>>();
 
-// Từ điển tra nhanh dựng từ kho từ vựng sẵn có (N5–N3 + từ riêng); dựng 1 lần khi cần.
-function getDict(): Dict {
-  if (dict) return dict;
-  dict = new Map();
-  const add = (k: string, hit: Hit) => {
-    dict!.set(k, hit);
-    // dạng chia: bỏ đuôi (楽しい → 楽し, 泳ぐ → 泳) để khớp 楽しかった, 泳げる
-    if (k.length >= 2 && /[\u4e00-\u9faf]/.test(k[0]) && SUFFIX.includes(k.slice(-1)) && !dict!.has(k.slice(0, -1))) dict!.set(k.slice(0, -1), hit);
-  };
-  // Kho bổ sung riêng cho đề thi (examStudyData.json) được ưu tiên hơn kho chung.
-  for (const [k, g] of Object.entries(study.glossary as Record<string, { r: string; m: string }>)) add(k, { word: k, reading: g.r, meaning: g.m });
-  for (const v of [...VOCABULARY_DATA, ...TANGO_N5_VOCABULARY, ...TANGO_N4_VOCABULARY, ...TANGO_N3_VOCABULARY]) {
-    const hit = { word: v.kanji || v.hiragana, reading: v.hiragana, meaning: v.vietnameseMeaning || v.meaning };
-    if (!hit.meaning) continue;
-    for (const k of new Set([v.kanji, v.hiragana].filter(Boolean) as string[])) {
-      if (k.length < 2 && !/[一-龯]/.test(k)) continue; // bỏ trợ từ 1 chữ
-      if (!dict.has(k)) add(k, hit);
-    }
-  }
-  return dict;
+// Tra từ dựng từ kho từ vựng sẵn có (N5–N3); kho riêng cho đề thi (examStudyData.json) được ưu tiên.
+function getLookup() {
+  return lookup ||= buildLookup([
+    ...Object.entries(study.glossary as Record<string, { r: string; m: string }>).map(([k, g]) => ({ kanji: k, hiragana: g.r, meaning: g.m, core: true })),
+    ...[TANGO_N5_VOCABULARY, TANGO_N4_VOCABULARY, VOCABULARY_DATA, TANGO_N3_VOCABULARY].flatMap((list, i) => list.map(v => ({ kanji: v.kanji, hiragana: v.hiragana, meaning: v.vietnameseMeaning || v.meaning, core: i < 2 }))),
+  ]);
 }
 
-/** Cắt chuỗi theo khớp dài nhất với từ điển. */
-export function segment(text: string): { t: string; hit?: Hit }[] {
-  const d = getDict(); const out: { t: string; hit?: Hit }[] = []; let buf = '';
-  for (let i = 0; i < text.length;) {
-    let found = false;
-    if (/[぀-ヿ一-龯]/.test(text[i])) {
-      for (let L = Math.min(8, text.length - i); L >= 2 || (L === 1 && /[一-龯]/.test(text[i])); L--) {
-        const hit = d.get(text.slice(i, i + L));
-        if (hit) { if (buf) out.push({ t: buf }); buf = ''; out.push({ t: text.slice(i, i + L), hit }); i += L; found = true; break; }
-      }
-    }
-    if (!found) buf += text[i++];
+function tokens(text: string) {
+  let p = tokenCache.get(text);
+  if (!p) {
+    p = fetch('/api/ja/tokens', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) })
+      .then(r => r.ok ? r.json() : Promise.reject(new Error(String(r.status)))).then(d => d.tokens as JaToken[]);
+    p.catch(() => tokenCache.delete(text));
+    tokenCache.set(text, p);
   }
-  if (buf) out.push({ t: buf });
-  return out;
+  return p;
+}
+
+/** Từ trong văn bản, tách theo từ loại (kuromoji). null khi đang tải hoặc lỗi: hiện chữ thường, không đoán. */
+export function useWordSpans(text: string) {
+  const [spans, setSpans] = useState<{ text: string; spans: { t: string; hit?: Hit }[] } | null>(null);
+  useEffect(() => {
+    if (!text.trim()) return;
+    let live = true;
+    tokens(text).then(t => { if (live) setSpans({ text, spans: wordSpans(t, getLookup()) }); }, () => {});
+    return () => { live = false; };
+  }, [text]);
+  return spans?.text === text ? spans.spans : null;
 }
 
 /** Từ trong đoạn (không trùng) cho bảng từ vựng. */
-export function vocabIn(text: string): Hit[] {
-  const seen = new Set<string>(); const r: Hit[] = [];
-  for (const s of segment(text)) if (s.hit && !seen.has(s.hit.word)) { seen.add(s.hit.word); r.push(s.hit); }
-  return r;
+export function useVocabIn(text: string): Hit[] {
+  const spans = useWordSpans(text);
+  return useMemo(() => {
+    const seen = new Set<string>(); const r: Hit[] = [];
+    for (const s of spans || []) if (s.hit && !seen.has(s.t)) { seen.add(s.t); r.push(s.hit); }
+    return r;
+  }, [spans]);
 }
+
+export const WordsIn: React.FC<{ text: string }> = ({ text }) => {
+  const w = useVocabIn(text).slice(0, 8);
+  return w.length ? <p className="text-[13px]"><b>Từ trong câu:</b> {w.map(x => `${x.word} (${x.reading}) = ${x.meaning}`).join(' · ')}</p> : null;
+};
 
 /** Văn bản tiếng Nhật chạm-từ-hiện-nghĩa. */
 export const TappableJa: React.FC<{ text: string; highlight?: boolean; marks?: string[] }> = ({ text, highlight, marks }) => {
   const [sel, setSel] = useState<Hit | null>(null);
+  const spans = useWordSpans(text);
   // marks: các câu dẫn tới đáp án — tô vàng khi đã hiện đáp án.
   const parts = useMemo(() => {
-    const ms = (marks || []).filter(m => m && text.includes(m));
-    if (!ms.length) return segment(text).map(x => ({ ...x, mark: false }));
-    const re = new RegExp(`(${ms.map(m => m.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`);
-    return text.split(re).flatMap((piece, i) => segment(piece).map(x => ({ ...x, mark: i % 2 === 1 })));
-  }, [text, marks]);
+    const ranges = (marks || []).filter(Boolean).flatMap(m => { const i = text.indexOf(m); return i < 0 ? [] : [[i, i + m.length]]; });
+    const out: { t: string; hit?: Hit; mark: boolean }[] = [];
+    let at = 0;
+    for (const sp of spans || [{ t: text }]) {
+      // cắt đoạn chữ thường ở ranh giới câu được tô
+      const cuts = sp.hit ? [] : ranges.flat().filter(c => c > at && c < at + sp.t.length).sort((a, b) => a - b);
+      let from = at;
+      for (const c of [...cuts, at + sp.t.length]) {
+        out.push({ t: text.slice(from, c), hit: sp.hit, mark: ranges.some(([a, b]) => from >= a && from < b) });
+        from = c;
+      }
+      at += sp.t.length;
+    }
+    return out;
+  }, [text, marks, spans]);
   return (
     <>
       {parts.map((p, i) => p.hit
@@ -95,7 +105,7 @@ export const studySentences = (passage: string): StudySentence[] | undefined =>
 export const ReadingHelper: React.FC<{ qid: string; passage: string; question: string; revealed?: boolean }> = ({ qid, passage, question, revealed }) => {
   const [open, setOpen] = useState(false);
   const [sent, setSent] = useState<number | null>(null);
-  const words = useMemo(() => open ? vocabIn(passage) : [], [open, passage]);
+  const words = useVocabIn(open ? passage : '');
   const data = useMemo(() => studySentences(passage), [passage]);
   const old = useMemo(() => {
     const e = data ? undefined : getDokkaiTranslation(qid, question + passage);

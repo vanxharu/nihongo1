@@ -28,7 +28,7 @@ import { documentKey, firebaseDb, listContent, bulkSaveContent, saveContent, rem
 import { GRAMMAR_SYSTEM_PROMPT, buildGrammarContentUserPrompt } from './src/prompts/grammarContentPrompt';
 import { VOCABULARY_DATA, GRAMMAR_DATA, KANJI_DATA, TANGO_N4_VOCABULARY } from './src/data';
 import { synthesizeAzureSpeech, ttsParams } from './src/server/azureTts';
-import { shadowingTranscript, shadowingAnalyze } from './src/server/shadowing';
+import { shadowingTranscript, shadowingAnalyze, sentenceTokens } from './src/server/shadowing';
 import { shadowingVideo, shadowingReadAnalysis } from './src/server/shadowingStore';
 import { shadowingPrepare } from './src/server/shadowingPrepare';
 import { cleanVocabSymbols, sanitizeVocabItem, KANJI_TO_HAN_VIET } from './src/utils/japaneseUtils';
@@ -139,6 +139,13 @@ app.post('/api/shadowing/video', shadowingVideo);
 app.all('/api/shadowing/refresh', (_req, res) => res.status(410).json({ error: 'Chức năng cập nhật phụ đề tự động đã được gỡ. Hãy dùng file phân tích tĩnh.' }));
 app.get('/api/shadowing/analysis', shadowingReadAnalysis);
 app.post('/api/shadowing/prepare', shadowingPrepare);
+// Word boundaries for tap-to-look-up (kuromoji): clients look words up in their own dictionary.
+app.post('/api/ja/tokens', async (req, res) => {
+  const text = req.body?.text;
+  if (typeof text !== 'string' || !text.trim() || text.length > 6000) return res.status(400).json({ error: 'Văn bản không hợp lệ.' });
+  try { res.json({ tokens: await sentenceTokens(text) }); }
+  catch { res.status(503).json({ error: 'Không tách được từ.' }); }
+});
 // Phân tích AI dùng chung (lưu Firestore): xem tự do, tạo mới cần đăng nhập.
 app.post('/api/ai/analysis/lookup', aiAnalysisLookup);
 app.post('/api/ai/analysis', requireAuth, aiAnalysisCreate);

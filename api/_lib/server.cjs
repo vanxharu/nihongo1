@@ -94628,6 +94628,96 @@ var KANJI_DICTIONARY = {
   "\u6D1E": { kanji: "\u6D1E", han_viet: "\u0110\u1ED4NG", onyomi: "\u30C9\u30A6", kunyomi: "\u307B\u3089", meaning: "Hang \u0111\u1ED9ng, nh\xECn th\u1EA5u, quan s\xE1t", radical: "\u6C34 (Th\u1EE7y)", strokes: 9, level: "N1", mnemonic: "N\u01B0\u1EDBc (\u6C35) ch\u1EA3y trong hang \u0111\u1ED9ng s\xE2u th\u1EB3m nh\xECn th\u1EA5u b\xEAn trong." }
 };
 
+// src/utils/jaWords.ts
+var KANJI = /[㐀-鿿々]/;
+var toHira = (s) => s.replace(/[ァ-ヶ]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 96));
+var SKIP = /^(助詞|助動詞|記号|フィラー|感動詞)$/;
+function buildLookup(entries) {
+  const byKanji = /* @__PURE__ */ new Map(), byKana = /* @__PURE__ */ new Map();
+  for (const e of entries) {
+    const clean2 = (x) => (x || "").replace(/[（(]する[）)]|[～〜~・\s]/g, "").trim();
+    const kana = clean2(e.hiragana), kanji = clean2(e.kanji), meaning = (e.meaning || "").trim();
+    if (!meaning || !(kana || kanji)) continue;
+    const written = KANJI.test(kanji) ? kanji : kanji || kana;
+    if (KANJI.test(kanji)) {
+      if (!byKanji.has(kanji)) byKanji.set(kanji, { word: kanji, reading: kana, meaning });
+    }
+    for (const k of new Set([kana, KANJI.test(kanji) ? "" : kanji].filter(Boolean).map(toHira))) {
+      const list = byKana.get(k) || [];
+      list.push({ word: written, reading: kana || kanji, meaning, core: e.core });
+      byKana.set(k, list);
+    }
+  }
+  const words = (m) => new Set(m.toLowerCase().split(/[^\p{L}]+/u).filter(Boolean));
+  const related = (a, b) => {
+    const x = words(a);
+    return [...words(b)].some((w) => x.has(w));
+  };
+  return (key, inflected = false) => {
+    if (!key || key === "*") return;
+    if (byKanji.has(key)) return byKanji.get(key);
+    if (KANJI.test(key)) return;
+    let list = (byKana.get(toHira(key)) || []).filter((h2) => !inflected || h2.word.endsWith(key.slice(-1)));
+    const clash = (l) => l.some((a) => l.some((b) => !related(a.meaning, b.meaning)));
+    if (clash(list)) {
+      list = list.filter((h2) => h2.core);
+      if (!list.length || clash(list)) return;
+    }
+    const h = list.find((h2) => !KANJI.test(h2.word)) ?? (key.length >= 3 ? list[0] : void 0);
+    return h && { word: key, reading: KANJI.test(h.word) ? h.word : h.reading, meaning: h.meaning };
+  };
+}
+function wordSpans(tokens, lookup2) {
+  const out = [];
+  const plain = (t) => {
+    const last = out[out.length - 1];
+    if (last && !last.hit) last.t += t;
+    else out.push({ t });
+  };
+  for (let i = 0; i < tokens.length; ) {
+    const tk = tokens[i];
+    const skip = SKIP.test(tk.p);
+    if (skip && i > 0 && tokens[i - 1].p !== "\u8A18\u53F7") {
+      plain(tk.s);
+      i++;
+      continue;
+    }
+    let done = false;
+    for (let j = Math.min(tokens.length, i + 6); j > i + 1; j--) {
+      const run = tokens.slice(i, j);
+      if (run.some((t) => t.p === "\u8A18\u53F7") || SKIP.test(run[run.length - 1].p)) continue;
+      const hit2 = lookup2(run.map((t) => t.s).join(""));
+      if (hit2) {
+        out.push({ t: run.map((t) => t.s).join(""), hit: hit2 });
+        i = j;
+        done = true;
+        break;
+      }
+    }
+    if (done) continue;
+    if (skip) {
+      plain(tk.s);
+      i++;
+      continue;
+    }
+    const inflects = /^(動詞|形容詞)$/.test(tk.p) && tk.b !== tk.s;
+    const hit = inflects ? lookup2(tk.b, true) || lookup2(tk.s) : lookup2(tk.s) || (tk.b !== tk.s ? lookup2(tk.b) : void 0);
+    const viaReading = !hit && KANJI.test(tk.s) && tk.r && tk.r !== "*" ? readingHit(tk, lookup2) : void 0;
+    if (hit || viaReading) out.push({ t: tk.s, hit: hit || viaReading });
+    else plain(tk.s);
+    i++;
+  }
+  return out;
+}
+function readingHit(tk, lookup2) {
+  const tail = tk.s.match(/[぀-ゟ]*$/)[0], stem = tk.s.slice(0, tk.s.length - tail.length), r = toHira(tk.r);
+  if (!r.endsWith(tail)) return;
+  const inflects = /^(動詞|形容詞)$/.test(tk.p) && tk.b.startsWith(stem) && tk.b !== tk.s;
+  const word = inflects ? tk.b : tk.s, reading = inflects ? r.slice(0, r.length - tail.length) + tk.b.slice(stem.length) : r;
+  const h = lookup2(reading, inflects);
+  return h && { word, reading, meaning: h.meaning };
+}
+
 // src/server/shadowingNativeTiming.ts
 var import_cheerio = require("cheerio");
 function parseYouTubeWordCaptions(xml) {
@@ -94668,20 +94758,26 @@ function parseYouTubeWordCaptions(xml) {
 
 // src/server/shadowing.ts
 var readingAnalyzer = null;
-async function sentenceReadings(sentence) {
+function analyzer() {
   if (!readingAnalyzer) {
     readingAnalyzer = (async () => {
       const Analyzer = import_kuroshiro_analyzer_kuromoji.default.default || import_kuroshiro_analyzer_kuromoji.default;
       const require2 = (0, import_node_module.createRequire)(import_node_path3.default.join(process.cwd(), "package.json"));
-      const analyzer = new Analyzer({ dictPath: import_node_path3.default.resolve(import_node_path3.default.dirname(require2.resolve("kuromoji")), "../dict") });
-      await analyzer.init();
-      return analyzer;
+      const analyzer2 = new Analyzer({ dictPath: import_node_path3.default.resolve(import_node_path3.default.dirname(require2.resolve("kuromoji")), "../dict") });
+      await analyzer2.init();
+      return analyzer2;
     })().catch((error) => {
       readingAnalyzer = null;
       throw error;
     });
   }
-  const tokens = await (await readingAnalyzer).parse(sentence);
+  return readingAnalyzer;
+}
+async function sentenceTokens(text) {
+  return (await (await analyzer()).parse(text)).map((t) => ({ s: t.surface_form, b: t.basic_form, p: t.pos, r: t.reading }));
+}
+async function sentenceReadings(sentence) {
+  const tokens = await (await analyzer()).parse(sentence);
   let pos = 0;
   return tokens.map((t) => {
     const offset = pos;
@@ -94706,14 +94802,11 @@ async function fetchManagedCaptions(videoId) {
   if (!response.ok) throw new Error(`Caption provider returned ${response.status}`);
   return parseManagedCaptions(await response.json());
 }
-function localShadowingAnalysis(sentence) {
+var lookup = null;
+function localShadowingAnalysis(sentence, tokens) {
+  lookup ||= buildLookup([TANGO_N5_VOCABULARY, TANGO_N4_VOCABULARY, VOCABULARY_DATA, TANGO_N3_VOCABULARY].flatMap((list, i) => list.map((v) => ({ kanji: v.kanji, hiragana: v.hiragana, meaning: v.vietnameseMeaning || v.meaning, core: i < 2 }))));
   const seen = /* @__PURE__ */ new Set();
-  const vocabulary = VOCABULARY_DATA.filter((v) => {
-    const word = v.kanji || v.hiragana;
-    if (!word || word.length < 2 || !sentence.includes(word) || seen.has(word)) return false;
-    seen.add(word);
-    return true;
-  }).slice(0, 30).map((v) => ({ word: v.kanji || v.hiragana, reading: v.hiragana, meaning: v.meaning, type: v.partOfSpeech }));
+  const vocabulary = wordSpans(tokens, lookup).filter((w) => w.hit && !seen.has(w.t) && seen.add(w.t)).slice(0, 30).map((w) => ({ word: w.t, reading: w.hit.reading, meaning: w.hit.meaning, type: "" }));
   const kanji = [...new Set(sentence.match(/[\u3400-\u9fff]/g) || [])].map((character) => {
     const info = KANJI_DICTIONARY[character];
     return { character, meaning: info?.meaning || "Ch\u01B0a c\xF3 d\u1EEF li\u1EC7u trong t\u1EEB \u0111i\u1EC3n", onyomi: info?.onyomi || "", kunyomi: info?.kunyomi || "", radical: info?.radical, components: info?.components, mnemonic: info?.mnemonic };
@@ -94797,7 +94890,7 @@ async function shadowingAnalyze(req, res) {
     if (!sentences.length) return res.status(400).json({ error: "Kh\xF4ng c\xF3 c\xE2u h\u1EE3p l\u1EC7." });
     const items = {};
     for (const sentence2 of sentences) {
-      const local2 = localShadowingAnalysis(sentence2);
+      const local2 = localShadowingAnalysis(sentence2, await sentenceTokens(sentence2).catch(() => []));
       try {
         local2.readings = await sentenceReadings(sentence2);
       } catch {
@@ -94809,7 +94902,7 @@ async function shadowingAnalyze(req, res) {
   }
   const sentence = req.body?.sentence;
   if (typeof sentence !== "string" || !sentence.trim() || sentence.length > 1e3) return res.status(400).json({ error: "Nh\u1EADp m\u1ED9t c\xE2u ti\u1EBFng Nh\u1EADt t\u1EEB 1 \u0111\u1EBFn 1000 k\xFD t\u1EF1." });
-  const local = localShadowingAnalysis(sentence);
+  const local = localShadowingAnalysis(sentence, await sentenceTokens(sentence).catch(() => []));
   try {
     local.readings = await sentenceReadings(sentence);
   } catch {
@@ -98000,6 +98093,15 @@ app.post("/api/shadowing/video", shadowingVideo);
 app.all("/api/shadowing/refresh", (_req, res) => res.status(410).json({ error: "Ch\u1EE9c n\u0103ng c\u1EADp nh\u1EADt ph\u1EE5 \u0111\u1EC1 t\u1EF1 \u0111\u1ED9ng \u0111\xE3 \u0111\u01B0\u1EE3c g\u1EE1. H\xE3y d\xF9ng file ph\xE2n t\xEDch t\u0129nh." }));
 app.get("/api/shadowing/analysis", shadowingReadAnalysis);
 app.post("/api/shadowing/prepare", shadowingPrepare);
+app.post("/api/ja/tokens", async (req, res) => {
+  const text = req.body?.text;
+  if (typeof text !== "string" || !text.trim() || text.length > 6e3) return res.status(400).json({ error: "V\u0103n b\u1EA3n kh\xF4ng h\u1EE3p l\u1EC7." });
+  try {
+    res.json({ tokens: await sentenceTokens(text) });
+  } catch {
+    res.status(503).json({ error: "Kh\xF4ng t\xE1ch \u0111\u01B0\u1EE3c t\u1EEB." });
+  }
+});
 app.post("/api/ai/analysis/lookup", aiAnalysisLookup);
 app.post("/api/ai/analysis", requireAuth, aiAnalysisCreate);
 app.all("/__/auth/*", async (req, res) => {
