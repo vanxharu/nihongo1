@@ -100857,6 +100857,32 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+app.get("/api/admin/system-status", requireAuth, requireAdmin, async (_req, res) => {
+  const timed = async (fn) => {
+    const t = Date.now();
+    try {
+      await Promise.race([fn(), new Promise((_, no) => setTimeout(() => no(new Error("Qu\xE1 8 gi\xE2y kh\xF4ng ph\u1EA3n h\u1ED3i")), 8e3))]);
+      return { ok: true, detail: `${Date.now() - t} ms` };
+    } catch (e) {
+      return { ok: false, detail: String(e?.message || e).slice(0, 160) };
+    }
+  };
+  const key = (name) => ({ ok: !!process.env[name], detail: process.env[name] ? "\u0110\xE3 c\u1EA5u h\xECnh" : "Ch\u01B0a c\u1EA5u h\xECnh" });
+  const [db, tokenizer] = await Promise.all([
+    timed(() => firebaseDb().collection("ai_analysis").limit(1).get()),
+    timed(() => sentenceTokens("\u30C6\u30B9\u30C8"))
+  ]);
+  res.json({ checks: [
+    { id: "firestore", label: "C\u01A1 s\u1EDF d\u1EEF li\u1EC7u (Firestore)", ...db },
+    { id: "tokenizer", label: "T\xE1ch t\u1EEB ti\u1EBFng Nh\u1EADt (kuromoji)", ...tokenizer },
+    { id: "groq", label: "AI: Groq (GROQ_API_KEY)", ...key("GROQ_API_KEY") },
+    { id: "gemini", label: "AI: Gemini (GEMINI_API_KEY)", ...key("GEMINI_API_KEY") },
+    { id: "openai", label: "AI: OpenAI (OPENAI_API_KEY)", ...key("OPENAI_API_KEY") },
+    { id: "anthropic", label: "AI: Claude (ANTHROPIC_API_KEY)", ...key("ANTHROPIC_API_KEY") },
+    { id: "supadata", label: "Ph\u1EE5 \u0111\u1EC1 YouTube (SUPADATA_API_KEY)", ...key("SUPADATA_API_KEY") },
+    { id: "admins", label: "Danh s\xE1ch qu\u1EA3n tr\u1ECB (ADMIN_EMAILS)", ...key("ADMIN_EMAILS") }
+  ], checkedAt: (/* @__PURE__ */ new Date()).toISOString() });
+});
 app.get("/api/admin/users", requireAuth, requireAdmin, async (req, res) => {
   try {
     const allUsersList = await getAllUsers();

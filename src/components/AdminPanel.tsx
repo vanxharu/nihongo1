@@ -499,32 +499,7 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
           onCloseImportModal={() => setOpenExcelModal(false)} 
         />
       )}
-      {activeTab === 'system' && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-          <div className="bg-slate-50 border border-slate-100 p-4 rounded-xl flex items-start gap-4">
-            <AlertCircle className="w-5 h-5 text-slate-600 mt-0.5 shrink-0" />
-            <div>
-              <h4 className="text-sm font-bold text-slate-950">Thông số Firebase Firestore</h4>
-              <p className="text-sm text-slate-800 mt-1">Trạng thái dữ liệu được kiểm tra khi mở Tổng quan hoặc Học viên. Khi mất kết nối, thao tác cập nhật có thể không thực hiện được.</p>
-            </div>
-          </div>
-          <div className="bg-white border border-slate-100 rounded-2xl p-6">
-            <h3 className="text-base font-bold text-slate-950 mb-4">Kết nối hạ tầng</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Cơ sở dữ liệu liên kết</label>
-                <div className="flex gap-2">
-                  <input type="text" value={usersUnavailable ? "Chưa kết nối được cơ sở dữ liệu" : usersLoaded ? "Đã tải dữ liệu học viên" : "Chưa kiểm tra kết nối"} readOnly className="flex-1 px-3 py-2 bg-slate-50/50 border border-slate-100 rounded-lg text-sm text-slate-500 font-medium" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Dịch vụ xác thực người dùng</label>
-                <input type="text" value="Firebase Authentication (Identity Platform)" readOnly className="w-full px-3 py-2 bg-slate-50/50 border border-slate-100 rounded-lg text-sm text-slate-500 font-medium" />
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
+      {activeTab === 'system' && <SystemStatus token={token} />}
 
       {/* Editing User Modal */}
       <AnimatePresence>
@@ -645,5 +620,50 @@ export default function AdminPanel({ userProfile }: AdminPanelProps) {
         onClose={() => setConfirmDialog(p => ({ ...p, isOpen: false }))}
       />
     </div>
+  );
+}
+
+type Check = { id: string; label: string; ok: boolean; detail: string };
+/** Tab "Cài đặt & API": kiểm tra thật từng dịch vụ trên máy chủ (không hiển thị giá trị khóa). */
+function SystemStatus({ token }: { token: string | null | undefined }) {
+  const [state, setState] = useState<{ checks: Check[]; checkedAt: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState('');
+  const run = async () => {
+    if (!token) { setErr('Cần đăng nhập tài khoản quản trị.'); return; }
+    setBusy(true); setErr('');
+    try {
+      const r = await fetch('/api/admin/system-status', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
+      if (!r.ok) throw new Error(r.status === 403 ? 'Tài khoản không có quyền quản trị.' : `Máy chủ trả lỗi ${r.status}.`);
+      setState(await r.json());
+    } catch (e) { setErr(e instanceof Error ? e.message : 'Không kiểm tra được.'); }
+    finally { setBusy(false); }
+  };
+  useEffect(() => { void run(); }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
+  return (
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+      <div className="bg-white border border-slate-100 rounded-2xl p-6">
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 className="text-base font-bold text-slate-950">Kết nối hạ tầng</h3>
+            <p className="text-xs text-slate-500 mt-0.5">{state ? `Kiểm tra lúc ${new Date(state.checkedAt).toLocaleTimeString('vi-VN')}` : 'Máy chủ kiểm tra trực tiếp từng dịch vụ.'}</p>
+          </div>
+          <button type="button" onClick={() => void run()} disabled={busy} className="px-3 py-2 rounded-lg border border-slate-200 text-sm font-semibold cursor-pointer disabled:opacity-60">{busy ? 'Đang kiểm tra…' : 'Kiểm tra lại'}</button>
+        </div>
+        {err && <p role="alert" className="text-sm text-rose-600 mb-3">{err}</p>}
+        <ul className="divide-y divide-slate-100">
+          {(state?.checks || []).map(c => (
+            <li key={c.id} className="flex items-center justify-between gap-3 py-2.5">
+              <span className="flex items-center gap-2 text-sm font-medium text-slate-900">
+                <span aria-hidden className={`w-2.5 h-2.5 rounded-full ${c.ok ? 'bg-emerald-500' : 'bg-rose-500'}`} />{c.label}
+              </span>
+              <span className={`text-xs font-semibold ${c.ok ? 'text-emerald-700' : 'text-rose-600'}`}>{c.ok ? '✓ ' : '✗ '}{c.detail}</span>
+            </li>
+          ))}
+          {!state && !err && <li className="py-2.5 text-sm text-slate-500">Đang kiểm tra…</li>}
+        </ul>
+        <p className="text-xs text-slate-500 mt-4">Xác thực người dùng: Firebase Authentication. Khóa API đặt trong biến môi trường của Vercel; ở đây chỉ hiện đã cấu hình hay chưa.</p>
+      </div>
+    </motion.div>
   );
 }

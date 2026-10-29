@@ -3014,6 +3014,30 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
 });
 
 // Admin-only endpoints for user management
+// Live status for the admin "Cài đặt & API" tab: only whether each service answers / is configured, never key values.
+app.get('/api/admin/system-status', requireAuth, requireAdmin, async (_req, res) => {
+  const timed = async (fn: () => Promise<unknown>) => {
+    const t = Date.now();
+    try { await Promise.race([fn(), new Promise((_, no) => setTimeout(() => no(new Error('Quá 8 giây không phản hồi')), 8000))]); return { ok: true, detail: `${Date.now() - t} ms` }; }
+    catch (e: any) { return { ok: false, detail: String(e?.message || e).slice(0, 160) }; }
+  };
+  const key = (name: string) => ({ ok: !!process.env[name], detail: process.env[name] ? 'Đã cấu hình' : 'Chưa cấu hình' });
+  const [db, tokenizer] = await Promise.all([
+    timed(() => firebaseDb().collection('ai_analysis').limit(1).get()),
+    timed(() => sentenceTokens('テスト')),
+  ]);
+  res.json({ checks: [
+    { id: 'firestore', label: 'Cơ sở dữ liệu (Firestore)', ...db },
+    { id: 'tokenizer', label: 'Tách từ tiếng Nhật (kuromoji)', ...tokenizer },
+    { id: 'groq', label: 'AI: Groq (GROQ_API_KEY)', ...key('GROQ_API_KEY') },
+    { id: 'gemini', label: 'AI: Gemini (GEMINI_API_KEY)', ...key('GEMINI_API_KEY') },
+    { id: 'openai', label: 'AI: OpenAI (OPENAI_API_KEY)', ...key('OPENAI_API_KEY') },
+    { id: 'anthropic', label: 'AI: Claude (ANTHROPIC_API_KEY)', ...key('ANTHROPIC_API_KEY') },
+    { id: 'supadata', label: 'Phụ đề YouTube (SUPADATA_API_KEY)', ...key('SUPADATA_API_KEY') },
+    { id: 'admins', label: 'Danh sách quản trị (ADMIN_EMAILS)', ...key('ADMIN_EMAILS') },
+  ], checkedAt: new Date().toISOString() });
+});
+
 app.get('/api/admin/users', requireAuth, requireAdmin, async (req: any, res) => {
   try {
     const allUsersList = await getAllUsers();
