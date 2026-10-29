@@ -1,6 +1,6 @@
 // Word lookup on morphological tokens (kuromoji): taps hit whole words, never pieces of other words.
 export type JaToken = { s: string; b: string; p: string; r?: string }; // surface, basic form, part of speech, reading (katakana)
-export interface Hit { word: string; reading: string; meaning: string; alts?: string[] }
+export interface Hit { word: string; reading: string; meaning: string; alts?: string[]; surface?: string; at?: number } // surface/at: as written in the text, char offset
 export type Entry = { kanji?: string | null; hiragana?: string | null; meaning?: string | null; core?: boolean };
 
 const KANJI = /[㐀-鿿々]/;
@@ -74,6 +74,8 @@ export function wordSpans(tokens: JaToken[], lookup: (k: string, inflected?: boo
     i++;
   }
   // Homographs (はし: đũa / cầu): the meaning whose words appear in the sentence's translation; else all of them.
+  let at = 0;
+  for (const o of out) { if (o.hit) o.hit = { ...o.hit, surface: o.t, at }; at += o.t.length; }
   for (const o of out) if (o.hit?.alts) {
     const score = (m: string) => [...syllables(m)].filter(w => ctx.has(w)).length;
     const best = [...o.hit.alts].sort((a, b) => score(b) - score(a))[0];

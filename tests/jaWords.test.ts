@@ -27,3 +27,9 @@ test('homographs take the meaning used in the sentence translation', () => {
   assert.equal(wordSpans(t, L, 'Ăn cơm bằng đũa.')[0].hit?.meaning, 'đũa');
   assert.equal(wordSpans(t, L)[0].hit?.meaning, 'Nhiều nghĩa: đũa / cầu');
 });
+
+test('hits carry the written form and offset (sense lookup sends the exact sentence)', () => {
+  const sp = wordSpans([tk('雨', '名詞'), tk('が', '助詞'), tk('休み', '動詞', '休む')], L);
+  const h = sp.find(x => x.hit)!.hit!;
+  assert.equal(h.surface, '休み'); assert.equal(h.at, 2); assert.equal(h.word, '休む');
+});

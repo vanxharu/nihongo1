@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import type { Hit } from '../../utils/jaWords';
-import SenseMeaning from '../ui/SenseMeaning';
+import SenseMeaning, { sentenceAt } from '../ui/SenseMeaning';
 import { createPortal } from 'react-dom';
 import { Sparkles, X, Loader2 } from 'lucide-react';
 import { auth } from '../../lib/firebase';
@@ -111,7 +111,7 @@ export default function AiAnalyzeButton({ kind, text, context, className = '', s
                 {sel.inner?.map((w, i) => <p key={i} className="mt-1 text-[13px]"><b lang="ja">{w.label}</b>{w.reading && <span lang="ja" style={{ color: 'var(--ui-muted)' }}> {w.reading}</span>}: {w.meaning}</p>)}
                 {inChunk.length > 0 && <div className="mt-2 pt-2 text-[13px] space-y-0.5" style={{ borderTop: '1px dashed var(--ui-line, #384156)' }}>
                   <p className="text-xs font-bold" style={{ color: 'var(--ui-muted)' }}>Từ trong cụm</p>
-                  {inChunk.map(w => <p key={w.start}><b lang="ja">{w.hit.word}</b>{w.hit.reading && w.hit.reading !== w.hit.word && <span lang="ja" style={{ color: 'var(--ui-muted)' }}> {w.hit.reading}</span>}: <SenseMeaning word={w.hit.word} meaning={w.hit.meaning} sentence={text.length <= 400 ? text : w.t} /></p>)}
+                  {inChunk.map(w => <p key={w.start}><b lang="ja">{w.hit.word}</b>{w.hit.reading && w.hit.reading !== w.hit.word && <span lang="ja" style={{ color: 'var(--ui-muted)' }}> {w.hit.reading}</span>}: <SenseMeaning word={w.t} meaning={w.hit.meaning} sentence={sentenceAt(text, w.start)} /></p>)}
                 </div>}
               </div>
             </>}

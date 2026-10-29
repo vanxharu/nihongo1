@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import SenseMeaning, { sentenceOf } from '../ui/SenseMeaning';
+import SenseMeaning, { sentenceAt } from '../ui/SenseMeaning';
 import { buildLookup, wordSpans, type Hit, type JaToken } from '../../utils/jaWords';
 import { Volume2, X } from 'lucide-react';
 import { TANGO_N3_VOCABULARY, TANGO_N4_VOCABULARY, TANGO_N5_VOCABULARY, VOCABULARY_DATA } from '../../data';
@@ -59,7 +59,7 @@ export function useVocabIn(text: string, context = ''): Hit[] {
 
 export const WordsIn: React.FC<{ text: string }> = ({ text }) => {
   const w = useVocabIn(text).slice(0, 8);
-  return w.length ? <p className="text-[13px]"><b>Từ trong câu:</b> {w.map((x, i) => <React.Fragment key={x.word}>{i > 0 && ' · '}{x.word} ({x.reading}) = <SenseMeaning word={x.word} meaning={x.meaning} sentence={sentenceOf(text, x.word)} /></React.Fragment>)}</p> : null;
+  return w.length ? <p className="text-[13px]"><b>Từ trong câu:</b> {w.map((x, i) => <React.Fragment key={x.word}>{i > 0 && ' · '}{x.word} ({x.reading}) = <SenseMeaning word={x.surface || x.word} meaning={x.meaning} sentence={sentenceAt(text, x.at)} /></React.Fragment>)}</p> : null;
 };
 
 /** Văn bản tiếng Nhật chạm-từ-hiện-nghĩa. */
@@ -97,7 +97,7 @@ export const TappableJa: React.FC<{ text: string; highlight?: boolean; marks?: s
               <button type="button" aria-label="Đóng" onClick={() => setSel(null)} className="p-1.5 rounded-lg hover:bg-[#F4EDE2] cursor-pointer"><X className="w-4 h-4" /></button>
             </span>
           </span>
-          <span className="mt-1 block text-sm"><SenseMeaning word={sel.word} meaning={sel.meaning} sentence={sentenceOf(text, sel.word)} /></span>
+          <span className="mt-1 block text-sm"><SenseMeaning word={sel.surface || sel.word} meaning={sel.meaning} sentence={sentenceAt(text, sel.at)} /></span>
         </span>
       )}
     </>
@@ -127,7 +127,7 @@ export const ReadingHelper: React.FC<{ qid: string; passage: string; question: s
         <div className="rounded-xl border border-[#EADFCF] bg-[#FDFBF7] p-3 text-sm space-y-3">
           <div>
             <p className="font-bold text-xs mb-1">Từ vựng ({words.length})</p>
-            {words.length ? <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">{words.map(w => <li key={w.word}><b>{w.word}</b> <span className="text-[#786D5E]">{w.reading}</span> — <SenseMeaning word={w.word} meaning={w.meaning} sentence={sentenceOf(passage, w.word)} /></li>)}</ul> : <p className="text-[#786D5E]">Không có từ nào khớp kho từ vựng.</p>}
+            {words.length ? <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">{words.map(w => <li key={w.word}><b>{w.word}</b> <span className="text-[#786D5E]">{w.reading}</span> — <SenseMeaning word={w.surface || w.word} meaning={w.meaning} sentence={sentenceAt(passage, w.at)} /></li>)}</ul> : <p className="text-[#786D5E]">Không có từ nào khớp kho từ vựng.</p>}
           </div>
           <div>
             <p className="font-bold text-xs mb-1">Chạm vào câu để xem bản dịch</p>

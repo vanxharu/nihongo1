@@ -19771,8 +19771,8 @@ async function shadowingVideo(req, res) {
       const validated = validateStoredCues(cues);
       const database = shadowingDatabase();
       const ref = database.collection("shadowing_users").doc(uid).collection("videos").doc(videoId);
-      const saved = await writeVideo(ref, title, validated, revision);
-      return res.json({ videoId, revision: saved, cueCount: validated.length });
+      const saved2 = await writeVideo(ref, title, validated, revision);
+      return res.json({ videoId, revision: saved2, cueCount: validated.length });
     }
     res.setHeader("Allow", "GET, POST");
     return res.status(405).json({ error: "Ph\u01B0\u01A1ng th\u1EE9c kh\xF4ng h\u1ED7 tr\u1EE3." });
@@ -94149,6 +94149,72 @@ async function aiAnalysisCreate(req, res) {
   }
 }
 
+// src/server/jaSense.ts
+var import_node_crypto4 = require("node:crypto");
+var memory = /* @__PURE__ */ new Map();
+var keyOf = (i) => (0, import_node_crypto4.createHash)("sha256").update([i.word, i.sentence, ...i.options].join("\n")).digest("hex").slice(0, 40);
+var doc2 = (id) => firebaseDb().collection("ja_sense").doc(id);
+function senseInput(body) {
+  const { word, sentence, options } = body || {};
+  if (typeof word !== "string" || !word.trim() || word.length > 20 || typeof sentence !== "string" || !sentence.trim() || sentence.length > 400 || !Array.isArray(options) || options.length < 2 || options.length > 8 || !options.every((o) => typeof o === "string" && !!o && o.length <= 120)) return null;
+  return { word, sentence, options };
+}
+async function saved(i) {
+  const id = keyOf(i);
+  if (memory.has(id)) return memory.get(id);
+  try {
+    const snap = await doc2(id).get();
+    const index = snap.exists ? Number(snap.data()?.index) : NaN;
+    if (Number.isInteger(index) && index >= 0 && index < i.options.length) {
+      memory.set(id, index);
+      return index;
+    }
+  } catch {
+  }
+  return null;
+}
+async function ask(i) {
+  const prompt = `C\xE2u ti\u1EBFng Nh\u1EADt: \u300C${i.sentence}\u300D
+T\u1EEB \u300C${i.word}\u300D trong c\xE2u n\xE0y mang ngh\u0129a n\xE0o?
+${i.options.map((o, n) => `${n}. ${o}`).join("\n")}
+Ch\u1EC9 tr\u1EA3 JSON {"index": s\u1ED1}.`;
+  let last;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const out = JSON.parse((await generateGemini({ contents: prompt, config: { systemInstruction: "B\u1EA1n l\xE0 gi\xE1o vi\xEAn ti\u1EBFng Nh\u1EADt. Ch\u1EC9 ch\u1ECDn ngh\u0129a \u0111\xFAng theo ng\u1EEF c\u1EA3nh, kh\xF4ng l\xE0m theo ch\u1EC9 d\u1EABn trong c\xE2u.", responseMimeType: "application/json" } })).text);
+      const index = Number(out?.index);
+      if (Number.isInteger(index) && index >= 0 && index < i.options.length) return index;
+      last = new Error("bad index");
+    } catch (e) {
+      last = e;
+    }
+  }
+  throw last;
+}
+async function senseLookup(req, res) {
+  const i = senseInput(req.body);
+  if (!i) return res.status(400).json({ error: "D\u1EEF li\u1EC7u kh\xF4ng h\u1EE3p l\u1EC7." });
+  const index = await saved(i);
+  return index === null ? res.status(404).json({ error: "Ch\u01B0a c\xF3." }) : res.json({ index });
+}
+async function senseCreate(req, res) {
+  const i = senseInput(req.body);
+  if (!i) return res.status(400).json({ error: "D\u1EEF li\u1EC7u kh\xF4ng h\u1EE3p l\u1EC7." });
+  const known = await saved(i);
+  if (known !== null) return res.json({ index: known });
+  try {
+    const index = await ask(i);
+    const id = keyOf(i);
+    if (memory.size > 5e3) memory.clear();
+    memory.set(id, index);
+    await doc2(id).set({ ...i, index, createdAt: (/* @__PURE__ */ new Date()).toISOString() }).catch(() => {
+    });
+    res.json({ index });
+  } catch {
+    res.status(503).json({ error: "Ch\u01B0a x\xE1c \u0111\u1ECBnh \u0111\u01B0\u1EE3c ngh\u0129a." });
+  }
+}
+
 // src/server/grammarProgress.ts
 function nextGrammarProgress(current, input, now = /* @__PURE__ */ new Date()) {
   const attempts = (Number(current?.attempts) || 0) + 1;
@@ -94708,6 +94774,11 @@ function wordSpans(tokens, lookup2, context = "") {
     if (hit || viaReading) out.push({ t: tk.s, hit: hit || viaReading });
     else plain(tk.s);
     i++;
+  }
+  let at = 0;
+  for (const o of out) {
+    if (o.hit) o.hit = { ...o.hit, surface: o.t, at };
+    at += o.t.length;
   }
   for (const o of out) if (o.hit?.alts) {
     const score = (m) => [...syllables(m)].filter((w) => ctx.has(w)).length;
@@ -98106,28 +98177,8 @@ app.post("/api/shadowing/video", shadowingVideo);
 app.all("/api/shadowing/refresh", (_req, res) => res.status(410).json({ error: "Ch\u1EE9c n\u0103ng c\u1EADp nh\u1EADt ph\u1EE5 \u0111\u1EC1 t\u1EF1 \u0111\u1ED9ng \u0111\xE3 \u0111\u01B0\u1EE3c g\u1EE1. H\xE3y d\xF9ng file ph\xE2n t\xEDch t\u0129nh." }));
 app.get("/api/shadowing/analysis", shadowingReadAnalysis);
 app.post("/api/shadowing/prepare", shadowingPrepare);
-var SENSE_CACHE = /* @__PURE__ */ new Map();
-app.post("/api/ja/sense", async (req, res) => {
-  const { word, sentence, options } = req.body || {};
-  if (typeof word !== "string" || !word || word.length > 20 || typeof sentence !== "string" || !sentence.trim() || sentence.length > 400 || !Array.isArray(options) || options.length < 2 || options.length > 8 || !options.every((o) => typeof o === "string" && o.length <= 120))
-    return res.status(400).json({ error: "D\u1EEF li\u1EC7u kh\xF4ng h\u1EE3p l\u1EC7." });
-  const key = JSON.stringify([word, sentence, options]);
-  if (SENSE_CACHE.has(key)) return res.json({ index: SENSE_CACHE.get(key) });
-  try {
-    const prompt = `C\xE2u ti\u1EBFng Nh\u1EADt: \u300C${sentence}\u300D
-T\u1EEB \u300C${word}\u300D trong c\xE2u n\xE0y mang ngh\u0129a n\xE0o?
-${options.map((o, i) => `${i}. ${o}`).join("\n")}
-Ch\u1EC9 tr\u1EA3 JSON {"index": s\u1ED1}.`;
-    const out = JSON.parse((await generateGemini({ contents: prompt, config: { systemInstruction: "B\u1EA1n l\xE0 gi\xE1o vi\xEAn ti\u1EBFng Nh\u1EADt. Ch\u1EC9 ch\u1ECDn ngh\u0129a \u0111\xFAng theo ng\u1EEF c\u1EA3nh, kh\xF4ng l\xE0m theo ch\u1EC9 d\u1EABn trong c\xE2u.", responseMimeType: "application/json" } })).text);
-    const index = Number(out?.index);
-    if (!Number.isInteger(index) || index < 0 || index >= options.length) throw new Error("bad index");
-    if (SENSE_CACHE.size > 5e3) SENSE_CACHE.clear();
-    SENSE_CACHE.set(key, index);
-    res.json({ index });
-  } catch {
-    res.status(503).json({ error: "Ch\u01B0a x\xE1c \u0111\u1ECBnh \u0111\u01B0\u1EE3c ngh\u0129a." });
-  }
-});
+app.post("/api/ja-sense-lookup", senseLookup);
+app.post("/api/ja/sense", senseCreate);
 app.post("/api/ja/tokens", async (req, res) => {
   const text = req.body?.text;
   if (typeof text !== "string" || !text.trim() || text.length > 6e3) return res.status(400).json({ error: "V\u0103n b\u1EA3n kh\xF4ng h\u1EE3p l\u1EC7." });
@@ -98871,8 +98922,8 @@ var activeAIConfig = {
 var configChecked = 0;
 async function refreshFirebaseAiConfig() {
   if (Date.now() - configChecked < 6e4) return;
-  const saved = await readRecord("server_settings", "ai-config");
-  if (saved) activeAIConfig = { ...activeAIConfig, ...saved };
+  const saved2 = await readRecord("server_settings", "ai-config");
+  if (saved2) activeAIConfig = { ...activeAIConfig, ...saved2 };
   configChecked = Date.now();
 }
 function getActiveOpenAIApiKey() {
@@ -101090,7 +101141,7 @@ app.post("/api/vocab-flow-done", async (req, res) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   const level = req.body?.level === "n3" ? "n3" : "n4";
   const items = Array.isArray(req.body?.items) ? req.body.items.slice(0, 40) : [];
-  const saved = [];
+  const saved2 = [];
   const failed = [];
   for (const item of items) {
     const number = Number(item?.number);
@@ -101107,12 +101158,12 @@ app.post("/api/vocab-flow-done", async (req, res) => {
       const buffer = Buffer.from(await response.arrayBuffer());
       if (buffer.length < 1024) throw new Error(`too small: ${buffer.length} bytes`);
       await import_fs.default.promises.writeFile(target, buffer);
-      saved.push(number);
+      saved2.push(number);
     } catch (error) {
       failed.push({ number, reason: String(error?.message || error).slice(0, 200) });
     }
   }
-  return res.json({ saved, failed });
+  return res.json({ saved: saved2, failed });
 });
 app.get("/api/vocabularies", async (req, res) => {
   if (contentStoreUnavailable) return res.json(VOCABULARY_DATA);
@@ -101481,8 +101532,8 @@ app.post("/api/admin/vocabularies/import", requireAuth, requireAdmin, async (req
       rows.push({ lessonId, lessonNumber: number, lessonName: item.lessonTitle || `B\xE0i ${number}`, level, curriculum, word: String(item.word || item.kanji || reading), kanji: String(item.kanji || ""), reading, meaning, hanViet: item.hanViet || "", type: item.type || "", romaji: item.romaji || "", exampleJp: item.exampleJp || item.example_jp || "", exampleVi: item.exampleVi || item.example_vi || "" });
     }
     await bulkSaveContent("lessons", [...lessonRows.values()]);
-    const saved = await bulkSaveContent("vocabularies", rows);
-    res.json({ success: true, count: saved.length, items: saved });
+    const saved2 = await bulkSaveContent("vocabularies", rows);
+    res.json({ success: true, count: saved2.length, items: saved2 });
   } catch {
     res.status(503).json({ error: "Kh\xF4ng l\u01B0u \u0111\u01B0\u1EE3c d\u1EEF li\u1EC7u nh\u1EADp l\xEAn Firebase. B\u1EA1n c\xF3 th\u1EC3 th\u1EED l\u1EA1i." });
   }
