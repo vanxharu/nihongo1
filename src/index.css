@@ -578,12 +578,6 @@ button:active:not(:disabled) {
 img {
   transition: opacity 0.2s ease;
 }
-img[loading="lazy"] {
-  opacity: 0;
-}
-img[loading="lazy"].loaded {
-  opacity: 1;
-}
 
 /* ── Reduce layout thrash on list renders ── */
 .lesson-grid {
