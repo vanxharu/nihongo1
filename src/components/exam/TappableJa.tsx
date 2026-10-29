@@ -28,21 +28,27 @@ function tokens(text: string) {
   return p;
 }
 
-/** Từ trong văn bản, tách theo từ loại (kuromoji). null khi đang tải hoặc lỗi: hiện chữ thường, không đoán. */
-export function useWordSpans(text: string) {
-  const [spans, setSpans] = useState<{ text: string; spans: { t: string; hit?: Hit }[] } | null>(null);
+/** Từ trong văn bản (kuromoji); từ đồng âm lấy nghĩa khớp bản dịch `context`. */
+export async function wordsFor(text: string, context = '') {
+  return wordSpans(await tokens(text), getLookup(), context);
+}
+
+/** null khi đang tải hoặc lỗi: hiện chữ thường, không đoán. */
+export function useWordSpans(text: string, context = '') {
+  const [spans, setSpans] = useState<{ key: string; spans: { t: string; hit?: Hit }[] } | null>(null);
+  const key = text + '\n' + context;
   useEffect(() => {
     if (!text.trim()) return;
     let live = true;
-    tokens(text).then(t => { if (live) setSpans({ text, spans: wordSpans(t, getLookup()) }); }, () => {});
+    wordsFor(text, context).then(sp => { if (live) setSpans({ key, spans: sp }); }, () => {});
     return () => { live = false; };
-  }, [text]);
-  return spans?.text === text ? spans.spans : null;
+  }, [text, context, key]);
+  return spans?.key === key ? spans.spans : null;
 }
 
 /** Từ trong đoạn (không trùng) cho bảng từ vựng. */
-export function useVocabIn(text: string): Hit[] {
-  const spans = useWordSpans(text);
+export function useVocabIn(text: string, context = ''): Hit[] {
+  const spans = useWordSpans(text, context);
   return useMemo(() => {
     const seen = new Set<string>(); const r: Hit[] = [];
     for (const s of spans || []) if (s.hit && !seen.has(s.t)) { seen.add(s.t); r.push(s.hit); }
@@ -58,7 +64,7 @@ export const WordsIn: React.FC<{ text: string }> = ({ text }) => {
 /** Văn bản tiếng Nhật chạm-từ-hiện-nghĩa. */
 export const TappableJa: React.FC<{ text: string; highlight?: boolean; marks?: string[] }> = ({ text, highlight, marks }) => {
   const [sel, setSel] = useState<Hit | null>(null);
-  const spans = useWordSpans(text);
+  const spans = useWordSpans(text, useMemo(() => studySentences(text)?.map(s => s.vi).join(' ') ?? '', [text]));
   // marks: các câu dẫn tới đáp án — tô vàng khi đã hiện đáp án.
   const parts = useMemo(() => {
     const ranges = (marks || []).filter(Boolean).flatMap(m => { const i = text.indexOf(m); return i < 0 ? [] : [[i, i + m.length]]; });
@@ -105,7 +111,7 @@ export const studySentences = (passage: string): StudySentence[] | undefined =>
 export const ReadingHelper: React.FC<{ qid: string; passage: string; question: string; revealed?: boolean }> = ({ qid, passage, question, revealed }) => {
   const [open, setOpen] = useState(false);
   const [sent, setSent] = useState<number | null>(null);
-  const words = useVocabIn(open ? passage : '');
+  const words = useVocabIn(open ? passage : '', useMemo(() => studySentences(passage)?.map(s => s.vi).join(' ') ?? '', [passage]));
   const data = useMemo(() => studySentences(passage), [passage]);
   const old = useMemo(() => {
     const e = data ? undefined : getDokkaiTranslation(qid, question + passage);

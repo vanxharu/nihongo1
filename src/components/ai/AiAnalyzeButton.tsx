@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import type { Hit } from '../../utils/jaWords';
 import { createPortal } from 'react-dom';
 import { Sparkles, X, Loader2 } from 'lucide-react';
 import { auth } from '../../lib/firebase';
@@ -38,6 +39,20 @@ export default function AiAnalyzeButton({ kind, text, context, className = '', s
   const marked = useMemo(() => result && text.length <= 400 ? analysisHighlights(text, result.points) : null, [result, text]);
   const hl = marked?.highlights.length ? marked.highlights : null;
   const sel = hl?.[Math.min(picked, hl.length - 1)];
+  // Words inside the picked chunk (kuromoji); homographs take the meaning this analysis' translation uses.
+  const [words, setWords] = useState<{ start: number; t: string; hit: Hit }[]>([]);
+  useEffect(() => {
+    if (!hl?.some(h => h.type === 'chunk') || kind === 'vocab' || kind === 'grammar') return;
+    let live = true;
+    const ctx = [result!.translation, ...result!.points.map(p => p.body)].join(' ');
+    import('../exam/TappableJa').then(m => m.wordsFor(text, ctx)).then(sp => {
+      let at = 0; const out: { start: number; t: string; hit: Hit }[] = [];
+      for (const x of sp) { if (x.hit) out.push({ start: at, t: x.t, hit: x.hit }); at += x.t.length; }
+      if (live) setWords(out);
+    }, () => {});
+    return () => { live = false; };
+  }, [hl, kind, result, text]);
+  const inChunk = sel?.type === 'chunk' ? words.filter(w => w.start >= sel.start && w.start + w.t.length <= sel.end) : [];
 
   const run = async () => {
     setOpen(true);
@@ -93,6 +108,10 @@ export default function AiAnalyzeButton({ kind, text, context, className = '', s
                 <p className="flex flex-wrap items-baseline gap-2"><b lang="ja" className="text-lg">{sel.label}</b>{sel.reading && <span lang="ja" style={{ color: 'var(--ui-muted)' }}>{sel.reading}</span>}</p>
                 <p className="text-[15px] whitespace-pre-line">{sel.meaning}</p>
                 {sel.inner?.map((w, i) => <p key={i} className="mt-1 text-[13px]"><b lang="ja">{w.label}</b>{w.reading && <span lang="ja" style={{ color: 'var(--ui-muted)' }}> {w.reading}</span>}: {w.meaning}</p>)}
+                {inChunk.length > 0 && <div className="mt-2 pt-2 text-[13px] space-y-0.5" style={{ borderTop: '1px dashed var(--ui-line, #384156)' }}>
+                  <p className="text-xs font-bold" style={{ color: 'var(--ui-muted)' }}>Từ trong cụm</p>
+                  {inChunk.map(w => <p key={w.start}><b lang="ja">{w.hit.word}</b>{w.hit.reading && w.hit.reading !== w.hit.word && <span lang="ja" style={{ color: 'var(--ui-muted)' }}> {w.hit.reading}</span>}: {w.hit.meaning}</p>)}
+                </div>}
               </div>
             </>}
             {result.translation && <div className={hl ? 'pt-3' : ''} style={hl ? { borderTop: '1px solid var(--ui-line, #384156)' } : undefined}>{!hl && <p className="text-xs font-bold mb-1" style={{ color: 'var(--ui-muted)' }}>Dịch</p>}<p className={`whitespace-pre-line ${hl ? 'text-base' : ''}`}>{result.translation}</p></div>}

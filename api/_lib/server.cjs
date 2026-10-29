@@ -94660,15 +94660,17 @@ function buildLookup(entries) {
     let list = (byKana.get(toHira(key)) || []).filter((h2) => !inflected || h2.word.endsWith(key.slice(-1)));
     const clash = (l) => l.some((a) => l.some((b) => !related(a.meaning, b.meaning)));
     if (clash(list)) {
-      list = list.filter((h2) => h2.core);
-      if (!list.length || clash(list)) return;
+      const core = list.filter((h2) => h2.core);
+      if (!core.length || clash(core)) return { word: key, reading: toHira(key), meaning: "", alts: [...new Set(list.map((h2) => h2.meaning))] };
+      list = core;
     }
     const h = list.find((h2) => !KANJI.test(h2.word)) ?? (key.length >= 3 ? list[0] : void 0);
     return h && { word: key, reading: KANJI.test(h.word) ? h.word : h.reading, meaning: h.meaning };
   };
 }
-function wordSpans(tokens, lookup2) {
+function wordSpans(tokens, lookup2, context = "") {
   const out = [];
+  const ctx = syllables(context);
   const plain = (t) => {
     const last = out[out.length - 1];
     if (last && !last.hit) last.t += t;
@@ -94687,7 +94689,7 @@ function wordSpans(tokens, lookup2) {
       const run = tokens.slice(i, j);
       if (run.some((t) => t.p === "\u8A18\u53F7") || SKIP.test(run[run.length - 1].p)) continue;
       const hit2 = lookup2(run.map((t) => t.s).join(""));
-      if (hit2) {
+      if (hit2 && !hit2.alts) {
         out.push({ t: run.map((t) => t.s).join(""), hit: hit2 });
         i = j;
         done = true;
@@ -94707,7 +94709,16 @@ function wordSpans(tokens, lookup2) {
     else plain(tk.s);
     i++;
   }
+  for (const o of out) if (o.hit?.alts) {
+    const score = (m) => [...syllables(m)].filter((w) => ctx.has(w)).length;
+    const best = [...o.hit.alts].sort((a, b) => score(b) - score(a))[0];
+    o.hit = { ...o.hit, meaning: score(best) > 0 && o.hit.alts.filter((a) => score(a) === score(best)).length === 1 ? best : `Nhi\u1EC1u ngh\u0129a: ${o.hit.alts.join(" / ")}` };
+  }
   return out;
+}
+var STOP = /* @__PURE__ */ new Set(["c\u1EE7a", "l\xE0", "v\xE0", "c\xF3", "m\u1ED9t", "nh\u1EEFng", "c\xE1c", "cho", "\u0111\u01B0\u1EE3c", "v\u1EDBi", "ng\u01B0\u1EDDi", "c\xE1i", "s\u1EF1", "vi\u1EC7c", "\u0111i", "l\xE0m", "\u1EDF", "th\xEC", "n\xE0y", "\u0111\xF3"]);
+function syllables(m) {
+  return new Set(m.toLowerCase().split(/[^\p{L}]+/u).filter((w) => w && !STOP.has(w)));
 }
 function readingHit(tk, lookup2) {
   const tail = tk.s.match(/[぀-ゟ]*$/)[0], stem = tk.s.slice(0, tk.s.length - tail.length), r = toHira(tk.r);
@@ -94715,7 +94726,7 @@ function readingHit(tk, lookup2) {
   const inflects = /^(動詞|形容詞)$/.test(tk.p) && tk.b.startsWith(stem) && tk.b !== tk.s;
   const word = inflects ? tk.b : tk.s, reading = inflects ? r.slice(0, r.length - tail.length) + tk.b.slice(stem.length) : r;
   const h = lookup2(reading, inflects);
-  return h && { word, reading, meaning: h.meaning };
+  return h && { word, reading, meaning: h.meaning, alts: h.alts };
 }
 
 // src/server/shadowingNativeTiming.ts

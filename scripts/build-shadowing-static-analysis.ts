@@ -1,6 +1,6 @@
 /** Build the reviewed study notes against an exact saved transcript; never edit captions. */
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { localShadowingAnalysis } from '../src/server/shadowing';
+import { localShadowingAnalysis, sentenceTokens } from '../src/server/shadowing';
 import { parseShadowingAnalysisFile, claudeShadowingPrompt } from '../src/utils/shadowingAnalysisFile';
 import type { ShadowingAnalysis } from '../src/utils/shadowing';
 const videoId = 'R1Oy-PqXhz4';
@@ -311,10 +311,12 @@ const issues: Record<number,string> = {
   321:'朝会 có thể nhầm 聴解; nhãn [音楽] chen giữa ます. Giữ nguyên để đối chiếu.'
 };
 const byText = new Map<string, ShadowingAnalysis>();
+const tokensOf = new Map<string, Awaited<ReturnType<typeof sentenceTokens>>>();
+for (const cue of source.cues) if (!tokensOf.has(cue.text)) tokensOf.set(cue.text, await sentenceTokens(cue.text));
 const sentences = source.cues.map((cue: any, i: number) => {
   let analysis = byText.get(cue.text);
   if (!analysis) {
-    const base = localShadowingAnalysis(cue.text);
+    const base = localShadowingAnalysis(cue.text, tokensOf.get(cue.text)!);
     const vocab = new Map(base.vocabulary.map(v => [v.word, v]));
     for (const v of extraWords) if (cue.text.includes(v.word)) vocab.set(v.word, v);
     const marker = /^(?:[0-9]+番?|番|問題[0-9]*|よ)$/.test(cue.text);
