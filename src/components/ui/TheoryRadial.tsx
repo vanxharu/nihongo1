@@ -23,7 +23,7 @@ export default function TheoryRadial({ rect, dir, onPick, onClose }: {
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const btns = () => Array.from(root.current?.querySelectorAll<HTMLButtonElement>('.u011-item') ?? []);
-    btns()[1]?.focus();
+    btns()[dir === 'right' ? 0 : 1]?.focus(); // fan: middle item; list: first
     const key = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
       const b = btns(); const i = b.indexOf(document.activeElement as HTMLButtonElement);
@@ -34,7 +34,7 @@ export default function TheoryRadial({ rect, dir, onPick, onClose }: {
     document.addEventListener('keydown', key);
     document.addEventListener('pointerdown', down);
     return () => { document.removeEventListener('keydown', key); document.removeEventListener('pointerdown', down); };
-  }, [onClose]);
+  }, [onClose, dir]);
 
   if (dir === 'right') {
     // Desktop sidebar: a plain flyout list beside the item (a radial fan covered the sidebar and content).
