@@ -94712,10 +94712,11 @@ function wordSpans(tokens, lookup2, context = "") {
   for (const o of out) if (o.hit?.alts) {
     const score = (m) => [...syllables(m)].filter((w) => ctx.has(w)).length;
     const best = [...o.hit.alts].sort((a, b) => score(b) - score(a))[0];
-    o.hit = { ...o.hit, meaning: score(best) > 0 && o.hit.alts.filter((a) => score(a) === score(best)).length === 1 ? best : `Nhi\u1EC1u ngh\u0129a: ${o.hit.alts.join(" / ")}` };
+    o.hit = { ...o.hit, meaning: score(best) > 0 && o.hit.alts.filter((a) => score(a) === score(best)).length === 1 ? best : MANY + o.hit.alts.join(" / ") };
   }
   return out;
 }
+var MANY = "Nhi\u1EC1u ngh\u0129a: ";
 var STOP = /* @__PURE__ */ new Set(["c\u1EE7a", "l\xE0", "v\xE0", "c\xF3", "m\u1ED9t", "nh\u1EEFng", "c\xE1c", "cho", "\u0111\u01B0\u1EE3c", "v\u1EDBi", "ng\u01B0\u1EDDi", "c\xE1i", "s\u1EF1", "vi\u1EC7c", "\u0111i", "l\xE0m", "\u1EDF", "th\xEC", "n\xE0y", "\u0111\xF3"]);
 function syllables(m) {
   return new Set(m.toLowerCase().split(/[^\p{L}]+/u).filter((w) => w && !STOP.has(w)));
@@ -98053,6 +98054,7 @@ var COST_BEARING_PATHS = [
   "/api/grammar/ai-tutor",
   "/api/grammar/similar-question",
   "/api/reading/lookup-word",
+  "/api/ja/sense",
   "/api/exam/generate-ai",
   "/api/exam/ai-grade-and-explain",
   "/api/exam/review-user-notes",
@@ -98104,6 +98106,28 @@ app.post("/api/shadowing/video", shadowingVideo);
 app.all("/api/shadowing/refresh", (_req, res) => res.status(410).json({ error: "Ch\u1EE9c n\u0103ng c\u1EADp nh\u1EADt ph\u1EE5 \u0111\u1EC1 t\u1EF1 \u0111\u1ED9ng \u0111\xE3 \u0111\u01B0\u1EE3c g\u1EE1. H\xE3y d\xF9ng file ph\xE2n t\xEDch t\u0129nh." }));
 app.get("/api/shadowing/analysis", shadowingReadAnalysis);
 app.post("/api/shadowing/prepare", shadowingPrepare);
+var SENSE_CACHE = /* @__PURE__ */ new Map();
+app.post("/api/ja/sense", async (req, res) => {
+  const { word, sentence, options } = req.body || {};
+  if (typeof word !== "string" || !word || word.length > 20 || typeof sentence !== "string" || !sentence.trim() || sentence.length > 400 || !Array.isArray(options) || options.length < 2 || options.length > 8 || !options.every((o) => typeof o === "string" && o.length <= 120))
+    return res.status(400).json({ error: "D\u1EEF li\u1EC7u kh\xF4ng h\u1EE3p l\u1EC7." });
+  const key = JSON.stringify([word, sentence, options]);
+  if (SENSE_CACHE.has(key)) return res.json({ index: SENSE_CACHE.get(key) });
+  try {
+    const prompt = `C\xE2u ti\u1EBFng Nh\u1EADt: \u300C${sentence}\u300D
+T\u1EEB \u300C${word}\u300D trong c\xE2u n\xE0y mang ngh\u0129a n\xE0o?
+${options.map((o, i) => `${i}. ${o}`).join("\n")}
+Ch\u1EC9 tr\u1EA3 JSON {"index": s\u1ED1}.`;
+    const out = JSON.parse((await generateGemini({ contents: prompt, config: { systemInstruction: "B\u1EA1n l\xE0 gi\xE1o vi\xEAn ti\u1EBFng Nh\u1EADt. Ch\u1EC9 ch\u1ECDn ngh\u0129a \u0111\xFAng theo ng\u1EEF c\u1EA3nh, kh\xF4ng l\xE0m theo ch\u1EC9 d\u1EABn trong c\xE2u.", responseMimeType: "application/json" } })).text);
+    const index = Number(out?.index);
+    if (!Number.isInteger(index) || index < 0 || index >= options.length) throw new Error("bad index");
+    if (SENSE_CACHE.size > 5e3) SENSE_CACHE.clear();
+    SENSE_CACHE.set(key, index);
+    res.json({ index });
+  } catch {
+    res.status(503).json({ error: "Ch\u01B0a x\xE1c \u0111\u1ECBnh \u0111\u01B0\u1EE3c ngh\u0129a." });
+  }
+});
 app.post("/api/ja/tokens", async (req, res) => {
   const text = req.body?.text;
   if (typeof text !== "string" || !text.trim() || text.length > 6e3) return res.status(400).json({ error: "V\u0103n b\u1EA3n kh\xF4ng h\u1EE3p l\u1EC7." });

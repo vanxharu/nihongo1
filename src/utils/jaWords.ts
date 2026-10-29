@@ -77,10 +77,14 @@ export function wordSpans(tokens: JaToken[], lookup: (k: string, inflected?: boo
   for (const o of out) if (o.hit?.alts) {
     const score = (m: string) => [...syllables(m)].filter(w => ctx.has(w)).length;
     const best = [...o.hit.alts].sort((a, b) => score(b) - score(a))[0];
-    o.hit = { ...o.hit, meaning: score(best) > 0 && o.hit.alts.filter(a => score(a) === score(best)).length === 1 ? best : `Nhiều nghĩa: ${o.hit.alts.join(' / ')}` };
+    o.hit = { ...o.hit, meaning: score(best) > 0 && o.hit.alts.filter(a => score(a) === score(best)).length === 1 ? best : MANY + o.hit.alts.join(' / ') };
   }
   return out;
 }
+
+const MANY = 'Nhiều nghĩa: ';
+/** The candidate meanings of an unresolved homograph (meaning written as "Nhiều nghĩa: a / b"). */
+export const unresolvedAlts = (meaning: string) => meaning.startsWith(MANY) ? meaning.slice(MANY.length).split(' / ') : null;
 
 const STOP = new Set(['của', 'là', 'và', 'có', 'một', 'những', 'các', 'cho', 'được', 'với', 'người', 'cái', 'sự', 'việc', 'đi', 'làm', 'ở', 'thì', 'này', 'đó']);
 function syllables(m: string) { return new Set(m.toLowerCase().split(/[^\p{L}]+/u).filter(w => w && !STOP.has(w))); }
