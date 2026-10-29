@@ -36,6 +36,26 @@ export default function TheoryRadial({ rect, dir, onPick, onClose }: {
     return () => { document.removeEventListener('keydown', key); document.removeEventListener('pointerdown', down); };
   }, [onClose]);
 
+  if (dir === 'right') {
+    // Desktop sidebar: a plain flyout list beside the item (a radial fan covered the sidebar and content).
+    const top = Math.min(Math.max(rect.top - 6, 8), window.innerHeight - 4 * 44 - 24);
+    return createPortal(
+      <div ref={root} className="u011-flyout" role="menu" aria-label="Lý thuyết" style={{ left: rect.right + 8, top }}>
+        {THEORY_ITEMS.map((it, i) => {
+          const Icon = it.icon;
+          return (
+            <button key={it.id} type="button" role="menuitem" className="u011-item u011-row" style={{ '--i': i, '--c': it.c } as React.CSSProperties}
+              onClick={() => { onPick(it.id); nav(it.path); onClose(); }}>
+              <span className="u011-ico"><Icon size={16} /></span>
+              <span>{it.label}</span>
+            </button>
+          );
+        })}
+      </div>,
+      document.body
+    );
+  }
+
   const cx = dir === 'up' ? rect.left + rect.width / 2 : rect.right - 56;
   const cy = dir === 'up' ? rect.top : rect.top + rect.height / 2;
   const clampedX = Math.min(Math.max(cx, 100), window.innerWidth - 100);

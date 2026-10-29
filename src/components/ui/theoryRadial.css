@@ -16,6 +16,14 @@
 @keyframes u011-pop{to{transform:translate(var(--x),var(--y)) scale(1);opacity:1}}
 @keyframes u011-halo{to{transform:scale(1);opacity:1}}
 @media (prefers-reduced-motion:reduce){.u011-item,.u011-halo{animation-duration:.01s;animation-delay:0s}}
-/* fan to the right: label beside the circle so rows don't cover each other */
-.u011[data-dir="right"] .u011-lab{top:50%;left:62px;transform:translateY(-50%)}
-.u011[data-dir="right"] .u011-halo{display:none}
+/* desktop flyout list */
+.u011-flyout{position:fixed;z-index:300;min-width:180px;padding:6px;border-radius:14px;display:flex;flex-direction:column;gap:2px;
+  background:var(--ui-surface,#1b2236);border:1px solid var(--ui-line,#384156);box-shadow:0 12px 32px rgba(0,0,0,.35);
+  animation:u011-in .16s ease-out}
+.u011-row{position:static;width:auto;height:40px;border-radius:10px;padding:0 10px;display:flex;align-items:center;gap:10px;
+  background:transparent;color:var(--ui-ink,#f1f5f9);font-size:13px;font-weight:600;text-align:left;box-shadow:none;
+  transform:none;opacity:1;animation:none}
+.u011-row:hover,.u011-row:focus-visible{background:var(--ui-tint,rgba(255,255,255,.06));filter:none;box-shadow:none}
+.u011-row .u011-ico{width:28px;height:28px;border-radius:8px;background:var(--c);color:#fff;flex:none}
+@keyframes u011-in{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.u011-flyout{animation:none}}
