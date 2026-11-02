@@ -1,0 +1,1 @@
+{"kind":"video","text":"奥さんは朝起きて、ま、朝ご飯食べて会社に行きます。","analysis":{"translation":"Vợ tôi sáng dậy, ăn sáng rồi đi làm.","summary":"","points":[{"title":"奥さんは朝起きて","body":"\"vợ sáng dậy rồi\": Vて nối hành động."},{"title":"朝ご飯食べて","body":"\"ăn sáng rồi\": lược を."},{"title":"会社に行きます","body":"\"đi làm\"."}],"model":"claude-opus-5-5 (soạn sẵn)","createdAt":"2026-10-28"}}
