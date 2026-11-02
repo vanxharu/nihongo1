@@ -100576,12 +100576,12 @@ app.post("/api/japanese-chat/assist", async (req, res) => {
   }
   const systemInstruction = action === "translation" ? "B\u1EA1n l\xE0 bi\xEAn d\u1ECBch vi\xEAn ti\u1EBFng Nh\u1EADt-Vi\u1EC7t. D\u1ECBch ch\xEDnh x\xE1c \u0111o\u1EA1n ti\u1EBFng Nh\u1EADt sang ti\u1EBFng Vi\u1EC7t t\u1EF1 nhi\xEAn; gi\u1EEF ngh\u0129a v\xE0 s\u1EAFc th\xE1i. Ch\u1EC9 tr\u1EA3 v\u1EC1 b\u1EA3n d\u1ECBch ti\u1EBFng Vi\u1EC7t, kh\xF4ng gi\u1EA3i th\xEDch ho\u1EB7c th\xEAm l\u1EDDi ch\xE0o." : [
     "B\u1EA1n l\xE0 gi\xE1o vi\xEAn ti\u1EBFng Nh\u1EADt d\u1EA1y ng\u01B0\u1EDDi Vi\u1EC7t. Ph\xE2n t\xEDch CHI TI\u1EBET \u0111o\u1EA1n ti\u1EBFng Nh\u1EADt \u0111\u01B0\u1EE3c cung c\u1EA5p, vi\u1EBFt b\u1EB1ng ti\u1EBFng Vi\u1EC7t, theo \u0111\xFAng \u0111\u1ECBnh d\u1EA1ng sau:",
-    "- Chia TO\xC0N B\u1ED8 \u0111o\u1EA1n th\xE0nh c\xE1c c\u1EE5m theo th\u1EE9 t\u1EF1 (kh\xF4ng b\u1ECF s\xF3t c\u1EE5m n\xE0o, c\u1EE5m kh\xF4ng ch\u1ED3ng nhau). M\u1ED7i c\u1EE5m m\u1ED9t kh\u1ED1i:",
+    "- Chia TO\xC0N B\u1ED8 \u0111o\u1EA1n th\xE0nh c\xE1c c\u1EE5m NG\u1EAEN theo th\u1EE9 t\u1EF1 (m\u1ED7i c\u1EE5m l\xE0 m\u1ED9t c\u1EE5m ngh\u0129a kho\u1EA3ng 2\u201310 ch\u1EEF, v\xED d\u1EE5 \u307C\u304F\u304C / \u30D4\u30AF\u30CB\u30C3\u30AF\u306B\u6301\u3063\u3066\u3044\u304F / \u304A\u5F01\u5F53\u306F; kh\xF4ng \u0111\u1EC3 c\u1EA3 c\xE2u l\xE0m m\u1ED9t c\u1EE5m, kh\xF4ng b\u1ECF s\xF3t, kh\xF4ng ch\u1ED3ng nhau). M\u1ED7i c\u1EE5m m\u1ED9t kh\u1ED1i:",
     '\u300Cc\u1EE5m ch\xE9p nguy\xEAn v\u0103n\u300D \u2014 "ngh\u0129a ti\u1EBFng Vi\u1EC7t c\u1EE7a c\u1EE5m"',
     "\u2022 t\u1EEB v\u1EF1ng trong c\u1EE5m: c\xE1ch \u0111\u1ECDc, ngh\u0129a, lo\u1EA1i t\u1EEB",
     "\u2022 ng\u1EEF ph\xE1p: th\u1EC3 chia (vd \u6301\u3063\u3066\u3044\u304F \u2192 th\u1EC3 \u3066 + \u3044\u304F), vai tr\xF2 tr\u1EE3 t\u1EEB, m\u1EABu c\xE2u k\xE8m c\u1EA5p JLPT, s\u1EAFc th\xE1i l\u1ECBch s\u1EF1 / v\u0103n n\xF3i",
     '- Sau c\xE1c c\u1EE5m, th\xEAm d\xF2ng "\u25A0 M\u1EABu c\xE2u \u0111\xE1ng nh\u1EDB" v\xE0 2\u20133 m\u1EABu xu\u1EA5t hi\u1EC7n trong \u0111o\u1EA1n, m\u1ED7i m\u1EABu m\u1ED9t d\xF2ng: c\u1EA5u tr\xFAc = ngh\u0129a \xB7 m\u1ED9t v\xED d\u1EE5 kh\xE1c k\xE8m d\u1ECBch.',
-    "Ch\u1EC9 ph\xE2n t\xEDch n\u1ED9i dung c\xF3 th\u1EADt trong \u0111o\u1EA1n, kh\xF4ng ch\xE0o h\u1ECFi, kh\xF4ng d\xF9ng markdown (**, #)."
+    "Ch\u1EC9 ghi c\u1EA5p JLPT khi ch\u1EAFc ch\u1EAFn. Ch\u1EC9 ph\xE2n t\xEDch n\u1ED9i dung c\xF3 th\u1EADt trong \u0111o\u1EA1n, kh\xF4ng ch\xE0o h\u1ECFi, kh\xF4ng d\xF9ng markdown (**, #, ---)."
   ].join("\n");
   try {
     const result = await callLLMWithInfo({

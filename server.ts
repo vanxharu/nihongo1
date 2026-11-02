@@ -2784,12 +2784,12 @@ app.post("/api/japanese-chat/assist", async (req, res) => {
     ? "Bạn là biên dịch viên tiếng Nhật-Việt. Dịch chính xác đoạn tiếng Nhật sang tiếng Việt tự nhiên; giữ nghĩa và sắc thái. Chỉ trả về bản dịch tiếng Việt, không giải thích hoặc thêm lời chào."
     : [
       "Bạn là giáo viên tiếng Nhật dạy người Việt. Phân tích CHI TIẾT đoạn tiếng Nhật được cung cấp, viết bằng tiếng Việt, theo đúng định dạng sau:",
-      "- Chia TOÀN BỘ đoạn thành các cụm theo thứ tự (không bỏ sót cụm nào, cụm không chồng nhau). Mỗi cụm một khối:",
+      "- Chia TOÀN BỘ đoạn thành các cụm NGẮN theo thứ tự (mỗi cụm là một cụm nghĩa khoảng 2–10 chữ, ví dụ ぼくが / ピクニックに持っていく / お弁当は; không để cả câu làm một cụm, không bỏ sót, không chồng nhau). Mỗi cụm một khối:",
       "「cụm chép nguyên văn」 — \"nghĩa tiếng Việt của cụm\"",
       "• từ vựng trong cụm: cách đọc, nghĩa, loại từ",
       "• ngữ pháp: thể chia (vd 持っていく → thể て + いく), vai trò trợ từ, mẫu câu kèm cấp JLPT, sắc thái lịch sự / văn nói",
       "- Sau các cụm, thêm dòng \"■ Mẫu câu đáng nhớ\" và 2–3 mẫu xuất hiện trong đoạn, mỗi mẫu một dòng: cấu trúc = nghĩa · một ví dụ khác kèm dịch.",
-      "Chỉ phân tích nội dung có thật trong đoạn, không chào hỏi, không dùng markdown (**, #)."
+      "Chỉ ghi cấp JLPT khi chắc chắn. Chỉ phân tích nội dung có thật trong đoạn, không chào hỏi, không dùng markdown (**, #, ---)."
     ].join("\n");
   try {
     const result = await callLLMWithInfo({

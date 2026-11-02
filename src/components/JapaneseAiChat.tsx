@@ -353,7 +353,7 @@ interface ChatMessage {
 /** Lines from the grammar assist: 「cụm」 — "nghĩa" headings, • explanation bullets, ■ section titles. */
 function GrammarDetail({ text }: { text: string }) {
   return <div className="space-y-1 text-[12px] leading-relaxed text-slate-200">
-    {text.split('\n').map(l => l.trim()).filter(Boolean).map((l, i) =>
+    {text.split('\n').map(l => l.trim()).filter(l => l && !/^[-─—*=]{3,}$/.test(l)).map((l, i) =>
       l.startsWith('「') ? <p key={i} className={`font-jp font-bold text-amber-200 ${i ? 'pt-1.5' : ''}`}>{l}</p>
       : l.startsWith('■') ? <p key={i} className="pt-2 font-bold text-indigo-200">{l.slice(1).trim()}</p>
       : <p key={i} className="pl-3 font-jp">{l}</p>)}
