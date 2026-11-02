@@ -19713,7 +19713,7 @@ async function preparedCatalogVideo(database, id) {
   const ref = database.collection("shadowing_videos").doc(id);
   const existing = await readVideo(ref);
   if (!SHADOWING_VIDEOS.some((video) => video.youtube_video_id === id)) return existing;
-  const version = "2026-10-04-v1";
+  const version = "2026-11-02-v2";
   if (existing?.sentenceVersion === version) return existing;
   let source;
   try {

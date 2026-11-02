@@ -107,7 +107,7 @@ for (const video of videos) {
   const cues = sentenceGroups(tokens, groups);
   if (cues.length > 500 || cues.map(c => c.text).join('') !== source.cues.map((c: any) => c.text).join('')) throw new Error('Source coverage or caption limit changed');
   for (const cue of cues) cue.readings = await sentenceReadings(cue.text);
-  const packet = { videoId: video.youtube_video_id, title: video.title, sentenceVersion: '2026-10-04-v1', cues };
+  const packet = { videoId: video.youtube_video_id, title: video.title, sentenceVersion: '2026-11-02-v2', cues };
   await writeFile(`public/shadowing-prepared/${video.youtube_video_id}.json`, JSON.stringify(packet));
   console.log(`${video.code}: đã chuẩn bị ${cues.length} câu đúng ranh giới, giữ nguyên mọi token.`);
 }

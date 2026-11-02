@@ -10,7 +10,7 @@ test('shadowing catalog has unique videos, each with prepared sentences and furi
   assert.equal(new Set(ids).size, ids.length);
   for (const [id] of SHADOWING_EXTRA) {
     const packet = JSON.parse(readFileSync(`public/shadowing-prepared/${id}.json`, 'utf8'));
-    assert.equal(packet.sentenceVersion, '2026-10-04-v1');
+    assert.equal(packet.sentenceVersion, '2026-11-02-v2');
     const cues = validateStoredCues(packet.cues);
     assert.ok(cues.length > 20 && cues.every(c => Array.isArray(c.readings)));
   }
