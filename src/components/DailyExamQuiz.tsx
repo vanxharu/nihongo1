@@ -541,7 +541,8 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
   // Filtering & Tab Navigation state
   const [mainTab, setMainTab] = useState<'ai_builder' | 'pdf_practice' | 'library'>('library');
   const [examMainTab, setExamMainTab] = useState<'standard' | 'todaii' | 'ai_builder'>('standard');
-  const [selectedLevel, setSelectedLevel] = useState<string>(userProfile.targetLevel || 'ALL');
+  // Cấp mục tiêu chưa có đề nào (vd N5) → mở "Mọi cấp" thay vì một danh sách trống.
+  const [selectedLevel, setSelectedLevel] = useState<string>(() => userProfile.targetLevel && allExams.some(e => e.level === userProfile.targetLevel) ? userProfile.targetLevel : 'ALL');
   const [selectedYear, setSelectedYear] = useState<string>('ALL');
   const [selectedCategory, setSelectedCategory] = useState<'ALL' | 'official_past' | 'mock_daily' | 'ai_generated'>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -1076,7 +1077,7 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
   const [srsOn] = useSrsAuto();
   const srsDue = useMemo(() => (srsOn ? dueSrsQuestions() : []), [srsOn, isPlaying, isSubmitted]);
   const renderMainTabsHeader = () => <>
-    <div className="study-exam-head"><span>{userProfile.targetLevel || 'N4'} · {allExams.length} đề · {userProfile.dailyTestResults?.length || 0} lượt làm</span><SrsSwitch /><button type="button" onClick={() => setShowHistoryModal(true)}><History size={14} />Lịch sử</button></div>
+    <div className="study-exam-head"><span>{selectedLevel === 'ALL' ? 'Mọi cấp' : selectedLevel} · {filteredExams.length} đề · {userProfile.dailyTestResults?.length || 0} lượt làm</span><SrsSwitch /><button type="button" onClick={() => setShowHistoryModal(true)}><History size={14} />Lịch sử</button></div>
     {srsOn && srsDue.length > 0 && <button type="button" className="study-srs-bar" onClick={() => handleStartExam({ id: 'srs-review', title: 'Ôn SRS · câu đã sai', level: userProfile.targetLevel || 'N4', category: 'mock_daily', durationMinutes: 30, questions: srsDue }, 'ALL', 'interactive')}><b>{srsDue.length} câu đến hạn ôn hôm nay</b><span>Ôn SRS ngay</span></button>}
     <nav className="study-nav" aria-label="Cách luyện thi">
       {[
@@ -1275,8 +1276,11 @@ export default function DailyExamQuiz({ userProfile, updateProfile, onEarnXp }: 
                     <BookOpen className="w-8 h-8 text-indigo-400/60 mx-auto mb-1" />
                     <p className="text-xs font-bold text-slate-300">Không tìm thấy đề thi phù hợp</p>
                     <p className="text-[11px] text-slate-400 mt-0.5 max-w-sm mx-auto">
-                      Thử chọn trình độ khác hoặc tìm kiếm với từ khóa khác.
+                      {selectedLevel !== 'ALL' && !allExams.some(e => e.level === selectedLevel) ? `Hiện chưa có đề ${selectedLevel}.` : 'Thử chọn trình độ khác hoặc tìm kiếm với từ khóa khác.'}
                     </p>
+                    {(selectedLevel !== 'ALL' || searchQuery || selectedCategory !== 'ALL') && (
+                      <button type="button" onClick={() => { setSelectedLevel('ALL'); setSearchQuery(''); setSelectedCategory('ALL'); }} className="mt-3 px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-bold cursor-pointer">Xem tất cả đề</button>
+                    )}
                   </div>
                 ) : (
                   filteredExams.map(renderExamCard)

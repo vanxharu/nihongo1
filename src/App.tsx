@@ -702,7 +702,6 @@ export default function App() {
       {/* 8. Đọc hiểu & Tin tức */}
       <Route path="/doc-hieu" element={<ReadingExam />} />
 
-      <Route path="/sach" element={<Navigate to="/" replace />} />
 
       {/* 10. AI Kaiwa Chat */}
       <Route 
