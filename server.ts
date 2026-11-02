@@ -3,6 +3,7 @@ import { getLearningState, saveLearningState, stageLearningState, learningStateM
 import { persistentJsonExists, readPersistentJson, writePersistentJson, persistentRequest } from './src/server/persistentJson';
 import { aiAnalysisLookup, aiAnalysisCreate } from './src/server/aiAnalysis';
 import { senseLookup, senseCreate } from './src/server/jaSense';
+import { computeStreak, vnDate } from './src/utils/streak';
 import { recordGrammarAttempt, userGrammarProgress } from './src/server/grammarProgress';
 import express from "express";
 import dotenv from "dotenv";
@@ -2941,30 +2942,12 @@ app.post('/api/user/sync', requireAuth, async (req: any, res) => {
     const learning = await readLearningProfile(req.dbUser.uid);
     const dbUser = { ...req.dbUser, ...learning };
     
-    // Check and update streak logic
-    const todayStr = new Date().toISOString().split('T')[0] || '';
-    const lastActive = dbUser.lastActiveDate;
-    
-    let updatedStreak = dbUser.streak;
-    let newLastActive = dbUser.lastActiveDate;
-    
-    if (!lastActive) {
-      updatedStreak = 1;
-      newLastActive = todayStr;
-    } else if (lastActive !== todayStr) {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().split('T')[0] || '';
-      
-      if (lastActive === yesterdayStr) {
-        updatedStreak = dbUser.streak + 1;
-      } else {
-        // Reset streak if gap is larger than 1 day
-        updatedStreak = 1;
-      }
-      newLastActive = todayStr;
-    }
-    
+    // Streak is derived from study days (days with XP, Vietnam time) — opening the app alone does not extend it.
+    const todayStr = vnDate();
+    const studyDays = (() => { try { return Array.isArray(dbUser.studyDays) ? dbUser.studyDays : JSON.parse(dbUser.studyDays || '[]'); } catch { return []; } })();
+    const updatedStreak = computeStreak(studyDays, todayStr);
+    const newLastActive = todayStr;
+
     // Chưa chọn ảnh riêng (emoji mặc định) → lưu ảnh tài khoản Google lên hồ sơ ngay khi đăng nhập.
     const picture = typeof req.user?.picture === 'string' && /^https:\/\//.test(req.user.picture) ? req.user.picture : '';
     const replace = !dbUser.avatar || dbUser.avatar === '🦊' || dbUser.avatar === '🐕' || /^https:\/\/[^/]*googleusercontent\.com\//.test(dbUser.avatar);
@@ -3023,6 +3006,7 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
     
     try {
       const updatedUser = await updateUserProfile(dbUser.uid, {
+        ...(Array.isArray(studyDays) && { streak: computeStreak(studyDays) }),
         name, avatar, targetLevel, xp, coins, studyDays, 
         completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords, studyTrack
       });

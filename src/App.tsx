@@ -55,6 +55,7 @@ import CommandPalette from './components/ui/CommandPalette';
 import OrbitLoader from './components/ui/OrbitLoader';
 
 import { localDateStr } from './utils/localDate';
+import { computeStreak } from './utils/streak';
 const LOCAL_STORAGE_KEY = 'nhai_kanji_user_profile_v1';
 const GUEST_STORAGE_KEY = 'nhai_kanji_guest_profile_v1';
 
@@ -237,9 +238,11 @@ export default function App() {
   };
 
   const activeProfile = useMemo<UserProfile>(() => {
+    // Streak is always derived from study days (one rule for header, home, server): see utils/streak.
+    const streak = (p: UserProfile) => computeStreak(p.studyDays, localDateStr());
     if (!user && !dbUser) {
       // Guests learn with their own local profile; never any elevated role.
-      return { ...userProfile, role: 'user' as const };
+      return { ...userProfile, streak: streak(userProfile), role: 'user' as const };
     }
     const activeProfileRaw = dbUser || userProfile;
     // STRICT RBAC: Role is authoritatively determined ONLY by the verified database record (dbUser).
@@ -247,6 +250,7 @@ export default function App() {
     const currentRole = (dbUser && dbUser.role === 'admin') ? 'admin' : 'user';
     return {
       ...activeProfileRaw,
+      streak: streak(activeProfileRaw),
       role: currentRole as 'user' | 'admin'
     };
   }, [dbUser, userProfile, user]);
@@ -424,47 +428,19 @@ export default function App() {
     yesterday.setDate(yesterday.getDate() - 1);
     const yesterdayStr = localDateStr(yesterday);
 
-    // Check if they completed yesterday's goal (50 XP)
-    const yesterdayCompleted = localStorage.getItem(`nhai_kanji_today_completed_v1_${yesterdayStr}`) === 'true';
-
-    if (activeProfile.streak > 0 && !yesterdayCompleted) {
+    // Missed yesterday (no XP) while the day before was a study day → the streak broke yesterday.
+    // Study days sync across devices, so this no longer depends on this browser's local flags.
+    const days = activeProfile.studyDays || [];
+    const before = computeStreak(days, yesterdayStr); // streak as it stood at the end of yesterday's eve
+    if (!days.includes(yesterdayStr) && before > 0) {
       const currentFreezes = activeProfile.streakFreezes || 0;
       if (currentFreezes > 0) {
-        // Automatically consume a Streak Freeze
-        const newFreezes = currentFreezes - 1;
-        
-        // Auto-complete yesterday's goal so they keep the streak
-        localStorage.setItem(`nhai_kanji_today_completed_v1_${yesterdayStr}`, 'true');
-        
-        const updatedStudyDays = [...activeProfile.studyDays];
-        if (!updatedStudyDays.includes(yesterdayStr)) {
-          updatedStudyDays.push(yesterdayStr);
-        }
-
-        updateProfile({
-          streakFreezes: newFreezes,
-          studyDays: updatedStudyDays,
-          lastActiveDate: todayStr
-        });
-
-        setStreakModal({
-          isOpen: true,
-          type: 'used_freeze',
-          streakCount: activeProfile.streak,
-          freezeCountBefore: currentFreezes
-        });
+        // Streak Freeze: count yesterday as studied so the streak continues
+        updateProfile({ streakFreezes: currentFreezes - 1, studyDays: [...days, yesterdayStr], lastActiveDate: todayStr });
+        setStreakModal({ isOpen: true, type: 'used_freeze', streakCount: before, freezeCountBefore: currentFreezes });
       } else {
-        // Reset streak to 0
-        updateProfile({
-          streak: 0,
-          lastActiveDate: todayStr
-        });
-
-        setStreakModal({
-          isOpen: true,
-          type: 'lost_streak',
-          streakCount: activeProfile.streak
-        });
+        updateProfile({ lastActiveDate: todayStr });
+        setStreakModal({ isOpen: true, type: 'lost_streak', streakCount: before });
       }
     } else {
       updateProfile({
@@ -474,7 +450,7 @@ export default function App() {
 
     // Set today as checked
     localStorage.setItem('nhai_kanji_streak_checked_date_v1', todayStr);
-  }, [activeProfile.streak, activeProfile.streakFreezes, dbUser]);
+  }, [activeProfile.studyDays, activeProfile.streakFreezes, dbUser]);
 
   const handleTriggerCelebration = () => {
     playMilestoneChime();
@@ -523,7 +499,9 @@ export default function App() {
     localStorage.setItem(`nhai_kanji_today_xp_v1_${todayStr}`, newTodayXp.toString());
     setTodayXp(newTodayXp);
 
-    let updatedStreak = activeProfile.streak;
+    // First XP of the day extends the streak (derived from study days); the 50 XP goal is a separate celebration.
+    const updatedStreak = computeStreak(updatedStudyDays, todayStr);
+    const streakUp = updatedStreak > activeProfile.streak;
     let justCompleted = false;
 
     // Check if daily study goal (50 XP) is reached
@@ -531,7 +509,6 @@ export default function App() {
     if (!wasCompleted && newTodayXp >= 50) {
       localStorage.setItem(`nhai_kanji_today_completed_v1_${todayStr}`, 'true');
       setGoalCompleted(true);
-      updatedStreak = activeProfile.streak + 1;
       justCompleted = true;
     }
 
@@ -564,7 +541,7 @@ export default function App() {
       : justCompleted ? 'Đủ 50 XP hôm nay! Shiba vẫy đuôi ăn mừng 🐕'
       : bonusXp > 0 ? `Có thêm ${bonusXp} XP thưởng chuỗi ngày! 🐾` : '';
     window.dispatchEvent(new CustomEvent('nihongo:xp-earned', { detail: { amount: totalXp, message } }));
-    if (justCompleted) window.dispatchEvent(new CustomEvent('nihongo:streak-up', { detail: { streak: updatedStreak } }));
+    if (streakUp) window.dispatchEvent(new CustomEvent('nihongo:streak-up', { detail: { streak: updatedStreak } }));
     if (justCompleted) {
       setTimeout(() => {
         const el = document.getElementById('header-stat-goal');

@@ -94215,6 +94215,24 @@ async function senseCreate(req, res) {
   }
 }
 
+// src/utils/streak.ts
+var vnDate = (d = /* @__PURE__ */ new Date()) => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Ho_Chi_Minh" }).format(d);
+var addDays = (day, n) => {
+  const t = /* @__PURE__ */ new Date(`${day}T00:00:00Z`);
+  t.setUTCDate(t.getUTCDate() + n);
+  return t.toISOString().slice(0, 10);
+};
+function computeStreak(studyDays, today = vnDate()) {
+  const days = new Set(Array.isArray(studyDays) ? studyDays.filter((d) => typeof d === "string") : []);
+  let day = days.has(today) ? today : addDays(today, -1);
+  let n = 0;
+  while (days.has(day)) {
+    n++;
+    day = addDays(day, -1);
+  }
+  return n;
+}
+
 // src/server/grammarProgress.ts
 function nextGrammarProgress(current, input, now = /* @__PURE__ */ new Date()) {
   const attempts = (Number(current?.attempts) || 0) + 1;
@@ -100774,24 +100792,16 @@ app.post("/api/user/sync", requireAuth, async (req, res) => {
   try {
     const learning = await readLearningProfile(req.dbUser.uid);
     const dbUser = { ...req.dbUser, ...learning };
-    const todayStr = (/* @__PURE__ */ new Date()).toISOString().split("T")[0] || "";
-    const lastActive = dbUser.lastActiveDate;
-    let updatedStreak = dbUser.streak;
-    let newLastActive = dbUser.lastActiveDate;
-    if (!lastActive) {
-      updatedStreak = 1;
-      newLastActive = todayStr;
-    } else if (lastActive !== todayStr) {
-      const yesterday = /* @__PURE__ */ new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = yesterday.toISOString().split("T")[0] || "";
-      if (lastActive === yesterdayStr) {
-        updatedStreak = dbUser.streak + 1;
-      } else {
-        updatedStreak = 1;
+    const todayStr = vnDate();
+    const studyDays = (() => {
+      try {
+        return Array.isArray(dbUser.studyDays) ? dbUser.studyDays : JSON.parse(dbUser.studyDays || "[]");
+      } catch {
+        return [];
       }
-      newLastActive = todayStr;
-    }
+    })();
+    const updatedStreak = computeStreak(studyDays, todayStr);
+    const newLastActive = todayStr;
     const picture = typeof req.user?.picture === "string" && /^https:\/\//.test(req.user.picture) ? req.user.picture : "";
     const replace = !dbUser.avatar || dbUser.avatar === "\u{1F98A}" || dbUser.avatar === "\u{1F415}" || /^https:\/\/[^/]*googleusercontent\.com\//.test(dbUser.avatar);
     const avatar = picture && replace ? await inlineGooglePhoto(picture) ?? (dbUser.avatar ? void 0 : picture) : void 0;
@@ -100854,6 +100864,7 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
     }
     try {
       const updatedUser = await updateUserProfile(dbUser.uid, {
+        ...Array.isArray(studyDays) && { streak: computeStreak(studyDays) },
         name,
         avatar,
         targetLevel,
