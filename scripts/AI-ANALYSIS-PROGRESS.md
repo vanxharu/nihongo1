@@ -30,5 +30,5 @@ Viết phân tích theo đúng thứ tự todo → ghép bằng `pair.py` (scrat
   phương án "1. …" đánh ✔ Đúng / ✘ kèm lý do; câu ★ ghi vị trí từng mảnh. Bản dịch lấy tự động từ examTranslations/examStudyData.
 
 ## Tiếp theo
-- video: video ngắn tiếp theo theo todo (94/9951 câu)
+- video: video ngắn tiếp theo theo todo (395/9951 câu, 2026-11-02). Video không có bản dịch sẵn: mỗi mục viết (cụm, bản dịch); conv.py có nhánh video.
 - Chưa làm: Tango N5/N3, đề N5/N3 (cần thêm vào scripts/ai-analysis-items.ts)
