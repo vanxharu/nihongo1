@@ -2782,14 +2782,22 @@ app.post("/api/japanese-chat/assist", async (req, res) => {
 
   const systemInstruction = action === "translation"
     ? "Bạn là biên dịch viên tiếng Nhật-Việt. Dịch chính xác đoạn tiếng Nhật sang tiếng Việt tự nhiên; giữ nghĩa và sắc thái. Chỉ trả về bản dịch tiếng Việt, không giải thích hoặc thêm lời chào."
-    : "Bạn là giáo viên tiếng Nhật dạy người Việt. Hãy giải thích bằng tiếng Việt tối đa 3 điểm ngữ pháp hoặc cách diễn đạt đáng chú ý TRONG đoạn được cung cấp, ngắn gọn, dễ hiểu, phù hợp cấp JLPT. Nếu không có cấu trúc đặc biệt, giải thích cách dùng của một mẫu câu xuất hiện thật trong đoạn. Chỉ trả về phần giải thích, không tạo nội dung ngoài đoạn văn.";
+    : [
+      "Bạn là giáo viên tiếng Nhật dạy người Việt. Phân tích CHI TIẾT đoạn tiếng Nhật được cung cấp, viết bằng tiếng Việt, theo đúng định dạng sau:",
+      "- Chia TOÀN BỘ đoạn thành các cụm theo thứ tự (không bỏ sót cụm nào, cụm không chồng nhau). Mỗi cụm một khối:",
+      "「cụm chép nguyên văn」 — \"nghĩa tiếng Việt của cụm\"",
+      "• từ vựng trong cụm: cách đọc, nghĩa, loại từ",
+      "• ngữ pháp: thể chia (vd 持っていく → thể て + いく), vai trò trợ từ, mẫu câu kèm cấp JLPT, sắc thái lịch sự / văn nói",
+      "- Sau các cụm, thêm dòng \"■ Mẫu câu đáng nhớ\" và 2–3 mẫu xuất hiện trong đoạn, mỗi mẫu một dòng: cấu trúc = nghĩa · một ví dụ khác kèm dịch.",
+      "Chỉ phân tích nội dung có thật trong đoạn, không chào hỏi, không dùng markdown (**, #)."
+    ].join("\n");
   try {
     const result = await callLLMWithInfo({
       systemInstruction,
       prompt: action === "translation"
         ? `Dịch sang tiếng Việt:\n${text}`
-        : `Phân tích điểm ngữ pháp và cách diễn đạt trong đoạn tiếng Nhật sau:\n${text}`,
-      maxTokens: 720
+        : `Phân tích chi tiết đoạn tiếng Nhật sau:\n${text}`,
+      maxTokens: action === "translation" ? 720 : 2200
     });
     const value = result.text.trim();
     if (!value) throw new Error("EMPTY_ASSIST_RESPONSE");

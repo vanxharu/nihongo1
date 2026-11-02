@@ -341,12 +341,23 @@ interface ChatMessage {
   furiganaHtml?: string;
   romaji?: string;
   explanation?: string;
+  grammarDetail?: string; // phân tích chi tiết theo cụm (nút Ngữ pháp)
   correctionAdvice?: string;
   vietnameseTranslation?: string;
   provider?: string;
   quote?: string;
   stopped?: boolean;
   timestamp: string;
+}
+
+/** Lines from the grammar assist: 「cụm」 — "nghĩa" headings, • explanation bullets, ■ section titles. */
+function GrammarDetail({ text }: { text: string }) {
+  return <div className="space-y-1 text-[12px] leading-relaxed text-slate-200">
+    {text.split('\n').map(l => l.trim()).filter(Boolean).map((l, i) =>
+      l.startsWith('「') ? <p key={i} className={`font-jp font-bold text-amber-200 ${i ? 'pt-1.5' : ''}`}>{l}</p>
+      : l.startsWith('■') ? <p key={i} className="pt-2 font-bold text-indigo-200">{l.slice(1).trim()}</p>
+      : <p key={i} className="pl-3 font-jp">{l}</p>)}
+  </div>;
 }
 
 function SwipeReplyIf({ enabled, onReply, children }: { enabled: boolean; onReply: () => void; children: React.ReactNode }) {
@@ -1119,7 +1130,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
     const visible = isTranslation
       ? (expandedTranslations[message.id] ?? showVietnamese)
       : !!expandedExplanations[message.id];
-    const existing = isTranslation ? message.vietnameseTranslation : message.explanation;
+    const existing = isTranslation ? message.vietnameseTranslation : message.grammarDetail;
     const key = `${message.id}:${action}`;
     const status = assistStatus[key];
 
@@ -1157,7 +1168,7 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
 
       setMessages(prev => prev.map(item =>
         item.id === message.id && item.text === message.text
-          ? (isTranslation ? { ...item, vietnameseTranslation: value } : { ...item, explanation: value })
+          ? (isTranslation ? { ...item, vietnameseTranslation: value } : { ...item, grammarDetail: value })
           : item
       ));
       setAssistStatus(prev => {
@@ -1540,21 +1551,22 @@ export default function JapaneseAiChat({ onBack }: JapaneseAiChatProps = {}) {
                     )}
 
                     {/* Grammar Explanation Box */}
-                    {isAi && isExplExpanded && (m.explanation || grammarStatus) && (
+                    {isAi && isExplExpanded && (m.grammarDetail || m.explanation || grammarStatus) && (
                       <motion.div
                         initial={{ opacity: 0, y: -4 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="p-2.5 bg-indigo-950/60 border border-indigo-500/30 rounded-xl text-xs space-y-1 shadow-xs"
+                        className="p-3 bg-indigo-950/60 border border-indigo-500/30 rounded-xl text-xs space-y-1.5 shadow-xs"
                       >
                         <div className="flex items-center gap-1 text-indigo-300 font-bold text-[11px]">
                           <Lightbulb className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                          <span>Điểm biểu đạt & Ngữ pháp:</span>
+                          <span>Phân tích ngữ pháp:</span>
                         </div>
-                        <p className="text-slate-200 leading-snug font-jp text-[11.5px]">
-                          {m.explanation ||
-                            (grammarStatus?.loading ? 'Đang phân tích ngữ pháp bằng AI...' :
-                             grammarStatus?.error ? `${grammarStatus.error} Nhấn Ngữ pháp để thử lại.` : '')}
-                        </p>
+                        {m.grammarDetail ? <GrammarDetail text={m.grammarDetail} /> : (
+                          <p className="text-slate-200 leading-snug font-jp text-[11.5px]">
+                            {grammarStatus?.loading ? 'Đang phân tích chi tiết từng cụm…' :
+                             grammarStatus?.error ? `${grammarStatus.error} Nhấn Ngữ pháp để thử lại.` : m.explanation}
+                          </p>
+                        )}
                       </motion.div>
                     )}
                   </div>
