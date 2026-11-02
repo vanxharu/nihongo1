@@ -94233,6 +94233,39 @@ function computeStreak(studyDays, today = vnDate()) {
   return n;
 }
 
+// src/server/progressGuard.ts
+var MAX_XP_PER_SAVE = 6e3;
+var MAX_XP_PER_DAY = 15e3;
+var MAX_COINS_PER_SAVE = 500;
+var parseDays = (v) => {
+  try {
+    const a = typeof v === "string" ? JSON.parse(v) : v;
+    return Array.isArray(a) ? a.filter((d) => typeof d === "string") : [];
+  } catch {
+    return [];
+  }
+};
+function guardProgress(stored, incoming, today) {
+  const out = {};
+  const baseXp = Number(stored.xp) || 0;
+  const usedToday = stored.xpToday?.d === today ? Number(stored.xpToday.n) || 0 : 0;
+  if (typeof incoming.xp === "number") {
+    const gain = Math.min(Math.max(0, incoming.xp - baseXp), MAX_XP_PER_SAVE, Math.max(0, MAX_XP_PER_DAY - usedToday));
+    out.xp = incoming.xp < baseXp ? incoming.xp : baseXp + gain;
+    if (gain) out.xpToday = { d: today, n: usedToday + gain };
+  }
+  if (typeof incoming.coins === "number") {
+    const baseCoins = Number(stored.coins) || 0;
+    out.coins = Math.min(incoming.coins, baseCoins + MAX_COINS_PER_SAVE);
+  }
+  if (incoming.studyDays !== void 0) {
+    const known = new Set(parseDays(stored.studyDays));
+    for (const d of parseDays(incoming.studyDays)) if (d === today || d === addDays(today, -1)) known.add(d);
+    out.studyDays = [...known].sort();
+  }
+  return out;
+}
+
 // src/server/grammarProgress.ts
 function nextGrammarProgress(current, input, now = /* @__PURE__ */ new Date()) {
   const attempts = (Number(current?.attempts) || 0) + 1;
@@ -97902,6 +97935,7 @@ function profilePatch(fields, allowRoleChange = false) {
   const out = {};
   for (const key of ["name", "avatar", "targetLevel", "lastActiveDate"]) if (typeof fields[key] === "string") out[key] = fields[key];
   if (fields.studyTrack === "business" || fields.studyTrack === "jlpt") out.studyTrack = fields.studyTrack;
+  if (fields.xpToday && typeof fields.xpToday.d === "string" && Number.isFinite(fields.xpToday.n)) out.xpToday = { d: fields.xpToday.d, n: fields.xpToday.n };
   if (typeof fields.username === "string") out.username = fields.username.toLowerCase().trim().replace(/[^a-z0-9_]/g, "");
   for (const key of ["xp", "streak", "coins"]) if (Number.isFinite(fields[key])) out[key] = Math.min(1e7, Math.max(0, fields[key]));
   for (const key of jsonFields) if (fields[key] !== void 0) {
@@ -100862,15 +100896,14 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
     if (badNum(xp) || badNum(coins) || [studyDays, completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords].some(tooBig) || myWords !== void 0 && !Array.isArray(myWords)) {
       return res.status(400).json({ success: false, error: "Invalid profile data" });
     }
+    const guarded = guardProgress(dbUser, { xp, coins, studyDays }, vnDate());
     try {
       const updatedUser = await updateUserProfile(dbUser.uid, {
-        ...Array.isArray(studyDays) && { streak: computeStreak(studyDays) },
+        ...guarded,
+        ...guarded.studyDays && { streak: computeStreak(guarded.studyDays) },
         name,
         avatar,
         targetLevel,
-        xp,
-        coins,
-        studyDays,
         completedLessons,
         vocabStatus,
         grammarStatus,

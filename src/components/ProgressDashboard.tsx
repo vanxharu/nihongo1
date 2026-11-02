@@ -42,6 +42,12 @@ const LEVELS: JLPTLevel[] = ["N5", "N4", "N3", "N2", "N1"];
 
 const SKILL_COLORS = ["#87c9e3", "#b89bef", "#f0bc86"];
 
+// The home page renders the dashboard twice (skills + rhythm); share one fetch of the ~3 MB catalog per page load.
+let catalogPromise: Promise<{ ok: boolean; data?: any[] | null }[]> | null = null;
+const loadCatalog = () => (catalogPromise ||= Promise.all(
+  ["/api/vocabularies", "/api/grammars", "/api/kanjis"].map((url) => safeFetchJson<any[]>(url)),
+).catch((e) => { catalogPromise = null; throw e; }));
+
 export default function ProgressDashboard({
   userProfile,
   todayXp,
@@ -67,11 +73,7 @@ export default function ProgressDashboard({
 
   useEffect(() => {
     let active = true;
-    Promise.all(
-      ["/api/vocabularies", "/api/grammars", "/api/kanjis"].map((url) =>
-        safeFetchJson<any[]>(url),
-      ),
-    )
+    loadCatalog()
       .then((result) => {
         if (!active) return;
         setFallback(

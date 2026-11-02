@@ -4,6 +4,7 @@ import { persistentJsonExists, readPersistentJson, writePersistentJson, persiste
 import { aiAnalysisLookup, aiAnalysisCreate } from './src/server/aiAnalysis';
 import { senseLookup, senseCreate } from './src/server/jaSense';
 import { computeStreak, vnDate } from './src/utils/streak';
+import { guardProgress } from './src/server/progressGuard';
 import { recordGrammarAttempt, userGrammarProgress } from './src/server/grammarProgress';
 import express from "express";
 import dotenv from "dotenv";
@@ -3004,10 +3005,13 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
       return res.status(400).json({ success: false, error: 'Invalid profile data' });
     }
     
+    // XP / coins / study days are only accepted as believable changes (see progressGuard).
+    const guarded = guardProgress(dbUser, { xp, coins, studyDays }, vnDate());
     try {
       const updatedUser = await updateUserProfile(dbUser.uid, {
-        ...(Array.isArray(studyDays) && { streak: computeStreak(studyDays) }),
-        name, avatar, targetLevel, xp, coins, studyDays, 
+        ...guarded,
+        ...(guarded.studyDays && { streak: computeStreak(guarded.studyDays) }),
+        name, avatar, targetLevel, 
         completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords, studyTrack
       });
       res.json({ success: true, user: { ...(updatedUser || dbUser), ...learning } });

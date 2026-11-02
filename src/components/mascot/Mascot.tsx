@@ -248,7 +248,7 @@ export const Mascot: React.FC<MascotProps> = ({
             /></span>
           ) : (
             <img
-              src="/brand/nihon-shiba-2026-corrected.png"
+              src="/brand/nihon-shiba-512.webp"
               alt={alt}
               className="w-full h-full object-contain drop-shadow-md"
               referrerPolicy="no-referrer"

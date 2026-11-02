@@ -107,6 +107,9 @@ export default function App() {
 
   // Prefetch the most-visited chunks after initial paint so navigation feels instant
   useEffect(() => {
+    // ~3 MB of word lists ride along with these chunks: skip on data-saver / slow connections.
+    const conn = (navigator as any).connection;
+    if (conn?.saveData || /(^|-)2g|3g/.test(conn?.effectiveType || '')) return;
     const t = setTimeout(() => {
       import('./components/VocabularyPractice');
       import('./components/KanjiExplorer');
