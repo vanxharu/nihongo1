@@ -194,7 +194,13 @@ app.get('/audio/:filename', (req, res, next) => {
   if (!fs.existsSync(audioDir)) {
     return next();
   }
+  // Express decodes %2F in params, so "..%2F..%2Fai-config.json" would arrive as a path.
+  // Only plain file names inside public/audio are allowed.
+  if (!reqName || reqName !== path.basename(reqName) || reqName.includes('\\') || reqName.startsWith('.')) {
+    return res.status(400).end();
+  }
   const exactPath = path.join(audioDir, reqName);
+  if (path.dirname(exactPath) !== audioDir) return res.status(400).end();
   if (fs.existsSync(exactPath)) {
     return res.sendFile(exactPath);
   }
@@ -3311,6 +3317,14 @@ app.options(['/api/vocab-prompts', '/api/vocab-flow-done'], (_req, res) => {
   return res.status(204).end();
 });
 app.post('/api/vocab-flow-done', async (req, res) => {
+  // Local-only dev tool (see imports/vocab-n4/RESUME.md): it writes files to disk, so it must
+  // never be reachable on a deployed server. The socket address is checked directly because
+  // req.ip honours X-Forwarded-For ('trust proxy') and can be spoofed.
+  const remote = req.socket.remoteAddress || '';
+  const isLoopback = remote === '127.0.0.1' || remote === '::1' || remote === '::ffff:127.0.0.1';
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL || !isLoopback) {
+    return res.status(404).json({ error: 'Not found' });
+  }
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');

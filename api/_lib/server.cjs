@@ -98303,7 +98303,11 @@ app.get("/audio/:filename", (req, res, next) => {
   if (!import_fs.default.existsSync(audioDir)) {
     return next();
   }
+  if (!reqName || reqName !== import_path.default.basename(reqName) || reqName.includes("\\") || reqName.startsWith(".")) {
+    return res.status(400).end();
+  }
   const exactPath = import_path.default.join(audioDir, reqName);
+  if (import_path.default.dirname(exactPath) !== audioDir) return res.status(400).end();
   if (import_fs.default.existsSync(exactPath)) {
     return res.sendFile(exactPath);
   }
@@ -101227,6 +101231,11 @@ app.options(["/api/vocab-prompts", "/api/vocab-flow-done"], (_req, res) => {
   return res.status(204).end();
 });
 app.post("/api/vocab-flow-done", async (req, res) => {
+  const remote = req.socket.remoteAddress || "";
+  const isLoopback = remote === "127.0.0.1" || remote === "::1" || remote === "::ffff:127.0.0.1";
+  if (process.env.NODE_ENV === "production" || process.env.VERCEL || !isLoopback) {
+    return res.status(404).json({ error: "Not found" });
+  }
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
