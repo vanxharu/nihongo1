@@ -26,10 +26,15 @@ export function getLlmConfig() {
 }
 
 const clients = new Map<string, GoogleGenAI>();
+const MAX_GEMINI_CLIENTS = 32;
 export function getGeminiClient(apiKey = getLlmConfig().apiKey): GoogleGenAI {
   if (!apiKey) throw new Error('Chưa có Gemini API key. Hãy nhập key của bạn trong "Cấu hình API".');
   let c = clients.get(apiKey);
-  if (!c) { c = new GoogleGenAI({ apiKey, httpOptions: { headers: { 'User-Agent': 'aistudio-build' } } }); clients.set(apiKey, c); }
+  if (c) { clients.delete(apiKey); clients.set(apiKey, c); return c; } // mark as recently used
+  c = new GoogleGenAI({ apiKey, httpOptions: { headers: { 'User-Agent': 'aistudio-build' } } });
+  clients.set(apiKey, c);
+  // Keys can come from any request (x-llm-key header): keep only the most recently used clients.
+  while (clients.size > MAX_GEMINI_CLIENTS) clients.delete(clients.keys().next().value as string);
   return c;
 }
 

@@ -90,6 +90,11 @@ const PORT = 3000;
 const BIG_BODY_PATH = /ocr|transcribe|handwriting|mascot|upload|import|kaiwa|japanese-chat|live|admin|exam|annotat|image|audio|voice|listening\/(questions|mappings)|user\/profile/i;
 const smallJson = express.json({ limit: '1mb' });
 const bigJson = express.json({ limit: '25mb' });
+// Unexpected server errors: log the details, send the browser a generic message (no stack/path/provider text).
+function internalError(err: unknown, message = 'Đã xảy ra lỗi máy chủ. Vui lòng thử lại.') {
+  console.error('[api]', (err as any)?.stack || err);
+  return message;
+}
 const SMALL_BODY_BYTES = 1024 * 1024;
 app.use(async (req, res, next) => {
   if (!BIG_BODY_PATH.test(req.path)) return smallJson(req, res, next);
@@ -275,7 +280,7 @@ app.get('/api/listening/videos', async (req, res) => {
     }
     return res.json({ success: true, videos: [] });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -323,7 +328,7 @@ app.post('/api/listening/videos', requireAuth, requireAdmin, express.json({ limi
     await writeJsonAtomic(LISTENING_VIDEOS_FILE, videos);
     return res.json({ success: true, video: cleanVideo });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -338,7 +343,7 @@ app.delete('/api/listening/videos/:id', requireAuth, requireAdmin, async (req, r
     }
     return res.json({ success: true });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -390,7 +395,7 @@ app.get('/api/listening/progress', async (req, res) => {
     }
     return res.json({ success: true, progress: {} });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -461,7 +466,7 @@ app.post('/api/listening/progress', express.json(), async (req, res) => {
     await writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.json({ success: true, record: result.record });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -513,7 +518,7 @@ app.post('/api/listening/progress/batch', express.json(), async (req, res) => {
     await writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.json({ success: true, count: records.length, progress: allProgress[userId] || {} });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -547,7 +552,7 @@ app.get('/api/listening/youtube-info', async (req, res) => {
       }
     });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -562,7 +567,7 @@ app.get('/api/listening/attempts', async (req, res) => {
     }
     return res.json({ success: true, attempts: [] });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -600,7 +605,7 @@ app.post('/api/listening/attempts', express.json({ limit: '5mb' }), async (req, 
 
     return res.json({ success: true, attempt });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -619,7 +624,7 @@ app.get('/api/listening/exam-resume', async (req, res) => {
     }
     return res.json({ success: true, state: null, resumes: {} });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -647,7 +652,7 @@ app.post('/api/listening/exam-resume', express.json({ limit: '2mb' }), async (re
     await writeJsonAtomic(LISTENING_RESUME_FILE, all);
     return res.json({ success: true });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -665,7 +670,7 @@ app.delete('/api/listening/exam-resume', async (req, res) => {
     }
     return res.json({ success: true });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -682,7 +687,7 @@ app.get('/api/listening/questions', async (req, res) => {
     }
     return res.json({ success: true, exam: null, questions: {} });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -722,7 +727,7 @@ app.post('/api/listening/questions', requireAuth, requireAdmin, express.json({ l
     await writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
     return res.json({ success: true, exam: all[videoId] });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -764,7 +769,7 @@ app.post('/api/listening/questions/update-timestamp', requireAuth, requireAdmin,
     await writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
     return res.json({ success: true, question: q });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -787,7 +792,7 @@ app.get('/api/listening/mappings', async (req, res) => {
     }
     return res.json({ success: true, mappings });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -830,7 +835,7 @@ app.post('/api/listening/mappings', requireAuth, requireAdmin, express.json(), a
     await writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
     return res.json({ success: true, mapping: enriched });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -869,7 +874,7 @@ app.post('/api/listening/mappings/batch', requireAuth, requireAdmin, express.jso
     await writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
     return res.json({ success: true, count: incoming.length });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -2986,7 +2991,7 @@ app.post('/api/user/sync', requireAuth, async (req: any, res) => {
     }
   } catch (error: any) {
     console.error("Error in /api/user/sync:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: internalError(error) });
   }
 });
 
@@ -3043,7 +3048,7 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
     }
   } catch (error: any) {
     console.error("Error in /api/user/profile:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: internalError(error) });
   }
 });
 
@@ -3321,7 +3326,7 @@ app.get('/api/vocab-prompts', async (req, res) => {
     return res.json({ count: items.length, items });
   } catch (error) {
     console.error('Error in /api/vocab-prompts route:', error);
-    return res.status(500).json({ error: String(error) });
+    return res.status(500).json({ error: internalError(error) });
   }
 });
 
@@ -4843,7 +4848,7 @@ Hãy trả về JSON theo cấu trúc chính xác sau:
         return res.json({ ...offlineGrading, fallback: true });
       }
     } catch {}
-    return res.status(500).json({ error: error.message || "Failed to grade exam" });
+    return res.status(500).json({ error: internalError(error, "Không chấm được bài. Vui lòng thử lại.") });
   }
 });
 
