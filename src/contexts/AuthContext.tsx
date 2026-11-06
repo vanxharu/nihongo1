@@ -276,22 +276,16 @@ const parseDbUser = (dbData: any): UserProfile => {
         const resolveRes = await fetch('/api/auth/resolve-identifier', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ identifier: effectiveEmail })
+          // The server only returns the account email when the password is correct.
+          body: JSON.stringify({ identifier: effectiveEmail, password: pass })
         });
-        
-        if (resolveRes.ok) {
-          const resolveData = await resolveRes.json();
-          if (resolveData.success && resolveData.email) {
-            effectiveEmail = resolveData.email;
-          } else {
-            const err: any = new Error(resolveData.error || 'Không tìm thấy tài khoản với tên đăng nhập này.');
-            err.code = 'auth/user-not-found';
-            throw err;
-          }
+        const resolveData = await resolveRes.json().catch(() => ({}));
+        if (resolveRes.ok && resolveData.success && resolveData.email) {
+          effectiveEmail = resolveData.email;
         } else {
-          const resolveData = await resolveRes.json().catch(() => ({}));
-          const err: any = new Error(resolveData.error || 'Không tìm thấy tài khoản với tên đăng nhập này.');
-          err.code = 'auth/user-not-found';
+          const err: any = new Error(resolveData.error || 'Sai tên đăng nhập hoặc mật khẩu.');
+          err.code = resolveRes.status === 429 ? 'auth/too-many-requests'
+            : resolveRes.status === 401 ? 'auth/invalid-credential' : 'auth/login-failed';
           throw err;
         }
       }

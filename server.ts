@@ -39,7 +39,8 @@ import { deduplicateGrammars } from './src/utils/grammarDeduplicator';
 import { KANJI_DICTIONARY } from './src/data/kanjiDictionary';
 import { requireAuth, requireAdmin } from './src/middleware/auth';
 import { adminAuth } from './src/lib/firebase-admin';
-import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid, findUserByIdentifier, importBrowserProfile } from './src/db/users';
+import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid, findUserByUsername, isUsernameTaken, normalizeUsername, getLeaderboardUsers, importBrowserProfile } from './src/db/users';
+import { verifyFirebasePassword } from './src/server/firebasePassword';
 import { readLearningProfile, saveLearningProfile } from './src/server/learningProfile';
 
 const KuroshiroClass = (Kuroshiro as any).default || Kuroshiro;
@@ -2890,36 +2891,28 @@ app.use('/api/auth/resolve-identifier', (req, res, next) => {
   next();
 });
 app.post('/api/auth/resolve-identifier', async (req: any, res) => {
+  // The account email is only returned together with a correct password, so this endpoint can no longer
+  // be used to turn usernames (or display names shown on the leaderboard) into email addresses.
+  const invalid = () => res.status(401).json({ success: false, error: 'Sai tên đăng nhập hoặc mật khẩu.' });
   try {
-    const rawIdentifier = (req.body?.identifier || '').toString().trim();
-    if (!rawIdentifier) {
-      return res.status(400).json({ success: false, error: 'Identifier is required' });
+    const rawIdentifier = String(req.body?.identifier || '').trim();
+    const password = typeof req.body?.password === 'string' ? req.body.password : '';
+    if (!rawIdentifier || !password) {
+      return res.status(400).json({ success: false, error: 'Vui lòng nhập tên đăng nhập và mật khẩu.' });
     }
-
     if (rawIdentifier.includes('@')) {
-      return res.json({
-        success: true,
-        isEmail: true,
-        email: rawIdentifier.toLowerCase()
-      });
+      return res.json({ success: true, isEmail: true, email: rawIdentifier.toLowerCase() });
     }
-
-    const foundUser = await findUserByIdentifier(rawIdentifier);
-    if (!foundUser) {
-      return res.status(404).json({
-        success: false,
-        error: 'Không tìm thấy tài khoản với tên đăng nhập này.'
-      });
-    }
-
-    return res.json({
-      success: true,
-      isEmail: false,
-      email: foundUser.email
-    });
+    const foundUser = await findUserByUsername(rawIdentifier);
+    if (!foundUser?.email) return invalid();
+    const check = await verifyFirebasePassword(foundUser.email, password, req.headers.origin);
+    if (check === 'ok') return res.json({ success: true, isEmail: false, email: foundUser.email });
+    if (check === 'invalid') return invalid();
+    if (check === 'throttled') return res.status(429).json({ success: false, error: 'Bạn đăng nhập sai quá nhiều lần. Vui lòng thử lại sau.' });
+    return res.status(503).json({ success: false, error: 'Không kiểm tra được tài khoản lúc này. Hãy thử đăng nhập bằng email.' });
   } catch (err: any) {
     console.error('Error in /api/auth/resolve-identifier:', err);
-    return res.status(500).json({ success: false, error: err.message || 'Lookup failed' });
+    return res.status(500).json({ success: false, error: 'Không kiểm tra được tài khoản lúc này.' });
   }
 });
 
@@ -3013,11 +3006,20 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
     
     // XP / coins / study days are only accepted as believable changes (see progressGuard).
     const guarded = guardProgress(dbUser, { xp, coins, studyDays }, vnDate());
+    // Usernames are used to log in, so they must be unique (registration sends the chosen one here).
+    let username: string | undefined;
+    if (req.body.username !== undefined) {
+      username = normalizeUsername(req.body.username);
+      if (username.length < 3) return res.status(400).json({ success: false, error: 'Tên đăng nhập cần ít nhất 3 ký tự (a-z, 0-9, _).' });
+      if (username !== dbUser.username && await isUsernameTaken(username, dbUser.uid)) {
+        return res.status(409).json({ success: false, error: 'Tên đăng nhập này đã có người dùng.' });
+      }
+    }
     try {
       const updatedUser = await updateUserProfile(dbUser.uid, {
         ...guarded,
         ...(guarded.studyDays && { streak: computeStreak(guarded.studyDays) }),
-        name, avatar, targetLevel, 
+        name, avatar, targetLevel, username,
         completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords, studyTrack
       });
       res.json({ success: true, user: { ...(updatedUser || dbUser), ...learning } });
@@ -3431,6 +3433,16 @@ app.get('/api/vocab/auto-fix-report', (req, res) => {
 });
 
 // Community and Real Users Leaderboard API
+// Public and unauthenticated: read only the top entries (cached), never email-derived names.
+let leaderboardCache: { at: number; users: any[] } | null = null;
+const LEADERBOARD_TTL_MS = 60_000;
+const publicName = (u: any) => {
+  const name = typeof u.name === 'string' ? u.name.trim() : '';
+  const local = typeof u.email === 'string' ? u.email.split('@')[0] : '';
+  // Accounts that never chose a name still carry their email prefix as the name: mask it.
+  if (!name || (local && name.toLowerCase() === local.toLowerCase())) return local ? `Học viên ${local.slice(0, 2)}***` : 'Học viên JLPT';
+  return name.slice(0, 40);
+};
 app.get('/api/leaderboard', async (req, res) => {
   const BASE_CHAMPIONS = [
     { id: 'u_1', name: 'Minh Tuấn N2', avatar: '🦊', level: 'N2', xp: 5820, weeklyXp: 840, monthlyXp: 2950, streak: 45, league: 'master', badge: 'Quán quân tuần' },
@@ -3445,15 +3457,20 @@ app.get('/api/leaderboard', async (req, res) => {
 
   try {
     let dbUsers: any[] = [];
-    try {
-      dbUsers = await getAllUsers();
-    } catch (_dbErr) {
-      // safe fallback if DB is not reachable
+    if (leaderboardCache && Date.now() - leaderboardCache.at < LEADERBOARD_TTL_MS) {
+      dbUsers = leaderboardCache.users;
+    } else {
+      try {
+        dbUsers = await getLeaderboardUsers(50);
+        leaderboardCache = { at: Date.now(), users: dbUsers };
+      } catch (_dbErr) {
+        // safe fallback if DB is not reachable
+      }
     }
-    
+
     const mappedDbUsers = dbUsers.map(u => ({
-      id: `db_${u.id}`,
-      name: u.name || u.email?.split('@')[0] || 'Học viên JLPT',
+      id: `db_${u.uid || u.id}`,
+      name: publicName(u),
       avatar: u.avatar || '🎓',
       level: (u.targetLevel || 'N5') as any,
       xp: u.xp || 0,
@@ -3465,10 +3482,12 @@ app.get('/api/leaderboard', async (req, res) => {
       isCurrentUser: false
     }));
 
-    const combined = [...mappedDbUsers, ...BASE_CHAMPIONS];
+    // Sample entries are only shown while there are few real learners, and are flagged as demo data.
+    const demo = BASE_CHAMPIONS.map(c => ({ ...c, isDemo: true }));
+    const combined = mappedDbUsers.length >= 10 ? mappedDbUsers : [...mappedDbUsers, ...demo];
     res.json({ success: true, leaderboard: combined });
   } catch (error: any) {
-    res.json({ success: true, leaderboard: BASE_CHAMPIONS });
+    res.json({ success: true, leaderboard: BASE_CHAMPIONS.map(c => ({ ...c, isDemo: true })) });
   }
 });
 
