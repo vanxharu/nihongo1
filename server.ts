@@ -90,7 +90,21 @@ const PORT = 3000;
 const BIG_BODY_PATH = /ocr|transcribe|handwriting|mascot|upload|import|kaiwa|japanese-chat|live|admin|exam|annotat|image|audio|voice|listening\/(questions|mappings)|user\/profile/i;
 const smallJson = express.json({ limit: '1mb' });
 const bigJson = express.json({ limit: '25mb' });
-app.use((req, res, next) => (BIG_BODY_PATH.test(req.path) ? bigJson : smallJson)(req, res, next));
+const SMALL_BODY_BYTES = 1024 * 1024;
+app.use(async (req, res, next) => {
+  if (!BIG_BODY_PATH.test(req.path)) return smallJson(req, res, next);
+  // Bodies above 1 MB (images, audio, imports) are only accepted from signed-in users, so guests
+  // cannot push 25 MB payloads into AI endpoints that are otherwise open.
+  const length = Number(req.headers['content-length'] || 0);
+  const chunked = !req.headers['content-length'] && /chunked/i.test(String(req.headers['transfer-encoding'] || ''));
+  if (length > SMALL_BODY_BYTES || chunked) {
+    const auth = req.headers.authorization;
+    let signedIn = false;
+    if (auth?.startsWith('Bearer ') && adminAuth) { try { await adminAuth.verifyIdToken(auth.slice(7)); signedIn = true; } catch { /* guest */ } }
+    if (!signedIn) return smallJson(req, res, next);
+  }
+  return bigJson(req, res, next);
+});
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 // Behind one reverse proxy (Vercel/Cloud Run): req.ip is the proxy-appended client address, not a client-forged header.
 app.set('trust proxy', 1);
@@ -862,7 +876,8 @@ app.post('/api/listening/mappings/batch', requireAuth, requireAdmin, express.jso
 // 18. Frame Extraction & OCR Pipeline (High precision OCR from actual video frames)
 // Strictly extracts what is visible in the frame: Question number, Question Text Ja, Options Ja.
 // Does NOT fabricate or invent questions.
-app.post('/api/listening/extract-frame-ocr', express.json({ limit: '10mb' }), async (req, res) => {
+// Admin tool for importing listening questions (Gemini Vision); not used by the learner UI.
+app.post('/api/listening/extract-frame-ocr', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { videoId, frameTime, frameBase64, expectedLevel = 'N4', section = '問題1', questionNumber } = req.body;
     
