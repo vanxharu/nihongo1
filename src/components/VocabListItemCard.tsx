@@ -338,7 +338,7 @@ function VocabListItemCardComponent({
       {/* TOP ROW (Mimics White Background in Textbook) */}
       <div className="flex flex-col sm:flex-row bg-[#272B3C] items-stretch w-full">
         {/* Left Column (Number, Checkbox, Word) */}
-        <div className="w-full sm:w-[45%] md:w-[40%] flex p-2.5 sm:p-3.5 sm:border-r border-slate-700/70 gap-2.5 sm:gap-3">
+        <div className="w-full sm:w-[45%] md:w-[40%] flex p-2.5 sm:p-3 sm:border-r border-slate-700/70 gap-2.5">
           {/* Number & Checkbox */}
           <div className="flex flex-col items-center gap-1 sm:gap-1.5 shrink-0 pt-0.5">
             <span className="font-extrabold text-slate-100 font-serif text-lg tracking-tight select-all">
@@ -357,7 +357,7 @@ function VocabListItemCardComponent({
             )}
           </div>
           {/* Action Buttons */}
-          <div className="flex flex-row sm:flex-col items-center gap-0.5 sm:gap-2 shrink-0 sm:pt-1 ml-auto">
+          <div className="flex flex-row items-center gap-0.5 shrink-0 self-start ml-auto">
             <span onClick={(e) => e.stopPropagation()}><HeartLike size={28} className="text-slate-400" pressed={!!isWordStarred} onToggle={(e) => { e.stopPropagation(); onToggleStar(v.id); }} label={isWordStarred ? 'Bỏ yêu thích' : 'Yêu thích'} /></span>
             <button
               type="button"
@@ -372,7 +372,7 @@ function VocabListItemCardComponent({
         </div>
 
         {/* Right Column (Japanese Sentences) */}
-        <div className="flex-1 px-2.5 pb-2 pt-0 sm:p-3.5 flex items-start justify-between gap-2 bg-[#272B3C]">
+        <div className="flex-1 px-2.5 pb-2 pt-0 sm:p-3 flex items-start justify-between gap-2 bg-[#272B3C]">
           <div className="text-sm sm:text-base text-slate-100 font-medium leading-relaxed break-words flex-1 min-w-0 pt-0.5">
             <JapaneseFuriganaText
               sentence={v.exampleFuriganaHtml || ex.exampleSentence}
@@ -384,22 +384,24 @@ function VocabListItemCardComponent({
               className="select-all tracking-wide"
             />
           </div>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onSpeak(ex.exampleSentence, true); }}
-            className={`text-slate-400 hover:text-white transition-colors p-1 shrink-0 cursor-pointer${speakingText && speakingText === ex.exampleSentence ? ' vocab-audio-playing' : ''}`}
-            title="Nghe phát âm câu ví dụ"
-          >
-            <Volume2 className="w-4 h-4" />
-          </button>
-          {ex.exampleSentence && <AiAnalyzeButton kind="sentence" text={ex.exampleSentence} context={ex.exampleTranslation} />}
+          <div className="flex items-center gap-0.5 shrink-0">
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); onSpeak(ex.exampleSentence, true); }}
+              className={`text-slate-400 hover:text-white transition-colors p-1 shrink-0 cursor-pointer${speakingText && speakingText === ex.exampleSentence ? ' vocab-audio-playing' : ''}`}
+              title="Nghe phát âm câu ví dụ"
+            >
+              <Volume2 className="w-4 h-4" />
+            </button>
+            {ex.exampleSentence && <AiAnalyzeButton kind="sentence" text={ex.exampleSentence} context={ex.exampleTranslation} />}
+          </div>
         </div>
       </div>
 
       {/* BOTTOM ROW (Mimics Gray Background in Textbook) */}
       <div className="flex flex-col sm:flex-row bg-[#1E212E] items-stretch w-full border-t border-slate-700/70">
         {/* Left Column (POS, Meanings) */}
-        <div className="w-full sm:w-[45%] md:w-[40%] flex px-2.5 pt-2 pb-1 sm:p-3.5 sm:border-r border-slate-700/70 gap-2.5 sm:gap-3 items-start">
+        <div className="w-full sm:w-[45%] md:w-[40%] flex px-2.5 pt-2 pb-1 sm:px-3 sm:py-2.5 sm:border-r border-slate-700/70 gap-2.5 items-start">
           {/* POS Badge */}
           <div className="shrink-0 mt-0.5 sm:ml-1">
             <span className="bg-slate-900 border border-slate-700 text-slate-200 font-bold px-1.5 py-0.5 rounded text-[11px] font-mono leading-none shadow-2xs">
@@ -427,7 +429,7 @@ function VocabListItemCardComponent({
         </div>
 
         {/* Right Column (English/Vietnamese Translations) */}
-        <div className="flex-1 px-2.5 pb-2 pt-0 sm:p-3.5 flex flex-col justify-center gap-1 sm:gap-1.5 bg-[#1E212E]">
+        <div className="flex-1 px-2.5 pb-2 pt-0 sm:px-3 sm:py-2.5 flex flex-col justify-center gap-1 bg-[#1E212E]">
           {(v.englishExampleTranslation || ex.englishExampleTranslation) ? (
             <div className="text-xs sm:text-sm text-slate-400 leading-snug break-words font-sans">
               {v.englishExampleTranslation || ex.englishExampleTranslation}
