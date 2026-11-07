@@ -20,8 +20,8 @@
     "path": "./nihongo-release.jks",
     "alias": "nihongo"
   },
-  "appVersionName": "1.2.0",
-  "appVersionCode": 3,
+  "appVersionName": "1.2.1",
+  "appVersionCode": 4,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://nihongojlpt.vercel.app/manifest.json",
@@ -37,5 +37,5 @@
   "fingerprints": [],
   "additionalTrustedOrigins": [],
   "retainedBundles": [],
-  "appVersion": "1.2.0"
+  "appVersion": "1.2.1"
 }
