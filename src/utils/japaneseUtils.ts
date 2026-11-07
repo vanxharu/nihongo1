@@ -3601,11 +3601,15 @@ export let PRECOMPILED_BASE_KEYWORDS: { kanji: string; hiragana: string }[] = co
 // Fast in-memory cache for sentence furigana parts
 const sentenceFuriganaCache = new Map<string, FuriganaPart[]>();
 
-import('../data/tangoN4Vocab').then(m => {
+// Thêm từ khoá furigana từ Tango N4 (108 KB gzip). Trong trình duyệt nạp nền sau 4 giây để không chen vào
+// lúc trang vừa hiện; môi trường không có window (test, server) nạp ngay như trước.
+const loadTangoN4Keywords = () => import('../data/tangoN4Vocab').then(m => {
   registerVocabKeywords(Array.isArray(m.TANGO_N4_VOCABULARY) ? m.TANGO_N4_VOCABULARY : []);
   PRECOMPILED_BASE_KEYWORDS = compileKeywords();
   sentenceFuriganaCache.clear();
 }).catch(() => { /* chỉ thiếu bớt furigana từ Tango N4 */ });
+if (typeof window !== 'undefined') window.setTimeout(() => { void loadTangoN4Keywords(); }, 4000);
+else void loadTangoN4Keywords();
 const MAX_CACHE_SIZE = 1000;
 
 export function getSentenceFuriganaParts(
