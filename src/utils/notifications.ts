@@ -462,9 +462,16 @@ let _cachedVocabPool: VocabNotificationPayload[] | null = null;
 // Bộ Tango (~2.5MB) nạp riêng sau khi trang hiện lên, không nằm trong gói tải đầu.
 // Khi chưa nạp xong, kho thông báo chỉ có từ tuỳ chỉnh và không được lưu cache.
 let TANGO: { n3: any[]; n4: any[]; n5: any[] } | null = null;
-const tangoReady = Promise.all([import('../data/tangoN4Vocab'), import('../data/tangoN5Vocab'), import('../data/tangoN3Vocab')])
+// Không nạp ngay khi module được import (VocabFloatingNotifier mount từ đầu): bắt đầu nạp nền sau khi
+// trang đã ổn định (4 giây sau khi module được nạp).
+let resolveTangoReady: () => void = () => {};
+const tangoReady = new Promise<void>((resolve) => { resolveTangoReady = resolve; });
+let tangoLoading: Promise<void> | null = null;
+const loadTango = () => (tangoLoading ||= Promise.all([import('../data/tangoN4Vocab'), import('../data/tangoN5Vocab'), import('../data/tangoN3Vocab')])
   .then(([a, b, c]) => { TANGO = { n4: a.TANGO_N4_VOCABULARY, n5: b.TANGO_N5_VOCABULARY, n3: c.TANGO_N3_VOCABULARY }; _cachedVocabPool = null; })
-  .catch(() => { /* thử lại ở lần tải trang sau */ });
+  .catch(() => { /* thử lại ở lần tải trang sau */ })
+  .finally(() => resolveTangoReady()));
+if (typeof window !== 'undefined') window.setTimeout(() => { void loadTango(); }, 4000);
 export const whenVocabPoolReady = () => tangoReady;
 
 export const getAllVocabPool = (): VocabNotificationPayload[] => {
@@ -778,6 +785,7 @@ export const syncRemindersWithServiceWorker = async (
   try {
     const registration = await navigator.serviceWorker.ready;
     // Không gửi kho rỗng cho service worker khi bộ Tango còn đang nạp (sẽ xoá danh sách từ đã có ở SW).
+    // Chờ lần nạp nền (không kích hoạt nạp sớm: hàm này chạy lúc khởi động).
     if (!TANGO) { await tangoReady; if (!vocabList?.length) vocabList = undefined; }
     const list = vocabList || getEffectiveVocabPool(settings);
     const finalList = list.length > 0 ? list : getAllVocabPool();

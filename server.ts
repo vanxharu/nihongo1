@@ -3369,6 +3369,21 @@ app.post('/api/vocab-flow-done', async (req, res) => {
   return res.json({ saved, failed });
 });
 
+// ?view=progress: the home dashboard only counts items per level (src/utils/progressInsights.ts
+// catalogProgress), so return just the identity/level fields instead of the full ~3 MB catalog.
+const PROGRESS_VIEW_FIELDS = ['id', 'level', 'character', 'kanji', 'word', 'grammarId', 'sourceGrammarId'] as const;
+app.use(['/api/vocabularies', '/api/grammars', '/api/kanjis'], (req, res, next) => {
+  if (req.method !== 'GET' || req.path !== '/' || req.query.view !== 'progress') return next();
+  const json = res.json.bind(res);
+  res.json = (body: any) => json(Array.isArray(body)
+    ? body.map((item: any) => {
+        const out: Record<string, unknown> = {};
+        for (const key of PROGRESS_VIEW_FIELDS) if (item?.[key] !== undefined && item[key] !== '') out[key] = item[key];
+        return out;
+      })
+    : body);
+  next();
+});
 app.get('/api/vocabularies', async (req, res) => {
   if (contentStoreUnavailable) return res.json(VOCABULARY_DATA);
   try {

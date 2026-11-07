@@ -19,7 +19,7 @@ import LottieIcon from '../LottieIcon';
 import flameAnim from '../../assets/lottie/flame.json';
 import shibaSmileAnim from '../../assets/lottie/shiba-smile.json'; // LottieFiles "Smiling Dog" by Margarita Ivanchikova (Lottie Simple License)
 import ShibaMascot from '../mascot/ShibaMascot';
-import { GRAMMAR_DATA, KANJI_DATA } from '../../data';
+import { GRAMMAR_DATA, KANJI_DATA } from '../../data/coreData';
 import ProgressDashboard from '../ProgressDashboard';
 import { WeekStrip, WordOfDay } from '../home/HomeToday';
 
