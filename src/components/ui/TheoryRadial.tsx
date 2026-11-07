@@ -4,17 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { BookOpen, Languages, PenLine, Bookmark } from 'lucide-react';
 import './theoryRadial.css';
 
-// Radial menu ported from Lucian UX/UI spec 011 (MIT).
+// Theory menu (originally a radial menu from Lucian UX/UI spec 011, MIT).
 export const THEORY_ITEMS = [
   { id: 'grammar', path: '/bunpo', label: 'Ngữ pháp', icon: BookOpen, c: 'linear-gradient(135deg,#2dd4bf,#0ea5e9)' },
   { id: 'vocabulary', path: '/tango', label: 'Từ vựng', icon: Languages, c: 'linear-gradient(135deg,#fbbf24,#f97316)' },
   { id: 'kanji', path: '/kanji', label: 'Kanji', icon: PenLine, c: 'linear-gradient(135deg,#f472b6,#a855f7)' },
   { id: 'myvocab', path: '/tu-cua-toi', label: 'Của tôi', icon: Bookmark, c: 'linear-gradient(135deg,#34d399,#16a34a)' },
 ];
-const FAN = {
-  up: [[-108, -40], [-38, -96], [38, -96], [108, -40]],
-  right: [[56, -84], [84, -28], [84, 28], [56, 84]],
-};
 
 export default function TheoryRadial({ rect, dir, onPick, onClose }: {
   rect: DOMRect; dir: 'up' | 'right'; onPick: (id: string) => void; onClose: () => void;
@@ -23,7 +19,7 @@ export default function TheoryRadial({ rect, dir, onPick, onClose }: {
   const root = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const btns = () => Array.from(root.current?.querySelectorAll<HTMLButtonElement>('.u011-item') ?? []);
-    btns()[dir === 'right' ? 0 : 1]?.focus(); // fan: middle item; list: first
+    btns()[0]?.focus();
     const key = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
       const b = btns(); const i = b.indexOf(document.activeElement as HTMLButtonElement);
@@ -36,43 +32,21 @@ export default function TheoryRadial({ rect, dir, onPick, onClose }: {
     return () => { document.removeEventListener('keydown', key); document.removeEventListener('pointerdown', down); };
   }, [onClose, dir]);
 
-  if (dir === 'right') {
-    // Desktop sidebar: a plain flyout list beside the item (a radial fan covered the sidebar and content).
-    const top = Math.min(Math.max(rect.top - 6, 8), window.innerHeight - 4 * 44 - 24);
-    return createPortal(
-      <div ref={root} className="u011-flyout" role="menu" aria-label="Lý thuyết" style={{ left: rect.right + 8, top }}>
-        {THEORY_ITEMS.map((it, i) => {
-          const Icon = it.icon;
-          return (
-            <button key={it.id} type="button" role="menuitem" className="u011-item u011-row" style={{ '--i': i, '--c': it.c } as React.CSSProperties}
-              onClick={() => { onPick(it.id); nav(it.path); onClose(); }}>
-              <span className="u011-ico"><Icon size={16} /></span>
-              <span>{it.label}</span>
-            </button>
-          );
-        })}
-      </div>,
-      document.body
-    );
-  }
-
-  const cx = dir === 'up' ? rect.left + rect.width / 2 : rect.right - 56;
-  const cy = dir === 'up' ? rect.top : rect.top + rect.height / 2;
-  const clampedX = Math.min(Math.max(cx, 100), window.innerWidth - 100);
+  // A compact list (icon + label rows) instead of the old radial fan of gradient circles, which covered
+  // the page: beside the item in the desktop sidebar, above the item in the mobile bottom bar.
+  const width = 200;
+  const pos: React.CSSProperties = dir === 'right'
+    ? { left: rect.right + 8, top: Math.min(Math.max(rect.top - 6, 8), window.innerHeight - 4 * 44 - 24) }
+    : { left: Math.min(Math.max(rect.left + rect.width / 2 - width / 2, 8), window.innerWidth - width - 8), bottom: window.innerHeight - rect.top + 8, width };
   return createPortal(
-    <div ref={root} data-dir={dir} className="u011" role="menu" aria-label="Lý thuyết" style={{ left: clampedX, top: cy }}>
-      <div className="u011-halo" />
+    <div ref={root} data-dir={dir} className="u011-flyout" role="menu" aria-label="Lý thuyết" style={pos}>
       {THEORY_ITEMS.map((it, i) => {
         const Icon = it.icon;
-        const [x, y] = FAN[dir][i];
         return (
-          <button
-            key={it.id} type="button" role="menuitem" className="u011-item"
-            style={{ '--x': `${x}px`, '--y': `${y}px`, '--i': i, '--c': it.c } as React.CSSProperties}
-            onClick={() => { onPick(it.id); nav(it.path); onClose(); }}
-          >
-            <span className="u011-ico"><Icon size={22} /></span>
-            <span className="u011-lab">{it.label}</span>
+          <button key={it.id} type="button" role="menuitem" className="u011-item u011-row" style={{ '--i': i, '--c': it.c } as React.CSSProperties}
+            onClick={() => { onPick(it.id); nav(it.path); onClose(); }}>
+            <span className="u011-ico"><Icon size={16} /></span>
+            <span>{it.label}</span>
           </button>
         );
       })}
