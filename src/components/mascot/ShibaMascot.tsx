@@ -1,7 +1,8 @@
 import React from 'react';
 import { Mascot, MascotProps, MascotState } from './Mascot';
 import LottieIcon from '../LottieIcon';
-import peekAnim from '../../assets/lottie/shiba-love.json'; // LottieFiles "Flirting Dog" by Margarita Ivanchikova (Lottie Simple License)
+// Loaded on demand (56 KB JSON). LottieFiles "Flirting Dog" by Margarita Ivanchikova (Lottie Simple License)
+const loadPeekAnim = () => import('../../assets/lottie/shiba-love.json');
 
 export type ShibaPose = 
   | 'idle'
@@ -96,7 +97,7 @@ export function MascotEmptyState({
   return (
     <div className={`flex flex-col items-center justify-center p-8 text-center bg-white/70 backdrop-blur-xs border border-[#EADFCF] rounded-2xl shadow-xs ${className}`}>
       <LottieIcon
-        data={peekAnim}
+        load={loadPeekAnim}
         size={140}
         fallback={<Mascot state="thinking" size="lg" animated={true} />}
       />
