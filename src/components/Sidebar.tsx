@@ -28,7 +28,7 @@ import ThemeToggle from './ThemeToggle';
 import { motion } from 'motion/react';
 import { UserProfile } from '../types';
 import { calculateUnlockedAchievements, TOTAL_ACHIEVEMENTS_COUNT } from '../data/achievementsData';
-import { readGuestRoadmap } from '../data/jlptRoadmap';
+import { readGuestRoadmap } from '../data/guestRoadmap';
 
 interface SidebarProps {
   currentTab: string;

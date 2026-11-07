@@ -12,11 +12,12 @@ import { UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'motion/react';
 import { isSoundEnabled, setSoundEnabled } from '../utils/audio';
-import PwaInstallPrompt from './PwaInstallPrompt';
 import JpStudyLogo from './JpStudyLogo';
 // Lazy: the settings modal pulls notifications.ts and the Japanese dictionaries (~450 KB of source).
 const NotificationSettingsModal = lazy(() => import('./NotificationSettingsModal'));
-import AIConfigModal from './AIConfigModal';
+// Opened from menu buttons only: keep them out of the startup bundle.
+const AIConfigModal = lazy(() => import('./AIConfigModal'));
+const PwaInstallPrompt = lazy(() => import('./PwaInstallPrompt'));
 import ConfirmModal from './ConfirmModal';
 import LevelProgressBar from './LevelProgressBar';
 import UserAvatar from './UserAvatar';
@@ -449,14 +450,18 @@ export default function Header({
       )}
 
       {/* AI Central Configuration Modal */}
-      <AIConfigModal
-        isOpen={isAiConfigModalOpen}
-        onClose={() => setIsAiConfigModalOpen(false)}
-      />
+      {isAiConfigModalOpen && (
+        <Suspense fallback={null}>
+          <AIConfigModal
+            isOpen={isAiConfigModalOpen}
+            onClose={() => setIsAiConfigModalOpen(false)}
+          />
+        </Suspense>
+      )}
 
       {/* PWA Install Guide Modal */}
       {isPwaModalOpen && (
-        <PwaInstallPrompt onDismiss={() => setIsPwaModalOpen(false)} />
+        <Suspense fallback={null}><PwaInstallPrompt onDismiss={() => setIsPwaModalOpen(false)} /></Suspense>
       )}
 
       <ConfirmModal
