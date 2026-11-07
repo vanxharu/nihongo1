@@ -6,6 +6,7 @@
 import React, { useMemo } from 'react';
 import { LessonReadingVocab } from '../types';
 import { detectWordPos, PosType } from '../utils/posUtils';
+import { useFontSets } from '../utils/fontLoader';
 
 export interface JlptWordInfo {
   word: string;
@@ -147,6 +148,7 @@ export const JlptUnderlineArticle: React.FC<JlptUnderlineArticleProps> = ({
   showPosHighlight = true,
   selectedPosFilter = null
 }) => {
+  useFontSets('exam');
   // Vocabulary lookup map
   const vocabMap = useMemo(() => {
     const map = new Map<string, LessonReadingVocab>();

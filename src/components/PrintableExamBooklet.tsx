@@ -2,6 +2,7 @@ import React from 'react';
 import { ExamHistoryRecord, DailyExam } from '../types';
 import { HandwrittenExamQuestionAnnotator } from './HandwrittenExamQuestionAnnotator';
 import { CheckCircle2, FileText, Printer, XCircle, X } from 'lucide-react';
+import { useFontSets } from '../utils/fontLoader';
 
 interface PrintableExamBookletProps {
   record: ExamHistoryRecord | {
@@ -20,6 +21,7 @@ export const PrintableExamBooklet: React.FC<PrintableExamBookletProps> = ({
   record,
   onClose
 }) => {
+  useFontSets('exam');
   const handlePrint = () => {
     window.print();
   };

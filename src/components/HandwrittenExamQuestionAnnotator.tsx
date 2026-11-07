@@ -3,6 +3,7 @@ import { ExamQuestion } from '../types';
 import { annotateSentence, DirectSentenceAnnotationResult, PassageRubyChunk } from '../utils/japaneseSentenceAnnotator';
 import { BookOpen, CheckCircle2, HelpCircle, XCircle, Volume2 } from 'lucide-react';
 import { getChoukaiDetail } from '../data/choukaiExplanations';
+import { useFontSets } from '../utils/fontLoader';
 
 interface HandwrittenExamQuestionAnnotatorProps {
   question: ExamQuestion;
@@ -28,6 +29,7 @@ export const HandwrittenExamQuestionAnnotator: React.FC<HandwrittenExamQuestionA
   hidePassage = false,
   isDark
 }) => {
+  useFontSets('exam', 'handwriting');
   const [showPassageTranslation, setShowPassageTranslation] = useState(false);
   const [systemDark, setSystemDark] = useState(() => 
     typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
