@@ -26,4 +26,7 @@
 .u011-row:hover,.u011-row:focus-visible{background:var(--ui-tint,rgba(255,255,255,.06));filter:none;box-shadow:none}
 .u011-row .u011-ico{width:28px;height:28px;border-radius:8px;background:var(--c);color:#fff;flex:none}
 @keyframes u011-in{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:none}}
+.u011-flyout[data-dir="up"]{animation-name:u011-up}
+.u011-flyout[data-dir="up"] .u011-row{height:44px;font-size:14px}
+@keyframes u011-up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.u011-flyout{animation:none}}
