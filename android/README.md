@@ -1,7 +1,7 @@
 # Android app (TWA)
 
 `NihonGo!` for Android is a Trusted Web Activity: the APK opens
-https://nihongo1-vanxharu.vercel.app full-screen in Chrome, so every web deploy updates the app
+https://nihongojlpt.vercel.app full-screen in Chrome, so every web deploy updates the app
 without rebuilding the APK.
 
 - `twa-manifest.json` — app config for [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap)
