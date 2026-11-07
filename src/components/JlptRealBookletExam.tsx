@@ -60,6 +60,7 @@ import { renderStudyQuestionText } from '../utils/questionFormatUtils';
 
 import { svgDataUri } from '../utils/sanitizeHtml';
 import { toast } from './ui/Toasts';
+import { useFontSets } from '../utils/fontLoader';
 interface DrawingStroke {
   id: string;
   tool: 'pen' | 'highlighter';
@@ -139,6 +140,7 @@ export const JlptRealBookletExam: React.FC<JlptRealBookletExamProps> = ({
   onRestartExam,
   onOpenHistory
 }) => {
+  useFontSets('exam');
   // Filter questions based on section
   const allQuestions = exam.questions.filter(q => sectionMode === 'ALL' || q.section === sectionMode);
 

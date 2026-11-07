@@ -8,6 +8,7 @@ import { Radio, Compass } from 'lucide-react';
 import { AudioMark, LessonReadingSentence, LessonReadingVocab } from '../types';
 import { hasKanji } from '../utils/japaneseUtils';
 import { detectWordPos, PosType } from '../utils/posUtils';
+import { useFontSets } from '../utils/fontLoader';
 
 /**
  * Extracts a kanji -> reading dictionary from a furigana passage or sentence string
@@ -409,6 +410,7 @@ export const AudioFollowReader: React.FC<AudioFollowReaderProps> = ({
   vocabularyList = [],
   showPosHighlight = true
 }) => {
+  useFontSets('exam');
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sentenceRefs = useRef<{ [key: number]: HTMLSpanElement | null }>({});
   const lastActiveSentenceIndexRef = useRef<number>(-1);

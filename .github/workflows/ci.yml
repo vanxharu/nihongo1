@@ -26,5 +26,9 @@ jobs:
       # this only checks that the bundle builds and warns if the committed copy is stale.
       - name: Server bundle
         run: npm run build:api
+      - name: Client build
+        run: npx vite build
+      - name: Bundle size report
+        run: node scripts/report-bundle.mjs dist | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Committed bundle up to date
         run: git diff --stat --exit-code api/_lib/server.cjs || echo "::warning::api/_lib/server.cjs differs from npm run build:api output (Vercel rebuilds it on deploy)"

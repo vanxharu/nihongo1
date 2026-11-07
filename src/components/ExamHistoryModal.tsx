@@ -5,6 +5,7 @@ import { getExamHistory, deleteExamAttempt, restoreExamAttempt, groupHistoryByDa
 import { Calendar, CheckCircle, Clock, Eye, FileDown, History, RefreshCw, Trash2, X, AlertCircle } from 'lucide-react';
 
 import { useEscape } from '../hooks/useEscape';
+import { useFontSets } from '../utils/fontLoader';
 export interface ExamHistoryModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -24,6 +25,7 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
   onSelectAttempt,
   onPrintAttempt
 }) => {
+  useFontSets('exam');
   const [historyList, setHistoryList] = useState<ExamHistoryRecord[]>([]);
 
   const handleReviewAction = onReviewAttempt || onSelectAttempt || onExportPDF || onPrintAttempt;
