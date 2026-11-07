@@ -93930,13 +93930,18 @@ function getLlmConfig() {
   return { apiKey: u?.apiKey || process.env.GEMINI_API_KEY || "", model: u?.model || "" };
 }
 var clients = /* @__PURE__ */ new Map();
+var MAX_GEMINI_CLIENTS = 32;
 function getGeminiClient(apiKey = getLlmConfig().apiKey) {
   if (!apiKey) throw new Error('Ch\u01B0a c\xF3 Gemini API key. H\xE3y nh\u1EADp key c\u1EE7a b\u1EA1n trong "C\u1EA5u h\xECnh API".');
   let c = clients.get(apiKey);
-  if (!c) {
-    c = new import_genai.GoogleGenAI({ apiKey, httpOptions: { headers: { "User-Agent": "aistudio-build" } } });
+  if (c) {
+    clients.delete(apiKey);
     clients.set(apiKey, c);
+    return c;
   }
+  c = new import_genai.GoogleGenAI({ apiKey, httpOptions: { headers: { "User-Agent": "aistudio-build" } } });
+  clients.set(apiKey, c);
+  while (clients.size > MAX_GEMINI_CLIENTS) clients.delete(clients.keys().next().value);
   return c;
 }
 var GROQ_PRIMARY_MODEL = "openai/gpt-oss-120b";
@@ -97930,13 +97935,26 @@ function isBootstrapAdmin(email, emailVerified) {
 // src/db/users.ts
 var ADMIN_EMAILS = getBootstrapAdminEmails();
 var collection = () => firebaseDb().collection("app_users");
+var MAX_NAME_LENGTH = 40;
+var normalizeUsername = (v) => typeof v === "string" ? v.toLowerCase().trim().replace(/[^a-z0-9_]/g, "").slice(0, 32) : "";
+function isAllowedAvatar(v) {
+  return v === "" || v.length <= 16 && !/[<>"']/.test(v) || /^https:\/\/[^\s"'<>]+$/.test(v) && v.length <= 2048 || /^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(v) && v.length <= 45e4;
+}
 var jsonFields = ["studyDays", "completedLessons", "vocabStatus", "grammarStatus", "kanjiStatus", "dailyTestResults", "lastPosition", "notificationSettings", "myWords"];
 function profilePatch(fields, allowRoleChange = false) {
   const out = {};
-  for (const key of ["name", "avatar", "targetLevel", "lastActiveDate"]) if (typeof fields[key] === "string") out[key] = fields[key];
+  for (const key of ["targetLevel", "lastActiveDate"]) if (typeof fields[key] === "string") out[key] = fields[key].slice(0, 32);
+  if (typeof fields.name === "string") {
+    const name = fields.name.trim().slice(0, MAX_NAME_LENGTH);
+    if (name) out.name = name;
+  }
+  if (typeof fields.avatar === "string" && isAllowedAvatar(fields.avatar)) out.avatar = fields.avatar;
   if (fields.studyTrack === "business" || fields.studyTrack === "jlpt") out.studyTrack = fields.studyTrack;
   if (fields.xpToday && typeof fields.xpToday.d === "string" && Number.isFinite(fields.xpToday.n)) out.xpToday = { d: fields.xpToday.d, n: fields.xpToday.n };
-  if (typeof fields.username === "string") out.username = fields.username.toLowerCase().trim().replace(/[^a-z0-9_]/g, "");
+  if (typeof fields.username === "string") {
+    const username = normalizeUsername(fields.username);
+    if (username) out.username = username;
+  }
   for (const key of ["xp", "streak", "coins"]) if (Number.isFinite(fields[key])) out[key] = Math.min(1e7, Math.max(0, fields[key]));
   for (const key of jsonFields) if (fields[key] !== void 0) {
     const value = typeof fields[key] === "string" ? JSON.parse(fields[key]) : fields[key];
@@ -97951,6 +97969,8 @@ function profilePatch(fields, allowRoleChange = false) {
 async function getOrCreateUser(uid, email, emailVerified = false) {
   const ref = collection().doc(uid);
   const normalized = (email || "").trim().toLowerCase();
+  const current = (await ref.get()).data();
+  if (current && !(isBootstrapAdmin(normalized, emailVerified) && current.role !== "admin")) return current;
   return firebaseDb().runTransaction(async (tx) => {
     const snapshot = await tx.get(ref);
     const existing = snapshot.data();
@@ -97961,7 +97981,7 @@ async function getOrCreateUser(uid, email, emailVerified = false) {
       }
       return existing;
     }
-    const today = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+    const today = vnDate();
     const value = { id: uid, uid, email: normalized, username: normalized.split("@")[0].replace(/[^a-z0-9_]/g, ""), name: normalized.split("@")[0] || "H\u1ECDc vi\xEAn JLPT", avatar: "", targetLevel: "N4", xp: 0, streak: 0, coins: 0, lastActiveDate: today, studyDays: JSON.stringify([today]), completedLessons: "[]", vocabStatus: "{}", grammarStatus: "{}", kanjiStatus: "{}", dailyTestResults: "[]", role: isBootstrapAdmin(normalized, emailVerified) ? "admin" : "user", isVip: false, createdAt: (/* @__PURE__ */ new Date()).toISOString(), profileMigrationVersion: 0 };
     tx.create(ref, value);
     return value;
@@ -97986,15 +98006,49 @@ async function deleteUserByUid(uid) {
   await firebaseDb().recursiveDelete(ref);
   return previous ? [previous] : [];
 }
-async function findUserByIdentifier(identifier) {
-  const key = identifier.trim().toLowerCase();
+async function findUserByUsername(identifier) {
+  const key = normalizeUsername(identifier);
   if (!key) return null;
-  const rows = await getAllUsers();
-  return rows.find((u) => [u.username, u.email, u.name, u.email?.split("@")[0]].some((v) => typeof v === "string" && v.toLowerCase() === key)) || null;
+  const docs = (await collection().where("username", "==", key).limit(2).get()).docs;
+  return docs.length === 1 ? docs[0].data() : null;
 }
+async function isUsernameTaken(username, uid) {
+  const key = normalizeUsername(username);
+  if (!key) return false;
+  return (await collection().where("username", "==", key).limit(2).get()).docs.some((d) => d.id !== uid);
+}
+var LEADERBOARD_FIELDS = ["uid", "email", "name", "avatar", "targetLevel", "xp", "streak", "isVip"];
+async function getLeaderboardUsers(limit = 50) {
+  return (await collection().orderBy("xp", "desc").limit(limit).select(...LEADERBOARD_FIELDS).get()).docs.map((d) => d.data());
+}
+var IMPORT_MAX_XP = 2e4;
+var IMPORT_MAX_COINS = 2e3;
+var IMPORT_MAX_DAYS = 60;
 async function importBrowserProfile(uid, fields) {
   const ref = collection().doc(uid);
   const patch = profilePatch(fields);
+  delete patch.username;
+  const today = vnDate();
+  const oldest = vnDate(new Date(Date.now() - IMPORT_MAX_DAYS * 864e5));
+  if (patch.studyDays !== void 0) {
+    let days = [];
+    try {
+      days = JSON.parse(patch.studyDays);
+    } catch {
+    }
+    patch.studyDays = JSON.stringify((Array.isArray(days) ? days : []).filter((d) => typeof d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d) && d >= oldest && d <= today));
+  }
+  const importedDays = (() => {
+    try {
+      return JSON.parse(patch.studyDays || "[]").length;
+    } catch {
+      return 0;
+    }
+  })();
+  if (patch.xp !== void 0) patch.xp = Math.min(patch.xp, IMPORT_MAX_XP);
+  if (patch.coins !== void 0) patch.coins = Math.min(patch.coins, IMPORT_MAX_COINS);
+  if (patch.streak !== void 0) patch.streak = Math.min(patch.streak, importedDays);
+  delete patch.xpToday;
   return firebaseDb().runTransaction(async (tx) => {
     const snapshot = await tx.get(ref);
     const previous = snapshot.data();
@@ -98030,23 +98084,26 @@ async function importBrowserProfile(uid, fields) {
 }
 
 // src/middleware/auth.ts
+function verifiedToken(req) {
+  const r = req;
+  if (!r._verifiedToken) {
+    const header = req.headers.authorization;
+    r._verifiedToken = header?.startsWith("Bearer ") && adminAuth ? adminAuth.verifyIdToken(header.slice(7)).catch(() => null) : Promise.resolve(null);
+  }
+  return r._verifiedToken;
+}
 var requireAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ error: "Unauthorized: Missing token" });
   }
-  const token = authHeader.split("Bearer ")[1];
   try {
     if (!adminAuth) {
       console.error("Firebase Admin is not initialized; rejecting authenticated request.");
       return res.status(503).json({ error: "Authentication service unavailable" });
     }
-    let decodedToken;
-    try {
-      decodedToken = await adminAuth.verifyIdToken(token);
-    } catch {
-      return res.status(401).json({ error: "Unauthorized: Invalid token" });
-    }
+    const decodedToken = await verifiedToken(req);
+    if (!decodedToken) return res.status(401).json({ error: "Unauthorized: Invalid token" });
     req.user = decodedToken;
     try {
       const userFromDb = await getOrCreateUser(
@@ -98074,6 +98131,32 @@ var requireAdmin = async (req, res, next) => {
   }
   next();
 };
+
+// src/server/firebasePassword.ts
+async function verifyFirebasePassword(email, password, origin) {
+  const apiKey = process.env.VITE_FIREBASE_API_KEY || firebase_applet_config_default.apiKey;
+  if (!apiKey) return "unavailable";
+  try {
+    const headers = { "Content-Type": "application/json" };
+    const referer = origin || process.env.APP_URL;
+    if (referer && /^https?:\/\//.test(referer)) headers.Referer = referer.endsWith("/") ? referer : `${referer}/`;
+    const r = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${encodeURIComponent(apiKey)}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ email, password, returnSecureToken: false }),
+      signal: AbortSignal.timeout(8e3)
+    });
+    if (r.ok) return "ok";
+    const message = String((await r.json().catch(() => ({})))?.error?.message || "");
+    if (/TOO_MANY_ATTEMPTS/.test(message)) return "throttled";
+    if (/INVALID_LOGIN_CREDENTIALS|INVALID_PASSWORD|EMAIL_NOT_FOUND|USER_DISABLED|MISSING_PASSWORD/.test(message)) return "invalid";
+    console.error("[auth] signInWithPassword check failed:", r.status, message.slice(0, 120));
+    return "unavailable";
+  } catch (e) {
+    console.error("[auth] signInWithPassword check error:", e?.message || e);
+    return "unavailable";
+  }
+}
 
 // src/server/learningProfile.ts
 function validateRoadmap(value) {
@@ -98161,7 +98244,18 @@ var PORT = 3e3;
 var BIG_BODY_PATH = /ocr|transcribe|handwriting|mascot|upload|import|kaiwa|japanese-chat|live|admin|exam|annotat|image|audio|voice|listening\/(questions|mappings)|user\/profile/i;
 var smallJson = import_express.default.json({ limit: "1mb" });
 var bigJson = import_express.default.json({ limit: "25mb" });
-app.use((req, res, next) => (BIG_BODY_PATH.test(req.path) ? bigJson : smallJson)(req, res, next));
+function internalError(err, message = "\u0110\xE3 x\u1EA3y ra l\u1ED7i m\xE1y ch\u1EE7. Vui l\xF2ng th\u1EED l\u1EA1i.") {
+  console.error("[api]", err?.stack || err);
+  return message;
+}
+var SMALL_BODY_BYTES = 1024 * 1024;
+app.use(async (req, res, next) => {
+  if (!BIG_BODY_PATH.test(req.path)) return smallJson(req, res, next);
+  const length = Number(req.headers["content-length"] || 0);
+  const chunked = !req.headers["content-length"] && /chunked/i.test(String(req.headers["transfer-encoding"] || ""));
+  if ((length > SMALL_BODY_BYTES || chunked) && !await verifiedToken(req)) return smallJson(req, res, next);
+  return bigJson(req, res, next);
+});
 app.use(import_express.default.urlencoded({ extended: true, limit: "1mb" }));
 app.set("trust proxy", 1);
 var COST_BEARING_PATHS = [
@@ -98196,16 +98290,9 @@ var RATE_MAX_REQUESTS = 40;
 var rateBuckets = /* @__PURE__ */ new Map();
 var GUEST_MAX_REQUESTS = 12;
 app.use(COST_BEARING_PATHS, async (req, res, next) => {
-  let signedIn = false;
-  const auth = req.headers.authorization;
-  if (auth?.startsWith("Bearer ") && adminAuth) {
-    try {
-      await adminAuth.verifyIdToken(auth.slice(7));
-      signedIn = true;
-    } catch {
-    }
-  }
-  const key = (signedIn ? "u:" : "g:") + (req.ip || "unknown");
+  const token = await verifiedToken(req);
+  const signedIn = !!token;
+  const key = token ? `u:${token.uid}` : `g:${req.ip || "unknown"}`;
   const now = Date.now();
   if (rateBuckets.size > 5e3) {
     for (const [k, v] of rateBuckets) if (v.resetAt <= now) rateBuckets.delete(k);
@@ -98362,7 +98449,7 @@ app.get("/api/listening/videos", async (req, res) => {
     }
     return res.json({ success: true, videos: [] });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.post("/api/listening/videos", requireAuth, requireAdmin, import_express.default.json({ limit: "2mb" }), async (req, res) => {
@@ -98404,7 +98491,7 @@ app.post("/api/listening/videos", requireAuth, requireAdmin, import_express.defa
     await writeJsonAtomic(LISTENING_VIDEOS_FILE, videos2);
     return res.json({ success: true, video: cleanVideo });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.delete("/api/listening/videos/:id", requireAuth, requireAdmin, async (req, res) => {
@@ -98417,7 +98504,7 @@ app.delete("/api/listening/videos/:id", requireAuth, requireAdmin, async (req, r
     }
     return res.json({ success: true });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 async function writeJsonAtomic(file, value) {
@@ -98428,14 +98515,7 @@ var UNSAFE_LISTENING_KEYS = /* @__PURE__ */ new Set(["__proto__", "constructor",
 var LISTENING_USER_PATHS = /^\/(progress|attempts|exam-resume)/;
 app.use("/api/listening", async (req, res, next) => {
   if (!LISTENING_USER_PATHS.test(req.path)) return next();
-  let uid = "default_user";
-  const auth = req.headers.authorization;
-  if (auth?.startsWith("Bearer ") && adminAuth) {
-    try {
-      uid = (await adminAuth.verifyIdToken(auth.slice(7))).uid;
-    } catch {
-    }
-  }
+  let uid = (await verifiedToken(req))?.uid || "default_user";
   const isGuest = uid === "default_user";
   if (isGuest && req.method !== "GET") return res.json({ success: true, guest: true });
   if (isGuest) uid = "guest_empty";
@@ -98466,7 +98546,7 @@ app.get("/api/listening/progress", async (req, res) => {
     }
     return res.json({ success: true, progress: {} });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 function upsertListeningProgressRecord(allProgress, payload) {
@@ -98518,7 +98598,7 @@ app.post("/api/listening/progress", import_express.default.json(), async (req, r
     await writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.json({ success: true, record: result.record });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.post("/api/listening/progress/beacon", import_express.default.text({ type: "*/*" }), async (req, res) => {
@@ -98566,7 +98646,7 @@ app.post("/api/listening/progress/batch", import_express.default.json(), async (
     await writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.json({ success: true, count: records.length, progress: allProgress[userId] || {} });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.get("/api/listening/youtube-info", async (req, res) => {
@@ -98596,7 +98676,7 @@ app.get("/api/listening/youtube-info", async (req, res) => {
       }
     });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.get("/api/listening/attempts", async (req, res) => {
@@ -98609,7 +98689,7 @@ app.get("/api/listening/attempts", async (req, res) => {
     }
     return res.json({ success: true, attempts: [] });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.post("/api/listening/attempts", import_express.default.json({ limit: "5mb" }), async (req, res) => {
@@ -98641,7 +98721,7 @@ app.post("/api/listening/attempts", import_express.default.json({ limit: "5mb" }
     }
     return res.json({ success: true, attempt });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.get("/api/listening/exam-resume", async (req, res) => {
@@ -98658,7 +98738,7 @@ app.get("/api/listening/exam-resume", async (req, res) => {
     }
     return res.json({ success: true, state: null, resumes: {} });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.post("/api/listening/exam-resume", import_express.default.json({ limit: "2mb" }), async (req, res) => {
@@ -98682,7 +98762,7 @@ app.post("/api/listening/exam-resume", import_express.default.json({ limit: "2mb
     await writeJsonAtomic(LISTENING_RESUME_FILE, all);
     return res.json({ success: true });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.delete("/api/listening/exam-resume", async (req, res) => {
@@ -98698,7 +98778,7 @@ app.delete("/api/listening/exam-resume", async (req, res) => {
     }
     return res.json({ success: true });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.get("/api/listening/questions", async (req, res) => {
@@ -98713,7 +98793,7 @@ app.get("/api/listening/questions", async (req, res) => {
     }
     return res.json({ success: true, exam: null, questions: {} });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.post("/api/listening/questions", requireAuth, requireAdmin, import_express.default.json({ limit: "5mb" }), async (req, res) => {
@@ -98747,7 +98827,7 @@ app.post("/api/listening/questions", requireAuth, requireAdmin, import_express.d
     await writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
     return res.json({ success: true, exam: all[videoId] });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.post("/api/listening/questions/update-timestamp", requireAuth, requireAdmin, import_express.default.json(), async (req, res) => {
@@ -98781,7 +98861,7 @@ app.post("/api/listening/questions/update-timestamp", requireAuth, requireAdmin,
     await writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
     return res.json({ success: true, question: q });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.get("/api/listening/mappings", async (req, res) => {
@@ -98803,7 +98883,7 @@ app.get("/api/listening/mappings", async (req, res) => {
     }
     return res.json({ success: true, mappings });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.post("/api/listening/mappings", requireAuth, requireAdmin, import_express.default.json(), async (req, res) => {
@@ -98840,7 +98920,7 @@ app.post("/api/listening/mappings", requireAuth, requireAdmin, import_express.de
     await writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
     return res.json({ success: true, mapping: enriched });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 app.post("/api/listening/mappings/batch", requireAuth, requireAdmin, import_express.default.json({ limit: "2mb" }), async (req, res) => {
@@ -98875,10 +98955,10 @@ app.post("/api/listening/mappings/batch", requireAuth, requireAdmin, import_expr
     await writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
     return res.json({ success: true, count: incoming.length });
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
-app.post("/api/listening/extract-frame-ocr", import_express.default.json({ limit: "10mb" }), async (req, res) => {
+app.post("/api/listening/extract-frame-ocr", requireAuth, requireAdmin, async (req, res) => {
   try {
     const { videoId, frameTime, frameBase64, expectedLevel = "N4", section = "\u554F\u984C1", questionNumber } = req.body;
     if (!videoId || !frameBase64 && frameTime === void 0) {
@@ -100724,33 +100804,26 @@ app.use("/api/auth/resolve-identifier", (req, res, next) => {
   next();
 });
 app.post("/api/auth/resolve-identifier", async (req, res) => {
+  const invalid = () => res.status(401).json({ success: false, error: "Sai t\xEAn \u0111\u0103ng nh\u1EADp ho\u1EB7c m\u1EADt kh\u1EA9u." });
   try {
-    const rawIdentifier = (req.body?.identifier || "").toString().trim();
-    if (!rawIdentifier) {
-      return res.status(400).json({ success: false, error: "Identifier is required" });
+    const rawIdentifier = String(req.body?.identifier || "").trim();
+    const password = typeof req.body?.password === "string" ? req.body.password : "";
+    if (!rawIdentifier || !password) {
+      return res.status(400).json({ success: false, error: "Vui l\xF2ng nh\u1EADp t\xEAn \u0111\u0103ng nh\u1EADp v\xE0 m\u1EADt kh\u1EA9u." });
     }
     if (rawIdentifier.includes("@")) {
-      return res.json({
-        success: true,
-        isEmail: true,
-        email: rawIdentifier.toLowerCase()
-      });
+      return res.json({ success: true, isEmail: true, email: rawIdentifier.toLowerCase() });
     }
-    const foundUser = await findUserByIdentifier(rawIdentifier);
-    if (!foundUser) {
-      return res.status(404).json({
-        success: false,
-        error: "Kh\xF4ng t\xECm th\u1EA5y t\xE0i kho\u1EA3n v\u1EDBi t\xEAn \u0111\u0103ng nh\u1EADp n\xE0y."
-      });
-    }
-    return res.json({
-      success: true,
-      isEmail: false,
-      email: foundUser.email
-    });
+    const foundUser = await findUserByUsername(rawIdentifier);
+    if (!foundUser?.email) return invalid();
+    const check = await verifyFirebasePassword(foundUser.email, password, req.headers.origin);
+    if (check === "ok") return res.json({ success: true, isEmail: false, email: foundUser.email });
+    if (check === "invalid") return invalid();
+    if (check === "throttled") return res.status(429).json({ success: false, error: "B\u1EA1n \u0111\u0103ng nh\u1EADp sai qu\xE1 nhi\u1EC1u l\u1EA7n. Vui l\xF2ng th\u1EED l\u1EA1i sau." });
+    return res.status(503).json({ success: false, error: "Kh\xF4ng ki\u1EC3m tra \u0111\u01B0\u1EE3c t\xE0i kho\u1EA3n l\xFAc n\xE0y. H\xE3y th\u1EED \u0111\u0103ng nh\u1EADp b\u1EB1ng email." });
   } catch (err) {
     console.error("Error in /api/auth/resolve-identifier:", err);
-    return res.status(500).json({ success: false, error: err.message || "Lookup failed" });
+    return res.status(500).json({ success: false, error: "Kh\xF4ng ki\u1EC3m tra \u0111\u01B0\u1EE3c t\xE0i kho\u1EA3n l\xFAc n\xE0y." });
   }
 });
 app.get("/api/shadowing/analysis-file", async (req, res) => {
@@ -100860,7 +100933,7 @@ app.post("/api/user/sync", requireAuth, async (req, res) => {
     }
   } catch (error) {
     console.error("Error in /api/user/sync:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: internalError(error) });
   }
 });
 async function inlineGooglePhoto(url) {
@@ -100901,6 +100974,14 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
       return res.status(400).json({ success: false, error: "Invalid profile data" });
     }
     const guarded = guardProgress(dbUser, { xp, coins, studyDays }, vnDate());
+    let username;
+    if (req.body.username !== void 0) {
+      username = normalizeUsername(req.body.username);
+      if (username.length < 3) return res.status(400).json({ success: false, error: "T\xEAn \u0111\u0103ng nh\u1EADp c\u1EA7n \xEDt nh\u1EA5t 3 k\xFD t\u1EF1 (a-z, 0-9, _)." });
+      if (username !== dbUser.username && await isUsernameTaken(username, dbUser.uid)) {
+        return res.status(409).json({ success: false, error: "T\xEAn \u0111\u0103ng nh\u1EADp n\xE0y \u0111\xE3 c\xF3 ng\u01B0\u1EDDi d\xF9ng." });
+      }
+    }
     try {
       const updatedUser = await updateUserProfile(dbUser.uid, {
         ...guarded,
@@ -100908,6 +100989,7 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
         name,
         avatar,
         targetLevel,
+        username,
         completedLessons,
         vocabStatus,
         grammarStatus,
@@ -100923,7 +101005,7 @@ app.post("/api/user/profile", requireAuth, async (req, res) => {
     }
   } catch (error) {
     console.error("Error in /api/user/profile:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: internalError(error) });
   }
 });
 app.get("/api/admin/system-status", requireAuth, requireAdmin, async (_req, res) => {
@@ -101221,7 +101303,7 @@ app.get("/api/vocab-prompts", async (req, res) => {
     return res.json({ count: items.length, items });
   } catch (error) {
     console.error("Error in /api/vocab-prompts route:", error);
-    return res.status(500).json({ error: String(error) });
+    return res.status(500).json({ error: internalError(error) });
   }
 });
 app.options(["/api/vocab-prompts", "/api/vocab-flow-done"], (_req, res) => {
@@ -101328,6 +101410,14 @@ var AUTO_FIX_REPORTS = [
 app.get("/api/vocab/auto-fix-report", (req, res) => {
   res.json({ success: true, reports: AUTO_FIX_REPORTS });
 });
+var leaderboardCache = null;
+var LEADERBOARD_TTL_MS = 6e4;
+var publicName = (u) => {
+  const name = typeof u.name === "string" ? u.name.trim() : "";
+  const local = typeof u.email === "string" ? u.email.split("@")[0] : "";
+  if (!name || local && name.toLowerCase() === local.toLowerCase()) return local ? `H\u1ECDc vi\xEAn ${local.slice(0, 2)}***` : "H\u1ECDc vi\xEAn JLPT";
+  return name.slice(0, 40);
+};
 app.get("/api/leaderboard", async (req, res) => {
   const BASE_CHAMPIONS = [
     { id: "u_1", name: "Minh Tu\u1EA5n N2", avatar: "\u{1F98A}", level: "N2", xp: 5820, weeklyXp: 840, monthlyXp: 2950, streak: 45, league: "master", badge: "Qu\xE1n qu\xE2n tu\u1EA7n" },
@@ -101341,13 +101431,18 @@ app.get("/api/leaderboard", async (req, res) => {
   ];
   try {
     let dbUsers = [];
-    try {
-      dbUsers = await getAllUsers();
-    } catch (_dbErr) {
+    if (leaderboardCache && Date.now() - leaderboardCache.at < LEADERBOARD_TTL_MS) {
+      dbUsers = leaderboardCache.users;
+    } else {
+      try {
+        dbUsers = await getLeaderboardUsers(50);
+        leaderboardCache = { at: Date.now(), users: dbUsers };
+      } catch (_dbErr) {
+      }
     }
     const mappedDbUsers = dbUsers.map((u) => ({
-      id: `db_${u.id}`,
-      name: u.name || u.email?.split("@")[0] || "H\u1ECDc vi\xEAn JLPT",
+      id: `db_${u.uid || u.id}`,
+      name: publicName(u),
       avatar: u.avatar || "\u{1F393}",
       level: u.targetLevel || "N5",
       xp: u.xp || 0,
@@ -101358,10 +101453,11 @@ app.get("/api/leaderboard", async (req, res) => {
       badge: u.isVip ? "VIP Member" : "H\u1ECDc vi\xEAn",
       isCurrentUser: false
     }));
-    const combined = [...mappedDbUsers, ...BASE_CHAMPIONS];
+    const demo = BASE_CHAMPIONS.map((c) => ({ ...c, isDemo: true }));
+    const combined = mappedDbUsers.length >= 10 ? mappedDbUsers : [...mappedDbUsers, ...demo];
     res.json({ success: true, leaderboard: combined });
   } catch (error) {
-    res.json({ success: true, leaderboard: BASE_CHAMPIONS });
+    res.json({ success: true, leaderboard: BASE_CHAMPIONS.map((c) => ({ ...c, isDemo: true })) });
   }
 });
 app.get("/api/vocab/kanji-breakdown", async (req, res) => {
@@ -102546,7 +102642,7 @@ H\xE3y tr\u1EA3 v\u1EC1 JSON theo c\u1EA5u tr\xFAc ch\xEDnh x\xE1c sau:
       }
     } catch {
     }
-    return res.status(500).json({ error: error.message || "Failed to grade exam" });
+    return res.status(500).json({ error: internalError(error, "Kh\xF4ng ch\u1EA5m \u0111\u01B0\u1EE3c b\xE0i. Vui l\xF2ng th\u1EED l\u1EA1i.") });
   }
 });
 app.post("/api/kanji/ai-mnemonic", async (req, res) => {
