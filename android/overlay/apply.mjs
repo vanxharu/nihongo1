@@ -26,10 +26,13 @@ fs.mkdirSync(illusDst, { recursive: true });
 let copied = 0, missing = 0;
 for (const row of words) {
   if (row[9] !== 1) continue;
-  const src = path.join(illusSrc, String(row[4]).toLowerCase(), `${row[0]}.webp`);
+  // row[10]: the file the web app uses (vocabularyIllustrations.json), not <id>.webp (old icon placeholders).
+  const src = path.join(illusSrc, row[10]);
   if (fs.existsSync(src)) { fs.copyFileSync(src, path.join(illusDst, `${row[0]}.webp`)); copied++; } else missing++;
 }
 console.log(`illustrations: ${copied} copied, ${missing} missing`);
+const tiny = fs.readdirSync(illusDst).filter((f) => fs.statSync(path.join(illusDst, f)).size < 1500);
+if (tiny.length) throw new Error(`${tiny.length} illustrations look like icon placeholders (<1.5 KB): ${tiny.slice(0, 5).join(', ')}`);
 if (missing) throw new Error('illustrations listed in words.json are missing from public/vocabulary-illustrations');
 
 const pkgDir = path.join(project, 'app/src/main/java', ...twa.packageId.split('.'));
