@@ -24,3 +24,9 @@ jobs:
         run: npm run build:api
       - name: Bundle is committed up to date
         run: git diff --stat --exit-code api/_lib/server.cjs || echo "::warning::api/_lib/server.cjs differs from npm run build:api output"
+      - name: Upload server bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-bundle
+          path: api/_lib/server.cjs
+          retention-days: 3
