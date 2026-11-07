@@ -69,9 +69,17 @@ jobs:
           BUBBLEWRAP_KEY_PASSWORD: ${{ steps.key.outputs.password }}
         run: |
           cd android
+          # Bubblewrap generates the Gradle project from twa-manifest.json; the APK is then built with
+          # Gradle and signed with apksigner directly (bubblewrap build rejects the runner's SDK layout).
           bubblewrap update --skipVersionUpgrade
-          bubblewrap build --skipPwaValidation
-          ls -la *.apk *.aab 2>/dev/null || true
+          chmod +x gradlew
+          ./gradlew --no-daemon -q assembleRelease
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          UNSIGNED=$(ls app/build/outputs/apk/release/*.apk | head -1)
+          "$BT/zipalign" -f -p 4 "$UNSIGNED" app-release-aligned.apk
+          "$BT/apksigner" sign --ks nihongo-release.jks --ks-key-alias nihongo \
+            --ks-pass env:BUBBLEWRAP_KEYSTORE_PASSWORD --key-pass env:BUBBLEWRAP_KEY_PASSWORD \
+            --out app-release-signed.apk app-release-aligned.apk
           VERSION=$(node -p "require('./twa-manifest.json').appVersionName")
           mkdir -p ../out
           cp app-release-signed.apk "../out/NihonGo-${VERSION}-${{ steps.key.outputs.kind }}.apk"
