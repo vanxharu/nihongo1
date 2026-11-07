@@ -17,21 +17,19 @@ import android.text.TextUtils;
 import java.util.Calendar;
 
 /**
- * Daily vocabulary notification at 20:00 (inexact, battery friendly), plus the daily widget refresh.
- * Scheduled at app start (DailyWordInit), when the widget is added and after reboot.
+ * Daily vocabulary notification at the time chosen in settings (default 20:00; inexact, battery friendly).
+ * Scheduled at app start (DailyWordInit), when the widget is added, after reboot and when settings change.
  */
 public class DailyWord extends BroadcastReceiver {
     static final String CHANNEL_ID = "daily_word";
     static final String ACTION_FIRE = "app.nihongo.study.DAILY_WORD";
-    private static final int NOTIFY_HOUR = 20;
     private static final int NOTIFICATION_ID = 2001;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         if (ACTION_FIRE.equals(action)) {
-            VocabWidgetProvider.refreshAll(context);
-            notifyWord(context);
+            if (Prefs.notifyEnabled(context)) notifyWord(context);
         } else {
             // BOOT_COMPLETED, MY_PACKAGE_REPLACED, TIMEZONE_CHANGED
             ensureScheduled(context);
@@ -45,7 +43,7 @@ public class DailyWord extends BroadcastReceiver {
         NotificationManager nm = context.getSystemService(NotificationManager.class);
         if (nm == null || nm.getNotificationChannel(CHANNEL_ID) != null) return;
         NotificationChannel ch = new NotificationChannel(CHANNEL_ID, "Từ vựng mỗi ngày", NotificationManager.IMPORTANCE_DEFAULT);
-        ch.setDescription("Một từ vựng JLPT mỗi tối lúc 20:00");
+        ch.setDescription("Một từ vựng JLPT mỗi ngày, vào giờ bạn chọn trong cài đặt");
         nm.createNotificationChannel(ch);
     }
 
@@ -53,14 +51,16 @@ public class DailyWord extends BroadcastReceiver {
         ensureChannel(context);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (am == null) return;
-        Calendar next = Calendar.getInstance();
-        next.set(Calendar.HOUR_OF_DAY, NOTIFY_HOUR);
-        next.set(Calendar.MINUTE, 0);
-        next.set(Calendar.SECOND, 0);
-        if (next.getTimeInMillis() <= System.currentTimeMillis()) next.add(Calendar.DAY_OF_YEAR, 1);
         Intent i = new Intent(context, DailyWord.class).setAction(ACTION_FIRE);
         PendingIntent pi = PendingIntent.getBroadcast(context, 1, i,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        if (!Prefs.notifyEnabled(context)) { am.cancel(pi); return; }
+        Calendar next = Calendar.getInstance();
+        next.set(Calendar.HOUR_OF_DAY, Prefs.notifyHour(context));
+        next.set(Calendar.MINUTE, Prefs.notifyMinute(context));
+        next.set(Calendar.SECOND, 0);
+        next.set(Calendar.MILLISECOND, 0);
+        if (next.getTimeInMillis() <= System.currentTimeMillis()) next.add(Calendar.DAY_OF_YEAR, 1);
         // Re-registering replaces the previous alarm (same PendingIntent), so this is safe to call often.
         am.setInexactRepeating(AlarmManager.RTC_WAKEUP, next.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
     }
@@ -88,6 +88,7 @@ public class DailyWord extends BroadcastReceiver {
                 .setSubText(w.level + " · Từ vựng mỗi ngày")
                 .setStyle(new Notification.BigTextStyle().bigText(body.toString()))
                 .setColor(0xFFF36A78)
+                .setLargeIcon(w.image(context))
                 .setAutoCancel(true)
                 .setContentIntent(openApp(context, "/tango", 3));
         nm.notify(NOTIFICATION_ID, b.build());
