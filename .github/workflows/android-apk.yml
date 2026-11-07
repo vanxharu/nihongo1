@@ -72,6 +72,8 @@ jobs:
           # Bubblewrap generates the Gradle project from twa-manifest.json; the APK is then built with
           # Gradle and signed with apksigner directly (bubblewrap build rejects the runner's SDK layout).
           bubblewrap update --skipVersionUpgrade
+          # Native additions: vocabulary widget + daily word notification (android/overlay).
+          node overlay/apply.mjs
           chmod +x gradlew
           ./gradlew --no-daemon -q assembleRelease
           BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
@@ -87,6 +89,9 @@ jobs:
         run: |
           APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
           "$APKSIGNER" verify --print-certs out/*.apk | grep -E "SHA-256|Signer"
+          AAPT2=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -1)
+          echo "Components:"; "$AAPT2" dump xmltree --file AndroidManifest.xml out/*.apk | grep -E 'VocabWidgetProvider|DailyWord|appwidget|POST_NOTIFICATIONS|BOOT_COMPLETED' | sed 's/^ *//'
+          unzip -l out/*.apk | grep -E 'assets/words.json|widget_vocab'
           ls -la out
       - uses: actions/upload-artifact@v4
         with:
