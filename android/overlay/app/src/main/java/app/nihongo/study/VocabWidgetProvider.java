@@ -165,7 +165,15 @@ public class VocabWidgetProvider extends AppWidgetProvider {
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG);
         bg.setColor(0xFF1E293B);
         c.drawRoundRect(new RectF(0, 0, size, size), radius, radius, bg);
-        String ch = word.isEmpty() ? "語" : word.substring(0, word.offsetByCodePoints(0, 1));
+        // First Japanese letter (skips brackets, 〜 and other marks).
+        String ch = "語";
+        for (int i = 0; i < word.length(); ) {
+            int cp = word.codePointAt(i);
+            Character.UnicodeBlock b = Character.UnicodeBlock.of(cp);
+            if (b == Character.UnicodeBlock.HIRAGANA || b == Character.UnicodeBlock.KATAKANA
+                    || b == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS) { ch = new String(Character.toChars(cp)); break; }
+            i += Character.charCount(cp);
+        }
         Paint t = new Paint(Paint.ANTI_ALIAS_FLAG);
         t.setColor(0xFFF36A78);
         t.setTypeface(Typeface.DEFAULT_BOLD);
