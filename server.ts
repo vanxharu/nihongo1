@@ -39,7 +39,8 @@ import { deduplicateGrammars } from './src/utils/grammarDeduplicator';
 import { KANJI_DICTIONARY } from './src/data/kanjiDictionary';
 import { requireAuth, requireAdmin } from './src/middleware/auth';
 import { adminAuth } from './src/lib/firebase-admin';
-import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid, findUserByIdentifier, importBrowserProfile } from './src/db/users';
+import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid, findUserByUsername, isUsernameTaken, normalizeUsername, getLeaderboardUsers, importBrowserProfile } from './src/db/users';
+import { verifyFirebasePassword } from './src/server/firebasePassword';
 import { readLearningProfile, saveLearningProfile } from './src/server/learningProfile';
 
 const KuroshiroClass = (Kuroshiro as any).default || Kuroshiro;
@@ -89,7 +90,26 @@ const PORT = 3000;
 const BIG_BODY_PATH = /ocr|transcribe|handwriting|mascot|upload|import|kaiwa|japanese-chat|live|admin|exam|annotat|image|audio|voice|listening\/(questions|mappings)|user\/profile/i;
 const smallJson = express.json({ limit: '1mb' });
 const bigJson = express.json({ limit: '25mb' });
-app.use((req, res, next) => (BIG_BODY_PATH.test(req.path) ? bigJson : smallJson)(req, res, next));
+// Unexpected server errors: log the details, send the browser a generic message (no stack/path/provider text).
+function internalError(err: unknown, message = 'Đã xảy ra lỗi máy chủ. Vui lòng thử lại.') {
+  console.error('[api]', (err as any)?.stack || err);
+  return message;
+}
+const SMALL_BODY_BYTES = 1024 * 1024;
+app.use(async (req, res, next) => {
+  if (!BIG_BODY_PATH.test(req.path)) return smallJson(req, res, next);
+  // Bodies above 1 MB (images, audio, imports) are only accepted from signed-in users, so guests
+  // cannot push 25 MB payloads into AI endpoints that are otherwise open.
+  const length = Number(req.headers['content-length'] || 0);
+  const chunked = !req.headers['content-length'] && /chunked/i.test(String(req.headers['transfer-encoding'] || ''));
+  if (length > SMALL_BODY_BYTES || chunked) {
+    const auth = req.headers.authorization;
+    let signedIn = false;
+    if (auth?.startsWith('Bearer ') && adminAuth) { try { await adminAuth.verifyIdToken(auth.slice(7)); signedIn = true; } catch { /* guest */ } }
+    if (!signedIn) return smallJson(req, res, next);
+  }
+  return bigJson(req, res, next);
+});
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 // Behind one reverse proxy (Vercel/Cloud Run): req.ip is the proxy-appended client address, not a client-forged header.
 app.set('trust proxy', 1);
@@ -260,7 +280,7 @@ app.get('/api/listening/videos', async (req, res) => {
     }
     return res.json({ success: true, videos: [] });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -308,7 +328,7 @@ app.post('/api/listening/videos', requireAuth, requireAdmin, express.json({ limi
     await writeJsonAtomic(LISTENING_VIDEOS_FILE, videos);
     return res.json({ success: true, video: cleanVideo });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -323,7 +343,7 @@ app.delete('/api/listening/videos/:id', requireAuth, requireAdmin, async (req, r
     }
     return res.json({ success: true });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -375,7 +395,7 @@ app.get('/api/listening/progress', async (req, res) => {
     }
     return res.json({ success: true, progress: {} });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -446,7 +466,7 @@ app.post('/api/listening/progress', express.json(), async (req, res) => {
     await writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.json({ success: true, record: result.record });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -498,7 +518,7 @@ app.post('/api/listening/progress/batch', express.json(), async (req, res) => {
     await writeJsonAtomic(LISTENING_PROGRESS_FILE, allProgress);
     return res.json({ success: true, count: records.length, progress: allProgress[userId] || {} });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -532,7 +552,7 @@ app.get('/api/listening/youtube-info', async (req, res) => {
       }
     });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -547,7 +567,7 @@ app.get('/api/listening/attempts', async (req, res) => {
     }
     return res.json({ success: true, attempts: [] });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -585,7 +605,7 @@ app.post('/api/listening/attempts', express.json({ limit: '5mb' }), async (req, 
 
     return res.json({ success: true, attempt });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -604,7 +624,7 @@ app.get('/api/listening/exam-resume', async (req, res) => {
     }
     return res.json({ success: true, state: null, resumes: {} });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -632,7 +652,7 @@ app.post('/api/listening/exam-resume', express.json({ limit: '2mb' }), async (re
     await writeJsonAtomic(LISTENING_RESUME_FILE, all);
     return res.json({ success: true });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -650,7 +670,7 @@ app.delete('/api/listening/exam-resume', async (req, res) => {
     }
     return res.json({ success: true });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -667,7 +687,7 @@ app.get('/api/listening/questions', async (req, res) => {
     }
     return res.json({ success: true, exam: null, questions: {} });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -707,7 +727,7 @@ app.post('/api/listening/questions', requireAuth, requireAdmin, express.json({ l
     await writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
     return res.json({ success: true, exam: all[videoId] });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -749,7 +769,7 @@ app.post('/api/listening/questions/update-timestamp', requireAuth, requireAdmin,
     await writeJsonAtomic(LISTENING_QUESTIONS_FILE, all);
     return res.json({ success: true, question: q });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -772,7 +792,7 @@ app.get('/api/listening/mappings', async (req, res) => {
     }
     return res.json({ success: true, mappings });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -815,7 +835,7 @@ app.post('/api/listening/mappings', requireAuth, requireAdmin, express.json(), a
     await writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
     return res.json({ success: true, mapping: enriched });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
@@ -854,14 +874,15 @@ app.post('/api/listening/mappings/batch', requireAuth, requireAdmin, express.jso
     await writeJsonAtomic(LISTENING_MAPPINGS_FILE, mappings);
     return res.json({ success: true, count: incoming.length });
   } catch (e: any) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: internalError(e) });
   }
 });
 
 // 18. Frame Extraction & OCR Pipeline (High precision OCR from actual video frames)
 // Strictly extracts what is visible in the frame: Question number, Question Text Ja, Options Ja.
 // Does NOT fabricate or invent questions.
-app.post('/api/listening/extract-frame-ocr', express.json({ limit: '10mb' }), async (req, res) => {
+// Admin tool for importing listening questions (Gemini Vision); not used by the learner UI.
+app.post('/api/listening/extract-frame-ocr', requireAuth, requireAdmin, async (req, res) => {
   try {
     const { videoId, frameTime, frameBase64, expectedLevel = 'N4', section = '問題1', questionNumber } = req.body;
     
@@ -2890,36 +2911,28 @@ app.use('/api/auth/resolve-identifier', (req, res, next) => {
   next();
 });
 app.post('/api/auth/resolve-identifier', async (req: any, res) => {
+  // The account email is only returned together with a correct password, so this endpoint can no longer
+  // be used to turn usernames (or display names shown on the leaderboard) into email addresses.
+  const invalid = () => res.status(401).json({ success: false, error: 'Sai tên đăng nhập hoặc mật khẩu.' });
   try {
-    const rawIdentifier = (req.body?.identifier || '').toString().trim();
-    if (!rawIdentifier) {
-      return res.status(400).json({ success: false, error: 'Identifier is required' });
+    const rawIdentifier = String(req.body?.identifier || '').trim();
+    const password = typeof req.body?.password === 'string' ? req.body.password : '';
+    if (!rawIdentifier || !password) {
+      return res.status(400).json({ success: false, error: 'Vui lòng nhập tên đăng nhập và mật khẩu.' });
     }
-
     if (rawIdentifier.includes('@')) {
-      return res.json({
-        success: true,
-        isEmail: true,
-        email: rawIdentifier.toLowerCase()
-      });
+      return res.json({ success: true, isEmail: true, email: rawIdentifier.toLowerCase() });
     }
-
-    const foundUser = await findUserByIdentifier(rawIdentifier);
-    if (!foundUser) {
-      return res.status(404).json({
-        success: false,
-        error: 'Không tìm thấy tài khoản với tên đăng nhập này.'
-      });
-    }
-
-    return res.json({
-      success: true,
-      isEmail: false,
-      email: foundUser.email
-    });
+    const foundUser = await findUserByUsername(rawIdentifier);
+    if (!foundUser?.email) return invalid();
+    const check = await verifyFirebasePassword(foundUser.email, password, req.headers.origin);
+    if (check === 'ok') return res.json({ success: true, isEmail: false, email: foundUser.email });
+    if (check === 'invalid') return invalid();
+    if (check === 'throttled') return res.status(429).json({ success: false, error: 'Bạn đăng nhập sai quá nhiều lần. Vui lòng thử lại sau.' });
+    return res.status(503).json({ success: false, error: 'Không kiểm tra được tài khoản lúc này. Hãy thử đăng nhập bằng email.' });
   } catch (err: any) {
     console.error('Error in /api/auth/resolve-identifier:', err);
-    return res.status(500).json({ success: false, error: err.message || 'Lookup failed' });
+    return res.status(500).json({ success: false, error: 'Không kiểm tra được tài khoản lúc này.' });
   }
 });
 
@@ -2978,7 +2991,7 @@ app.post('/api/user/sync', requireAuth, async (req: any, res) => {
     }
   } catch (error: any) {
     console.error("Error in /api/user/sync:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: internalError(error) });
   }
 });
 
@@ -3013,11 +3026,20 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
     
     // XP / coins / study days are only accepted as believable changes (see progressGuard).
     const guarded = guardProgress(dbUser, { xp, coins, studyDays }, vnDate());
+    // Usernames are used to log in, so they must be unique (registration sends the chosen one here).
+    let username: string | undefined;
+    if (req.body.username !== undefined) {
+      username = normalizeUsername(req.body.username);
+      if (username.length < 3) return res.status(400).json({ success: false, error: 'Tên đăng nhập cần ít nhất 3 ký tự (a-z, 0-9, _).' });
+      if (username !== dbUser.username && await isUsernameTaken(username, dbUser.uid)) {
+        return res.status(409).json({ success: false, error: 'Tên đăng nhập này đã có người dùng.' });
+      }
+    }
     try {
       const updatedUser = await updateUserProfile(dbUser.uid, {
         ...guarded,
         ...(guarded.studyDays && { streak: computeStreak(guarded.studyDays) }),
-        name, avatar, targetLevel, 
+        name, avatar, targetLevel, username,
         completedLessons, vocabStatus, grammarStatus, kanjiStatus, dailyTestResults, lastPosition, myWords, studyTrack
       });
       res.json({ success: true, user: { ...(updatedUser || dbUser), ...learning } });
@@ -3026,7 +3048,7 @@ app.post('/api/user/profile', requireAuth, async (req: any, res) => {
     }
   } catch (error: any) {
     console.error("Error in /api/user/profile:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: internalError(error) });
   }
 });
 
@@ -3304,7 +3326,7 @@ app.get('/api/vocab-prompts', async (req, res) => {
     return res.json({ count: items.length, items });
   } catch (error) {
     console.error('Error in /api/vocab-prompts route:', error);
-    return res.status(500).json({ error: String(error) });
+    return res.status(500).json({ error: internalError(error) });
   }
 });
 
@@ -3431,6 +3453,16 @@ app.get('/api/vocab/auto-fix-report', (req, res) => {
 });
 
 // Community and Real Users Leaderboard API
+// Public and unauthenticated: read only the top entries (cached), never email-derived names.
+let leaderboardCache: { at: number; users: any[] } | null = null;
+const LEADERBOARD_TTL_MS = 60_000;
+const publicName = (u: any) => {
+  const name = typeof u.name === 'string' ? u.name.trim() : '';
+  const local = typeof u.email === 'string' ? u.email.split('@')[0] : '';
+  // Accounts that never chose a name still carry their email prefix as the name: mask it.
+  if (!name || (local && name.toLowerCase() === local.toLowerCase())) return local ? `Học viên ${local.slice(0, 2)}***` : 'Học viên JLPT';
+  return name.slice(0, 40);
+};
 app.get('/api/leaderboard', async (req, res) => {
   const BASE_CHAMPIONS = [
     { id: 'u_1', name: 'Minh Tuấn N2', avatar: '🦊', level: 'N2', xp: 5820, weeklyXp: 840, monthlyXp: 2950, streak: 45, league: 'master', badge: 'Quán quân tuần' },
@@ -3445,15 +3477,20 @@ app.get('/api/leaderboard', async (req, res) => {
 
   try {
     let dbUsers: any[] = [];
-    try {
-      dbUsers = await getAllUsers();
-    } catch (_dbErr) {
-      // safe fallback if DB is not reachable
+    if (leaderboardCache && Date.now() - leaderboardCache.at < LEADERBOARD_TTL_MS) {
+      dbUsers = leaderboardCache.users;
+    } else {
+      try {
+        dbUsers = await getLeaderboardUsers(50);
+        leaderboardCache = { at: Date.now(), users: dbUsers };
+      } catch (_dbErr) {
+        // safe fallback if DB is not reachable
+      }
     }
-    
+
     const mappedDbUsers = dbUsers.map(u => ({
-      id: `db_${u.id}`,
-      name: u.name || u.email?.split('@')[0] || 'Học viên JLPT',
+      id: `db_${u.uid || u.id}`,
+      name: publicName(u),
       avatar: u.avatar || '🎓',
       level: (u.targetLevel || 'N5') as any,
       xp: u.xp || 0,
@@ -3465,10 +3502,12 @@ app.get('/api/leaderboard', async (req, res) => {
       isCurrentUser: false
     }));
 
-    const combined = [...mappedDbUsers, ...BASE_CHAMPIONS];
+    // Sample entries are only shown while there are few real learners, and are flagged as demo data.
+    const demo = BASE_CHAMPIONS.map(c => ({ ...c, isDemo: true }));
+    const combined = mappedDbUsers.length >= 10 ? mappedDbUsers : [...mappedDbUsers, ...demo];
     res.json({ success: true, leaderboard: combined });
   } catch (error: any) {
-    res.json({ success: true, leaderboard: BASE_CHAMPIONS });
+    res.json({ success: true, leaderboard: BASE_CHAMPIONS.map(c => ({ ...c, isDemo: true })) });
   }
 });
 
@@ -4809,7 +4848,7 @@ Hãy trả về JSON theo cấu trúc chính xác sau:
         return res.json({ ...offlineGrading, fallback: true });
       }
     } catch {}
-    return res.status(500).json({ error: error.message || "Failed to grade exam" });
+    return res.status(500).json({ error: internalError(error, "Không chấm được bài. Vui lòng thử lại.") });
   }
 });
 
