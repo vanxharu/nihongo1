@@ -54,15 +54,22 @@ final class WordRepository {
         return at(context, (int) ((day * 2654435761L) & 0x7fffffff));
     }
 
-    /** Word shown on the widget: today's word until the user taps refresh, then that choice for the day. */
+    /** The widget shows a new word every 5 minutes. */
+    static final long WIDGET_ROTATE_MS = 5 * 60 * 1000L;
+
+    private static long currentSlot() {
+        return System.currentTimeMillis() / WIDGET_ROTATE_MS;
+    }
+
+    /** Word shown on the widget: one per 5-minute slot; a tap on refresh overrides it until the next slot. */
     static Word forWidget(Context context) {
         SharedPreferences p = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        String today = todayKey();
-        if (today.equals(p.getString("day", ""))) {
+        long slot = currentSlot();
+        if (p.getLong("slot", -1) == slot) {
             Word w = at(context, p.getInt("index", 0));
             if (w != null) return w;
         }
-        return ofTheDay(context);
+        return at(context, (int) ((slot * 2654435761L) & 0x7fffffff));
     }
 
     static Word next(Context context) {
@@ -70,13 +77,8 @@ final class WordRepository {
         if (list.length() == 0) return null;
         Word w = at(context, new Random().nextInt(list.length()));
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-                .putString("day", todayKey()).putInt("index", w.index).apply();
+                .putLong("slot", currentSlot()).putInt("index", w.index).apply();
         return w;
-    }
-
-    private static String todayKey() {
-        Calendar c = Calendar.getInstance();
-        return c.get(Calendar.YEAR) + "-" + c.get(Calendar.DAY_OF_YEAR);
     }
 
     private WordRepository() {}

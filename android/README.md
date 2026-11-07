@@ -26,7 +26,8 @@ changes (icon, name, colours); web changes need no new APK.
 project, then registers the components in `AndroidManifest.xml`:
 
 - **"Từ vựng hôm nay" widget** (`VocabWidgetProvider`, `res/layout/widget_vocab.xml`): level, word,
-  reading, meaning; ⟳ shows another word; tap opens `/tango`. A new word every day.
+  reading, meaning; ⟳ shows another word; tap opens `/tango`. A new word every 5 minutes via a
+  non-wakeup repeating alarm (never wakes the phone; cancelled when the last widget is removed).
 - **Daily word notification at 20:00** (`DailyWord`, channel "Từ vựng mỗi ngày"): scheduled at app start
   (`DailyWordInit`), when the widget is added and after reboot. Needs the notification permission,
   which Android asks for when notifications are enabled in the web app (bell icon) or in system settings.

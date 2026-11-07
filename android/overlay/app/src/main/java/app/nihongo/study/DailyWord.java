@@ -35,6 +35,7 @@ public class DailyWord extends BroadcastReceiver {
         } else {
             // BOOT_COMPLETED, MY_PACKAGE_REPLACED, TIMEZONE_CHANGED
             ensureScheduled(context);
+            VocabWidgetProvider.ensureRotation(context);
             VocabWidgetProvider.refreshAll(context);
         }
     }

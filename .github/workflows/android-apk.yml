@@ -148,5 +148,6 @@ jobs:
             echo "== widget"; adb shell dumpsys appwidget | grep -A4 "app.nihongo.study/.VocabWidgetProvider" | head -6
             adb shell dumpsys appwidget | grep -q "VocabWidgetProvider" || { echo "::error::widget provider not registered"; exit 1; }
             adb shell am broadcast -f 32 -a app.nihongo.study.widget.NEXT -n app.nihongo.study/.VocabWidgetProvider ; sleep 2
+            adb shell am broadcast -f 32 -a app.nihongo.study.widget.ROTATE -n app.nihongo.study/.VocabWidgetProvider ; sleep 2
             echo "== crashes"; adb logcat -d -b crash | tee crash.txt | head -30
             if grep -q "app.nihongo.study" crash.txt; then echo "::error::app crashed"; exit 1; fi
