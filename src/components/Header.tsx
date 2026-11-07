@@ -5,7 +5,7 @@
 
 import { TARGET_CHOICES, targetChoice, targetLabel, targetPatch, type TargetChoice } from '../utils/studyTarget';
 import { createPortal } from 'react-dom';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { User, LogIn, ChevronRight, ChevronDown, ChevronLeft, RefreshCw, Trophy, Settings, Menu, Volume2, VolumeX, TrendingUp, BookOpen, CheckCircle2, Bell, Monitor, Flame } from 'lucide-react';
 import { UserProfile } from '../types';
@@ -14,7 +14,8 @@ import { motion } from 'motion/react';
 import { isSoundEnabled, setSoundEnabled } from '../utils/audio';
 import PwaInstallPrompt from './PwaInstallPrompt';
 import JpStudyLogo from './JpStudyLogo';
-import NotificationSettingsModal from './NotificationSettingsModal';
+// Lazy: the settings modal pulls notifications.ts and the Japanese dictionaries (~450 KB of source).
+const NotificationSettingsModal = lazy(() => import('./NotificationSettingsModal'));
 import AIConfigModal from './AIConfigModal';
 import ConfirmModal from './ConfirmModal';
 import LevelProgressBar from './LevelProgressBar';
@@ -438,10 +439,14 @@ export default function Header({
       )}
 
       {/* Notification Settings Modal */}
-      <NotificationSettingsModal 
-        isOpen={isNotificationModalOpen} 
-        onClose={() => setIsNotificationModalOpen(false)} 
-      />
+      {isNotificationModalOpen && (
+        <Suspense fallback={null}>
+          <NotificationSettingsModal
+            isOpen={isNotificationModalOpen}
+            onClose={() => setIsNotificationModalOpen(false)}
+          />
+        </Suspense>
+      )}
 
       {/* AI Central Configuration Modal */}
       <AIConfigModal

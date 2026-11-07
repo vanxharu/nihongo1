@@ -11,7 +11,6 @@ import { AnimateUIProvider } from '@animate-ui/react/provider';
 import { ReducedMotionConfig } from '@animate-ui/react/utils/motion';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
-import { getDefaultReminderSettings, syncRemindersWithServiceWorker } from './utils/notifications';
 import { BRAND_NAME } from './constants/brand';
 import { AppErrorBoundary } from './utils/lazyWithRetry';
 import { installCustomLlmHeaders } from './utils/aiCustomKey';
@@ -50,8 +49,10 @@ if ('serviceWorker' in navigator) {
         .then((reg) => {
           console.log(`${BRAND_NAME} ServiceWorker registered successfully:`, reg.scope);
           // Sync current reminder settings on startup
-          const settings = getDefaultReminderSettings();
-          syncRemindersWithServiceWorker(settings).catch(() => {});
+          // Loaded on demand: notifications.ts pulls the Japanese dictionaries into the bundle.
+          import('./utils/notifications')
+            .then(({ getDefaultReminderSettings, syncRemindersWithServiceWorker }) => syncRemindersWithServiceWorker(getDefaultReminderSettings()))
+            .catch(() => {});
         })
         .catch((err) => {
           console.warn(`${BRAND_NAME} ServiceWorker registration failed:`, err);

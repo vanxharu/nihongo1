@@ -18,11 +18,11 @@ import { playMilestoneChime } from './utils/audio';
 import { motion, AnimatePresence, useReducedMotion, MotionConfig } from 'motion/react';
 import { ArrowUp, Loader2, BookOpen, Layers, Compass, Languages, Menu } from 'lucide-react';
 import PwaInstallPrompt from './components/PwaInstallPrompt';
-import VocabFloatingNotifier from './components/VocabFloatingNotifier';
 import MobileBottomNav from './components/MobileBottomNav';
-import { checkAndTriggerReminder, getDefaultReminderSettings } from './utils/notifications';
 import { calculateEarnedXp, getPlayerLevelInfo } from './utils/xpSystem';
 import { lazyWithRetry, AppErrorBoundary } from './utils/lazyWithRetry';
+// Lazy: it pulls the furigana dictionary (~220 KB) and kanji data, not needed for the first paint.
+const VocabFloatingNotifier = lazyWithRetry(() => import('./components/VocabFloatingNotifier'));
 const VocabularyPractice = lazyWithRetry(() => import('./components/VocabularyPractice'));
 import NotFoundPage from './components/NotFoundPage';
 import { BRAND_NAME } from './constants/brand';
@@ -222,14 +222,19 @@ export default function App() {
   }, [user]);
 
   // Web Notification Daily Reminder Background Timer
+  // Loaded on demand: notifications.ts imports japaneseUtils (furigana + kanji dictionaries).
   useEffect(() => {
-    checkAndTriggerReminder(getDefaultReminderSettings());
-
-    const interval = setInterval(() => {
+    let interval: ReturnType<typeof setInterval> | undefined;
+    let cancelled = false;
+    import('./utils/notifications').then(({ checkAndTriggerReminder, getDefaultReminderSettings }) => {
+      if (cancelled) return;
       checkAndTriggerReminder(getDefaultReminderSettings());
-    }, 30000);
+      interval = setInterval(() => {
+        checkAndTriggerReminder(getDefaultReminderSettings());
+      }, 30000);
+    }).catch(() => { /* reminders are optional */ });
 
-    return () => clearInterval(interval);
+    return () => { cancelled = true; if (interval) clearInterval(interval); };
   }, []);
 
   // Save profile to localStorage whenever it updates
@@ -938,7 +943,7 @@ export default function App() {
       <PwaInstallPrompt />
 
       {/* Global Floating Vocabulary & Grammar Notifications */}
-      <VocabFloatingNotifier onEarnXp={handleEarnXp} />
+      <Suspense fallback={null}><VocabFloatingNotifier onEarnXp={handleEarnXp} /></Suspense>
 
       {/* Modern Mobile & Tablet Bottom Navigation Bar (Visible on mobile/tablet screens < xl) */}
       <MobileBottomNav
