@@ -12,11 +12,11 @@
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_marginTop="10dp" android:text="でんしゃ" android:textColor="#F9A8B4" android:textSize="12sp" />
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="電車" android:textColor="#FFFFFF" android:textSize="30sp" android:textStyle="bold" />
+        android:text="電車" android:textColor="#FFFFFF" android:textSize="24sp" android:textStyle="bold" />
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:text="tàu điện" android:textColor="#E2E8F0" android:textSize="14sp" />
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_marginTop="12dp" android:text="電車で 学校へ 行きます。" android:textColor="#CBD5E1" android:textSize="14sp" />
+        android:layout_marginTop="6dp" android:text="電車で 学校へ 行きます。" android:textColor="#CBD5E1" android:textSize="14sp" />
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:text="Tôi đi học bằng tàu điện." android:textColor="#94A3B8" android:textSize="12sp" />
 </LinearLayout>

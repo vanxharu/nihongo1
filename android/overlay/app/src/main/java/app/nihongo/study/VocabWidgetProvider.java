@@ -97,7 +97,7 @@ public class VocabWidgetProvider extends AppWidgetProvider {
             Bundle o = manager.getAppWidgetOptions(id);
             int widthDp = o.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0);
             int heightDp = o.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0);
-            manager.updateAppWidget(id, build(context, w, widthDp > 0 ? widthDp : 300, heightDp > 0 ? heightDp : 260));
+            manager.updateAppWidget(id, build(context, w, widthDp > 0 ? widthDp : 300, heightDp > 0 ? heightDp : 150));
         }
     }
 
@@ -106,33 +106,34 @@ public class VocabWidgetProvider extends AppWidgetProvider {
         float d = context.getResources().getDisplayMetrics().density;
         float sp = context.getResources().getDisplayMetrics().scaledDensity;
         RemoteViews v = new RemoteViews(context.getPackageName(), R.layout.widget_vocab);
-        int contentPx = (int) ((widthDp - 14 - 8 - 6) * d);   // root padding + end inset
-        int wordPx = contentPx - (int) ((92 + 12) * d);        // minus image and gap
+        int contentPx = (int) ((widthDp - 12 - 8 - 4) * d);   // root padding + end inset
+        int wordPx = contentPx - (int) ((76 + 10) * d);        // minus image and gap
 
         if (w != null) {
             v.setTextViewText(R.id.widget_level, w.level);
             v.setTextViewText(R.id.widget_meaning, w.meaning);
 
             RubyRenderer.Style ws = new RubyRenderer.Style();
-            ws.textPx = 28 * sp; ws.rubyPx = 12 * sp; ws.bold = true; ws.maxLines = 2;
+            ws.textPx = 24 * sp; ws.rubyPx = 10 * sp; ws.bold = true; ws.maxLines = 1;
             ws.textColor = 0xFFFFFFFF; ws.rubyColor = 0xFFF9A8B4;
             v.setImageViewBitmap(R.id.widget_word, RubyRenderer.render(w.wordRuby, Math.max(wordPx, 1), ws));
 
             Bitmap img = w.image(context);
-            v.setImageViewBitmap(R.id.widget_image, img != null ? rounded(img, (int) (92 * d), 14 * d)
-                    : placeholder(w.word, (int) (92 * d), 14 * d));
+            v.setImageViewBitmap(R.id.widget_image, img != null ? rounded(img, (int) (76 * d), 12 * d)
+                    : placeholder(w.word, (int) (76 * d), 12 * d));
 
-            boolean hasExample = w.exampleRuby.length() > 0;
+            // 4x2 (~110-150dp tall): word + one example line; taller (resized to 3 rows): + translation.
+            boolean hasExample = w.exampleRuby.length() > 0 && heightDp >= 120;
             v.setViewVisibility(R.id.widget_divider, hasExample ? View.VISIBLE : View.GONE);
             v.setViewVisibility(R.id.widget_example, hasExample ? View.VISIBLE : View.GONE);
             if (hasExample) {
                 RubyRenderer.Style es = new RubyRenderer.Style();
-                es.textPx = 15 * sp; es.rubyPx = 9 * sp; es.bold = false;
-                es.maxLines = heightDp >= 240 ? 2 : 1;
+                es.textPx = 14 * sp; es.rubyPx = 8 * sp; es.bold = false;
+                es.maxLines = heightDp >= 220 ? 2 : 1;
                 es.textColor = 0xFFE2E8F0; es.rubyColor = 0xFF94A3B8;
                 v.setImageViewBitmap(R.id.widget_example, RubyRenderer.render(w.exampleRuby, Math.max(contentPx, 1), es));
             }
-            boolean showVi = hasExample && !TextUtils.isEmpty(w.exampleVi) && heightDp >= 200;
+            boolean showVi = hasExample && !TextUtils.isEmpty(w.exampleVi) && heightDp >= 170;
             v.setViewVisibility(R.id.widget_example_vi, showVi ? View.VISIBLE : View.GONE);
             if (showVi) v.setTextViewText(R.id.widget_example_vi, w.exampleVi);
         }
@@ -164,7 +165,15 @@ public class VocabWidgetProvider extends AppWidgetProvider {
         Paint bg = new Paint(Paint.ANTI_ALIAS_FLAG);
         bg.setColor(0xFF1E293B);
         c.drawRoundRect(new RectF(0, 0, size, size), radius, radius, bg);
-        String ch = word.isEmpty() ? "語" : word.substring(0, word.offsetByCodePoints(0, 1));
+        // First Japanese letter (skips brackets, 〜 and other marks).
+        String ch = "語";
+        for (int i = 0; i < word.length(); ) {
+            int cp = word.codePointAt(i);
+            Character.UnicodeBlock b = Character.UnicodeBlock.of(cp);
+            if (b == Character.UnicodeBlock.HIRAGANA || b == Character.UnicodeBlock.KATAKANA
+                    || b == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS) { ch = new String(Character.toChars(cp)); break; }
+            i += Character.charCount(cp);
+        }
         Paint t = new Paint(Paint.ANTI_ALIAS_FLAG);
         t.setColor(0xFFF36A78);
         t.setTypeface(Typeface.DEFAULT_BOLD);

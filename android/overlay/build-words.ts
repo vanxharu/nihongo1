@@ -13,6 +13,8 @@ import ILLUSTRATIONS from '../../src/data/vocabularyIllustrations.json';
 
 const root = new URL('../../', import.meta.url).pathname;
 const clean = (s: unknown) => (typeof s === 'string' ? s.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim() : '');
+// Optional parts are written [お]互いに in the data: show them as （お）互いに.
+const optional = (s: string) => s.replace(/\[([^\]]*)\]/g, '（$1）');
 const seen = new Set<string>();
 const rows: (string | number)[][] = [];
 let images = 0, furigana = 0;
@@ -47,7 +49,9 @@ for (const v of all) {
   const img = src && fs.existsSync(`${root}public/vocabulary-illustrations/${src}`) ? 1 : 0;
   images += img; if (exFuri.some((p) => typeof p !== 'string')) furigana++;
   if (plain(wordRuby) !== word) throw new Error(`word ruby mismatch: ${word}`);
-  rows.push([v.id, word, reading === word ? '' : reading, meaning, v.level, ex, exVi, wordRuby, exFuri, img, img ? src : '']);
+  const fix = (parts: (string | [string, string])[]) =>
+    parts.map((p) => (typeof p === 'string' ? optional(p) : [optional(p[0]), p[1]] as [string, string]));
+  rows.push([v.id, optional(word), reading === word ? '' : reading, meaning, v.level, optional(ex), exVi, fix(wordRuby), fix(exFuri), img, img ? src : '']);
 }
 fs.writeFileSync(new URL('./app/src/main/assets/words.json', import.meta.url), JSON.stringify(rows));
 console.log(`${rows.length} words, ${images} with image, ${furigana} examples with furigana`);

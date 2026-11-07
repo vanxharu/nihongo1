@@ -1,88 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- "Từ vựng" widget, 4x3. RemoteViews: only framework layouts/views (no plain View). The word and the
-     example are bitmaps drawn by RubyRenderer so they can carry furigana. -->
+<!-- "Từ vựng" widget, 4x2 (resizable to 4x3). RemoteViews: only framework layouts/views (no plain View).
+     The word and the example are bitmaps drawn by RubyRenderer so they can carry furigana. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_bg"
+    android:gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingStart="14dp"
+    android:paddingStart="12dp"
     android:paddingTop="10dp"
     android:paddingEnd="8dp"
-    android:paddingBottom="12dp">
+    android:paddingBottom="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/widget_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/widget_level_bg"
-            android:paddingStart="8dp"
-            android:paddingTop="2dp"
-            android:paddingEnd="8dp"
-            android:paddingBottom="2dp"
-            android:text="N4"
-            android:textColor="#FFFFFF"
-            android:textSize="11sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="@string/widget_title"
-            android:textColor="#94A3B8"
-            android:textSize="12sp" />
-
-        <ImageView
-            android:id="@+id/widget_settings"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            android:background="@drawable/widget_button_bg"
-            android:contentDescription="@string/widget_settings"
-            android:padding="8dp"
-            android:src="@drawable/ic_widget_settings" />
-
-        <ImageView
-            android:id="@+id/widget_next"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            android:layout_marginStart="6dp"
-            android:background="@drawable/widget_button_bg"
-            android:contentDescription="@string/widget_next"
-            android:padding="8dp"
-            android:src="@drawable/ic_widget_refresh" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:paddingEnd="6dp"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/widget_image"
-            android:layout_width="92dp"
-            android:layout_height="92dp"
+            android:layout_width="76dp"
+            android:layout_height="76dp"
             android:contentDescription="@string/widget_image"
             android:scaleType="fitCenter" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/widget_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/widget_level_bg"
+                    android:paddingStart="7dp"
+                    android:paddingTop="1dp"
+                    android:paddingEnd="7dp"
+                    android:paddingBottom="1dp"
+                    android:text="N4"
+                    android:textColor="#FFFFFF"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <ImageView
+                    android:id="@+id/widget_settings"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/widget_button_bg"
+                    android:contentDescription="@string/widget_settings"
+                    android:padding="7dp"
+                    android:src="@drawable/ic_widget_settings" />
+
+                <ImageView
+                    android:id="@+id/widget_next"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="4dp"
+                    android:background="@drawable/widget_button_bg"
+                    android:contentDescription="@string/widget_next"
+                    android:padding="7dp"
+                    android:src="@drawable/ic_widget_refresh" />
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/widget_word"
@@ -96,11 +89,11 @@
                 android:id="@+id/widget_meaning"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
                 android:ellipsize="end"
-                android:maxLines="3"
+                android:maxLines="2"
+                android:paddingEnd="4dp"
                 android:textColor="#E2E8F0"
-                android:textSize="14sp" />
+                android:textSize="13sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -108,9 +101,9 @@
         android:id="@+id/widget_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="6dp"
         android:background="#26304A"
         android:contentDescription="@null" />
 
@@ -127,9 +120,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:paddingEnd="6dp"
         android:ellipsize="end"
         android:maxLines="2"
+        android:paddingEnd="4dp"
         android:textColor="#94A3B8"
         android:textSize="12sp" />
 </LinearLayout>

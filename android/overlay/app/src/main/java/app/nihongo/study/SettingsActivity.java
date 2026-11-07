@@ -96,7 +96,7 @@ public class SettingsActivity extends Activity {
 
         root.addView(section("Xem trước"));
         preview = new FrameLayout(this);
-        root.addView(preview, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(268)));
+        root.addView(preview, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(160)));
 
         LinearLayout levels = card(root, "Cấp độ");
         Set<String> chosen = Prefs.levels(this);
@@ -286,7 +286,7 @@ public class SettingsActivity extends Activity {
             Prefs.save(this, saved, Prefs.intervalMinutes(this), Prefs.notifyEnabled(this), Prefs.notifyHour(this), Prefs.notifyMinute(this));
         }
         int widthDp = (int) (getResources().getDisplayMetrics().widthPixels / getResources().getDisplayMetrics().density) - 40;
-        RemoteViews rv = VocabWidgetProvider.build(this, w, Math.min(widthDp, 360), 268);
+        RemoteViews rv = VocabWidgetProvider.build(this, w, Math.min(widthDp, 360), 160);
         preview.removeAllViews();
         try {
             View v = rv.apply(this, preview);
