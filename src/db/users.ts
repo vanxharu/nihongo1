@@ -1,5 +1,6 @@
 import { firebaseDb, clean } from '../server/firebaseStore';
 import { getBootstrapAdminEmails, isBootstrapAdmin } from '../server/bootstrapAdmin';
+import { vnDate } from '../utils/streak';
 export { getBootstrapAdminEmails } from '../server/bootstrapAdmin';
 export const ADMIN_EMAILS=getBootstrapAdminEmails();
 const collection=()=>firebaseDb().collection('app_users');
@@ -23,10 +24,14 @@ export function profilePatch(fields:any,allowRoleChange=false) {
 }
 export async function getOrCreateUser(uid:string,email:string,emailVerified=false) {
   const ref=collection().doc(uid);const normalized=(email||'').trim().toLowerCase();
+  // Called by requireAuth on every signed-in request: a plain read covers the usual case (profile exists,
+  // nothing to change). Only creation and admin promotion need the transaction.
+  const current=(await ref.get()).data();
+  if(current&&!(isBootstrapAdmin(normalized,emailVerified)&&current.role!=='admin'))return current;
   return firebaseDb().runTransaction(async tx=>{
     const snapshot=await tx.get(ref);const existing=snapshot.data();
     if(existing){if(isBootstrapAdmin(normalized,emailVerified)&&existing.role!=='admin'){tx.update(ref,{role:'admin'});return {...existing,role:'admin'};}return existing;}
-    const today=new Date().toISOString().slice(0,10);
+    const today=vnDate();
     const value={id:uid,uid,email:normalized,username:normalized.split('@')[0].replace(/[^a-z0-9_]/g,''),name:normalized.split('@')[0]||'Học viên JLPT',avatar:'',targetLevel:'N4',xp:0,streak:0,coins:0,lastActiveDate:today,studyDays:JSON.stringify([today]),completedLessons:'[]',vocabStatus:'{}',grammarStatus:'{}',kanjiStatus:'{}',dailyTestResults:'[]',role:isBootstrapAdmin(normalized,emailVerified)?'admin':'user',isVip:false,createdAt:new Date().toISOString(),profileMigrationVersion:0};
     tx.create(ref,value);return value;
   });
@@ -51,7 +56,8 @@ export async function importBrowserProfile(uid:string,fields:any){
   const ref=collection().doc(uid);const patch=profilePatch(fields);delete patch.username;
   // One-time migration of guest progress kept in the browser. Values come from the client, so they are
   // capped: XP/coins to what a guest can plausibly earn, study days to real recent dates, streak to those days.
-  const today=new Date().toISOString().slice(0,10);const oldest=new Date(Date.now()-IMPORT_MAX_DAYS*86_400_000).toISOString().slice(0,10);
+  // Study days are Vietnam calendar dates (same as guardProgress), not UTC dates.
+  const today=vnDate();const oldest=vnDate(new Date(Date.now()-IMPORT_MAX_DAYS*86_400_000));
   if(patch.studyDays!==undefined){let days:any[]=[];try{days=JSON.parse(patch.studyDays);}catch{}patch.studyDays=JSON.stringify((Array.isArray(days)?days:[]).filter(d=>typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d)&&d>=oldest&&d<=today));}
   const importedDays=(()=>{try{return JSON.parse(patch.studyDays||'[]').length;}catch{return 0;}})();
   if(patch.xp!==undefined)patch.xp=Math.min(patch.xp,IMPORT_MAX_XP);

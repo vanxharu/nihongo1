@@ -23,6 +23,19 @@ export interface AuthRequest extends Request {
   };
 }
 
+// The same request can pass several token checks (body-size gate, rate limit, requireAuth, optional
+// listening auth). Verify the Bearer token once and reuse the result for the rest of the request.
+export function verifiedToken(req: Request): Promise<DecodedIdToken | null> {
+  const r = req as any;
+  if (!r._verifiedToken) {
+    const header = req.headers.authorization;
+    r._verifiedToken = header?.startsWith('Bearer ') && adminAuth
+      ? adminAuth.verifyIdToken(header.slice(7)).catch(() => null)
+      : Promise.resolve(null);
+  }
+  return r._verifiedToken;
+}
+
 export const requireAuth = async (
   req: AuthRequest,
   res: Response,
@@ -33,7 +46,6 @@ export const requireAuth = async (
     return res.status(401).json({ error: 'Unauthorized: Missing token' });
   }
 
-  const token = authHeader.split('Bearer ')[1];
   try {
     // Only cryptographically verified Firebase ID tokens are accepted.
     // Unsigned/self-issued session tokens must never be trusted.
@@ -42,12 +54,8 @@ export const requireAuth = async (
       return res.status(503).json({ error: 'Authentication service unavailable' });
     }
 
-    let decodedToken: DecodedIdToken;
-    try {
-      decodedToken = await adminAuth.verifyIdToken(token);
-    } catch {
-      return res.status(401).json({ error: 'Unauthorized: Invalid token' });
-    }
+    const decodedToken = await verifiedToken(req);
+    if (!decodedToken) return res.status(401).json({ error: 'Unauthorized: Invalid token' });
 
     req.user = decodedToken;
 
