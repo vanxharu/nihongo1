@@ -1,6 +1,10 @@
 // JPStudy PWA Service Worker with Background Notification & Offline Support
-const CACHE_NAME = 'jpstudy-pwa-v11-safe-updates';
+const CACHE_NAME = 'jpstudy-pwa-v12-content-swr';
 const DATA_CACHE_NAME = 'jpstudy-data-cache-v1';
+// Non-hashed static content (illustrations, ai-analysis JSON, covers): served stale-while-revalidate
+// and capped, so updates reach learners and the cache does not grow without bound.
+const CONTENT_CACHE_NAME = 'jpstudy-content-v1';
+const CONTENT_CACHE_MAX_ENTRIES = 400;
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -772,7 +776,7 @@ self.addEventListener('activate', (event) => {
       caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME && cacheName !== DATA_CACHE_NAME) {
+            if (cacheName !== CACHE_NAME && cacheName !== DATA_CACHE_NAME && cacheName !== CONTENT_CACHE_NAME) {
               return caches.delete(cacheName);
             }
           })
@@ -783,6 +787,11 @@ self.addEventListener('activate', (event) => {
     ])
   );
 });
+
+async function trimCache(cache, maxEntries) {
+  const keys = await cache.keys().catch(() => []);
+  for (let i = 0; i < keys.length - maxEntries; i++) await cache.delete(keys[i]).catch(() => {});
+}
 
 // Keep HTML fresh across deployments; only cache valid responses of each type.
 self.addEventListener('fetch', event => {
@@ -807,6 +816,21 @@ self.addEventListener('fetch', event => {
       } catch {
         return await cache?.match('/index.html').catch(() => undefined) || new Response('Bạn đang mất kết nối. Hãy kết nối mạng rồi tải lại trang.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
       }
+    }
+    // Files with a content hash in the name (/assets/*) never change: cache-first.
+    // Everything else can change under the same URL: answer from cache, refresh in the background.
+    if (!/^\/assets\//.test(url.pathname) && !asset) {
+      const content = await caches.open(CONTENT_CACHE_NAME).catch(() => null);
+      const hit = await content?.match(request).catch(() => undefined);
+      const refresh = fetch(request).then(async response => {
+        if (content && response && response.ok && response.type === 'basic') {
+          await content.put(request, response.clone()).catch(() => {});
+          await trimCache(content, CONTENT_CACHE_MAX_ENTRIES);
+        }
+        return response;
+      });
+      if (hit) { event.waitUntil(refresh.catch(() => {})); return hit; }
+      try { return await refresh; } catch { return new Response('Resource unavailable', { status: 503 }); }
     }
     const cached = await cache?.match(request).catch(() => undefined);
     if (valid(cached)) return cached;
