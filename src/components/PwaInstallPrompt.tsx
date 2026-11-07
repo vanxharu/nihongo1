@@ -100,6 +100,7 @@ export default function PwaInstallPrompt({ onDismiss, initialTab }: PwaInstallPr
     };
 
     const handleAppInstalled = () => {
+      (window as any).__pwaInstallEvent = undefined;
       markAppAsInstalled();
       setIsInstalled(true);
       setShowBanner(false);
@@ -116,6 +117,9 @@ export default function PwaInstallPrompt({ onDismiss, initialTab }: PwaInstallPr
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    // The event may already have fired before this (lazy) component mounted: see src/main.tsx.
+    const earlyEvent = (window as any).__pwaInstallEvent as Event | undefined;
+    if (earlyEvent) handleBeforeInstallPrompt(earlyEvent);
     window.addEventListener('appinstalled', handleAppInstalled);
     window.addEventListener('jpstudy_installed_state_changed', handleStateChanged);
 
@@ -525,6 +529,7 @@ export function InstallAppButton({ className }: { className?: string }) {
     };
 
     const handleAppInstalled = () => {
+      (window as any).__pwaInstallEvent = undefined;
       markAppAsInstalled();
       setIsInstalled(true);
     };
@@ -607,6 +612,7 @@ export function SidebarWindowsInstallCard() {
       setDeferredPrompt(e);
     };
     const handleAppInstalled = () => {
+      (window as any).__pwaInstallEvent = undefined;
       markAppAsInstalled();
       setIsInstalled(true);
     };

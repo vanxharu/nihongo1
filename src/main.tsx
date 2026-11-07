@@ -13,6 +13,15 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { BRAND_NAME } from './constants/brand';
 import { AppErrorBoundary } from './utils/lazyWithRetry';
+
+// PwaInstallPrompt is lazy-loaded; Chrome/Edge may fire beforeinstallprompt before its chunk arrives.
+// Capture it here (same preventDefault the component does) so the component can pick it up on mount.
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    (window as any).__pwaInstallEvent = e;
+  });
+}
 import { installCustomLlmHeaders } from './utils/aiCustomKey';
 installCustomLlmHeaders();
 

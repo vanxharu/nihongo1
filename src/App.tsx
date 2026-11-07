@@ -10,17 +10,19 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import { UserProfile, JLPTLevel } from './types';
 import { useAuth } from './contexts/AuthContext';
-import AuthModal from './components/AuthModal';
 import LearningMotion from './components/LearningMotion';
-import StreakCelebration from './components/StreakCelebration';
 import { ParticleCelebration, ParticleCelebrationRef } from './components/ParticleCelebration';
 import { playMilestoneChime } from './utils/audio';
 import { motion, AnimatePresence, useReducedMotion, MotionConfig } from 'motion/react';
 import { ArrowUp, Loader2, BookOpen, Layers, Compass, Languages, Menu } from 'lucide-react';
-import PwaInstallPrompt from './components/PwaInstallPrompt';
 import MobileBottomNav from './components/MobileBottomNav';
 import { calculateEarnedXp, getPlayerLevelInfo } from './utils/xpSystem';
 import { lazyWithRetry, AppErrorBoundary } from './utils/lazyWithRetry';
+// Startup bundle: overlays that are not part of the first screen load in their own chunks.
+const AuthModal = lazyWithRetry(() => import('./components/AuthModal'));
+const StreakCelebration = lazyWithRetry(() => import('./components/StreakCelebration'));
+const PwaInstallPrompt = lazyWithRetry(() => import('./components/PwaInstallPrompt'));
+const SaveToNotebookModal = lazyWithRetry(() => import('./components/SaveToNotebookModal'));
 // Lazy: it pulls the furigana dictionary (~220 KB) and kanji data, not needed for the first paint.
 const VocabFloatingNotifier = lazyWithRetry(() => import('./components/VocabFloatingNotifier'));
 const VocabularyPractice = lazyWithRetry(() => import('./components/VocabularyPractice'));
@@ -47,7 +49,6 @@ const JlptRoadmapView = lazyWithRetry(() => import('./components/roadmap/JlptRoa
 const AchievementsView = lazyWithRetry(() => import('./components/achievements/AchievementsView'));
 const MobilePracticeHub = lazyWithRetry(() => import('./components/mobile/MobilePracticeHub'));
 const MobileProfileView = lazyWithRetry(() => import('./components/mobile/MobileProfileView'));
-import SaveToNotebookModal from './components/SaveToNotebookModal';
 const JlptWordDetailModal = lazyWithRetry(() => import('./components/JlptWordDetailModal')); // kéo theo Tango N4: chỉ nạp khi mở tra từ
 import ShibaMascot from './components/mascot/ShibaMascot';
 import Toasts, { toast } from './components/ui/Toasts';
@@ -891,9 +892,9 @@ export default function App() {
         </main>
       </div>
 
-      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+      {isAuthModalOpen && <Suspense fallback={null}><AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} /></Suspense>}
       <LearningMotion />
-      <StreakCelebration />
+      <Suspense fallback={null}><StreakCelebration /></Suspense>
 
       {/* Scroll to Top Button */}
       <AnimatePresence>
@@ -917,7 +918,7 @@ export default function App() {
       <CommandPalette />
 
       {/* Universal Save to Notebook Modal */}
-      <SaveToNotebookModal />
+      <Suspense fallback={null}><SaveToNotebookModal /></Suspense>
 
       {/* Mazii Word Detail Lookup Modal */}
       {selectedMaziiWord && (
@@ -940,7 +941,7 @@ export default function App() {
       )}
 
       {/* PWA Install Banner & Modal */}
-      <PwaInstallPrompt />
+      <Suspense fallback={null}><PwaInstallPrompt /></Suspense>
 
       {/* Global Floating Vocabulary & Grammar Notifications */}
       <Suspense fallback={null}><VocabFloatingNotifier onEarnXp={handleEarnXp} /></Suspense>
