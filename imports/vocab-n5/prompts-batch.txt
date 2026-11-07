@@ -1,0 +1,1779 @@
+### BATCH 1/105 - images 1-10 (tango_n5_1 .. tango_n5_10)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+1. tango_n5_1 - "I": I am Ann.
+2. tango_n5_2 - "~is": My name is Smith.
+3. tango_n5_3 - "san": A: Are you Tom-san? / B: Yes.
+4. tango_n5_4 - "chan": (She is) Lara-chan.
+5. tango_n5_5 - "you": Are you Tom-san?
+6. tango_n5_6 - "he": He is Tom-san.
+7. tango_n5_7 - "she": She is Hien-san.
+8. tango_n5_8 - "name": A: What is your name? / B: My name is Tom.
+9. tango_n5_9 - "yes": A: Are you Yamada-san? / B: Yes, I am.
+10. tango_n5_10 - "yes": A: Are you Yamada-san? / B: Yes, I am.
+
+
+### BATCH 2/105 - images 11-20 (tango_n5_11 .. tango_n5_20)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+11. tango_n5_11 - "no": A: Are you Yamada-san? / C: No, I'm not.
+12. tango_n5_12 - "yes, that's right": A: Are you Yamada-san? / B: Yes, I am.
+13. tango_n5_13 - "no, that's not correct": A: Are you Yamada-san? / B: No I'm not. I'm Tanaka.
+14. tango_n5_14 - "Good morning.": an everyday situation that clearly shows "Good morning."
+15. tango_n5_15 - "Good morning.": an everyday situation that clearly shows "Good morning."
+16. tango_n5_16 - "Hello.": an everyday situation that clearly shows "Hello."
+17. tango_n5_17 - "Good evening.": an everyday situation that clearly shows "Good evening."
+18. tango_n5_18 - "Good bye.": an everyday situation that clearly shows "Good bye."
+19. tango_n5_19 - "See you again.": an everyday situation that clearly shows "See you again."
+20. tango_n5_20 - "Good night.": an everyday situation that clearly shows "Good night."
+
+
+### BATCH 3/105 - images 21-30 (tango_n5_21 .. tango_n5_30)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+21. tango_n5_21 - "Thank you.": an everyday situation that clearly shows "Thank you."
+22. tango_n5_22 - "You're welcome.": an everyday situation that clearly shows "You're welcome."
+23. tango_n5_23 - "Thank you.": an everyday situation that clearly shows "Thank you."
+24. tango_n5_24 - "Go ahead.": an everyday situation that clearly shows "Go ahead."
+25. tango_n5_25 - "Thank you.": an everyday situation that clearly shows "Thank you."
+26. tango_n5_26 - "Hello.": an everyday situation that clearly shows "Hello."
+27. tango_n5_27 - "Glad to know you.": an everyday situation that clearly shows "Glad to know you."
+28. tango_n5_28 - "Me too, same here.": an everyday situation that clearly shows "Me too, same here."
+29. tango_n5_29 - "family": There are seven people in my family.
+30. tango_n5_30 - "parents": an everyday situation that clearly shows "parents"
+
+
+### BATCH 4/105 - images 31-40 (tango_n5_31 .. tango_n5_40)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+31. tango_n5_31 - "father": an everyday situation that clearly shows "father"
+32. tango_n5_32 - "mother": an everyday situation that clearly shows "mother"
+33. tango_n5_33 - "older sister": an everyday situation that clearly shows "older sister"
+34. tango_n5_34 - "older brother": an everyday situation that clearly shows "older brother"
+35. tango_n5_35 - "younger brother": an everyday situation that clearly shows "younger brother"
+36. tango_n5_36 - "younger sister": an everyday situation that clearly shows "younger sister"
+37. tango_n5_37 - "siblings": an everyday situation that clearly shows "siblings"
+38. tango_n5_38 - "dog": an everyday situation that clearly shows "dog"
+39. tango_n5_39 - "cat": an everyday situation that clearly shows "cat"
+40. tango_n5_40 - "have, be": ①I have a dog. ②I have a sister.
+
+
+### BATCH 5/105 - images 41-50 (tango_n5_41 .. tango_n5_50)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+41. tango_n5_41 - "one's household": I own a cat.
+42. tango_n5_42 - "grandfather": an everyday situation that clearly shows "grandfather"
+43. tango_n5_43 - "grandmother": an everyday situation that clearly shows "grandmother"
+44. tango_n5_44 - "parents (of another person)": an everyday situation that clearly shows "parents (of another person)"
+45. tango_n5_45 - "father (of another person)": an everyday situation that clearly shows "father (of another person)"
+46. tango_n5_46 - "mother (of another person)": an everyday situation that clearly shows "mother (of another person)"
+47. tango_n5_47 - "older sister (of another person)": an everyday situation that clearly shows "older sister (of another person)"
+48. tango_n5_48 - "older brother (of another person)": an everyday situation that clearly shows "older brother (of another person)"
+49. tango_n5_49 - "younger brother (of another person)": an everyday situation that clearly shows "younger brother (of another person)"
+50. tango_n5_50 - "younger sister (of another person)": an everyday situation that clearly shows "younger sister (of another person)"
+
+
+### BATCH 6/105 - images 51-60 (tango_n5_51 .. tango_n5_60)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+51. tango_n5_51 - "one person": an everyday situation that clearly shows "one person"
+52. tango_n5_52 - "two people": an everyday situation that clearly shows "two people"
+53. tango_n5_53 - "three people": an everyday situation that clearly shows "three people"
+54. tango_n5_54 - "four people": an everyday situation that clearly shows "four people"
+55. tango_n5_55 - "five people": an everyday situation that clearly shows "five people"
+56. tango_n5_56 - "six people": an everyday situation that clearly shows "six people"
+57. tango_n5_57 - "seven people": an everyday situation that clearly shows "seven people"
+58. tango_n5_58 - "eight people": an everyday situation that clearly shows "eight people"
+59. tango_n5_59 - "nine people": an everyday situation that clearly shows "nine people"
+60. tango_n5_60 - "ten people": an everyday situation that clearly shows "ten people"
+
+
+### BATCH 7/105 - images 61-70 (tango_n5_61 .. tango_n5_70)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+61. tango_n5_61 - "how many people": A: How many people are there? / B: It's three people.
+62. tango_n5_62 - "adult": an everyday situation that clearly shows "adult"
+63. tango_n5_63 - "child": an everyday situation that clearly shows "child"
+64. tango_n5_64 - "man": an everyday situation that clearly shows "man"
+65. tango_n5_65 - "woman": an everyday situation that clearly shows "woman"
+66. tango_n5_66 - "boy": an everyday situation that clearly shows "boy"
+67. tango_n5_67 - "girl": an everyday situation that clearly shows "girl"
+68. tango_n5_68 - "country": I am from Malaysia.
+69. tango_n5_69 - "have/exists": There is a Disneyland in China.
+70. tango_n5_70 - "which": A: Which country are you from? / B: I'm from Kenya.
+
+
+### BATCH 8/105 - images 71-80 (tango_n5_71 .. tango_n5_80)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+71. tango_n5_71 - "came from": I came from the United States.
+72. tango_n5_72 - "person from ~ (nationality)": I am British.
+73. tango_n5_73 - "map": Do you have a map of Japan?
+74. tango_n5_74 - "world": Do you have a map of the world?
+75. tango_n5_75 - "Japan": an everyday situation that clearly shows "Japan"
+76. tango_n5_76 - "India": an everyday situation that clearly shows "India"
+77. tango_n5_77 - "Indonesia": an everyday situation that clearly shows "Indonesia"
+78. tango_n5_78 - "South Korea": an everyday situation that clearly shows "South Korea"
+79. tango_n5_79 - "Thailand": an everyday situation that clearly shows "Thailand"
+80. tango_n5_80 - "Taiwan": an everyday situation that clearly shows "Taiwan"
+
+
+### BATCH 9/105 - images 81-90 (tango_n5_81 .. tango_n5_90)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+81. tango_n5_81 - "China": an everyday situation that clearly shows "China"
+82. tango_n5_82 - "Nepal": an everyday situation that clearly shows "Nepal"
+83. tango_n5_83 - "Philippines": an everyday situation that clearly shows "Philippines"
+84. tango_n5_84 - "Vietnam": an everyday situation that clearly shows "Vietnam"
+85. tango_n5_85 - "Malaysia": an everyday situation that clearly shows "Malaysia"
+86. tango_n5_86 - "Myanmar, Burma": an everyday situation that clearly shows "Myanmar, Burma"
+87. tango_n5_87 - "Turkey": an everyday situation that clearly shows "Turkey"
+88. tango_n5_88 - "Australia": an everyday situation that clearly shows "Australia"
+89. tango_n5_89 - "New Zealand": an everyday situation that clearly shows "New Zealand"
+90. tango_n5_90 - "United States of America": an everyday situation that clearly shows "United States of America"
+
+
+### BATCH 10/105 - images 91-100 (tango_n5_91 .. tango_n5_100)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+91. tango_n5_91 - "Canada": an everyday situation that clearly shows "Canada"
+92. tango_n5_92 - "Mexico": an everyday situation that clearly shows "Mexico"
+93. tango_n5_93 - "Brazil": an everyday situation that clearly shows "Brazil"
+94. tango_n5_94 - "Russia": an everyday situation that clearly shows "Russia"
+95. tango_n5_95 - "Britain": an everyday situation that clearly shows "Britain"
+96. tango_n5_96 - "France": an everyday situation that clearly shows "France"
+97. tango_n5_97 - "Germany": an everyday situation that clearly shows "Germany"
+98. tango_n5_98 - "Switzerland": an everyday situation that clearly shows "Switzerland"
+99. tango_n5_99 - "Italy": an everyday situation that clearly shows "Italy"
+100. tango_n5_100 - "Spain": an everyday situation that clearly shows "Spain"
+
+
+### BATCH 11/105 - images 101-110 (tango_n5_101 .. tango_n5_110)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+101. tango_n5_101 - "Egypt": an everyday situation that clearly shows "Egypt"
+102. tango_n5_102 - "Kenya": an everyday situation that clearly shows "Kenya"
+103. tango_n5_103 - "teacher": Yamada-san is a Japanese teacher.
+104. tango_n5_104 - "student": My brother is a student.
+105. tango_n5_105 - "foreign student": Hien-san is a foreign student from Vietnam.
+106. tango_n5_106 - "school": The school is in Japan.
+107. tango_n5_107 - "study": I study Japanese.
+108. tango_n5_108 - "Japanese school": Hien-san is a student at the Japanese language school.
+109. tango_n5_109 - "elementary school": Ali-san is an elementary school teacher.
+110. tango_n5_110 - "junior high school": Tom-san is a junior high school teacher.
+
+
+### BATCH 12/105 - images 111-120 (tango_n5_111 .. tango_n5_120)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+111. tango_n5_111 - "high school": I study at an American high school.
+112. tango_n5_112 - "university": Smith-san is a teacher at a university.
+113. tango_n5_113 - "classroom": The teacher is in the classroom.
+114. tango_n5_114 - "class": There are foreign students in the class.
+115. tango_n5_115 - "go": I will go to school.
+116. tango_n5_116 - "come": The teacher is coming.
+117. tango_n5_117 - "leave, go home": I will go home.
+118. tango_n5_118 - "zero": an everyday situation that clearly shows "zero"
+119. tango_n5_119 - "one": an everyday situation that clearly shows "one"
+120. tango_n5_120 - "two": an everyday situation that clearly shows "two"
+
+
+### BATCH 13/105 - images 121-130 (tango_n5_121 .. tango_n5_130)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+121. tango_n5_121 - "three": an everyday situation that clearly shows "three"
+122. tango_n5_122 - "four": an everyday situation that clearly shows "four"
+123. tango_n5_123 - "five": an everyday situation that clearly shows "five"
+124. tango_n5_124 - "six": an everyday situation that clearly shows "six"
+125. tango_n5_125 - "seven": an everyday situation that clearly shows "seven"
+126. tango_n5_126 - "eight": an everyday situation that clearly shows "eight"
+127. tango_n5_127 - "nine": an everyday situation that clearly shows "nine"
+128. tango_n5_128 - "ten": an everyday situation that clearly shows "ten"
+129. tango_n5_129 - "eleven": an everyday situation that clearly shows "eleven"
+130. tango_n5_130 - "twelve": an everyday situation that clearly shows "twelve"
+
+
+### BATCH 14/105 - images 131-140 (tango_n5_131 .. tango_n5_140)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+131. tango_n5_131 - "~ month": an everyday situation that clearly shows "~ month"
+132. tango_n5_132 - "what month": A: What month is it? / B: It's May.
+133. tango_n5_133 - "day of the week": an everyday situation that clearly shows "day of the week"
+134. tango_n5_134 - "Sunday": an everyday situation that clearly shows "Sunday"
+135. tango_n5_135 - "Monday": an everyday situation that clearly shows "Monday"
+136. tango_n5_136 - "Tuesday": an everyday situation that clearly shows "Tuesday"
+137. tango_n5_137 - "Wednesday": an everyday situation that clearly shows "Wednesday"
+138. tango_n5_138 - "Thursday": an everyday situation that clearly shows "Thursday"
+139. tango_n5_139 - "Friday": an everyday situation that clearly shows "Friday"
+140. tango_n5_140 - "Saturday": an everyday situation that clearly shows "Saturday"
+
+
+### BATCH 15/105 - images 141-150 (tango_n5_141 .. tango_n5_150)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+141. tango_n5_141 - "what day": A: What day is tomorrow? / B: It's Tuesday.
+142. tango_n5_142 - "today": Today is Monday.
+143. tango_n5_143 - "tomorrow": Tomorrow I will go to school.
+144. tango_n5_144 - "yesterday": Yesterday I went to the university.
+145. tango_n5_145 - "every day": I study Japanese every day.
+146. tango_n5_146 - "week(s)": I went to America for two weeks.
+147. tango_n5_147 - "month(s)": I studied Japanese for a month.
+148. tango_n5_148 - "year(s)": I was in South Korea for five years.
+149. tango_n5_149 - "times": I go to the convenience store three times a week.
+150. tango_n5_150 - "number of times": A: How many times a week to you go? B: I go twice a week.
+
+
+### BATCH 16/105 - images 151-160 (tango_n5_151 .. tango_n5_160)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+151. tango_n5_151 - "part-time job": I will go to my part-time job on Saturdays.
+152. tango_n5_152 - "do": I don't go to my part-time job on Sundays.
+153. tango_n5_153 - "word/language": I don't understand the Japanese lanugage
+154. tango_n5_154 - "letter": I studied Japanese letters in high school.
+155. tango_n5_155 - "Japanese": I studied Japanese in Egypt.
+156. tango_n5_156 - "~language": Please speak in English
+157. tango_n5_157 - "talk, speak": I speak Japanese with the teacher.
+158. tango_n5_158 - "slowly": The teacher speaks slowly.
+159. tango_n5_159 - "say": Please repeat what you said slowly.
+160. tango_n5_160 - "once more": I will say it one more time.
+
+
+### BATCH 17/105 - images 161-170 (tango_n5_161 .. tango_n5_170)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+161. tango_n5_161 - "please": Please repeat it one more time.
+162. tango_n5_162 - "understand, know": I know hiragana.
+163. tango_n5_163 - "little": I know a few kanji.
+164. tango_n5_164 - "a little": Please speak a little slower.
+165. tango_n5_165 - "well": I understood well.
+166. tango_n5_166 - "roughly, about": I roughly understood.
+167. tango_n5_167 - "not at all": A: Did you understand it? B: No, I didn't understand it at all.
+168. tango_n5_168 - "hiragana": an everyday situation that clearly shows "hiragana"
+169. tango_n5_169 - "katakana": an everyday situation that clearly shows "katakana"
+170. tango_n5_170 - "kanji (Chinese characters)": an everyday situation that clearly shows "kanji (Chinese characters)"
+
+
+### BATCH 18/105 - images 171-180 (tango_n5_171 .. tango_n5_180)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+171. tango_n5_171 - "romaji (Roman alphabet)": an everyday situation that clearly shows "romaji (Roman alphabet)"
+172. tango_n5_172 - "read": I read a Japanese language book.
+173. tango_n5_173 - "book": I read a Chinese language book.
+174. tango_n5_174 - "write": I write kanji.
+175. tango_n5_175 - "hear": I listen to the CD at home.
+176. tango_n5_176 - "CD (compact disc)": I listened to the CD at school.
+177. tango_n5_177 - "look up": I look up a word in the dictionary.
+178. tango_n5_178 - "buy": Yesterday, I bought a CD.
+179. tango_n5_179 - "dictionary": I bought a Japanese language dictionary.
+180. tango_n5_180 - "electronic dictionary": I will check the meaning using the electronic dictionary.
+
+
+### BATCH 19/105 - images 181-190 (tango_n5_181 .. tango_n5_190)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+181. tango_n5_181 - "meaning": I don't understand the meaning in Japanese.
+182. tango_n5_182 - "do one's best": Do your best.
+183. tango_n5_183 - "homework": Today, I have homework to do.
+184. tango_n5_184 - "diary": I write in my diary every day.
+185. tango_n5_185 - "report": I wrote a report at school.
+186. tango_n5_186 - "library": I read a book at the library.
+187. tango_n5_187 - "book store": I bought a dictionary at the book store.
+188. tango_n5_188 - "practice": I practice kanji.
+189. tango_n5_189 - "speech": I gave a speech at school on Saturday.
+190. tango_n5_190 - "memorize": I learn kanji every day.
+
+
+### BATCH 20/105 - images 191-200 (tango_n5_191 .. tango_n5_200)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+191. tango_n5_191 - "forget": I forgot my homework.
+192. tango_n5_192 - "problem": Please read the question.
+193. tango_n5_193 - "example": Please look at the example.
+194. tango_n5_194 - "answer": I don't know the answer.
+195. tango_n5_195 - "question": I have a question for the teacher.
+196. tango_n5_196 - "observation": I went to observe the Japanese language school.
+197. tango_n5_197 - "company": Toyota is a Japanese company.
+198. tango_n5_198 - "bank": My younger brother works at a bank.
+199. tango_n5_199 - "work": I work every day.
+200. tango_n5_200 - "take a leave of absence, rest": Yesterday, I took a leave of absence from work.
+
+
+### BATCH 21/105 - images 201-210 (tango_n5_201 .. tango_n5_210)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+201. tango_n5_201 - "holiday, day off": The days off are Saturdays and Sundays.
+202. tango_n5_202 - "lunch break": I do my homework during lunch break.
+203. tango_n5_203 - "not busy, free": I am not busy tomorrow.
+204. tango_n5_204 - "busy": I am busy every day.
+205. tango_n5_205 - "overtime work": Today I work overtime.
+206. tango_n5_206 - "business trip": I will take a business trip to France.
+207. tango_n5_207 - "office": The office is in Taiwan.
+208. tango_n5_208 - "factory": There is a large factory in China.
+209. tango_n5_209 - "reception (desk)": Please ask at the reception desk.
+210. tango_n5_210 - "meeting": We have a meeting today.
+
+
+### BATCH 22/105 - images 211-220 (tango_n5_211 .. tango_n5_220)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+211. tango_n5_211 - "meeting room": Yamada-san is in the meeting room.
+212. tango_n5_212 - "telephone": There is no telephone in the meeting room.
+213. tango_n5_213 - "make a phone call": I will call the company.
+214. tango_n5_214 - "hello": A: Hello, is this Yamada-san? B: Yes, it is.
+215. tango_n5_215 - "phone number": A: Do you know Yamada-san's phone number?
+216. tango_n5_216 - "know": B: No, I don't know.
+217. tango_n5_217 - "what number": What is the phone number?
+218. tango_n5_218 - "teach/tell": Please tell me the phone number.
+219. tango_n5_219 - "help": I help my father's work.
+220. tango_n5_220 - "make": This was made at a Japanese factory.
+
+
+### BATCH 23/105 - images 221-230 (tango_n5_221 .. tango_n5_230)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+221. tango_n5_221 - "helpful": This will be helpful.
+222. tango_n5_222 - "work/job": A: What is your job? / B: I am a teacher.
+223. tango_n5_223 - "office worker": an everyday situation that clearly shows "office worker"
+224. tango_n5_224 - "bank worker": an everyday situation that clearly shows "bank worker"
+225. tango_n5_225 - "doctor": an everyday situation that clearly shows "doctor"
+226. tango_n5_226 - "nurse": an everyday situation that clearly shows "nurse"
+227. tango_n5_227 - "nurse/care worker": an everyday situation that clearly shows "nurse/care worker"
+228. tango_n5_228 - "policeman/policewoman": an everyday situation that clearly shows "policeman/policewoman"
+229. tango_n5_229 - "station staff": an everyday situation that clearly shows "station staff"
+230. tango_n5_230 - "driver": an everyday situation that clearly shows "driver"
+
+
+### BATCH 24/105 - images 231-240 (tango_n5_231 .. tango_n5_240)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+231. tango_n5_231 - "conductor": an everyday situation that clearly shows "conductor"
+232. tango_n5_232 - "director/senior manager": an everyday situation that clearly shows "director/senior manager"
+233. tango_n5_233 - "manager": an everyday situation that clearly shows "manager"
+234. tango_n5_234 - "worker": an everyday situation that clearly shows "worker"
+235. tango_n5_235 - "this": This is a Japanese book.
+236. tango_n5_236 - "that": That is a Chinese book.
+237. tango_n5_237 - "that": That is a personal computer.
+238. tango_n5_238 - "which": A: Which umbrella is yours, Yamada-san? B: This one.
+239. tango_n5_239 - "this": Which book is Yamada-san's? Is it this book?
+240. tango_n5_240 - "that": Is it that book?
+
+
+### BATCH 25/105 - images 241-250 (tango_n5_241 .. tango_n5_250)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+241. tango_n5_241 - "that": Is that that book?
+242. tango_n5_242 - "which": Which book is it?
+243. tango_n5_243 - "what": A: What is this? / B: It's a book.
+244. tango_n5_244 - "name card": an everyday situation that clearly shows "name card"
+245. tango_n5_245 - "cell phone": an everyday situation that clearly shows "cell phone"
+246. tango_n5_246 - "smartphone": an everyday situation that clearly shows "smartphone"
+247. tango_n5_247 - "battery": an everyday situation that clearly shows "battery"
+248. tango_n5_248 - "notebook": an everyday situation that clearly shows "notebook"
+249. tango_n5_249 - "paper": an everyday situation that clearly shows "paper"
+250. tango_n5_250 - "pocket notebook": an everyday situation that clearly shows "pocket notebook"
+
+
+### BATCH 26/105 - images 251-260 (tango_n5_251 .. tango_n5_260)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+251. tango_n5_251 - "ball point pen": an everyday situation that clearly shows "ball point pen"
+252. tango_n5_252 - "mechanical pencil": an everyday situation that clearly shows "mechanical pencil"
+253. tango_n5_253 - "pencil": an everyday situation that clearly shows "pencil"
+254. tango_n5_254 - "eraser": an everyday situation that clearly shows "eraser"
+255. tango_n5_255 - "hole punch": an everyday situation that clearly shows "hole punch"
+256. tango_n5_256 - "stapler": an everyday situation that clearly shows "stapler"
+257. tango_n5_257 - "cellophane tape": an everyday situation that clearly shows "cellophane tape"
+258. tango_n5_258 - "scissors": an everyday situation that clearly shows "scissors"
+259. tango_n5_259 - "box": an everyday situation that clearly shows "box"
+260. tango_n5_260 - "computer": I use the computer every day.
+
+
+### BATCH 27/105 - images 261-270 (tango_n5_261 .. tango_n5_270)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+261. tango_n5_261 - "personal computer": This is my brother's personal computer.
+262. tango_n5_262 - "internet": I will check the phone number on the internet.
+263. tango_n5_263 - "materials": These are the material for the meeting.
+264. tango_n5_264 - "cut": I will cut paper with a pair of scissors.
+265. tango_n5_265 - "use": Please use this pair of scissors.
+266. tango_n5_266 - "how many": A: How many erasers are there? B: There are ten of them.
+267. tango_n5_267 - "~ pieces": an everyday situation that clearly shows "~ pieces"
+268. tango_n5_268 - "how many": A: How many computers are there? B: There are two of them.
+269. tango_n5_269 - "~ units": an everyday situation that clearly shows "~ units"
+270. tango_n5_270 - "what time": A: What time is it? B: It's 3 o'clock.
+
+
+### BATCH 28/105 - images 271-280 (tango_n5_271 .. tango_n5_280)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+271. tango_n5_271 - "what time": A: What time is it exactly? B: It's 6:20.
+272. tango_n5_272 - "~ hours": an everyday situation that clearly shows "~ hours"
+273. tango_n5_273 - "~ minutes": an everyday situation that clearly shows "~ minutes"
+274. tango_n5_274 - "half": an everyday situation that clearly shows "half"
+275. tango_n5_275 - "around": I go to school around 8:40 a.m.
+276. tango_n5_276 - "a.m.": It's 1:00 a.m.
+277. tango_n5_277 - "p.m.": It's 7:00 p.m.
+278. tango_n5_278 - "now": A: What time is it now? B: It's 2:30.
+279. tango_n5_279 - "about ~": Let's rest for about 30 minutes.
+280. tango_n5_280 - "~ hours": I studied for an hour yesterday.
+
+
+### BATCH 29/105 - images 281-290 (tango_n5_281 .. tango_n5_290)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+281. tango_n5_281 - "how many hours": A: How many hours do you work every day? B: I work 8 hours.
+282. tango_n5_282 - "from": School is from 8 o'clock.
+283. tango_n5_283 - "to": I work at the office from 9 a.m. to 5 p.m.
+284. tango_n5_284 - "friend": I will go to Yokohama with my friend.
+285. tango_n5_285 - "what kind of": A: What kind of a person is Smith-san?
+286. tango_n5_286 - "person": B: He/she is a kind person.
+287. tango_n5_287 - "kind": Smith-san is kind.
+288. tango_n5_288 - "everyone": All of my friends are kind.
+289. tango_n5_289 - "energetic, fine, happy": Smith-san's grandmother is doing fine.
+290. tango_n5_290 - "beautiful, clean": ①Hein-san is a beautiful person. ②This school is beautiful.
+
+
+### BATCH 30/105 - images 291-300 (tango_n5_291 .. tango_n5_300)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+291. tango_n5_291 - "handsome": Huang-san is handsome.
+292. tango_n5_292 - "cute": Lara-chan is cute.
+293. tango_n5_293 - "cool": John-san is cool.
+294. tango_n5_294 - "intelligent": Yamada-san is intelligent.
+295. tango_n5_295 - "kind": Hein-san is kind
+296. tango_n5_296 - "humor": Yamada-san is humorous.
+297. tango_n5_297 - "height": Huang-san is tall.
+298. tango_n5_298 - "tall": Huang-san is taller than Yamada-san.
+299. tango_n5_299 - "short": I am short.
+300. tango_n5_300 - "eye": Lara-chan has big eyes.
+
+
+### BATCH 31/105 - images 301-310 (tango_n5_301 .. tango_n5_310)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+301. tango_n5_301 - "big": There is a big dog.
+302. tango_n5_302 - "small": My camera is small.
+303. tango_n5_303 - "hair": Yesterday, I cut my hair.
+304. tango_n5_304 - "long": Hein-san's hair is long.
+305. tango_n5_305 - "short": Lara-chan's hair is short.
+306. tango_n5_306 - "clothes": Yesterday I bought some clothes.
+307. tango_n5_307 - "size": There are no large sizes.
+308. tango_n5_308 - "fancy, nice": That is a fancy shirt. It looks great.
+309. tango_n5_309 - "design": It's a great design.
+310. tango_n5_310 - "wear": I will wear my overcoat.
+
+
+### BATCH 32/105 - images 311-320 (tango_n5_311 .. tango_n5_320)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+311. tango_n5_311 - "take off": I will take off my coat. / I will take off my shoes.
+312. tango_n5_312 - "red": I bought a red coat.
+313. tango_n5_313 - "blue": I am wearing a blue shirt.
+314. tango_n5_314 - "white": I want to buy a white suit.
+315. tango_n5_315 - "black": I will wear a black sweater.
+316. tango_n5_316 - "yellow": I will buy yellow clothes.
+317. tango_n5_317 - "various": I have various hats.
+318. tango_n5_318 - "shirt": an everyday situation that clearly shows "shirt"
+319. tango_n5_319 - "sweater": an everyday situation that clearly shows "sweater"
+320. tango_n5_320 - "coat": an everyday situation that clearly shows "coat"
+
+
+### BATCH 33/105 - images 321-330 (tango_n5_321 .. tango_n5_330)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+321. tango_n5_321 - "suit": an everyday situation that clearly shows "suit"
+322. tango_n5_322 - "jacket, coat, top": an everyday situation that clearly shows "jacket, coat, top"
+323. tango_n5_323 - "underwear": an everyday situation that clearly shows "underwear"
+324. tango_n5_324 - "kimono": an everyday situation that clearly shows "kimono"
+325. tango_n5_325 - "wear": I wear a black skirt.
+326. tango_n5_326 - "pants": an everyday situation that clearly shows "pants"
+327. tango_n5_327 - "jeans": an everyday situation that clearly shows "jeans"
+328. tango_n5_328 - "pants": an everyday situation that clearly shows "pants"
+329. tango_n5_329 - "skirt": an everyday situation that clearly shows "skirt"
+330. tango_n5_330 - "shoes": an everyday situation that clearly shows "shoes"
+
+
+### BATCH 34/105 - images 331-340 (tango_n5_331 .. tango_n5_340)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+331. tango_n5_331 - "socks": an everyday situation that clearly shows "socks"
+332. tango_n5_332 - "wear": I wear a black hat.
+333. tango_n5_333 - "hat": an everyday situation that clearly shows "hat"
+334. tango_n5_334 - "wear (glasses)": I wear a pair of glasses.
+335. tango_n5_335 - "glasses": an everyday situation that clearly shows "glasses"
+336. tango_n5_336 - "sun glasses": an everyday situation that clearly shows "sun glasses"
+337. tango_n5_337 - "wear (a ring)": I wear a beautiful ring.
+338. tango_n5_338 - "necktie": an everyday situation that clearly shows "necktie"
+339. tango_n5_339 - "ring": an everyday situation that clearly shows "ring"
+340. tango_n5_340 - "watch": an everyday situation that clearly shows "watch"
+
+
+### BATCH 35/105 - images 341-350 (tango_n5_341 .. tango_n5_350)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+341. tango_n5_341 - "hold": A: Shall I hold the bag? / B: Yes, thank you.
+342. tango_n5_342 - "bag": an everyday situation that clearly shows "bag"
+343. tango_n5_343 - "purse": an everyday situation that clearly shows "purse"
+344. tango_n5_344 - "have fun": I played with the children on Sunday.
+345. tango_n5_345 - "guide": I will show you Kyoto.
+346. tango_n5_346 - "pick up": I will pick up my father at Narita.
+347. tango_n5_347 - "take": I took the children to the zoo.
+348. tango_n5_348 - "bring over": My younger brother brought home his friend.
+349. tango_n5_349 - "animal": I saw various animals.
+350. tango_n5_350 - "zoo": I went to the zoo with the children.
+
+
+### BATCH 36/105 - images 351-360 (tango_n5_351 .. tango_n5_360)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+351. tango_n5_351 - "panda": There was a panda at Ueno Zoo.
+352. tango_n5_352 - "elephant": I saw an elephant in Thailand.
+353. tango_n5_353 - "horse": I want to see a horse.
+354. tango_n5_354 - "festival": There is a festival in Asakusa.
+355. tango_n5_355 - "temple": There are temples in Kamakura.
+356. tango_n5_356 - "shrine": I went to a shrine in Kyoto.
+357. tango_n5_357 - "travel": I will travel during the holidays.
+358. tango_n5_358 - "preparation": I will prepare for the trip.
+359. tango_n5_359 - "reservation": I will reserve a hotel.
+360. tango_n5_360 - "hotel": I will call the hotel.
+
+
+### BATCH 37/105 - images 361-370 (tango_n5_361 .. tango_n5_370)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+361. tango_n5_361 - "stay over": I want to stay at a beautiful hotel.
+362. tango_n5_362 - "lobby": There is a phone in the lobby.
+363. tango_n5_363 - "souvenir": I bought souvenirs for the family.
+364. tango_n5_364 - "service": The hotel has good service.
+365. tango_n5_365 - "homestay": I did a homestay in America.
+366. tango_n5_366 - "town": Shibuya is a city in Tokyo.
+367. tango_n5_367 - "prefecture": Disneyland is in Chiba Prefecture.
+368. tango_n5_368 - "Tokyo": an everyday situation that clearly shows "Tokyo"
+369. tango_n5_369 - "Narita": an everyday situation that clearly shows "Narita"
+370. tango_n5_370 - "Ueno": an everyday situation that clearly shows "Ueno"
+
+
+### BATCH 38/105 - images 371-380 (tango_n5_371 .. tango_n5_380)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+371. tango_n5_371 - "Asakusa": an everyday situation that clearly shows "Asakusa"
+372. tango_n5_372 - "Shinjuku": an everyday situation that clearly shows "Shinjuku"
+373. tango_n5_373 - "Akihabara": an everyday situation that clearly shows "Akihabara"
+374. tango_n5_374 - "Shibuya": an everyday situation that clearly shows "Shibuya"
+375. tango_n5_375 - "Ginza": an everyday situation that clearly shows "Ginza"
+376. tango_n5_376 - "Haneda": an everyday situation that clearly shows "Haneda"
+377. tango_n5_377 - "Yokohama": an everyday situation that clearly shows "Yokohama"
+378. tango_n5_378 - "Kamakura": an everyday situation that clearly shows "Kamakura"
+379. tango_n5_379 - "Hokkaido": an everyday situation that clearly shows "Hokkaido"
+380. tango_n5_380 - "Sapporo": an everyday situation that clearly shows "Sapporo"
+
+
+### BATCH 39/105 - images 381-390 (tango_n5_381 .. tango_n5_390)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+381. tango_n5_381 - "Sendai": an everyday situation that clearly shows "Sendai"
+382. tango_n5_382 - "Nikko": an everyday situation that clearly shows "Nikko"
+383. tango_n5_383 - "Mt. Fuji": an everyday situation that clearly shows "Mt. Fuji"
+384. tango_n5_384 - "Kanazawa": an everyday situation that clearly shows "Kanazawa"
+385. tango_n5_385 - "Nagoya": an everyday situation that clearly shows "Nagoya"
+386. tango_n5_386 - "Kyoto": an everyday situation that clearly shows "Kyoto"
+387. tango_n5_387 - "Nara": an everyday situation that clearly shows "Nara"
+388. tango_n5_388 - "Osaka": an everyday situation that clearly shows "Osaka"
+389. tango_n5_389 - "Kobe": an everyday situation that clearly shows "Kobe"
+390. tango_n5_390 - "Hiroshima": an everyday situation that clearly shows "Hiroshima"
+
+
+### BATCH 40/105 - images 391-400 (tango_n5_391 .. tango_n5_400)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+391. tango_n5_391 - "Fukuoka": an everyday situation that clearly shows "Fukuoka"
+392. tango_n5_392 - "Nagasaki": an everyday situation that clearly shows "Nagasaki"
+393. tango_n5_393 - "Okinawa": an everyday situation that clearly shows "Okinawa"
+394. tango_n5_394 - "morning": I wake up at 6:00 a.m. in the morning.
+395. tango_n5_395 - "noon/daytime": I work during the day.
+396. tango_n5_396 - "evening": I read in the evening.
+397. tango_n5_397 - "every morning": I listen to the CD every morning.
+398. tango_n5_398 - "every night": I study every night.
+399. tango_n5_399 - "this morning": I called my friend this morning.
+400. tango_n5_400 - "good evening": Tonight I will stay in a hotel.
+
+
+### BATCH 41/105 - images 401-410 (tango_n5_401 .. tango_n5_410)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+401. tango_n5_401 - "wake up": I wake up at 7:00 a.m. every morning.
+402. tango_n5_402 - "sleep": I sleep around 11:00 p.m. every night.
+403. tango_n5_403 - "watch": I never watch television.
+404. tango_n5_404 - "news": Yesterday, I watched the news.
+405. tango_n5_405 - "radio": I listen to the radio in the evening.
+406. tango_n5_406 - "television": I don't have a television at home.
+407. tango_n5_407 - "early": A: I woke up at 5:00 a.m. this morning. / B: That's early.
+408. tango_n5_408 - "fast": A: It takes two and a half hours from Tokyo to Osaka. / B: That's fast.
+409. tango_n5_409 - "late": A: I go to sleep around 1:00 a.m. every night. / B: That's late.
+410. tango_n5_410 - "mirror": I see my face in the mirror.
+
+
+### BATCH 42/105 - images 411-420 (tango_n5_411 .. tango_n5_420)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+411. tango_n5_411 - "face": an everyday situation that clearly shows "face"
+412. tango_n5_412 - "wash": I wash my face in the morning.
+413. tango_n5_413 - "bath": an everyday situation that clearly shows "bath"
+414. tango_n5_414 - "take": I take a bath.
+415. tango_n5_415 - "shower": an everyday situation that clearly shows "shower"
+416. tango_n5_416 - "take": I take a shower.
+417. tango_n5_417 - "teeth": an everyday situation that clearly shows "teeth"
+418. tango_n5_418 - "brush": I brush my teeth.
+419. tango_n5_419 - "eat": I eat lunch at school.
+420. tango_n5_420 - "food": This is Vietnamese food.
+
+
+### BATCH 43/105 - images 421-430 (tango_n5_421 .. tango_n5_430)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+421. tango_n5_421 - "breakfast": I eat breakfast at 7:00 a.m.
+422. tango_n5_422 - "lunch": I eat lunch at 12:00 p.m.
+423. tango_n5_423 - "dinner": I ate dinner with my friends.
+424. tango_n5_424 - "lot": I ate a lot of bread.
+425. tango_n5_425 - "supermarket": I buy meat at the supermarket.
+426. tango_n5_426 - "meat": an everyday situation that clearly shows "meat"
+427. tango_n5_427 - "beef": an everyday situation that clearly shows "beef"
+428. tango_n5_428 - "pork": an everyday situation that clearly shows "pork"
+429. tango_n5_429 - "chicken": an everyday situation that clearly shows "chicken"
+430. tango_n5_430 - "fish": an everyday situation that clearly shows "fish"
+
+
+### BATCH 44/105 - images 431-440 (tango_n5_431 .. tango_n5_440)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+431. tango_n5_431 - "egg": an everyday situation that clearly shows "egg"
+432. tango_n5_432 - "vegetable": an everyday situation that clearly shows "vegetable"
+433. tango_n5_433 - "fruits": an everyday situation that clearly shows "fruits"
+434. tango_n5_434 - "banana": an everyday situation that clearly shows "banana"
+435. tango_n5_435 - "apple": an everyday situation that clearly shows "apple"
+436. tango_n5_436 - "lemon": an everyday situation that clearly shows "lemon"
+437. tango_n5_437 - "mandarin orange": an everyday situation that clearly shows "mandarin orange"
+438. tango_n5_438 - "bread": an everyday situation that clearly shows "bread"
+439. tango_n5_439 - "snacks": an everyday situation that clearly shows "snacks"
+440. tango_n5_440 - "chocolate": an everyday situation that clearly shows "chocolate"
+
+
+### BATCH 45/105 - images 441-450 (tango_n5_441 .. tango_n5_450)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+441. tango_n5_441 - "drink": I drink water.
+442. tango_n5_442 - "drinks": A: What would you like to drink? / B: Coffee please.
+443. tango_n5_443 - "water": I want to drink cold water.
+444. tango_n5_444 - "hot water": I will pour hot water in the cup.
+445. tango_n5_445 - "cold": I want to drink cold juice.
+446. tango_n5_446 - "want/better": A: Which would you like, coffee or tea? / B: I would like tea.
+447. tango_n5_447 - "put in": I put milk in my tea. / I put the book in the bag.
+448. tango_n5_448 - "milk": I put milk in coffee.
+449. tango_n5_449 - "vending machine": I buy drinks at the vending machine.
+450. tango_n5_450 - "milk": an everyday situation that clearly shows "milk"
+
+
+### BATCH 46/105 - images 451-460 (tango_n5_451 .. tango_n5_460)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+451. tango_n5_451 - "juice": an everyday situation that clearly shows "juice"
+452. tango_n5_452 - "coffee": an everyday situation that clearly shows "coffee"
+453. tango_n5_453 - "tea": an everyday situation that clearly shows "tea"
+454. tango_n5_454 - "green tea": an everyday situation that clearly shows "green tea"
+455. tango_n5_455 - "sake (Japanese rice wine)": an everyday situation that clearly shows "sake (Japanese rice wine)"
+456. tango_n5_456 - "beer": an everyday situation that clearly shows "beer"
+457. tango_n5_457 - "wine": an everyday situation that clearly shows "wine"
+458. tango_n5_458 - "cup": an everyday situation that clearly shows "cup"
+459. tango_n5_459 - "cup": an everyday situation that clearly shows "cup"
+460. tango_n5_460 - "cooking/cuisine": This is Japanese food.
+
+
+### BATCH 47/105 - images 461-470 (tango_n5_461 .. tango_n5_470)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+461. tango_n5_461 - "rice": an everyday situation that clearly shows "rice"
+462. tango_n5_462 - "sandwich": an everyday situation that clearly shows "sandwich"
+463. tango_n5_463 - "onigiri (rice ball)": an everyday situation that clearly shows "onigiri (rice ball)"
+464. tango_n5_464 - "box lunch": an everyday situation that clearly shows "box lunch"
+465. tango_n5_465 - "ramen noodles": an everyday situation that clearly shows "ramen noodles"
+466. tango_n5_466 - "pasta": an everyday situation that clearly shows "pasta"
+467. tango_n5_467 - "udon noodles": an everyday situation that clearly shows "udon noodles"
+468. tango_n5_468 - "soba noodles": an everyday situation that clearly shows "soba noodles"
+469. tango_n5_469 - "tempura": an everyday situation that clearly shows "tempura"
+470. tango_n5_470 - "sukiyaki (Japanese beef hot pot)": an everyday situation that clearly shows "sukiyaki (Japanese beef hot pot)"
+
+
+### BATCH 48/105 - images 471-480 (tango_n5_471 .. tango_n5_480)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+471. tango_n5_471 - "sashimi (sliced raw fish)": an everyday situation that clearly shows "sashimi (sliced raw fish)"
+472. tango_n5_472 - "curry rice": an everyday situation that clearly shows "curry rice"
+473. tango_n5_473 - "beef bowl": an everyday situation that clearly shows "beef bowl"
+474. tango_n5_474 - "sushi": an everyday situation that clearly shows "sushi"
+475. tango_n5_475 - "cake": an everyday situation that clearly shows "cake"
+476. tango_n5_476 - "ice cream": an everyday situation that clearly shows "ice cream"
+477. tango_n5_477 - "get": Please pass me the sugar.
+478. tango_n5_478 - "sugar": an everyday situation that clearly shows "sugar"
+479. tango_n5_479 - "salt": an everyday situation that clearly shows "salt"
+480. tango_n5_480 - "soy sauce": an everyday situation that clearly shows "soy sauce"
+
+
+### BATCH 49/105 - images 481-490 (tango_n5_481 .. tango_n5_490)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+481. tango_n5_481 - "nuoc mam (Vietnamese fish sauce)": an everyday situation that clearly shows "nuoc mam (Vietnamese fish sauce)"
+482. tango_n5_482 - "nam pla (Thai fish sauce)": an everyday situation that clearly shows "nam pla (Thai fish sauce)"
+483. tango_n5_483 - "what": A: What did you eat at the restaurant? / B: I had pasta.
+484. tango_n5_484 - "something": A: Did you eat something in the morning? / B: No, I had nothing.
+485. tango_n5_485 - "meal": I had my meal with my friend at the cafeteria.
+486. tango_n5_486 - "famous": Sushi is a famous Japanese dish.
+487. tango_n5_487 - "enter": ①I will enter the restaurant. / ②I will enroll in a university.
+488. tango_n5_488 - "restaurant": I went to the restaurant with my friend.
+489. tango_n5_489 - "cafeteria": The cafeteria is open from 11 a.m. to 7 p.m.
+490. tango_n5_490 - "set meal": I eat the set meal at the cafeteria.
+
+
+### BATCH 50/105 - images 491-500 (tango_n5_491 .. tango_n5_500)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+491. tango_n5_491 - "coffee shop": I ate sandwiches at the coffee shop.
+492. tango_n5_492 - "with 〜": I eat curry rice with a spoon.
+493. tango_n5_493 - "chopsticks": an everyday situation that clearly shows "chopsticks"
+494. tango_n5_494 - "spoon": an everyday situation that clearly shows "spoon"
+495. tango_n5_495 - "fork": an everyday situation that clearly shows "fork"
+496. tango_n5_496 - "knife": an everyday situation that clearly shows "knife"
+497. tango_n5_497 - "plate": an everyday situation that clearly shows "plate"
+498. tango_n5_498 - "bowl": an everyday situation that clearly shows "bowl"
+499. tango_n5_499 - "Welcome.": an everyday situation that clearly shows "Welcome."
+500. tango_n5_500 - "What would you like to order?": an everyday situation that clearly shows "What would you like to order?"
+
+
+### BATCH 51/105 - images 501-510 (tango_n5_501 .. tango_n5_510)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+501. tango_n5_501 - "This one, please.": an everyday situation that clearly shows "This one, please."
+502. tango_n5_502 - "anything else": A: Would you like anything else? / B: Coffee, please.
+503. tango_n5_503 - "separately": Separately, please.
+504. tango_n5_504 - "how": A: How do you find Japanese food? / B: It's good.
+505. tango_n5_505 - "sweet": This cake is sweet.
+506. tango_n5_506 - "hot": I eat hot food a lot.
+507. tango_n5_507 - "tasty": The fruit is tasty.
+508. tango_n5_508 - "all": I ate all that was in the box lunch.
+509. tango_n5_509 - "by myself": A: This is good food. Did you cook it yourself? / B: Yes.
+510. tango_n5_510 - "become hungry": I'm becoming hungry. Shall we eat something?
+
+
+### BATCH 52/105 - images 511-520 (tango_n5_511 .. tango_n5_520)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+511. tango_n5_511 - "become thirsty": I'm getting thirsty. Shall we drink something?
+512. tango_n5_512 - "full": I am full.
+513. tango_n5_513 - "would you like": Would you like some wine?
+514. tango_n5_514 - "one more serving": A: How about another serving?
+515. tango_n5_515 - "no thank you": B: No, thank you.
+516. tango_n5_516 - "cheers": A&B: Cheers!
+517. tango_n5_517 - "Let's eat.": an everyday situation that clearly shows "Let's eat."
+518. tango_n5_518 - "I'm full.": an everyday situation that clearly shows "I'm full."
+519. tango_n5_519 - "hobby": My hobby is karaoke.
+520. tango_n5_520 - "day": I read books on holidays.
+
+
+### BATCH 53/105 - images 521-530 (tango_n5_521 .. tango_n5_530)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+521. tango_n5_521 - "fun": Tennis is fun.
+522. tango_n5_522 - "like": I like sports.
+523. tango_n5_523 - "dislike": I don't like manga.
+524. tango_n5_524 - "not really": I don't really like sports.
+525. tango_n5_525 - "which": A: Which do you like, soccer or baseball? / B: I like soccer more.
+526. tango_n5_526 - "both": C: I like both.
+527. tango_n5_527 - "which": A: Which do you like, soccer or baseball? / B: I like soccer more.
+528. tango_n5_528 - "good": Smith-san is good at drawing.
+529. tango_n5_529 - "poor, bad at": I sing poorly.
+530. tango_n5_530 - "not nearly enough": A: You speak good Japanese. / B: No, it's not nearly good enough.
+
+
+### BATCH 54/105 - images 531-540 (tango_n5_531 .. tango_n5_540)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+531. tango_n5_531 - "learn": I learned ikebana.
+532. tango_n5_532 - "ikebana (flower arrangement)": an everyday situation that clearly shows "ikebana (flower arrangement)"
+533. tango_n5_533 - "tea ceremony": an everyday situation that clearly shows "tea ceremony"
+534. tango_n5_534 - "simple": I paint a simple painting.
+535. tango_n5_535 - "easy": A: Is tea ceremony easy? / B: No, it's difficult.
+536. tango_n5_536 - "difficult": Tea ceremony is difficult.
+537. tango_n5_537 - "photograph": This is a photograph of my family.
+538. tango_n5_538 - "take": I will take a photo using my smartphone.
+539. tango_n5_539 - "camera": This is my father's camera.
+540. tango_n5_540 - "picture/drawing": It's a beautiful drawing.
+
+
+### BATCH 55/105 - images 541-550 (tango_n5_541 .. tango_n5_550)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+541. tango_n5_541 - "draw": I drew a panda.
+542. tango_n5_542 - "museum": I look at the drawings at the museum.
+543. tango_n5_543 - "music": I like Japanese music.
+544. tango_n5_544 - "karaoke": I like karaoke.
+545. tango_n5_545 - "together": Why don't we go do karaoke together?
+546. tango_n5_546 - "with everyone": I went to karaoke with everyone in the class.
+547. tango_n5_547 - "song": Yamada-san sings well.
+548. tango_n5_548 - "sing": We all sang a Japanese song.
+549. tango_n5_549 - "concert": I went to the concert.
+550. tango_n5_550 - "classic": A: Which do you like, classical music or jazz? / B: I like both.
+
+
+### BATCH 56/105 - images 551-560 (tango_n5_551 .. tango_n5_560)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+551. tango_n5_551 - "jazz": I listen to jazz CDs often.
+552. tango_n5_552 - "pop": I like popular music.
+553. tango_n5_553 - "rock": I don't listen to rock very much.
+554. tango_n5_554 - "piano": I play the piano.
+555. tango_n5_555 - "guitar": This is my elder brother's guitar.
+556. tango_n5_556 - "play": A: Can I play the piano? / B: Yes, please.
+557. tango_n5_557 - "movie": I saw a French movie.
+558. tango_n5_558 - "movie theater": I will watch a movie at the movie theater.
+559. tango_n5_559 - "start": The movie starts at 10 o'clock.
+560. tango_n5_560 - "end": The concert ends at 7 o'clock.
+
+
+### BATCH 57/105 - images 561-570 (tango_n5_561 .. tango_n5_570)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+561. tango_n5_561 - "comic": I don't like manga comics very much.
+562. tango_n5_562 - "animation": I like Japanese animation.
+563. tango_n5_563 - "game, match": Japanese games are fun.
+564. tango_n5_564 - "software": I bought a video game.
+565. tango_n5_565 - "interesting": Yesterday, I saw an interesting anime.
+566. tango_n5_566 - "jogging": I go jogging every day.
+567. tango_n5_567 - "skiing": I go skiing in Hokkaido.
+568. tango_n5_568 - "dance": Maria-san dances well.
+569. tango_n5_569 - "swim": I swam in the ocean of Okinawa.
+570. tango_n5_570 - "ocean, sea": I like the mountains more than the ocean.
+
+
+### BATCH 58/105 - images 571-580 (tango_n5_571 .. tango_n5_580)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+571. tango_n5_571 - "pool": Yesterday I swam in the pool.
+572. tango_n5_572 - "river": Please do not swim in this river.
+573. tango_n5_573 - "fishing": I fish in the river.
+574. tango_n5_574 - "climb": I will climb Mount Fuji in July.
+575. tango_n5_575 - "mountain": Mount Fuji is a beautiful mountain.
+576. tango_n5_576 - "game": There is a soccer game.
+577. tango_n5_577 - "win": Brazil won.
+578. tango_n5_578 - "lose": Yamada-san lost to Huang-san.
+579. tango_n5_579 - "Hmm..., Let's see...": A: Which side do you think will win? / B: Hmm.... I don't know.
+580. tango_n5_580 - "strong": an everyday situation that clearly shows "strong"
+
+
+### BATCH 59/105 - images 581-590 (tango_n5_581 .. tango_n5_590)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+581. tango_n5_581 - "weak": an everyday situation that clearly shows "weak"
+582. tango_n5_582 - "soccer": an everyday situation that clearly shows "soccer"
+583. tango_n5_583 - "baseball": an everyday situation that clearly shows "baseball"
+584. tango_n5_584 - "sumo wrestling": an everyday situation that clearly shows "sumo wrestling"
+585. tango_n5_585 - "judo": an everyday situation that clearly shows "judo"
+586. tango_n5_586 - "tennis": an everyday situation that clearly shows "tennis"
+587. tango_n5_587 - "golf": an everyday situation that clearly shows "golf"
+588. tango_n5_588 - "weather": How is today's weather?
+589. tango_n5_589 - "good": ①It's good weather. ②He/she is a good person.
+590. tango_n5_590 - "bad": ①It's bad weather. ②He/she is a bad person.
+
+
+### BATCH 60/105 - images 591-600 (tango_n5_591 .. tango_n5_600)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+591. tango_n5_591 - "the weather is nice": A: Good morning. The weather is beautiful, isn't it? / B: Yes, it sure is.
+592. tango_n5_592 - "rain": Today is rain.
+593. tango_n5_593 - "snow": Yesterday was snow.
+594. tango_n5_594 - "fall": Today, it will rain.
+595. tango_n5_595 - "hot": an everyday situation that clearly shows "hot"
+596. tango_n5_596 - "cool": an everyday situation that clearly shows "cool"
+597. tango_n5_597 - "cold": an everyday situation that clearly shows "cold"
+598. tango_n5_598 - "warm": an everyday situation that clearly shows "warm"
+599. tango_n5_599 - "a lot": It rains a lot in June.
+600. tango_n5_600 - "little": There is little rain in January.
+
+
+### BATCH 61/105 - images 601-610 (tango_n5_601 .. tango_n5_610)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+601. tango_n5_601 - "think": I think it will be hot tomorrow.
+602. tango_n5_602 - "maybe": I think it will rain tomorrow.
+603. tango_n5_603 - "probably": It will probably snow.
+604. tango_n5_604 - "umbrella": My umbrella is missing.
+605. tango_n5_605 - "bring": I brought an umbrella to school.
+606. tango_n5_606 - "take": I will bring an umbrella to school.
+607. tango_n5_607 - "program": I watch the weather forecast program every day.
+608. tango_n5_608 - "when": A: When are you returning to your country? / B: I will return next year.
+609. tango_n5_609 - "last year": I came to Japan last year.
+610. tango_n5_610 - "this year": I will study in Britain this year.
+
+
+### BATCH 62/105 - images 611-620 (tango_n5_611 .. tango_n5_620)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+611. tango_n5_611 - "next year": I will return to my country next year.
+612. tango_n5_612 - "season": There are four seasons in Japan.
+613. tango_n5_613 - "best, top": I like summer the best.
+614. tango_n5_614 - "become": ①It's winter now. It's getting cold. ②I want to become a company president one day.
+615. tango_n5_615 - "spring": an everyday situation that clearly shows "spring"
+616. tango_n5_616 - "summer": an everyday situation that clearly shows "summer"
+617. tango_n5_617 - "autumn": an everyday situation that clearly shows "autumn"
+618. tango_n5_618 - "winter": an everyday situation that clearly shows "winter"
+619. tango_n5_619 - "flower": My mother likes flowers.
+620. tango_n5_620 - "moon": The moon is beautiful.
+
+
+### BATCH 63/105 - images 621-630 (tango_n5_621 .. tango_n5_630)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+621. tango_n5_621 - "flower viewing": The Japanese love flower viewing.
+622. tango_n5_622 - "cherry blossom": The cherry blossom is a beautiful flower.
+623. tango_n5_623 - "fireworks": I saw the fireworks in summer.
+624. tango_n5_624 - "maple": I saw the maple leaves in the mountains.
+625. tango_n5_625 - "first time": I saw the cherry blossoms for the first time.
+626. tango_n5_626 - "once": I went flower viewing once before.
+627. tango_n5_627 - "many times": I went to Hokkaido many times.
+628. tango_n5_628 - "never": I have never been to Kyoto.
+629. tango_n5_629 - "park": I will go flower viewing in the park.
+630. tango_n5_630 - "walk": I will take a walk in the park with my dog.
+
+
+### BATCH 64/105 - images 631-640 (tango_n5_631 .. tango_n5_640)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+631. tango_n5_631 - "very": A: The cherry blossoms are beautiful.
+632. tango_n5_632 - "really": B: Yes, it really is.
+633. tango_n5_633 - "definitely": Please definitely come to my house.
+634. tango_n5_634 - "of course": A: Will you go flower viewing on Saturday? / B: Yes, of course.
+635. tango_n5_635 - "shopping": I will go shopping at the supermarket.
+636. tango_n5_636 - "give me": Please give me this.
+637. tango_n5_637 - "and": I bought milk and bread.
+638. tango_n5_638 - "and": I will buy juice and ice cream.
+639. tango_n5_639 - "how much": A: How much is this computer?
+640. tango_n5_640 - "yen": B: It's 90,000 yen.
+
+
+### BATCH 65/105 - images 641-650 (tango_n5_641 .. tango_n5_650)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+641. tango_n5_641 - "expensive": This camera is expensive.
+642. tango_n5_642 - "cheap": I want a cheap camera.
+643. tango_n5_643 - "hundred": an everyday situation that clearly shows "hundred"
+644. tango_n5_644 - "thousand": an everyday situation that clearly shows "thousand"
+645. tango_n5_645 - "ten thousand": an everyday situation that clearly shows "ten thousand"
+646. tango_n5_646 - "hundred million": an everyday situation that clearly shows "hundred million"
+647. tango_n5_647 - "little": A: This is a little expensive.
+648. tango_n5_648 - "then": B: Then how about this one. It's 60,000 yen.
+649. tango_n5_649 - "well": A: Okay, then I'll have that one.
+650. tango_n5_650 - "money": The Japanese currency is yen.
+
+
+### BATCH 66/105 - images 651-660 (tango_n5_651 .. tango_n5_660)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+651. tango_n5_651 - "pay": I pay the money.
+652. tango_n5_652 - "change": The change is 850 yen.
+653. tango_n5_653 - "small money": I don't have small change.
+654. tango_n5_654 - "enough": I don't have enough money.
+655. tango_n5_655 - "life": Living in Tokyo is fun.
+656. tango_n5_656 - "cost of living": The cost of living in Tokyo is expensive.
+657. tango_n5_657 - "how many": A: How many apples did you buy? / B: I bought five.
+658. tango_n5_658 - "in total": A: Please give me five apples. / B: Here you go. It's 500 yen in all.
+659. tango_n5_659 - "counter for things": an everyday situation that clearly shows "counter for things"
+660. tango_n5_660 - "shop": There are different kinds of shops.
+
+
+### BATCH 67/105 - images 661-670 (tango_n5_661 .. tango_n5_670)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+661. tango_n5_661 - "〜 shop": I will buy bread at the bakery.
+662. tango_n5_662 - "department store": I went shopping at the department store on Sunday.
+663. tango_n5_663 - "convenience store": I will buy a box lunch at the convenience store.
+664. tango_n5_664 - "sell": The convenience store sells rice balls.
+665. tango_n5_665 - "counter, booth": A: Where is the counter that sells vegetables? / B: It's over there.
+666. tango_n5_666 - "area, corner": Nuoc mam is in the area where the soy sauce is.
+667. tango_n5_667 - "shelf": The drinks are on that shelf.
+668. tango_n5_668 - "copy": I will make a copy at the convenience store.
+669. tango_n5_669 - "ticket": I will buy a ticket to the concert.
+670. tango_n5_670 - "catalog": I will look at the computer catalog.
+
+
+### BATCH 68/105 - images 671-680 (tango_n5_671 .. tango_n5_680)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+671. tango_n5_671 - "magazine": I read a magazine at the coffee shop.
+672. tango_n5_672 - "newspaper": I bought a newspaper at the convenience store.
+673. tango_n5_673 - "want": I want a small computer.
+674. tango_n5_674 - "can": ①You can make reservations for the ticket at the convenience store. ②I can dance.
+675. tango_n5_675 - "is": Customer: How much is it? / Clerk: It's 3,500 yen.
+676. tango_n5_676 - "Are you looking for 〜?": What kind of camera are you looking for?
+677. tango_n5_677 - "show": Please show me that camera.
+678. tango_n5_678 - "Very well.": an everyday situation that clearly shows "Very well."
+679. tango_n5_679 - "Please wait a while.": Very well. Please wait a while.
+680. tango_n5_680 - "way to 〜": I don't know how to use the ATM.
+
+
+### BATCH 69/105 - images 681-690 (tango_n5_681 .. tango_n5_690)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+681. tango_n5_681 - "Are you here for a withdrawal?": Are you here for a withdrawal? → Then please come this way.
+682. tango_n5_682 - "cash": I don't have any cash.
+683. tango_n5_683 - "automatic teller machine (ATM)": There is an ATM here.
+684. tango_n5_684 - "withdraw": I will withdraw cash from the ATM.
+685. tango_n5_685 - "first": First, please insert your cash card.
+686. tango_n5_686 - "cash card": First, please insert your cash card.
+687. tango_n5_687 - "next": Then, enter your PIN.
+688. tango_n5_688 - "PIN code": Then, enter your PIN.
+689. tango_n5_689 - "push": Then, enter the amount of cash you would like.
+690. tango_n5_690 - "then": Then, enter the amount of cash you would like.
+
+
+### BATCH 70/105 - images 691-700 (tango_n5_691 .. tango_n5_700)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+691. tango_n5_691 - "amount": Then, enter the amount of cash you would like.
+692. tango_n5_692 - "confirm": Press the confirmation button.
+693. tango_n5_693 - "button": Press the confirmation button.
+694. tango_n5_694 - "come out": The money will come out from here.
+695. tango_n5_695 - "exchange": I will exchange yen to dollars.
+696. tango_n5_696 - "post office": I will go to the post office tomorrow.
+697. tango_n5_697 - "mail box": I will put the postcard in the mail post.
+698. tango_n5_698 - "letter": I will write a letter.
+699. tango_n5_699 - "postcard": Can I have three postcards, please?
+700. tango_n5_700 - "New Year's card": I will send a New Year's card to my teacher.
+
+
+### BATCH 71/105 - images 701-710 (tango_n5_701 .. tango_n5_710)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+701. tango_n5_701 - "send": I will send a letter by airmail.
+702. tango_n5_702 - "mail": I will send you mail.
+703. tango_n5_703 - "send": I will send a package to the family.
+704. tango_n5_704 - "stamp": I will buy stamps.
+705. tango_n5_705 - "collect": I collect stamps.
+706. tango_n5_706 - "envelope": I will put the letter in the envelope.
+707. tango_n5_707 - "foreign country": I will send a letter to a foreign country.
+708. tango_n5_708 - "airmail": Please send this to Britain by airmail.
+709. tango_n5_709 - "airmail": I will send it by airmail.
+710. tango_n5_710 - "surface mail": I will send it by surface mail.
+
+
+### BATCH 72/105 - images 711-720 (tango_n5_711 .. tango_n5_720)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+711. tango_n5_711 - "package": I will take the package to the post office.
+712. tango_n5_712 - "heavy": This package is heavy.
+713. tango_n5_713 - "light": This package is light.
+714. tango_n5_714 - "give": I will give a present to my friend.
+715. tango_n5_715 - "receive": My father gave me a dictionary.
+716. tango_n5_716 - "give": My friend gave me a souvenir.
+717. tango_n5_717 - "present": I gave a present to my brother.
+718. tango_n5_718 - "thing": I received many things.
+719. tango_n5_719 - "party": I will have a party with my friends.
+720. tango_n5_720 - "start": The party will start at 6:00 p.m.
+
+
+### BATCH 73/105 - images 721-730 (tango_n5_721 .. tango_n5_730)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+721. tango_n5_721 - "who": A: Who is that person? / B: It's Huang-san.
+722. tango_n5_722 - "who": A: Who is that person?
+723. tango_n5_723 - "that person": B: That's Professor Smith from the university.
+724. tango_n5_724 - "Christmas": I will hold a party on Christmas.
+725. tango_n5_725 - "birthday": A: When is your birthday? / B: It's May 5th.
+726. tango_n5_726 - "born": My friend had a baby.
+727. tango_n5_727 - "congratulations": A: Happy birthday. / B: Thank you.
+728. tango_n5_728 - "oh": A: This is a present. / B: Oh, thank you very much.
+729. tango_n5_729 - "how old": A: How old are you, Huang-san? / B: I'm 21 years old.
+730. tango_n5_730 - "how old": A: How old is your younger brother? / B: He is 15 years old.
+
+
+### BATCH 74/105 - images 731-740 (tango_n5_731 .. tango_n5_740)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+731. tango_n5_731 - "〜 years old": an everyday situation that clearly shows "〜 years old"
+732. tango_n5_732 - "what date": A: What is today's date? / B: It's the 5th.
+733. tango_n5_733 - "day of the month": an everyday situation that clearly shows "day of the month"
+734. tango_n5_734 - "station": Tokyo Station / Osaka Station / Hiroshima Station
+735. tango_n5_735 - "train": I get on the train at the station.
+736. tango_n5_736 - "get on": I will get on the express.
+737. tango_n5_737 - "get off": I will get off the train at Shibuya.
+738. tango_n5_738 - "ticket": I will buy the ticket at the station.
+739. tango_n5_739 - "next": The next station is Shinjuku.
+740. tango_n5_740 - "change, transfer (train/bus)": I change trains/buses at Tokyo Station.
+
+
+### BATCH 75/105 - images 741-750 (tango_n5_741 .. tango_n5_750)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+741. tango_n5_741 - "local (train/bus)": an everyday situation that clearly shows "local (train/bus)"
+742. tango_n5_742 - "express (train/bus)": an everyday situation that clearly shows "express (train/bus)"
+743. tango_n5_743 - "limited express (train/bus)": an everyday situation that clearly shows "limited express (train/bus)"
+744. tango_n5_744 - "Shinkansen (bullet train)": I will go to Kyoto using the Shinkansen.
+745. tango_n5_745 - "subway": I will take the subway from Kyoto Station.
+746. tango_n5_746 - "track number 〜": I will take the express from track number 8.
+747. tango_n5_747 - "which track number": A: Which track number is the Shinkansen at? / B: It's track number 14.
+748. tango_n5_748 - "car": Toyota is an automobile company.
+749. tango_n5_749 - "car": This is a car magazine.
+750. tango_n5_750 - "drive": I drive a car.
+
+
+### BATCH 76/105 - images 751-760 (tango_n5_751 .. tango_n5_760)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+751. tango_n5_751 - "send": A: Shall I drive you to the station? / B: Thank you very much.
+752. tango_n5_752 - "parking lot": There is no parking lot.
+753. tango_n5_753 - "park": I will park the car in the parking lot. / Please park here.
+754. tango_n5_754 - "bicycle": I will go to the station by bicycle.
+755. tango_n5_755 - "motorbike": I came to the office by motorbike.
+756. tango_n5_756 - "bus": I went to Nagoya by bus.
+757. tango_n5_757 - "taxi": Let's take a taxi.
+758. tango_n5_758 - "airplane": It takes about 3 hours by airplane.
+759. tango_n5_759 - "boat": I will take a boat to Yokohama.
+760. tango_n5_760 - "(bus/taxi) stand": Where is the bus stand?
+
+
+### BATCH 77/105 - images 761-770 (tango_n5_761 .. tango_n5_770)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+761. tango_n5_761 - "airport": The airport is in Narita.
+762. tango_n5_762 - "time table": There is a time table at the station.
+763. tango_n5_763 - "time": There is time. / There is no time.
+764. tango_n5_764 - "hurry": Let's hurry.
+765. tango_n5_765 - "how long": How long will it take to get to the university?
+766. tango_n5_766 - "take": It takes about 10 minutes by train.
+767. tango_n5_767 - "near": The university is near the station.
+768. tango_n5_768 - "far": The library is far from home.
+769. tango_n5_769 - "much": The super express is much faster than the express.
+770. tango_n5_770 - "always": I always go to Osaka by airplane.
+
+
+### BATCH 78/105 - images 771-780 (tango_n5_771 .. tango_n5_780)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+771. tango_n5_771 - "mostly": I mostly take the bus to go home.
+772. tango_n5_772 - "often": I often take a walk in the park.
+773. tango_n5_773 - "sometimes": I sometimes take a taxi.
+774. tango_n5_774 - "only": I took an airplane only once before.
+775. tango_n5_775 - "how": A: How do I get to the airport? / B: You can take the bus from Shinjuku.
+776. tango_n5_776 - "walk": I will walk to the supermarket.
+777. tango_n5_777 - "road": I know this road.
+778. tango_n5_778 - "straight": Please go straight on this road.
+779. tango_n5_779 - "bend": I will take a left at the signal.
+780. tango_n5_780 - "cross": I will cross this bridge.
+
+
+### BATCH 79/105 - images 781-790 (tango_n5_781 .. tango_n5_790)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+781. tango_n5_781 - "explanation": Please explain how to get there.
+782. tango_n5_782 - "corner": an everyday situation that clearly shows "corner"
+783. tango_n5_783 - "intersection": an everyday situation that clearly shows "intersection"
+784. tango_n5_784 - "signal": an everyday situation that clearly shows "signal"
+785. tango_n5_785 - "left": an everyday situation that clearly shows "left"
+786. tango_n5_786 - "right": an everyday situation that clearly shows "right"
+787. tango_n5_787 - "bridge": an everyday situation that clearly shows "bridge"
+788. tango_n5_788 - "east": an everyday situation that clearly shows "east"
+789. tango_n5_789 - "west": an everyday situation that clearly shows "west"
+790. tango_n5_790 - "south": an everyday situation that clearly shows "south"
+
+
+### BATCH 80/105 - images 791-800 (tango_n5_791 .. tango_n5_800)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+791. tango_n5_791 - "north": an everyday situation that clearly shows "north"
+792. tango_n5_792 - "how many, which": A: I want to go to the bank. On which intersection is it? / B: It's on the third one.
+793. tango_n5_793 - "first": an everyday situation that clearly shows "first"
+794. tango_n5_794 - "second": an everyday situation that clearly shows "second"
+795. tango_n5_795 - "third": an everyday situation that clearly shows "third"
+796. tango_n5_796 - "how many meters": A: How many meters do I need to walk?
+797. tango_n5_797 - "〜 meters": B: You need to walk about 500 meters.
+798. tango_n5_798 - "next": an everyday situation that clearly shows "next"
+799. tango_n5_799 - "in between": an everyday situation that clearly shows "in between"
+800. tango_n5_800 - "near": an everyday situation that clearly shows "near"
+
+
+### BATCH 81/105 - images 801-810 (tango_n5_801 .. tango_n5_810)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+801. tango_n5_801 - "on, over, above": an everyday situation that clearly shows "on, over, above"
+802. tango_n5_802 - "under, below": an everyday situation that clearly shows "under, below"
+803. tango_n5_803 - "front": an everyday situation that clearly shows "front"
+804. tango_n5_804 - "back": an everyday situation that clearly shows "back"
+805. tango_n5_805 - "inside": an everyday situation that clearly shows "inside"
+806. tango_n5_806 - "outside": an everyday situation that clearly shows "outside"
+807. tango_n5_807 - "there": an everyday situation that clearly shows "there"
+808. tango_n5_808 - "here": an everyday situation that clearly shows "here"
+809. tango_n5_809 - "there": an everyday situation that clearly shows "there"
+810. tango_n5_810 - "where": A: Where is the bank? / B: It's next to the post office.
+
+
+### BATCH 82/105 - images 811-820 (tango_n5_811 .. tango_n5_820)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+811. tango_n5_811 - "go out": I go out frequently on Sundays.
+812. tango_n5_812 - "leave": ①I leave the house at 8 o'clock. ②I graduated from high school last year.
+813. tango_n5_813 - "arrive": I arrive at the office at 10:00 a.m.
+814. tango_n5_814 - "meet": I will meet my friend at the station.
+815. tango_n5_815 - "wait": I waited for my friend for an hour.
+816. tango_n5_816 - "date": I will go on a date with her tomorrow.
+817. tango_n5_817 - "promise, engagement": I have an appointment with my friend.
+818. tango_n5_818 - "errand": I have an errand to run today.
+819. tango_n5_819 - "convenient": Today is convenient for me.
+820. tango_n5_820 - "inconvenient": Tomorrow is inconvenient for me.
+
+
+### BATCH 83/105 - images 821-830 (tango_n5_821 .. tango_n5_830)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+821. tango_n5_821 - "not good": A: It today bad? / B: Yes, today is not good.
+822. tango_n5_822 - "change": I will change the time of the appointment.
+823. tango_n5_823 - "go on an outing": A: Are you going out?
+824. tango_n5_824 - "just to 〜": B: Yes, just to Shinjuku.
+825. tango_n5_825 - "if it's alright with you 〜": A: Why don't you come with me to Hiroshima, if it's alright with you? / B: Yes, I would love to.
+826. tango_n5_826 - "excuse me": ①Sorry, I have something to do today. ②Excuse me, how much is it to Ginza?
+827. tango_n5_827 - "would you 〜 or something": A: How about some tea?
+828. tango_n5_828 - "not so good": B: Sorry, today is not so good.
+829. tango_n5_829 - "unfortunately": A: How about going to the movies tomorrow? / B: Unfortunately, tomorrow is not so good…
+830. tango_n5_830 - "next time please": B: Next time, please.
+
+
+### BATCH 84/105 - images 831-840 (tango_n5_831 .. tango_n5_840)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+831. tango_n5_831 - "chance": If there's a chance, I would like to go to Hokkaido.
+832. tango_n5_832 - "Good bye (I'm going).": an everyday situation that clearly shows "Good bye (I'm going)."
+833. tango_n5_833 - "Have a good day.": an everyday situation that clearly shows "Have a good day."
+834. tango_n5_834 - "Hello (I'm back).": an everyday situation that clearly shows "Hello (I'm back)."
+835. tango_n5_835 - "Welcome home.": an everyday situation that clearly shows "Welcome home."
+836. tango_n5_836 - "home": My house is in Fukuoka.
+837. tango_n5_837 - "room": The room has a kitchen.
+838. tango_n5_838 - "window": I open the window.
+839. tango_n5_839 - "door": I close the door.
+840. tango_n5_840 - "open": Please don't open the door.
+
+
+### BATCH 85/105 - images 841-850 (tango_n5_841 .. tango_n5_850)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+841. tango_n5_841 - "close": Can I close the window?
+842. tango_n5_842 - "key": This is the key to the apartment.
+843. tango_n5_843 - "bed": There is a bed in the room.
+844. tango_n5_844 - "dining-kitchen": an everyday situation that clearly shows "dining-kitchen"
+845. tango_n5_845 - "Japanese room": an everyday situation that clearly shows "Japanese room"
+846. tango_n5_846 - "toilet, bathroom": an everyday situation that clearly shows "toilet, bathroom"
+847. tango_n5_847 - "futon mattress": an everyday situation that clearly shows "futon mattress"
+848. tango_n5_848 - "table": There is a table in the dining-kitchen.
+849. tango_n5_849 - "desk": The dictionary is on the desk.
+850. tango_n5_850 - "chair": I will sit on the chair.
+
+
+### BATCH 86/105 - images 851-860 (tango_n5_851 .. tango_n5_860)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+851. tango_n5_851 - "sit": Please sit down.
+852. tango_n5_852 - "stand": Lara-chan is standing in front of the house.
+853. tango_n5_853 - "laundry": I do the laundry once a week.
+854. tango_n5_854 - "clean": I clean every day.
+855. tango_n5_855 - "garbage": The day to dispose garbage is Thursday.
+856. tango_n5_856 - "throw away": I throw away the garbage on Thursday.
+857. tango_n5_857 - "put": Please put the luggage here.
+858. tango_n5_858 - "live": My family lives in Thailand.
+859. tango_n5_859 - "address": Please write your address here.
+860. tango_n5_860 - "refrigerator": an everyday situation that clearly shows "refrigerator"
+
+
+### BATCH 87/105 - images 861-870 (tango_n5_861 .. tango_n5_870)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+861. tango_n5_861 - "washing machine": an everyday situation that clearly shows "washing machine"
+862. tango_n5_862 - "vacuum cleaner": an everyday situation that clearly shows "vacuum cleaner"
+863. tango_n5_863 - "building": A: Which building is the department store? / B: It's that building.
+864. tango_n5_864 - "apartment": I live on the second floor of the apartment building.
+865. tango_n5_865 - "dormitory": Huang-san lives in the dormitory.
+866. tango_n5_866 - "building": The office is in that building.
+867. tango_n5_867 - "stairs": The stairs are there.
+868. tango_n5_868 - "escalator": Go to the fifth floor using the escalator.
+869. tango_n5_869 - "elevator": Let's take the elevator.
+870. tango_n5_870 - "which floor": A: Which floor is Huang-san's room? / B: It's on the second floor.
+
+
+### BATCH 88/105 - images 871-880 (tango_n5_871 .. tango_n5_880)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+871. tango_n5_871 - "floor counter": an everyday situation that clearly shows "floor counter"
+872. tango_n5_872 - "basement": an everyday situation that clearly shows "basement"
+873. tango_n5_873 - "moving": When are you moving?
+874. tango_n5_874 - "transfer": I will be stationed in Osaka next month.
+875. tango_n5_875 - "rent": The rent here is expensive.
+876. tango_n5_876 - "place": A: What kind of place do you want to live in? / B: I want to live someplace convenient.
+877. tango_n5_877 - "countryside": I like the countryside.
+878. tango_n5_878 - "quiet": I like quiet places.
+879. tango_n5_879 - "lively": I want to live in a lively place.
+880. tango_n5_880 - "convenient": The supermarket is nearby. That's convenient.
+
+
+### BATCH 89/105 - images 881-890 (tango_n5_881 .. tango_n5_890)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+881. tango_n5_881 - "inconvenient": This apartment is far from the station. That's inconvenient.
+882. tango_n5_882 - "traffic": It's not easy to get around here.
+883. tango_n5_883 - "garden": There is a dog in the yard.
+884. tango_n5_884 - "tree": There is a tree in the yard.
+885. tango_n5_885 - "greenery": There is a lot of greenery in Kamakura.
+886. tango_n5_886 - "young": There are many young people in this town.
+887. tango_n5_887 - "get old": I am 80 years old. I have grown old.
+888. tango_n5_888 - "city hall": The city hall is near the station.
+889. tango_n5_889 - "spacious": an everyday situation that clearly shows "spacious"
+890. tango_n5_890 - "small, cramped": an everyday situation that clearly shows "small, cramped"
+
+
+### BATCH 90/105 - images 891-900 (tango_n5_891 .. tango_n5_900)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+891. tango_n5_891 - "new": an everyday situation that clearly shows "new"
+892. tango_n5_892 - "old": an everyday situation that clearly shows "old"
+893. tango_n5_893 - "Welcome.": an everyday situation that clearly shows "Welcome."
+894. tango_n5_894 - "Please come in.": an everyday situation that clearly shows "Please come in."
+895. tango_n5_895 - "Excuse me.": an everyday situation that clearly shows "Excuse me."
+896. tango_n5_896 - "I will excuse myself.": an everyday situation that clearly shows "I will excuse myself."
+897. tango_n5_897 - "Please come again.": an everyday situation that clearly shows "Please come again."
+898. tango_n5_898 - "husband": My elder sister's husband is an office worker.
+899. tango_n5_899 - "wife": My elder brother's wife is a Japanese.
+900. tango_n5_900 - "the husband": The husband of Mrs. Tanaka is a company president.
+
+
+### BATCH 91/105 - images 901-910 (tango_n5_901 .. tango_n5_910)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+901. tango_n5_901 - "the wife": The wife of Mr. Yamada is good at cooking.
+902. tango_n5_902 - "introduce": I will introduce my friend to the teacher.
+903. tango_n5_903 - "this is Mr./Ms. 〜": A: This is Ali-san.
+904. tango_n5_904 - "thank you for taking care of me on this occasion": B: Nice to meet you, I am Ali. Thank you for taking care of me on this occasion.
+905. tango_n5_905 - "is here/there": A: Where are your parents? / B: They are in Turkey.
+906. tango_n5_906 - "single": My brother is single.
+907. tango_n5_907 - "married": I will get married next month.
+908. tango_n5_908 - "I (male)": A: What do you want to drink. / B: I will have juice.
+909. tango_n5_909 - "thank you": Thank you for everything today.
+910. tango_n5_910 - "for everything": Thank you very much for everything.
+
+
+### BATCH 92/105 - images 911-920 (tango_n5_911 .. tango_n5_920)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+911. tango_n5_911 - "thank you for taking care of me": A: Thank you for taking care of me. / B: Not at all, and I thank you the same.
+912. tango_n5_912 - "take care": Please take care.
+913. tango_n5_913 - "watch out": A: Watch out. Please be careful. / B: Yes.
+914. tango_n5_914 - "weekend": I will go on a date this weekend.
+915. tango_n5_915 - "beginning": I came to Japan at the beginning of last year.
+916. tango_n5_916 - "end": I will return to my country this month.
+917. tango_n5_917 - "the day before yesterday": an everyday situation that clearly shows "the day before yesterday"
+918. tango_n5_918 - "the day after tomorrow": an everyday situation that clearly shows "the day after tomorrow"
+919. tango_n5_919 - "last week": an everyday situation that clearly shows "last week"
+920. tango_n5_920 - "this week": an everyday situation that clearly shows "this week"
+
+
+### BATCH 93/105 - images 921-930 (tango_n5_921 .. tango_n5_930)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+921. tango_n5_921 - "next week": an everyday situation that clearly shows "next week"
+922. tango_n5_922 - "last month": an everyday situation that clearly shows "last month"
+923. tango_n5_923 - "this month": an everyday situation that clearly shows "this month"
+924. tango_n5_924 - "next month": an everyday situation that clearly shows "next month"
+925. tango_n5_925 - "electricity, power, light": Please turn on the lights.
+926. tango_n5_926 - "turn on": I will turn on the air conditioner.
+927. tango_n5_927 - "turn off": I will turn off the lights.
+928. tango_n5_928 - "bright": It gets bright when the lights are turned on.
+929. tango_n5_929 - "dark": The room is dark.
+930. tango_n5_930 - "air conditioner": The room has an air conditioner.
+
+
+### BATCH 94/105 - images 931-940 (tango_n5_931 .. tango_n5_940)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+931. tango_n5_931 - "video": I will watch the video over the weekend.
+932. tango_n5_932 - "switch": The switch is on the right side of the door.
+933. tango_n5_933 - "turn": Warm water comes out when you turn this to the left.
+934. tango_n5_934 - "pull": Water comes out when you pull this.
+935. tango_n5_935 - "move": It moves when you push the switch.
+936. tango_n5_936 - "sound": The sound of the radio is weak.
+937. tango_n5_937 - "if": If it breaks, I will fix it.
+938. tango_n5_938 - "broken": The air conditioner is broken.
+939. tango_n5_939 - "repair": Please fix the air conditioner.
+940. tango_n5_940 - "call": I will call the electrician.
+
+
+### BATCH 95/105 - images 941-950 (tango_n5_941 .. tango_n5_950)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+941. tango_n5_941 - "fix/correct": ①I will fix my brother's computer. ②I will correct my brother's report.
+942. tango_n5_942 - "product": I bought electrical appliances in Akihabara.
+943. tango_n5_943 - "sick": I got sick.
+944. tango_n5_944 - "hospital": I will go to the hospital.
+945. tango_n5_945 - "what's wrong, what's the matter": Doctor: What's the matter?
+946. tango_n5_946 - "fever": A: I have been running a fever since yesterday.
+947. tango_n5_947 - "cold": Doctor: You have a cold.
+948. tango_n5_948 - "flu": Doctor: You have the flu. Do not take a bath.
+949. tango_n5_949 - "medicine": Doctor: Take this medicine three times a day.
+950. tango_n5_950 - "nose": an everyday situation that clearly shows "nose"
+
+
+### BATCH 96/105 - images 951-960 (tango_n5_951 .. tango_n5_960)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+951. tango_n5_951 - "ear": an everyday situation that clearly shows "ear"
+952. tango_n5_952 - "mouth": an everyday situation that clearly shows "mouth"
+953. tango_n5_953 - "throat": an everyday situation that clearly shows "throat"
+954. tango_n5_954 - "head": an everyday situation that clearly shows "head"
+955. tango_n5_955 - "stomach": an everyday situation that clearly shows "stomach"
+956. tango_n5_956 - "hand": an everyday situation that clearly shows "hand"
+957. tango_n5_957 - "foot": an everyday situation that clearly shows "foot"
+958. tango_n5_958 - "take care": Nurse: Please take care.
+959. tango_n5_959 - "two, three days": I will take two or three days off from work.
+960. tango_n5_960 - "〜 hurts": My tooth hurts.
+
+
+### BATCH 97/105 - images 961-970 (tango_n5_961 .. tango_n5_970)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+961. tango_n5_961 - "dentist": I went to the dentist yesterday.
+962. tango_n5_962 - "alone": I will go to the hospital alone.
+963. tango_n5_963 - "health": I am mindful of my health.
+964. tango_n5_964 - "health insurance card": I will bring my health insurance card to the hospital.
+965. tango_n5_965 - "body": My sister is sickly.
+966. tango_n5_966 - "good for one's health": Jogging is good for your health.
+967. tango_n5_967 - "condition": My condition is not good.
+968. tango_n5_968 - "tired": A: I'm tired. Let's rest a little. / B: Okay.
+969. tango_n5_969 - "sleepy": A: I woke up at 5:00 a.m. this morning. I'm sleepy.
+970. tango_n5_970 - "early": B: You should go to sleep early.
+
+
+### BATCH 98/105 - images 971-980 (tango_n5_971 .. tango_n5_980)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+971. tango_n5_971 - "terrible": A: I work overtime every day. / B: That is terrible.
+972. tango_n5_972 - "recently": Recently, I am busy at work.
+973. tango_n5_973 - "worry": My mother is worried.
+974. tango_n5_974 - "cigarettes": I bought cigarettes at the vending machine.
+975. tango_n5_975 - "smoke": Please do not smoke here.
+976. tango_n5_976 - "no smoking": No smoking at the station.
+977. tango_n5_977 - "okay": A: Are you okay on your own? / B: Yes.
+978. tango_n5_978 - "unreasonable": An unreasonable diet is not good.
+979. tango_n5_979 - "diet": I am on a diet.
+980. tango_n5_980 - "remember": I sometimes remember my family.
+
+
+### BATCH 99/105 - images 981-990 (tango_n5_981 .. tango_n5_990)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+981. tango_n5_981 - "lonely": My friend returned to his/her home country. I feel lonely.
+982. tango_n5_982 - "long time no see": Huang: Oh, Suzuki-sensei. Long time no see!
+983. tango_n5_983 - "oh": Huang: Oh, Suzuki-sensei.
+984. tango_n5_984 - "are you doing good?": Suzuki: Are you doing okay?
+985. tango_n5_985 - "thanks to you": Huang: Yes, thanks to everyone.
+986. tango_n5_986 - "passport": I always carry my passport.
+987. tango_n5_987 - "visa": I will receive my visa at the embassy.
+988. tango_n5_988 - "embassy": The embassy is in Tokyo.
+989. tango_n5_989 - "important": The passcode number is important.
+990. tango_n5_990 - "lose": I lost my house key.
+
+
+### BATCH 100/105 - images 991-1000 (tango_n5_991 .. tango_n5_1000)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+991. tango_n5_991 - "lend": Please, lend me some money.
+992. tango_n5_992 - "borrow": I will borrow money from a friend. / I will borrow books from the library.
+993. tango_n5_993 - "return": I will return the book to the library.
+994. tango_n5_994 - "wasteful": I don't do wasteful shopping.
+995. tango_n5_995 - "need": I need a visa to study abroad.
+996. tango_n5_996 - "really?": A: This camera is 500,000 yen. / B: Really?
+997. tango_n5_997 - "true": Is that true?
+998. tango_n5_998 - "lie": It's not a lie. It's true.
+999. tango_n5_999 - "about": I researched about Japan on the Internet.
+1000. tango_n5_1000 - "pray": I pray every day.
+
+
+### BATCH 101/105 - images 1001-1010 (tango_n5_1001 .. tango_n5_1010)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+1001. tango_n5_1001 - "touch": Please do not touch the picture.
+1002. tango_n5_1002 - "future": I want to become a scholar in the future.
+1003. tango_n5_1003 - "dream": I have a big dream.
+1004. tango_n5_1004 - "study overseas": I will study in the United States.
+1005. tango_n5_1005 - "research": I have been researching economics for about ten years.
+1006. tango_n5_1006 - "scholar": My father is a scholar of economics.
+1007. tango_n5_1007 - "graduate school": My brother is a graduate school student.
+1008. tango_n5_1008 - "expert": Yamada-san's expertise is economics.
+1009. tango_n5_1009 - "economics": I am studying economics in college.
+1010. tango_n5_1010 - "art": My expertise is art.
+
+
+### BATCH 102/105 - images 1011-1020 (tango_n5_1011 .. tango_n5_1020)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+1011. tango_n5_1011 - "earth": I am researching about the earth.
+1012. tango_n5_1012 - "about": I am researching about the Japanese economy.
+1013. tango_n5_1013 - "quit": I will quit the company next year.
+1014. tango_n5_1014 - "think": I am thinking about the future.
+1015. tango_n5_1015 - "already": A: Did you already think about your future?
+1016. tango_n5_1016 - "not yet": B: No, not yet.
+1017. tango_n5_1017 - "from now": B: I will think about it from now.
+1018. tango_n5_1018 - "and": This robot understands words. And it also can dance.
+1019. tango_n5_1019 - "before": I will shop before the party.
+1020. tango_n5_1020 - "after": I will cook after shopping.
+
+
+### BATCH 103/105 - images 1021-1030 (tango_n5_1021 .. tango_n5_1030)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+1021. tango_n5_1021 - "soon": A: The party will start soon.
+1022. tango_n5_1022 - "immediately": B: Okay, I will be there immediately.
+1023. tango_n5_1023 - "later": C: I am writing a report now. I will go later.
+1024. tango_n5_1024 - "again": I will call again later.
+1025. tango_n5_1025 - "by": I will write up the report by tomorrow.
+1026. tango_n5_1026 - "so": So I won't go anywhere today.
+1027. tango_n5_1027 - "so much": A: Are you busy every day? / B: No, not so much.
+1028. tango_n5_1028 - "gradually": It gradually becomes difficult.
+1029. tango_n5_1029 - "everyone": A: Everyone, today we will discuss about robots. Robots can do many things.
+1030. tango_n5_1030 - "robot": Robots can do many things.
+
+
+### BATCH 104/105 - images 1031-1040 (tango_n5_1031 .. tango_n5_1040)
+
+Generate 10 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+1031. tango_n5_1031 - "wow": B: Wow, that's amazing.
+1032. tango_n5_1032 - "amazing": B: Wow, that's amazing.
+1033. tango_n5_1033 - "especially": The kanji is especially difficult.
+1034. tango_n5_1034 - "quite": It's difficult. I don't quite know the answer.
+1035. tango_n5_1035 - "but": I thought about it but I didn't understand. / The research is difficult but interesting.
+1036. tango_n5_1036 - "but": I thought about it but I didn't understand. / The research is difficult but interesting.
+1037. tango_n5_1037 - "let's see": A: How is your work? / B: Let's see. I'm busy but it's interesting.
+1038. tango_n5_1038 - "excuse me, but": A: Excuse me, but what is your name? / B: I'm Yamada.
+1039. tango_n5_1039 - "ask": I ask Huang-san for his address.
+1040. tango_n5_1040 - "excuse me": A: Excuse me, where is the post office?
+
+
+### BATCH 105/105 - images 1041-1046 (tango_n5_1041 .. tango_n5_1046)
+
+Generate 6 separate square 1:1 images, one per numbered line below, all in the exact same style.
+STYLE for every image: black-and-white Japanese textbook line art, thin gray outlines, light gray shading, plain white background, one centered scene, generous white space, family friendly, no text, no letters, no numbers, no Japanese characters, no logos, no watermark, no color, no gradients, no photorealism, no decorative frame.
+
+1041. tango_n5_1041 - "umm…": B: Um…, it's there. But it's closed today.
+1042. tango_n5_1042 - "but": B: Um…, it's there. But it's closed today.
+1043. tango_n5_1043 - "why": A: Why is that?
+1044. tango_n5_1044 - "because 〜": B: Because it's Saturday.
+1045. tango_n5_1045 - "okay": A: Okay, I understand. Thank you.
+1046. tango_n5_1046 - "understand": A: Okay, I understand. Thank you.

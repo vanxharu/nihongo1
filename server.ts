@@ -3308,7 +3308,7 @@ app.get('/api/vocab-prompts', async (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(204).end();
   try {
-    const level = req.query.level === 'n3' ? 'n3' : 'n4';
+    const level = ['n3', 'n5'].includes(String(req.query.level)) ? String(req.query.level) : 'n4';
     const file = path.join(process.cwd(), `imports/vocab-${level}/prompts.jsonl`);
     const raw = await fs.promises.readFile(file, 'utf8');
     const items = raw.trim().split(/\r?\n/).filter(Boolean).map(line => {
@@ -3342,7 +3342,7 @@ app.post('/api/vocab-flow-done', async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  const level = req.body?.level === 'n3' ? 'n3' : 'n4';
+  const level = ['n3', 'n5'].includes(String(req.body?.level)) ? String(req.body.level) : 'n4';
   const items = Array.isArray(req.body?.items) ? req.body.items.slice(0, 40) : [];
   const saved = [];
   const failed = [];
