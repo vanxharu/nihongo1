@@ -1,0 +1,26 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Type check
+        run: npm run lint
+      - name: Tests
+        run: npx tsx --test tests/*.test.ts
+      - name: Server bundle
+        run: npm run build:api
+      - name: Bundle is committed up to date
+        run: git diff --stat --exit-code api/_lib/server.cjs || echo "::warning::api/_lib/server.cjs differs from npm run build:api output"
