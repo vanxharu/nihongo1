@@ -90,7 +90,7 @@ export default function ReadingExam() {
                   const title = e.title.replace(/^Minna Topikku 25 · /, '');
                   const description = lines.find(l => l.vi.trim())?.vi || e.parts[0]?.title || 'Luyện đọc hiểu tiếng Nhật';
                   return <ExpressiveReveal key={e.id} index={index}><li><AnimatedButton type="button" tapScale={scale.choice} className="reading-library-card" onClick={() => open(e.id)}>
-                    <div className="reading-library-cover"><img src={e.id.startsWith('minna-') ? '/reading/reading-study.png' : '/reading/reading-conversation.png'} alt="" width="480" height="270" loading="lazy" /><span className="reading-library-level">{e.level}</span><span className="reading-library-count">{totalQ(e)} câu</span>{scores[e.id] !== undefined && <span className="reading-library-completed"><CheckCircle2 size={12} /> {scores[e.id]}/{totalQ(e)}</span>}</div>
+                    <div className="reading-library-cover"><img src={e.id.startsWith('minna-') ? '/reading/reading-study.webp' : '/reading/reading-conversation.webp'} alt="" width="480" height="270" loading="lazy" /><span className="reading-library-level">{e.level}</span><span className="reading-library-count">{totalQ(e)} câu</span>{scores[e.id] !== undefined && <span className="reading-library-completed"><CheckCircle2 size={12} /> {scores[e.id]}/{totalQ(e)}</span>}</div>
                     <h3>{title}</h3><p>{description}</p><small>{characters.toLocaleString('vi-VN')} ký tự · {e.parts.length} phần</small>
                   </AnimatedButton></li></ExpressiveReveal>;
                 })}

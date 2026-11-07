@@ -41,11 +41,11 @@ export default function ShadowingLibrary({ videos, personalVideos, onOpen, onMod
   return <div className="listening-library">
     <div className="listening-banner">
       <div><span lang="ja" className="listening-welcome">ようこそ!</span><strong>Shadowing</strong><span>& Chép chính tả</span></div>
-      <img src="/mascot/shiba_listening.png" alt="Nihon Shiba đeo tai nghe" width="180" height="180" />
+      <img src="/mascot/shiba_listening.webp" alt="Nihon Shiba đeo tai nghe" width="180" height="180" />
       <div className="listening-banner-tags"><span>LUYỆN NGHE</span><span>SHADOWING</span><span>DICTATION</span><small>Nghe kỹ · Nói tự tin</small></div>
     </div>
     <header className="listening-channel">
-      <ExpressiveReveal inView={false}><div className="listening-avatar"><img src="/mascot/shiba_listening.png" alt="" width="100" height="100" /></div></ExpressiveReveal>
+      <ExpressiveReveal inView={false}><div className="listening-avatar"><img src="/mascot/shiba_listening.webp" alt="" width="100" height="100" /></div></ExpressiveReveal>
       <div className="listening-channel-copy"><h1>Shadowing & Chép chính tả</h1><p className="listening-stats">NihonGo! · {sources.length} chủ đề · {videos.length} video</p><p>Luyện nghe, nói theo từng câu và chép chính tả cùng video tiếng Nhật có phụ đề.</p>
         <div className="listening-actions"><AnimatedButton type="button" disabled={!videos.length} onClick={() => videos[0] && start(videos[0].youtube_video_id, 'shadowing')}><Headphones size={15} /> Bắt đầu Shadowing</AnimatedButton><AnimatedButton type="button" disabled={!videos.length} onClick={() => videos[0] && start(videos[0].youtube_video_id, 'dictation')}><PenLine size={15} /> Chép chính tả</AnimatedButton><AnimatedButton type="button" onClick={() => setTab('personal')}><Video size={15} /> Video của tôi</AnimatedButton></div>
       </div>

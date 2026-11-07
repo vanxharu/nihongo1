@@ -37,7 +37,7 @@ import { shadowingPrepare } from './src/server/shadowingPrepare';
 import { cleanVocabSymbols, sanitizeVocabItem, KANJI_TO_HAN_VIET } from './src/utils/japaneseUtils';
 import { deduplicateGrammars } from './src/utils/grammarDeduplicator';
 import { KANJI_DICTIONARY } from './src/data/kanjiDictionary';
-import { requireAuth, requireAdmin } from './src/middleware/auth';
+import { requireAuth, requireAdmin, verifiedToken } from './src/middleware/auth';
 import { adminAuth } from './src/lib/firebase-admin';
 import { getOrCreateUser, updateUserProfile, getAllUsers, deleteUserByUid, findUserByUsername, isUsernameTaken, normalizeUsername, getLeaderboardUsers, importBrowserProfile } from './src/db/users';
 import { verifyFirebasePassword } from './src/server/firebasePassword';
@@ -102,12 +102,7 @@ app.use(async (req, res, next) => {
   // cannot push 25 MB payloads into AI endpoints that are otherwise open.
   const length = Number(req.headers['content-length'] || 0);
   const chunked = !req.headers['content-length'] && /chunked/i.test(String(req.headers['transfer-encoding'] || ''));
-  if (length > SMALL_BODY_BYTES || chunked) {
-    const auth = req.headers.authorization;
-    let signedIn = false;
-    if (auth?.startsWith('Bearer ') && adminAuth) { try { await adminAuth.verifyIdToken(auth.slice(7)); signedIn = true; } catch { /* guest */ } }
-    if (!signedIn) return smallJson(req, res, next);
-  }
+  if ((length > SMALL_BODY_BYTES || chunked) && !(await verifiedToken(req))) return smallJson(req, res, next);
   return bigJson(req, res, next);
 });
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
@@ -133,10 +128,10 @@ const RATE_MAX_REQUESTS = 40;
 const rateBuckets = new Map<string, { count: number; resetAt: number }>();
 const GUEST_MAX_REQUESTS = 12; // khách chưa đăng nhập bị giới hạn chặt hơn người có tài khoản
 app.use(COST_BEARING_PATHS, async (req, res, next) => {
-  let signedIn = false;
-  const auth = req.headers.authorization;
-  if (auth?.startsWith('Bearer ') && adminAuth) { try { await adminAuth.verifyIdToken(auth.slice(7)); signedIn = true; } catch { /* guest */ } }
-  const key = (signedIn ? 'u:' : 'g:') + (req.ip || 'unknown');
+  // Signed-in learners are counted per account, so a class sharing one school IP is not throttled together.
+  const token = await verifiedToken(req);
+  const signedIn = !!token;
+  const key = token ? `u:${token.uid}` : `g:${req.ip || 'unknown'}`;
   const now = Date.now();
   if (rateBuckets.size > 5000) {
     for (const [k, v] of rateBuckets) if (v.resetAt <= now) rateBuckets.delete(k);
@@ -360,11 +355,8 @@ const UNSAFE_LISTENING_KEYS = new Set(['__proto__', 'constructor', 'prototype'])
 const LISTENING_USER_PATHS = /^\/(progress|attempts|exam-resume)/;
 app.use('/api/listening', async (req, res, next) => {
   if (!LISTENING_USER_PATHS.test(req.path)) return next();
-  let uid = 'default_user';
-  const auth = req.headers.authorization;
-  if (auth?.startsWith('Bearer ') && adminAuth) {
-    try { uid = (await adminAuth.verifyIdToken(auth.slice(7))).uid; } catch { /* invalid token: treat as guest */ }
-  }
+  // Invalid or missing token: treat as guest.
+  let uid = (await verifiedToken(req))?.uid || 'default_user';
   // Guests never share a bucket: writes are dropped (client keeps its local copy), reads see an empty bucket.
   const isGuest = uid === 'default_user';
   if (isGuest && req.method !== 'GET') return res.json({ success: true, guest: true });
