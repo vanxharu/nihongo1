@@ -20,3 +20,7 @@ imports/vocab-n4/done/
 imports/vocab-n4/*.png
 imports/vocab-n3/done/
 imports/vocab-n3/*.png
+
+# Android signing key (kept in GitHub Secrets, never committed)
+*.jks
+*.keystore
