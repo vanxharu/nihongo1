@@ -10,7 +10,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import type { UserProfile, JLPTLevel } from "../types";
-import { KANJI_DATA, VOCABULARY_DATA, GRAMMAR_DATA } from "../data";
+import { KANJI_DATA, GRAMMAR_DATA } from "../data/coreData";
 import { safeFetchJson } from "../utils/safeApi";
 import {
   catalogProgress,
@@ -42,11 +42,14 @@ const LEVELS: JLPTLevel[] = ["N5", "N4", "N3", "N2", "N1"];
 
 const SKILL_COLORS = ["#87c9e3", "#b89bef", "#f0bc86"];
 
-// The home page renders the dashboard twice (skills + rhythm); share one fetch of the ~3 MB catalog per page load.
+// The home page renders the dashboard twice (skills + rhythm); share one fetch per page load.
+// view=progress returns only the id/level fields catalogProgress() counts (not the ~3 MB catalog).
 let catalogPromise: Promise<{ ok: boolean; data?: any[] | null }[]> | null = null;
 const loadCatalog = () => (catalogPromise ||= Promise.all(
-  ["/api/vocabularies", "/api/grammars", "/api/kanjis"].map((url) => safeFetchJson<any[]>(url)),
+  ["/api/vocabularies", "/api/grammars", "/api/kanjis"].map((url) => safeFetchJson<any[]>(`${url}?view=progress`)),
 ).catch((e) => { catalogPromise = null; throw e; }));
+// Offline / API failure only: the bundled Tango sets (~370 KB gzip) are loaded on demand.
+const loadBundledVocabulary = () => import("../data").then((m) => m.VOCABULARY_DATA).catch(() => [] as any[]);
 
 export default function ProgressDashboard({
   userProfile,
@@ -62,7 +65,7 @@ export default function ProgressDashboard({
 
   const [level, setLevel] = useState<JLPTLevel>(profile.targetLevel || "N5");
   const [catalog, setCatalog] = useState<any[][]>([
-    VOCABULARY_DATA,
+    [],
     GRAMMAR_DATA,
     KANJI_DATA,
   ]);
@@ -73,23 +76,26 @@ export default function ProgressDashboard({
 
   useEffect(() => {
     let active = true;
+    const usable = (r?: { ok: boolean; data?: any[] | null }) =>
+      !!r && r.ok && Array.isArray(r.data) && r.data.length > 0;
     loadCatalog()
-      .then((result) => {
+      .then(async (result) => {
+        const vocabulary = usable(result[0])
+          ? result[0].data!
+          : await loadBundledVocabulary();
         if (!active) return;
-        setFallback(
-          result.some((r) => !r.ok || !Array.isArray(r.data) || !r.data.length),
-        );
-        setCatalog(
-          result.map((r, i) =>
-            r.ok && Array.isArray(r.data) && r.data.length
-              ? r.data
-              : [VOCABULARY_DATA, GRAMMAR_DATA, KANJI_DATA][i],
-          ),
-        );
+        setFallback(result.some((r) => !usable(r)));
+        setCatalog([
+          vocabulary,
+          usable(result[1]) ? result[1].data! : GRAMMAR_DATA,
+          usable(result[2]) ? result[2].data! : KANJI_DATA,
+        ]);
         setLoading(false);
       })
-      .catch(() => {
+      .catch(async () => {
+        const vocabulary = await loadBundledVocabulary();
         if (active) {
+          setCatalog([vocabulary, GRAMMAR_DATA, KANJI_DATA]);
           setFallback(true);
           setLoading(false);
         }
@@ -229,6 +235,7 @@ export default function ProgressDashboard({
           /* ── Prediction view ── */
           <section className="pd-card">
             <h2 className="pd-card-title">Dự đoán điểm {level}</h2>
+            {loading ? <Skeleton rows={3} /> : <>
             <div className="pd-score-hero">
               <div className="pd-score-num">{pred.score}<span className="pd-score-denom">/ 180</span></div>
               <div>
@@ -281,6 +288,7 @@ export default function ProgressDashboard({
                 </a>
               </p>
             </div>
+            </>}
           </section>
         )}
       </div>

@@ -25,7 +25,8 @@ export const ExamHistoryModal: React.FC<ExamHistoryModalProps> = ({
   onSelectAttempt,
   onPrintAttempt
 }) => {
-  useFontSets('exam');
+  // Always mounted by the practice hub (renders nothing while closed): load exam fonts only when open.
+  useFontSets(...(isOpen ? (['exam'] as const) : []));
   const [historyList, setHistoryList] = useState<ExamHistoryRecord[]>([]);
 
   const handleReviewAction = onReviewAttempt || onSelectAttempt || onExportPDF || onPrintAttempt;
