@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AnimatePresence, m } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 
 type T = { id: number; message: string; undo?: () => void };
 let seq = 0;
@@ -23,7 +23,7 @@ export default function Toasts() {
     <div className="fixed bottom-24 xl:bottom-6 left-1/2 -translate-x-1/2 z-[120] w-[92%] max-w-sm flex flex-col gap-2 pointer-events-none" aria-live="polite">
       <AnimatePresence initial={false}>
         {list.map((t) => (
-          <m.div
+          <motion.div
             key={t.id}
             layout
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -41,7 +41,7 @@ export default function Toasts() {
             >
               {t.undo ? 'Hoàn tác' : 'Đóng'}
             </button>
-          </m.div>
+          </motion.div>
         ))}
       </AnimatePresence>
     </div>

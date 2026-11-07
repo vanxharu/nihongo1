@@ -28,8 +28,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          // motion/react is not pinned to one chunk: startup code uses <m.*> + <LazyMotion> and the
-          // engine (src/motionFeatures.ts) loads as its own chunk.
+          'vendor-motion': ['motion/react'],
           // The browser only uses Firebase Auth (data goes through /api). Listing firestore/storage here
           // forced them into this startup chunk even though no client code imports them.
           'vendor-firebase': ['firebase/app', 'firebase/auth'],

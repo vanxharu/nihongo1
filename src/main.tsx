@@ -14,11 +14,6 @@ import { AuthProvider } from './contexts/AuthContext';
 import { BRAND_NAME } from './constants/brand';
 import { AppErrorBoundary } from './utils/lazyWithRetry';
 
-import { installCustomLlmHeaders } from './utils/aiCustomKey';
-import { LazyMotion } from 'motion/react';
-const loadMotionFeatures = () => import('./motionFeatures').then(mod => mod.default);
-installCustomLlmHeaders();
-
 // PwaInstallPrompt is lazy-loaded; Chrome/Edge may fire beforeinstallprompt before its chunk arrives.
 // Capture it here (same preventDefault the component does) so the component can pick it up on mount.
 if (typeof window !== 'undefined') {
@@ -27,6 +22,8 @@ if (typeof window !== 'undefined') {
     (window as any).__pwaInstallEvent = e;
   });
 }
+import { installCustomLlmHeaders } from './utils/aiCustomKey';
+installCustomLlmHeaders();
 
 function StartupReady() {
   useEffect(() => { (window as any).nihongoAppStarted?.(); }, []);
@@ -38,7 +35,7 @@ createRoot(document.getElementById('root')!).render(
     <AppErrorBoundary fallbackTitle="Trang học chưa tải được">
     <BrowserRouter>
       <ThemeProvider><AuthProvider>
-        <AnimateUIProvider tempo={1}><ReducedMotionConfig><LazyMotion features={loadMotionFeatures}><App /></LazyMotion></ReducedMotionConfig></AnimateUIProvider>
+        <AnimateUIProvider tempo={1}><ReducedMotionConfig><App /></ReducedMotionConfig></AnimateUIProvider>
         <StartupReady />
       </AuthProvider></ThemeProvider>
     </BrowserRouter>

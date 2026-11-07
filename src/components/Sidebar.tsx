@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import JpStudyLogo from './JpStudyLogo';
 import ThemeToggle from './ThemeToggle';
-import { m } from 'motion/react';
+import { motion } from 'motion/react';
 import { UserProfile } from '../types';
 import { calculateUnlockedAchievements, TOTAL_ACHIEVEMENTS_COUNT } from '../data/achievementsData';
 import { readGuestRoadmap } from '../data/guestRoadmap';
@@ -80,7 +80,7 @@ function NavLink({ item, isActive, onClick, index, radial }: { item: NavItem; is
     >
       {/* coloured dot indicator on active */}
       {isActive && (
-        <m.span
+        <motion.span
           layoutId="sidebar-dot"
           className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full"
           style={{ background: item.dot }}
