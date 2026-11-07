@@ -29,8 +29,9 @@ export default defineConfig({
         manualChunks: {
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-motion': ['motion/react'],
-          'vendor-firebase': ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage'],
-          'vendor-ai': ['@google/genai'],
+          // The browser only uses Firebase Auth (data goes through /api). Listing firestore/storage here
+          // forced them into this startup chunk even though no client code imports them.
+          'vendor-firebase': ['firebase/app', 'firebase/auth'],
         },
       },
     },
