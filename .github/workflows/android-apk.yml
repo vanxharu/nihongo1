@@ -72,6 +72,8 @@ jobs:
           # Bubblewrap generates the Gradle project from twa-manifest.json; the APK is then built with
           # Gradle and signed with apksigner directly (bubblewrap build rejects the runner's SDK layout).
           bubblewrap update --skipVersionUpgrade
+          # Native additions: vocabulary widget + daily word notification (android/overlay).
+          node overlay/apply.mjs
           chmod +x gradlew
           ./gradlew --no-daemon -q assembleRelease
           BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
@@ -87,6 +89,9 @@ jobs:
         run: |
           APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -1)
           "$APKSIGNER" verify --print-certs out/*.apk | grep -E "SHA-256|Signer"
+          AAPT2=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -1)
+          echo "Components:"; "$AAPT2" dump xmltree --file AndroidManifest.xml out/*.apk | grep -E 'VocabWidgetProvider|DailyWord|appwidget|POST_NOTIFICATIONS|BOOT_COMPLETED' | sed 's/^ *//'
+          unzip -l out/*.apk | grep -E 'assets/words.json|widget_vocab'
           ls -la out
       - uses: actions/upload-artifact@v4
         with:
@@ -102,3 +107,47 @@ jobs:
             gh release create android-latest -R "$GITHUB_REPOSITORY" --title "NihonGo! Android (APK)" --target "$GITHUB_SHA" \
               --notes "Bản APK mới nhất. Tải file .apk bên dưới về điện thoại Android và mở để cài (cho phép cài từ nguồn không xác định)."
           gh release upload android-latest out/*.apk -R "$GITHUB_REPOSITORY" --clobber
+
+  # Installs the APK on an Android 13 emulator and checks the native parts at runtime:
+  # daily-word alarm scheduled at process start, notification posted, widget provider registered, no crash.
+  emulator-smoke:
+    needs: apk
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: NihonGo-apk
+          path: apk
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim
+          script: |
+            adb install -r apk/*.apk
+            adb shell pm grant app.nihongo.study android.permission.POST_NOTIFICATIONS
+            adb logcat -c
+            # Launch the app: DailyWordInit runs at process start and schedules the 20:00 alarm.
+            adb shell monkey -p app.nihongo.study -c android.intent.category.LAUNCHER 1 ; sleep 8
+            # The receivers are not exported (only the alarm's PendingIntent may call them): use root, which
+            # Android allows to reach non-exported components. -f 32 = FLAG_INCLUDE_STOPPED_PACKAGES.
+            adb root ; sleep 3 ; adb wait-for-device
+            adb shell am broadcast -f 32 -a app.nihongo.study.DAILY_WORD -n app.nihongo.study/.DailyWord ; sleep 4
+            echo "== alarm (scheduled by DailyWordInit at process start)"; adb shell dumpsys alarm | grep -B1 -A4 "app.nihongo.study" | head -10
+            adb shell dumpsys alarm | grep -q "app.nihongo.study" || echo "::warning::daily alarm not found in dumpsys alarm"
+            echo "== notification"; adb shell dumpsys notification --noredact | grep -A25 "pkg=app.nihongo.study" | grep -E "android.title|android.text|android.subText|channel" | head -8
+            adb shell dumpsys notification --noredact | grep -q "pkg=app.nihongo.study" || { echo "::error::daily word notification not posted"; adb logcat -d | grep -iE "nihongo|AndroidRuntime" | tail -40; exit 1; }
+            echo "== widget"; adb shell dumpsys appwidget | grep -A4 "app.nihongo.study/.VocabWidgetProvider" | head -6
+            adb shell dumpsys appwidget | grep -q "VocabWidgetProvider" || { echo "::error::widget provider not registered"; exit 1; }
+            adb shell am broadcast -f 32 -a app.nihongo.study.widget.NEXT -n app.nihongo.study/.VocabWidgetProvider ; sleep 2
+            adb shell am broadcast -f 32 -a app.nihongo.study.widget.ROTATE -n app.nihongo.study/.VocabWidgetProvider ; sleep 2
+            echo "== crashes"; adb logcat -d -b crash | tee crash.txt | head -30
+            if grep -q "app.nihongo.study" crash.txt; then echo "::error::app crashed"; exit 1; fi

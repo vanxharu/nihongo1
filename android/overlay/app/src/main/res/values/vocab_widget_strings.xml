@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_label">Từ vựng hôm nay</string>
+    <string name="widget_title">Từ vựng hôm nay</string>
+    <string name="widget_next">Từ khác</string>
+    <string name="widget_description">Từ vựng JLPT N5–N3, tự đổi từ mới mỗi 5 phút. Chạm để mở NihonGo!, bấm ⟳ để đổi ngay.</string>
+</resources>
