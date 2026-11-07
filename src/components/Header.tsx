@@ -10,7 +10,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { User, LogIn, ChevronRight, ChevronDown, ChevronLeft, RefreshCw, Trophy, Settings, Menu, Volume2, VolumeX, TrendingUp, BookOpen, CheckCircle2, Bell, Monitor, Flame } from 'lucide-react';
 import { UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
-import { motion } from 'motion/react';
 import { isSoundEnabled, setSoundEnabled } from '../utils/audio';
 import JpStudyLogo from './JpStudyLogo';
 // Lazy: the settings modal pulls notifications.ts and the Japanese dictionaries (~450 KB of source).

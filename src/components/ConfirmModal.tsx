@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDialogFocus } from '../hooks/useDialogFocus';
 import { AlertTriangle, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -34,7 +34,7 @@ export default function ConfirmModal({
         className="fixed inset-0 bg-slate-950/45 backdrop-blur-xs z-[100] flex items-center justify-center p-4"
         onClick={onClose}
       >
-        <motion.div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Xác nhận hành động"
+        <m.div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Xác nhận hành động"
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
@@ -91,7 +91,7 @@ export default function ConfirmModal({
               {confirmText}
             </button>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </AnimatePresence>
   );

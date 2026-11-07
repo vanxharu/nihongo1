@@ -13,7 +13,7 @@ import { useAuth } from './contexts/AuthContext';
 import LearningMotion from './components/LearningMotion';
 import { ParticleCelebration, ParticleCelebrationRef } from './components/ParticleCelebration';
 import { playMilestoneChime } from './utils/audio';
-import { motion, AnimatePresence, useReducedMotion, MotionConfig } from 'motion/react';
+import { m, AnimatePresence, useReducedMotion, MotionConfig } from 'motion/react';
 import { ArrowUp, Loader2, BookOpen, Layers, Compass, Languages, Menu } from 'lucide-react';
 import MobileBottomNav from './components/MobileBottomNav';
 import { calculateEarnedXp, getPlayerLevelInfo } from './utils/xpSystem';
@@ -866,7 +866,7 @@ export default function App() {
           }`}
         >
           <AnimatePresence mode="sync">
-            <motion.div
+            <m.div
               key={location.pathname}
               initial={reducedMotion ? false : { opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
@@ -887,7 +887,7 @@ export default function App() {
                   {renderRoutes()}
                 </AppErrorBoundary>
               </Suspense>
-            </motion.div>
+            </m.div>
           </AnimatePresence>
         </main>
       </div>
@@ -899,7 +899,7 @@ export default function App() {
       {/* Scroll to Top Button */}
       <AnimatePresence>
         {showScrollTop && (
-          <motion.button
+          <m.button
             key="scroll-to-top"
             id="btn-scroll-to-top"
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -910,7 +910,7 @@ export default function App() {
             title="Cuộn lên đầu trang"
           >
             <ArrowUp className="w-5 h-5 transition-transform duration-200 group-hover:-translate-y-0.5" />
-          </motion.button>
+          </m.button>
         )}
       </AnimatePresence>
 

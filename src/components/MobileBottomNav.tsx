@@ -35,7 +35,7 @@ import {
   Trophy,
   FileText
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { isSoundEnabled, setSoundEnabled } from '../utils/audio';
@@ -187,14 +187,14 @@ export default function MobileBottomNav({
       <AnimatePresence>
         {isMoreOpen && (
           <>
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMoreOpen(false)}
               className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[110] xl:hidden"
             />
-            <motion.div
+            <m.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
@@ -374,7 +374,7 @@ export default function MobileBottomNav({
                   Cài đặt ⚙️
                 </span>
               </button>
-            </motion.div>
+            </m.div>
           </>
         )}
       </AnimatePresence>
