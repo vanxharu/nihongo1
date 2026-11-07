@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.nihongo.study",
+      "sha256_cert_fingerprints": [
+        "0F:87:11:88:68:B3:28:D8:1E:7A:1F:46:B1:71:30:E4:2A:A8:00:F9:E4:6B:0F:52:59:29:42:2D:EF:7E:7F:17"
+      ]
+    }
+  }
+]
